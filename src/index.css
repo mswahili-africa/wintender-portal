@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+    html{
+        @apply scroll-smooth font-inter text-slate-800;
+    }
+
+    label {
+        @apply text-xs lg:text-sm font-medium text-slate-600 mb-2;
+    }
+
+    input:disabled, select:disabled {
+        @apply bg-slate-100
+    }
+
+    input[type="checkbox"] {
+        @apply p-2 border border-slate-400 ring-0 focus:outline-none focus:ring-transparent focus:border-green-600 rounded shadow-sm
+    }
+    
+    input[type="radio"] {
+        @apply p-2 border border-slate-400 ring-0 focus:outline-none focus:ring-transparent focus:border-green-600 shadow-sm
+    }
+    
+    input[type="radio"]:checked, input[type="checkbox"]:checked {
+        @apply bg-green-600 focus:bg-green-600
+    }
+
+    .input-normal {
+        @apply w-full px-3 py-2 xl:py-2.5 text-xs xl:text-sm text-slate-600 placeholder-slate-400 border border-slate-300 focus:border-green-600 focus:outline-none focus:ring-0 rounded-md
+    }
+
+    .input-error {
+        @apply w-full px-3 py-2 xl:py-2.5 text-xs xl:text-sm text-slate-600 placeholder-slate-400 border border-red-300 focus:border-red-600 focus:outline-none focus:ring-0 rounded-md
+    }
+}
