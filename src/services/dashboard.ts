@@ -1,9 +1,7 @@
 import http from "@/http";
-import { IDash } from "@/types";
-
 
 export async function getStatistics() {
-    const response = await http.get<IDash>("/reports/statistics/summary")
+    const response = await http.get<any>("/reports/statistics/summary")
 
     return response.data
 }

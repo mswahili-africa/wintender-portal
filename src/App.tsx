@@ -17,6 +17,7 @@ import Entities from "./pages/entities";
 import PopupProvider from "./providers/popup";
 import Roles from "./pages/roles";
 import ChangeDefaultPassword from "./pages/users/change-default-password";
+import Categories from "./pages/categories";
 
 export const queryClient = new QueryClient({});
 
@@ -39,15 +40,12 @@ function App() {
 
                         <Route path="/" element={<AppLayout />}> 
                             <Route index element = {<Dashboard/>}/>
-
                             <Route path="entities" element={<Entities/>}/>
-
                             <Route path="tenders" element={<Tenders />}/>
                             <Route path="payments" element={<Payments />}/>
-                            
+                            <Route path="categories" element={<Categories />}/>
                             <Route path="users" element={<Users />}/>
                             <Route path="users/:username" element={<UserDetail />}/>
-
                             <Route path="roles" element={<Roles />}/>
 
                         </Route>

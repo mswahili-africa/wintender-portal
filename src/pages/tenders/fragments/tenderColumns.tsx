@@ -1,53 +1,51 @@
-import Chip from "../../../components/chip/Chip";
-import { IColumn } from "../../../components/widgets/table/Table";
+import Chip from "@/components/chip/Chip";
+import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
     {
-        name: "serial",
-        label: "Serial #",
+        name: "region",
+        label: "Region",
+        sortable: false,
+        plainObject: false,
+        element: (value: string) => <Chip label={value} size="sm" theme={value === 'LOCAL' ? 'primary' : 'warning'} variant="outline" />
+    },
+    {
+        name: "title",
+        label: "Title",
         sortable: false,
         plainObject: false,
     },
     {
-        name: "deviceType",
-        label: "Device Type",
+        name: "category",
+        label: "Category",
         sortable: false,
         plainObject: true,
         element: (row: any) => {
-            return `${row.productModelReference.productGroup.name} -${row.productModelReference.modelNumber}`
+            return `${row.category?.name}`
         }
-    },
-    {
-        name: "condition",
-        label: "Condition",
-        sortable: false,
-        plainObject: false,
-        element: (value: string) => <Chip label={value} size="sm" theme={value === 'New' ? 'success' : 'warning'} variant="outline" />
     },
     {
         name: "status",
         label: "Status",
         sortable: false,
-        plainObject: false,
-        element: (value: string) => <Chip label={value} size="sm" theme={value === 'Available' ? 'primary' : 'warning'} variant="outline" />
-    },
-    {
-        name: "owner",
-        label: "Location",
-        sortable: false,
         plainObject: true,
         element: (row: any) => {
-            const displayValue = row.status === 'ON_LEASE' ? 'Customer' : row.owner;
+            const currentDate = new Date().getTime();
+            const closeDate = row.closeDate;
+            const remainingTime = closeDate - currentDate;
+            const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-            return <Chip label={displayValue} size="sm" theme={'primary'} variant="outline" />;
+            const displayStatus = remainingDays <= 7 ? 'CLOSING' : row.status;
+
+            return (
+                <Chip 
+                    label={displayStatus} 
+                    size="sm" 
+                    theme={displayStatus === 'CLOSING' ? 'warning' : 'success'} 
+                    variant="outline" 
+                />
+            );
         }
-    },
-    {
-        name: "updatedAt",
-        label: "Updated At",
-        sortable: true,
-        plainObject: false,
-        element: (value) => new Date(parseInt(value)).toLocaleString(),
     },
 ];
 

@@ -107,57 +107,6 @@ export interface IRole {
   archive: string;
 }
 
-// export interface IAuthUser {
-//     firstName: string;
-//     lastName: string;
-//     country: string;
-//     role: string;
-//     vendor: string;
-//     userName: string;
-//     email: string;
-//     status: string;
-// }
-
-export interface IDash {
-  vendorInformation: IVendorInformation | null;
-  vendorStatistics: IStatistics;
-}
-
-export interface IVendorInformation {
-  id: string;
-  countryId: string;
-  vendorId: any;
-  vendorType: string;
-  name: string;
-  address: string;
-  tin: string;
-  businessLicence: string;
-  longitude: string;
-  latitude: string;
-  primaryNumber: string;
-  secondaryNumber: string;
-  email: string;
-  tinPathFile: string;
-  licencePathFile: string;
-  licenceExpireDate: number;
-  status: string;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface IStatistics {
-  totalCustomers: number;
-  totalEnergyUsedKwh: number;
-  nonPerformingCustomers: number;
-  totalElapsedHours: number;
-  totalAvailableDevices: number;
-  totalPayments: number;
-  totalAmountUsed: number;
-  totalOrders: number;
-}
-
 export interface IUser {
   id: string;
   name: string;
@@ -180,281 +129,52 @@ export interface IUser {
   nationalId: string;
 }
 
-export interface ICustomer {
-  unitsPaid:number;
+export interface IEntity {
   id: string;
-  tenant: string;
-  cookingId: string;
-  firstName: string;
-  email: string;
-  fullName: string;
-  primaryNumber: number;
-  secondaryNumber: string[];
+  entityType: string;
+  name: string;
+  account: string;
+  primaryNumber: string;
   address: string;
-  nationalId: number;
-  longitude: string;
-  latitude: string;
+  email: string;
   createdBy: string;
   updatedBy: string;
   createdAt: number;
   updatedAt: number;
-  maxUnits: number;
-  lastPaymentDate: number;
-  status: string;
-  nationalIdPath: string;
-  contractPath: string;
-  deviceReference: IDevice;
-  packageReference:IPackages;
-  dueDate:string
-}
-
-export interface IDevice {
-  id: string;
-  serial: string;
-  imei: string;
-  deviceType: string;
-  macAddress: string;
-  deviceStatus: string;
-  customerId: string | null;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  details: string[];
-  deviceName: string;
-  deviceVersion:string;
-  factoryStatus:string;
-  deviceRemarks:string;
-  productReference:IProduct;
-}
-
-export interface ICredit {
-  createdBy?: string,
-  updatedBy?: string,
-  createdAt?: string,
-  updatedAt?: string,
-  id: string,
-  code?: string,
-  account?: string,
-  status?: string,
-  description:string,
-  principleAmount:number
-  appliedAmount:number 
-}
-
-export interface IProduct {
-  id: string;
-  name: string;
-  tenant: string;
-  serial: string;
-  location: string;
-  status: string;
-  condition: string;
-  archive: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  productModelId: null;
-  owner:string;
-}
-
-export interface IOrder {
-  id: string;
-  orderSerial: string;
-  tenant: string;
-  quantity: number;
-  archive: number;
-  status: string;
-  assignedTo: string[] | null;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  productModelId: IProductModel;
-  productId: any;
-  orderType: string;
-  controlNumber:IControlNumber;
-  reseller:IUser;
-  tracker:ITrackerSerial;
-}
-
-export interface IControlNumber{
-
-  id:string;
-  controlNumber:number;
-  source:string;
-  paidAmount:number;
-}
-
-
-export interface IProductModel {
-  id: string;
-  verificationId:string;
-  modelNumber: string;
-  minVoltage: number;
-  maxVoltage: number;
-  netWeight: number;
-  grossWeight: number;
-  height: number;
-  width: number;
-  length: number;
-  communicationType: string;
-  archive: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  productGroup: IProductGroup;
-  lowerFrequency:string;
-  higherFrequency:string;
-  size:number;
-  modelInfo:IModelInfo;
-}
-
-export interface IModelInfo{
-  kwhPrice: number;
-  language:string;
-  warrantPeriod: number;
-
-}
-
-export interface IProductGroup {
-  id: string;
-  name: string;
-  archive: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface IBatchSerial {
-  id: string;
-  name: string;
-  countryId: string;
-  type: string;
-  archive: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  vendorId: string;
-}
-
-export interface ITrackerSerial {
-  id: string;
-  name: string;
-  countryId: string;
-  type: string;
-  archive: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  vendorId: string;
-}
-
-export interface ProductModelId {
-  id: string;
-  name: string;
-  createdAt: number;
-  updatedAt: number;
-  productGroupId: ProductGroupId;
-}
-
-export interface ProductGroupId {
-  id: string;
-  name: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface IFirmware {
-  id: string;
-  version: string;
-  deviceModel: string;
-  description: string;
-  pathToFile: string;
-  releaseStatus: string;
-  status: string;
-  archive: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface ILog {
-  id: string;
-  tenant: string;
-  serialNumber: string;
-  logType: string;
-  identifier: string;
-  firmwareId: string;
-  sessionStart: number;
-  sessionEnd: number;
-  cumulativeSessionHours: number;
-  tamperingStatus: string;
-  deviceStatus: string;
-  healthStatus: string;
-  dateTime: number;
-  remarks: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface ICustomerReport {
-  id: string;
-  customerId: string;
-  serialNumber: string;
-  menuBalance: number;
-  cumulativeUsageCount: number;
-  cumulativeSessionHours: number;
-  cumulativePowerConsumed: number;
-  tamperingStatus: string;
-  healthStatus: string;
-  bleStatus: string;
-  mcuStatus: string;
-  updatedAt: number;
-}
-
-export interface ICommand {
-  id: string;
-  tenant: string;
-  commandType: string;
-  serialNumber: string;
-  affirmation: string;
-  nextLock: number;
-  identifier: string;
-  createdBy: string;
-  updatedBy: null;
-  createdAt: number;
-  updatedAt: number;
-  dateTime: null;
-  commandMessage: string;
   status: string;
 }
 
-export interface IPackages {
+export interface ITenderCategory {
   id: string;
-  name?: string;
-  productModel: IProductModel;
-  purchaseType: string;
-  packageId?: null;
-  unitPrice: number;
-  maximumMinutes: number;
-  paymentPeriod: number;
-  entranceAmount: number;
-  depositAmount:number;
-  paymentScheme:number;
-
-
+  categoryGroup: string;
+  code: string;
+  name: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
-export interface IProductModel{
-  modelNumber:string
+export interface ITenders {
+  id: string;
+  referenceNumber: string;
+  tenderNumber: string;
+  region: string;
+  title: string;
+  summary: string;
+  filePath: string;
+  openDate: string;
+  closeDate: number;
+  tenderType: string;
+  category: ITenderCategory;
+  entity: IEntity;
+  status: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
 }
+
 
 export interface ISummaryReport{
   statistics:IStatisticSummary
@@ -465,43 +185,6 @@ export interface IStatisticSummary{
   orders: number
   customers: number
   products: number
-}
-
-export interface IVendor {
-  id: string;
-  role: string;
-  name: string;
-  taxIdentificationNumber: string;
-  licenceNumber: string;
-  location: ILocation;
-  longitude: string;
-  latitude: string;
-  primaryNumber: string;
-  secondaryNumber: string;
-  email: string;
-  address:string;
-  tinPathFile: string;
-  licencePathFile: string;
-  licenceExpireDate: number;
-  type: string;
-  code?:number
-  currency?:string
-  unitPricePercentage?:string
-  paymentPercentage?:string
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface ILocation {
-  x: string;
-  y: string;
-}
-
-export interface IVendorGroup {
-  id: string;
-  resellerType: string;
 }
 
 export interface IPayment {

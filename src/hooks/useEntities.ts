@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { getEntities } from "@/services/entities";
 import useErrorHandler from "./useErrorHandler";
+import entities from "@/pages/entities";
 
 
 interface IProps {
@@ -28,7 +29,7 @@ export default function({...props}: IProps) {
     return {
         isLoading,
         isError,
-        vendors: data,
+        entities: data,
         error,
         refetch
     }

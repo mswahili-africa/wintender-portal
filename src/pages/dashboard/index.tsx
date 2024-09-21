@@ -1,14 +1,14 @@
 import {
-    IconUsers,
-    IconPackage,
-    IconShoppingBag,
-    IconCreditCard,
-    IconBuildingWarehouse,
+    IconUsersGroup,
+    IconGitPullRequest,
+    IconFileText,
+    IconReportMoney,
+    IconPigMoney
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Skeleton from 'react-loading-skeleton'; // Importing Skeleton
-import 'react-loading-skeleton/dist/skeleton.css'; // Skeleton styles
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
 import { getSummaryReport } from "@/services/reports";
@@ -55,30 +55,30 @@ export default function Dashboard() {
     // Admin Stats Component
     const AdminStats = () => (
         <div className="grid grid-cols-2 gap-4">
-            <Link to="/customers">
+            <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconUsers className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Customers</h3>
-                    <p className="text-gray-600">Total Users: {stats?.statistics.customers}</p>
+                    <IconFileText className="text-green-600 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Tenders</h3>
+                    <p className="text-gray-600">Open: {stats?.statistics.customers}</p>
                 </div>
             </Link>
-            <Link to="/orders">
+            <Link to="/bidders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconPackage className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Orders</h3>
-                    <p className="text-gray-600">Pending Orders: {stats?.statistics.orders}</p>
+                    <IconUsersGroup className="text-green-600 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Bidders</h3>
+                    <p className="text-gray-600">Active: {stats?.statistics.orders}</p>
                 </div>
             </Link>
-            <Link to="/products">
+            <Link to="/applicaction">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconBuildingWarehouse className="text-yellow-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Products</h3>
-                    <p className="text-gray-600">Registered: {stats?.statistics.products}</p>
+                    <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Requests</h3>
+                    <p className="text-gray-600">Do it for me: {stats?.statistics.products}</p>
                 </div>
             </Link>
             <Link to="/payments">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconCreditCard className="text-purple-500 w-8 h-8 mb-4" />
+                    <IconReportMoney className="text-purple-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Payment</h3>
                     <p className="text-gray-600">Total Collection: TZS{stats?.statistics.payments}</p>
                 </div>
@@ -86,34 +86,41 @@ export default function Dashboard() {
         </div>
     );
 
-     // Vendor Stats Component
-     const VendorStats = () => (
+    
+     const PublisherStats = () => (
         <div className="grid grid-cols-2 gap-4">
-            <Link to="/customers">
+            <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconUsers className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Customers</h3>
-                    <p className="text-gray-600">Total Users: {stats?.statistics.customers}</p>
+                    <IconFileText className="text-green-600 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Tenders</h3>
+                    <p className="text-gray-600">Open: {stats?.statistics.customers}</p>
                 </div>
             </Link>
-            <Link to="/payments">
+            <Link to="#">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconCreditCard className="text-purple-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Payment</h3>
-                    <p className="text-gray-600">Total Collection: TZS{stats?.statistics.payments}</p>
+                    <IconPigMoney className="text-purple-500 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Commission</h3>
+                    <p className="text-gray-600">Total Earned: TZS{stats?.statistics.payments}</p>
                 </div>
             </Link>
         </div>
     );
 
-      // Vendor Stats Component
-      const FactoryStats = () => (
+      const BidderStats = () => (
         <div className="grid grid-cols-2 gap-4">
-            <Link to="/devices">
+            <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconBuildingWarehouse className="text-yellow-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Devices</h3>
-                    <p className="text-gray-600">Registered: {stats?.statistics.products}</p>
+                    <IconFileText className="text-green-600 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Tenders</h3>
+                    <p className="text-gray-600">Open: {stats?.statistics.customers}</p>
+                </div>
+            </Link>
+
+            <Link to="/applicaction">
+                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">Requests</h3>
+                    <p className="text-gray-600">My Request: {stats?.statistics.products}</p>
                 </div>
             </Link>
         </div>
@@ -121,7 +128,7 @@ export default function Dashboard() {
 
     return (
         <div className="p-3 bg-gray-50 min-h-screen">
-            {auth.user && (auth.user.role.role.includes("VENDOR_ADMIN") || auth.user.role.role.includes("COUNTRY_ADMIN") || auth.user.role.role.includes("FULL_ADMIN") || auth.user.role.role.includes("ACCOUNTANT") || auth.user.role.role.includes("MANAGER")) && (
+            {auth.user && (auth.user.role.role.includes("MANAGER") || auth.user.role.role.includes("ADMINISTRATOR") || auth.user.role.role.includes("ACCOUNTANT")) && (
                 <div>
                     <h2 className="text-2xl font-bold mb-6">Manager</h2>
                     {loading ? <SkeletonLoader /> : <AdminStats />}
@@ -129,18 +136,18 @@ export default function Dashboard() {
             )}
 
             {auth.user &&
-                auth.user.role.role.includes("CUSTOMER_SUPPORT") && (
+                auth.user.role.role.includes("PUBLISHER") && (
                     <div>
-                        <h2 className="text-2xl font-bold mb-6"> Support</h2>
-                        {loading ? <SkeletonLoader /> : <VendorStats />}
+                        <h2 className="text-2xl font-bold mb-6"> Publisher</h2>
+                        {loading ? <SkeletonLoader /> : <PublisherStats />}
                     </div>
                 )}
 
             {auth.user &&
-                auth.user.role.role.includes("FACTORY_ADMIN") && (
+                auth.user.role.role.includes("BIDDER") && (
                     <div>
-                        <h2 className="text-2xl font-bold mb-6"> Factory</h2>
-                        {loading ? <SkeletonLoader /> : <FactoryStats />}
+                        <h2 className="text-2xl font-bold mb-6"> Tenders</h2>
+                        {loading ? <SkeletonLoader /> : <BidderStats />}
                     </div>
                 )}
 

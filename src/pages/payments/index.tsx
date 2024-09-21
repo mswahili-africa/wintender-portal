@@ -2,7 +2,7 @@ import {  IconChecklist, IconSquareRoundedMinus, } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection,Table } from "@/components/widgets/table/Table";
-import { IPackages, IPayment } from "@/types";
+import { IPayment } from "@/types";
 import columns from "./fragments/paymentsColumns";
 import usePayments from "@/hooks/usePayments";
 import { useMutation } from "@tanstack/react-query";
@@ -14,8 +14,7 @@ export default function() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter, setFilter] = useState<any>();
-    const [update, setUpdate] = useState<IPackages>();
+    const [filter] = useState<any>();
     const { showConfirmation } = usePopup();
     const { payments, isLoading, refetch } = usePayments({
         page: page,

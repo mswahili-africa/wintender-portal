@@ -185,36 +185,26 @@ export default function UserForm({ onSuccess, initials }: IProps) {
               >
                 <option value=""></option>
                 {roles?.content
-  .filter((item: IRole) => {
-    const userRole = auth.user?.role.role;
+                  .filter((item: IRole) => {
+                    const userRole = auth.user?.role.role;
 
-    // For FULL_ADMIN, don't show any options
-    if (userRole?.includes("FULL_ADMIN")) {
-      return false;
-    }
+                    // For any role which is not ADMINISTRATOR, don't show any options
+                    if (!userRole?.includes("ADMINISTRATOR")) {
+                      return false;
+                    }
 
-    // For COUNTRY_ADMIN, exclude VENDOR_ADMIN
-    if (userRole?.includes("COUNTRY_ADMIN") && item.role === "VENDOR_ADMIN") {
-      return false;
-    }
-
-    // For VENDOR_ADMIN, exclude RESELLER
-    if (userRole?.includes("VENDOR_ADMIN") && item.role === "RESELLER") {
-      return false;
-    }
-
-    // For RESELLER, show everything (no filter needed)
-    return true;
-  })
-  .map((item: IRole) => (
-    <option
-      selected={item.id === initials?.role}
-      value={item.id}
-      key={item.id}
-    >
-      {item.role}
-    </option>
-  ))}
+                    // For ADMINISTRATOR, show everything (no filter needed)
+                    return true;
+                  })
+                  .map((item: IRole) => (
+                    <option
+                      selected={item.id === initials?.role}
+                      value={item.id}
+                      key={item.id}
+                    >
+                      {item.role}
+                    </option>
+                  ))}
 
               </select>
             </div>

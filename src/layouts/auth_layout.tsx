@@ -16,8 +16,6 @@ export default function({...props}: IProps) {
         if(auth.user == null) {
             var temp = auth.getUser();
         }
-        console.log('dont password cahnege')
-        console.log('dont password cahnege',auth.user?.status)
         if(auth.user && auth.user.status === "NEEDPASSWORDCHANGE") {
             navigate("/change-default", {replace: true});  
         }

@@ -20,7 +20,6 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
     instance.interceptors.request.use(
         (config) => {
             const token = localStorage.getItem(TOKEN_KEY);
-            console.log("token",token);
             if(token !== null) {
                 config.headers["Authorization"] = `Bearer ${token}`
             }
@@ -28,7 +27,6 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
           return config;
         },
         (error) => {
-          // Handle request error
           return Promise.reject(error);
         }
     );
@@ -36,7 +34,6 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
     instance.interceptors.response.use(
         (config) => {
             const token = localStorage.getItem(TOKEN_KEY);
-            console.log("token",token);
             if(token !== null) {
                 config.headers["Authorization"] = `Bearer ${token}`
             }

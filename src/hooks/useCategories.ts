@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { getTenders } from "../services/tenders";
+import { getCategories } from "@/services/tenders";
 import useErrorHandler from "./useErrorHandler";
-
 
 interface IProps {
     page: number
@@ -15,8 +14,8 @@ interface IProps {
 export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getTenders", props.page, props.sort, props?.search, , props?.filter],
-        queryFn: () => getTenders({page: props.page, size: 10, sort: props.sort, search: props.search}),
+        queryKey: ["getCategories", props.page, props.sort, props?.search , props?.filter],
+        queryFn: () => getCategories({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 20000
     });
@@ -28,7 +27,7 @@ export default function({...props}: IProps) {
     return {
         isLoading,
         isError,
-        getTenders: data,
+        categories: data,
         error,
         refetch
     }
