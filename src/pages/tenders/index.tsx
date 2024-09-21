@@ -6,7 +6,7 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useTenders from "@/hooks/useTenders";
 import usePopup from "@/hooks/usePopup";
-import { downloadTenderDocument, deleteTenders } from "@/services/tenders";
+import { deleteTenders } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import TenderCreateForm from "./fragments/tenderCreateForm";
@@ -19,7 +19,6 @@ export default function TendersTable() {
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>();
-    const [activeDownload, setActiveDownload] = useState<string>("");
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null); // State to manage selected tender for viewing
     const { showConfirmation } = usePopup();
     const { getTenders, isLoading, refetch } = useTenders({
@@ -36,25 +35,8 @@ export default function TendersTable() {
         window.open(url, "_blank");
       };
 
-    const downloadMutation = useMutation({
-        mutationFn: (data: ITenders) => downloadTenderDocument(data.id),
-        onSuccess: (data, variable, context) => {
-            const url = URL.createObjectURL(data);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", `${activeDownload}.pdf`);
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        },
-        onError: (error: any) => {
-            toast.error(error.response?.data?.errors ?? "");
-        }
-    });
-
     const deleteMutation = useMutation({
-        mutationFn: (data: ITenders) => deleteTenders(data.id, data.status, true),
+        mutationFn: (data: ITenders) => deleteTenders(data.id),
         onSuccess: (res) => {
             refetch();
             toast.success("Tender deleted successfully");
@@ -111,15 +93,6 @@ export default function TendersTable() {
                             <div className="flex justify-center space-x-2">
                                 <button
                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => { setActiveDownload(content.referenceNumber); downloadMutation.mutate(content) }}
-                                >
-                                    {downloadMutation.isLoading && content.referenceNumber == activeDownload
-                                        ? <span className="loader" /> // Show a loader if download is in progress
-                                        : <IconDownload size={20} />
-                                    }
-                                </button>
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
                                     onClick={() => handleView(content)}
                                 >
                                     <IconEye size={20} />
@@ -150,77 +123,61 @@ export default function TendersTable() {
             </div>
 
             {selectedTender && (
-                <TenderViewModal title={selectedTender.tenderNumber} onClose={() => setSelectedTender(null)}>
-                    <div className="space-y-4">
-                        {/* Tender Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
-                        </div>
+    <TenderViewModal title={selectedTender.tenderNumber} onClose={() => setSelectedTender(null)}>
+        <div className="space-y-4">
+            {/* Tender Header */}
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
+            </div>
 
-                        {/* Tender Details */}
-                        <div className="space-y-2">
-                            <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.entity.name}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Type:</strong>
-                                <p className="flex-1">{selectedTender.tenderType}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Category:</strong>
-                                <p className="flex-1">{selectedTender.category.name}</p>
-                            </div>
+            {/* Tender Details */}
+            <div className="space-y-2">
+                <div className="flex items-center">
+                    <p className="flex-1">{selectedTender.entity.name}</p>
+                </div>
+                <div className="flex items-center">
+                    <strong className="w-32 text-gray-600">Category:</strong>
+                    <p className="flex-1">{selectedTender.category.name}</p>
+                </div>
+                <div className="flex items-center">
+                    <p className="flex-1">{selectedTender.summary}</p>
+                </div>
 
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Close Date:</strong>
-                                <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
-                            </div>
+                <div className="flex items-center">
+                    <strong className="w-32 text-gray-600">Status:</strong>
+                    <Chip label={(() => {
+                        const currentDate = new Date().getTime();
+                        const closeDate = selectedTender.closeDate;
+                        const remainingTime = closeDate - currentDate;
+                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+                        
+                        return remainingDays <= 7 ? 'CLOSING' : selectedTender.status;
+                    })()} size="sm" theme="success" />
+                </div>
+                <div className="flex items-center">
+                    <strong className="w-32 text-gray-600">Close Date:</strong>
+                    <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
+                </div>
+            </div>
 
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Status:</strong>
-                                <Chip
-                                    label={(() => {
-                                        const currentDate = new Date().getTime();
-                                        const closeDate = selectedTender.closeDate;
-                                        const remainingTime = closeDate - currentDate;
-                                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert ms to days
+            {/* PDF Viewer */}
+            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <iframe 
+                    src={selectedTender.filePath} 
+                    width="100%" 
+                    height="500px" 
+                    frameBorder="0" 
+                    title="Tender Document"
+                ></iframe>
+            </div>
 
-                                        return remainingDays <= 7 ? 'CLOSING' : selectedTender.status;
-                                    })()}
-                                    size="sm"
-                                    theme={(() => {
-                                        const currentDate = new Date().getTime();
-                                        const closeDate = selectedTender.closeDate;
-                                        const remainingTime = closeDate - currentDate;
-                                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
-
-                                        return remainingDays <= 7 ? 'warning' : 'success';
-                                    })()}
-                                />
-                            </div>
-                            <br></br>
-                            <hr></hr>
-
-                            <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.summary}</p>
-                            </div>
-                        </div>
-
-                        <hr></hr>
-
-                        {/* Modal Footer with Actions */}
-                        <div className="flex justify-end space-x-2 mt-6">
-                            <button
-                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                onClick={() => downloadTenderDocument(selectedTender.filePath)}
-                            >
-                                <IconDownload size={35} />
-                            </button>
-                        </div>
-                    </div>
-                </TenderViewModal>
-            )}
-
+            {/* Modal Footer */}
+            <div className="flex justify-end space-x-2 mt-6">
+                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
+            </div>
+        </div>
+    </TenderViewModal>
+)}
 
         </div>
     )

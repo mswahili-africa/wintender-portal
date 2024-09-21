@@ -30,8 +30,8 @@ export async function createTender(payload: FormData) {
     return response.data
 }
 
-export async function deleteTenders(id: string, status: string, archive: boolean) {
-    const response = await http.put<any>(`/tenders/tender/delete/${id}`);
+export async function deleteTenders(id: string) {
+    const response = await http.delete<any>(`/tenders/tender/delete/${id}`);
 
     return response.data
 }
