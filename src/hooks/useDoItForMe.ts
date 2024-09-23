@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
-import { getApplications } from "../services/applications";
-
+import { getDoForMe } from "@/services/tenders";
 
 interface IProps {
     page: number
@@ -15,8 +14,8 @@ interface IProps {
 export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getPayments", props.page, props.sort, props?.search , props?.filter],
-        queryFn: () => getApplications({page: props.page, size: 10, sort: props.sort, search: props.search}),
+        queryKey: ["getDoItForMe", props.page, props.sort, props?.search , props?.filter],
+        queryFn: () => getDoForMe({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 20000
     });
@@ -28,7 +27,7 @@ export default function({...props}: IProps) {
     return {
         isLoading,
         isError,
-        payments: data,
+        doItForMe: data,
         error,
         refetch
     }

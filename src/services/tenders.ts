@@ -49,3 +49,23 @@ export async function getCategories(params: {}) {
 
     return response.data
 }
+
+export async function requestDoForMe(id: string) {
+    const response = await http.post<any>(`/applications/do-for-me/request/${id}`);
+
+    return response.data
+}
+
+export async function getDoForMe(params: {}) {
+    const response = await http.get<IlistResponse<any>>("/applications/do-for-me/list", {
+        params: params
+    })
+
+    return response.data
+}
+
+export async function deleteDoForMe(id: string) {
+    const response = await http.delete<any>(`/applications/do-for-me/delete/${id}`);
+
+    return response.data
+}

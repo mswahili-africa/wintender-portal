@@ -203,3 +203,29 @@ export interface IPayment {
   createdAt: number;
   updatedAt: number;
 }
+
+export interface IPayment {
+  id: string;
+  tenant: string;
+  customerId: string;
+  phoneNumber: string;
+  transactionReference: string;
+  mnoReceiptReference: string;
+  amount: number;
+  requestOrigin: string;
+  mno: string;
+  status: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface IDoItForMe {
+  id: string;
+  user: IUser;
+  reference: string;
+  tender: ITenders;
+  comments: string;
+  status: string;
+}

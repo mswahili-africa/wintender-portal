@@ -1,25 +1,27 @@
-import { IconTrash, IconEye, IconDownload } from "@tabler/icons-react"; // Import the view icon
+import { IconTrash, IconEye } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useTenders from "@/hooks/useTenders";
 import usePopup from "@/hooks/usePopup";
-import { deleteTenders } from "@/services/tenders";
+import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import TenderCreateForm from "./fragments/tenderCreateForm";
 import Button from "@/components/button/Button";
-import TenderViewModal from "./fragments/tenderViewModel"; // Assuming you have a modal component
+import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
+import { getUserRole } from "@/utils";
+
 
 export default function TendersTable() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>();
-    const [selectedTender, setSelectedTender] = useState<ITenders | null>(null); // State to manage selected tender for viewing
+    const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const { showConfirmation } = usePopup();
     const { getTenders, isLoading, refetch } = useTenders({
         page: page,
@@ -28,12 +30,16 @@ export default function TendersTable() {
         filter: filter
     });
 
-    const viewReceipt = async (
-        payload: ITenders
-      ) => {
-        const url = `${payload.id}`;
-        window.open(url, "_blank");
-      };
+
+    const doItForMeMutation = useMutation({
+        mutationFn: async (tenderId: string) => requestDoForMe(tenderId),
+        onSuccess: () => {
+            toast.success("Request processed successfully!");
+        },
+        onError: (error: any) => {
+            toast.error(error.message ?? "Failed to process request");
+        }
+    });
 
     const deleteMutation = useMutation({
         mutationFn: (data: ITenders) => deleteTenders(data.id),
@@ -61,15 +67,28 @@ export default function TendersTable() {
     }
 
     const handleView = (content: ITenders) => {
-        setSelectedTender(content); // Set the selected tender to display in the modal
+        setSelectedTender(content);
     }
+
+    const userRole = getUserRole();
+
+    const handleDoItForMeClick = () => {
+        if (selectedTender) {
+            doItForMeMutation.mutate(selectedTender.id);
+        }
+    };
 
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Tender</h2>
-
-                <TenderCreateForm onSuccess={() => refetch()} />
+                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
+                    <TenderCreateForm
+                        onSuccess={() => {
+                            refetch();
+                        }}
+                    />
+                )}
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -97,12 +116,17 @@ export default function TendersTable() {
                                 >
                                     <IconEye size={20} />
                                 </button>
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                    onClick={() => handleDelete(content)}
-                                >
-                                    <IconTrash size={20} />
-                                </button>
+                                {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
+                                    <Fragment>
+
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                            onClick={() => handleDelete(content)}
+                                        >
+                                            <IconTrash size={20} />
+                                        </button>
+                                    </Fragment>
+                                )}
                             </div>
                         );
                     }}
@@ -123,61 +147,68 @@ export default function TendersTable() {
             </div>
 
             {selectedTender && (
-    <TenderViewModal title={selectedTender.tenderNumber} onClose={() => setSelectedTender(null)}>
-        <div className="space-y-4">
-            {/* Tender Header */}
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
-            </div>
+                <TenderViewModal
+                    title={selectedTender.tenderNumber}
+                    onClose={() => setSelectedTender(null)}
+                    isLoading={doItForMeMutation.isLoading}
+                    onDoItForMeClick={handleDoItForMeClick}
+                >
+                    <div className="space-y-4">
+                        {/* Tender Header */}
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
+                        </div>
 
-            {/* Tender Details */}
-            <div className="space-y-2">
-                <div className="flex items-center">
-                    <p className="flex-1">{selectedTender.entity.name}</p>
-                </div>
-                <div className="flex items-center">
-                    <strong className="w-32 text-gray-600">Category:</strong>
-                    <p className="flex-1">{selectedTender.category.name}</p>
-                </div>
-                <div className="flex items-center">
-                    <p className="flex-1">{selectedTender.summary}</p>
-                </div>
+                        {/* Tender Details */}
+                        <div className="space-y-2">
+                            <div className="flex items-center">
+                                <p className="flex-1">{selectedTender.entity.name}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Category:</strong>
+                                <p className="flex-1">{selectedTender.category.name}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <p className="flex-1">{selectedTender.summary}</p>
+                            </div>
 
-                <div className="flex items-center">
-                    <strong className="w-32 text-gray-600">Status:</strong>
-                    <Chip label={(() => {
-                        const currentDate = new Date().getTime();
-                        const closeDate = selectedTender.closeDate;
-                        const remainingTime = closeDate - currentDate;
-                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
-                        
-                        return remainingDays <= 7 ? 'CLOSING' : selectedTender.status;
-                    })()} size="sm" theme="success" />
-                </div>
-                <div className="flex items-center">
-                    <strong className="w-32 text-gray-600">Close Date:</strong>
-                    <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
-                </div>
-            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Status:</strong>
+                                <Chip label={(() => {
+                                    const currentDate = new Date().getTime();
+                                    const closeDate = selectedTender.closeDate;
+                                    const remainingTime = closeDate - currentDate;
+                                    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-            {/* PDF Viewer */}
-            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                <iframe 
-                    src={selectedTender.filePath} 
-                    width="100%" 
-                    height="500px" 
-                    frameBorder="0" 
-                    title="Tender Document"
-                ></iframe>
-            </div>
+                                    return remainingDays <= 7 ? 'CLOSING' : selectedTender.status;
+                                })()} size="sm" theme="success" />
+                            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Close Date:</strong>
+                                <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
+                            </div>
+                        </div>
 
-            {/* Modal Footer */}
-            <div className="flex justify-end space-x-2 mt-6">
-                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
-            </div>
-        </div>
-    </TenderViewModal>
-)}
+                        <hr></hr>
+
+                        {/* PDF Viewer */}
+                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <iframe
+                                src={selectedTender.filePath}
+                                width="100%"
+                                height="500px"
+                                frameBorder="0"
+                                title="Tender Document"
+                            ></iframe>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex justify-end space-x-2 mt-6">
+                            <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
+                        </div>
+                    </div>
+                </TenderViewModal>
+            )}
 
         </div>
     )

@@ -104,6 +104,7 @@ export interface IOrderForm {
 
 export interface IPaymentForm {
     controlNumber:        string
+    account: string
     phoneNumber:         string
     amount:       number
     mno:     string

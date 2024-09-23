@@ -1,25 +1,23 @@
-import { IconChecklist, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconSquareRoundedMinus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import columns from "./fragments/paymentsColumns";
-import usePayments from "@/hooks/usePayments";
+import columns from "./fragments/doItForMeColumns";
+import useDoItForMe from "@/hooks/useDoItForMe";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { approvePayment, rejectPayment } from "@/services/payments";
 import usePopup from "@/hooks/usePopup";
-import PaymentsForm from "./fragments/paymentsForm";
 import { getUserRole } from "@/utils";
-import { IPayment } from "@/types";
-import { update } from "lodash";
+import { IDoItForMe } from "@/types";
+import { deleteDoForMe } from "@/services/tenders";
 
-export default function () {
+export default function DoForMe () {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [filter, setFilter] = useState<any>();
   const { showConfirmation } = usePopup();
-  const { payments, isLoading, refetch } = usePayments({
+  const { doItForMe, isLoading, refetch } = useDoItForMe({
     page: page,
     search: search,
     sort: sort,
@@ -28,63 +26,39 @@ export default function () {
   const handleSorting = (field: string, direction: SortDirection) => {
     setSort(`${field},${direction.toLowerCase()}`);
   };
-  const approveMutation = useMutation({
-    mutationFn: (paymentId: string) => approvePayment(paymentId),
+
+  const deteleMutation = useMutation({
+    mutationFn: (doItForMeId: string) => deleteDoForMe(doItForMeId),
     onSuccess: (res) => {
-      toast.success("Approved successful");
+      toast.success("Request deleted successful");
       refetch();
     },
     onError: (error: any) => {
-      toast.error("Approve failed");
+      toast.error("Delete failed");
     },
   });
-  const handleApprove = (payload: IPayment) => {
+
+
+  const reject = (payload: IDoItForMe) => {
     showConfirmation({
       theme: "danger",
-      title: "Approve this payment?",
+      title: "Delete this request?",
       message:
-        "This action cannot be undone. Please verify that you want to approve.",
+        "This action cannot be undone. Please verify that you want to delete.",
       onConfirm: () => {
-        approveMutation.mutate(payload.id);
+        deteleMutation.mutate(payload.id);
         refetch();
       },
       onCancel: () => {},
     });
   };
-  const rejectMutation = useMutation({
-    mutationFn: (paymentId: string) => rejectPayment(paymentId),
-    onSuccess: (res) => {
-      toast.success("Payment rejected successful");
-      refetch();
-    },
-    onError: (error: any) => {
-      toast.error("Payment rejection failed");
-    },
-  });
-
-  const reject = (payload: IPayment) => {
-    rejectMutation.mutate(payload.id);
-  };
 
   const userRole = getUserRole();
-
-  function setUpdate(update: any) {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-semibold">Payments</h2>
-        {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER") && (
-          <PaymentsForm
-            initials={update}
-            onSuccess={() => {
-              setUpdate(update);
-              refetch();
-            }}
-          />
-        )}
+        <h2 className="text-lg font-semibold">Requests</h2>
       </div>
 
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -99,23 +73,28 @@ export default function () {
 
         <Table
           columns={columns}
-          data={payments ? payments.content : []}
+          data={doItForMe ? doItForMe.content : []}
           isLoading={isLoading}
           hasSelection={true}
           hasActions={true}
           onSorting={handleSorting}
-          actionSlot={(content: IPayment) => {
+          actionSlot={(content: IDoItForMe) => {
             return (
               <div className="flex justify-center items-center space-x-3">
-                {(userRole === "ADMINISTRATOR" || userRole === "MANAGER") &&
-                  content.status == "PENDING" && (
+                {userRole === "BIDDER" &&
+                  content.status == "REQUESTED" && (
                     <Fragment>
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                        onClick={() => handleApprove(content)}
+                        onClick={() => reject(content)}
                       >
-                        <IconChecklist size={20} />
+                        <IconSquareRoundedMinus size={20} />
                       </button>
+                    </Fragment>
+                  )}
+                  {userRole === "MANAGER" &&
+                  content.status != "REQUESTED" && (
+                    <Fragment>
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                         onClick={() => reject(content)}
@@ -132,11 +111,11 @@ export default function () {
         <div className="flex justify-between items-center p-4 lg:px-8">
           <div></div>
 
-          {payments?.pageable && (
+          {doItForMe?.pageable && (
             <Pagination
               currentPage={page}
               setCurrentPage={setPage}
-              pageCount={payments.totalPages}
+              pageCount={doItForMe.totalPages}
             />
           )}
         </div>

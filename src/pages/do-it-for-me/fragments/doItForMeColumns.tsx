@@ -8,41 +8,23 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.user.account;
+      return row.user?.account;
     },
   },
   {
-    name: "controlNumber",
-    label: "Bill",
-    sortable: false,
-    plainObject: false,
-  },
-  {
-    name: "transactionReference",
+    name: "reference",
     label: "Reference",
     sortable: false,
     plainObject: false,
   },
   {
-    name: "amount",
-    label: "Amount",
+    name: "tender",
+    label: "tender",
     sortable: false,
-    plainObject: false,
-    element: (value: number) => {
-      const formattedAmount = value.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      });
-
-      return <span>{formattedAmount}</span>;
+    plainObject: true,
+    element: (row: any) => {
+      return row.tender?.tenderNumber;
     },
-
-  },
-  {
-    name: "mno",
-    label: "MNO",
-    sortable: false,
-    plainObject: false,
   },
   {
     name: "status",

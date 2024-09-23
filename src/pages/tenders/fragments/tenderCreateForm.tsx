@@ -41,7 +41,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
         formState: { errors },
     } = useForm<any>({
         resolver: yupResolver(schema),
-        defaultValues: { tenderFile: "", title: "", tenderNumber: "",region: "", summary: "", tenderType: "", category: "", entity: "", openDate: "", closeDate: "" },
+        defaultValues: { tenderFile: "", title: "", tenderNumber: "", region: "", summary: "", tenderType: "", category: "", entity: "", openDate: "", closeDate: "" },
     });
 
     watch((data, { name, type }) => {
@@ -62,7 +62,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
             onSuccess();
         },
         onError: (error: any) => {
-            toast.error("Failed to upload firmware "+error);
+            toast.error("Failed to upload firmware " + error);
         },
     });
 
@@ -112,9 +112,9 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                 onClose={(v) => setOpen(v)}
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                <div className="mb-2">
+                    <div className="mb-2">
                         <label htmlFor="region" className="block mb-2">
-                        Region
+                            Region
                         </label>
 
                         <select

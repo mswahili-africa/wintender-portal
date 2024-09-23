@@ -55,7 +55,7 @@ const allMenus: IRoute[] = [
         label: "Applications",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/application", label: "Request", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+            { path: "/do-it-for-me", label: "Request", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -71,7 +71,7 @@ const allMenus: IRoute[] = [
         label: "Finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/payments", label: "Collection", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
+            { path: "/payments", label: "Payments", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
         ],
     },
     {
@@ -104,9 +104,18 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                   }
                 : menu
         ),
-    ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Entities" && menu.label !== "Devices"),
-    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Entities" && menu.label !== "Devices"),
-    BIDDER: () => allMenus.filter(menu => menu.label === "Devices"),
+    ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Entities" && menu.label !== "Bidders"),
+    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Entities" && menu.label !== "Bidders"),
+    BIDDER: () => allMenus
+        .filter(menu => ["Tender", "Finance", "Applications", "Dashboard"].includes(menu.label))  // Only show the allowed menus
+        .map(menu =>
+            menu.label === "Tender"
+                ? {
+                      ...menu,
+                      subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories"),  // Exclude Categories sub-menu
+                  }
+                : menu
+        ),
 };
 
 

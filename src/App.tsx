@@ -18,6 +18,7 @@ import PopupProvider from "./providers/popup";
 import Roles from "./pages/roles";
 import ChangeDefaultPassword from "./pages/users/change-default-password";
 import Categories from "./pages/categories";
+import DoForMe from "./pages/do-it-for-me";
 
 export const queryClient = new QueryClient({});
 
@@ -41,6 +42,7 @@ function App() {
                         <Route path="/" element={<AppLayout />}> 
                             <Route index element = {<Dashboard/>}/>
                             <Route path="entities" element={<Entities/>}/>
+                            <Route path="do-it-for-me" element={<DoForMe/>}/>
                             <Route path="tenders" element={<Tenders />}/>
                             <Route path="payments" element={<Payments />}/>
                             <Route path="categories" element={<Categories />}/>
