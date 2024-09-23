@@ -182,9 +182,9 @@ export interface ISummaryReport{
 
 export interface IStatisticSummary{
   payments:number
-  orders: number
-  customers: number
-  products: number
+  requests: number
+  tenders: number
+  bidders: number
 }
 
 export interface IPayment {
@@ -228,4 +228,20 @@ export interface IDoItForMe {
   tender: ITenders;
   comments: string;
   status: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface IControlNumber {
+  id: string;
+  doForMeApplication: IDoItForMe;
+  paidAmount: string;
+  controlNumber: ITenders;
+  status: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
 }

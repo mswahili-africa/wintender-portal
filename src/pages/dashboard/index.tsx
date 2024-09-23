@@ -14,7 +14,6 @@ import { authStore } from "@/store/auth";
 import { getSummaryReport } from "@/services/reports";
 import { ISummaryReport } from "@/types";
 
-// Define a type for the stats state
 type DashboardStats = ISummaryReport;
 
 export default function Dashboard() {
@@ -59,21 +58,21 @@ export default function Dashboard() {
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconFileText className="text-green-600 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Tenders</h3>
-                    <p className="text-gray-600">Open: {stats?.statistics.customers}</p>
+                    <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
                 </div>
             </Link>
             <Link to="/bidders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconUsersGroup className="text-green-600 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Bidders</h3>
-                    <p className="text-gray-600">Active: {stats?.statistics.orders}</p>
+                    <p className="text-gray-600">Active: {stats?.statistics.bidders}</p>
                 </div>
             </Link>
-            <Link to="/applicaction">
+            <Link to="/do-it-for-me">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Requests</h3>
-                    <p className="text-gray-600">Do it for me: {stats?.statistics.products}</p>
+                    <p className="text-gray-600">Do it for me: {stats?.statistics.requests}</p>
                 </div>
             </Link>
             <Link to="/payments">
@@ -93,10 +92,10 @@ export default function Dashboard() {
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconFileText className="text-green-600 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Tenders</h3>
-                    <p className="text-gray-600">Open: {stats?.statistics.customers}</p>
+                    <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
                 </div>
             </Link>
-            <Link to="#">
+            <Link to="/publisher-reports">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconPigMoney className="text-purple-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Commission</h3>
@@ -112,15 +111,15 @@ export default function Dashboard() {
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconFileText className="text-green-600 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Tenders</h3>
-                    <p className="text-gray-600">Open: {stats?.statistics.customers}</p>
+                    <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
                 </div>
             </Link>
 
-            <Link to="/applicaction">
+            <Link to="/do-it-for-me">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Requests</h3>
-                    <p className="text-gray-600">My Request: {stats?.statistics.products}</p>
+                    <p className="text-gray-600">My Requests: {stats?.statistics.requests}</p>
                 </div>
             </Link>
         </div>

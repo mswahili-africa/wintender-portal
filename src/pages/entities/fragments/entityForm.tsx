@@ -95,7 +95,7 @@ export default function ({ ...props }: IProps) {
 
       <Modal
         size="lg"
-        title="Entity Form"
+        title="Procurement Entity"
         isOpen={open}
         onClose={(v) => setOpen(v)}
       >

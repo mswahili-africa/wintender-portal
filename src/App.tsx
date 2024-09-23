@@ -18,7 +18,8 @@ import PopupProvider from "./providers/popup";
 import Roles from "./pages/roles";
 import ChangeDefaultPassword from "./pages/users/change-default-password";
 import Categories from "./pages/categories";
-import DoForMe from "./pages/do-it-for-me";
+import ContrlNumbers from "./pages/control-numbers";
+import Bidders from "./pages/bidders";
 
 export const queryClient = new QueryClient({});
 
@@ -42,11 +43,12 @@ function App() {
                         <Route path="/" element={<AppLayout />}> 
                             <Route index element = {<Dashboard/>}/>
                             <Route path="entities" element={<Entities/>}/>
-                            <Route path="do-it-for-me" element={<DoForMe/>}/>
+                            <Route path="do-it-for-me" element={<ContrlNumbers/>}/>
                             <Route path="tenders" element={<Tenders />}/>
                             <Route path="payments" element={<Payments />}/>
                             <Route path="categories" element={<Categories />}/>
                             <Route path="users" element={<Users />}/>
+                            <Route path="bidders" element={<Bidders />}/>
                             <Route path="users/:username" element={<UserDetail />}/>
                             <Route path="roles" element={<Roles />}/>
 

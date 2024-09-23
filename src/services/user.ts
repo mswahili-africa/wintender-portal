@@ -10,6 +10,14 @@ export async function getUsers(params: IQueryParams) {
     return response.data
 }
 
+export async function getBidders(params: IQueryParams) {
+    const response = await http.get<IlistResponse<IUser>>("/users/user/list-bidders", {
+        params: params
+    })
+
+    return response.data
+}
+
 export async function getUserById(id: string) {
     const response = await http.get<any>(`/users/user/view/${id}`)
 

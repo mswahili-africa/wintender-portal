@@ -8,7 +8,8 @@ import {
     IconGlobe,
     IconBrandOffice,
     IconReportMoney,
-    IconCategory
+    IconCategory,
+    IconUsersGroup
 } from "@tabler/icons-react";
 import React from "react";
 
@@ -63,7 +64,7 @@ const allMenus: IRoute[] = [
         label: "Entities",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/entities", label: "Entities", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
+            { path: "/entities", label: "Procurement Entities", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
         ],
     },
     {
@@ -75,11 +76,19 @@ const allMenus: IRoute[] = [
         ],
     },
     {
-        path: "/users",
+        path: "/bidders",
         label: "Bidders",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/users", label: "Users", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+        ],
+    },
+    {
+        path: "/users",
+        label: "Internal",
+        icon: <IconGlobe size={20} strokeWidth={1.5} />,
+        subMenu: [
+            { path: "/users", label: "Staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
             { path: "/roles", label: "Roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
         ],
     },
@@ -104,8 +113,8 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                   }
                 : menu
         ),
-    ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Entities" && menu.label !== "Bidders"),
-    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Entities" && menu.label !== "Bidders"),
+    ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal"),
+    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal"),
     BIDDER: () => allMenus
         .filter(menu => ["Tender", "Finance", "Applications", "Dashboard"].includes(menu.label))  // Only show the allowed menus
         .map(menu =>

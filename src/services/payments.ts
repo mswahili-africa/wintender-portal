@@ -3,6 +3,13 @@ import http from "../http";
 import { IQueryParams, IlistResponse } from "@/types";
 
 
+export async function getControlNumber(params: IQueryParams) {
+    const response = await http.get<IlistResponse<any>>("/finance/payment/bill/list", {
+        params: params
+    })
+
+    return response.data
+}
 export async function getPayments(params: IQueryParams) {
     const response = await http.get<IlistResponse<any>>("/finance/payment/transaction/list", {
         params: params
