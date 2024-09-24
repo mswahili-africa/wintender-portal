@@ -23,3 +23,9 @@ export async function getUserById(id: string) {
 
     return response.data
 }
+
+export async function changeUserStatus(id: string) {
+    const response = await http.put<any>(`/users/user/status/${id}`)
+
+    return response.data
+}

@@ -101,6 +101,10 @@ export interface IOrderForm {
     productModelId: string
 }
 
+export interface IMessage {
+    phoneNumber:       string
+    message: string
+}
 
 export interface IPaymentForm {
     controlNumber:        string

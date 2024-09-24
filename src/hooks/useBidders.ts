@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { getUsers } from "@/services/user";
+import { getBidders } from "@/services/user";
 import useErrorHandler from "./useErrorHandler";
 
 
@@ -16,7 +16,7 @@ export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["getBidders", props.page, props.sort, props?.search, props?.filter],
-        queryFn: () => getUsers({page: props.page, size: 10, sort: props.sort, search: props.search}),
+        queryFn: () => getBidders({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 20000
     });
