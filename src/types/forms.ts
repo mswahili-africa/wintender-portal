@@ -24,9 +24,16 @@ export interface IRegisterForm {
     phoneNumber:    string;
     role:   string;
     nationalId:   string;
-    countryId:  string | null;
-    vendorId:   string | null;
-    resellerId:   string | null;
+}
+
+export interface IBidderRegisterForm {
+    firstName:  string;
+    lastName:   string;
+    email:  string;
+    phoneNumber:    string;
+    confirmPhoneNumber:    string;
+    companyName:    string;
+    tin:    string;
 }
 
 export interface IConfirmPasswordResetForm {

@@ -1,5 +1,5 @@
 import http from "@/http";
-import { IQueryParams, IUser, IlistResponse} from "@/types";
+import { ICompany, IQueryParams, IUser, IlistResponse} from "@/types";
 
 
 export async function getUsers(params: IQueryParams) {
@@ -26,6 +26,18 @@ export async function getUserById(id: string) {
 
 export async function changeUserStatus(id: string) {
     const response = await http.put<any>(`/users/user/status/${id}`)
+
+    return response.data
+}
+
+export async function updateBidder(payload: IUser, userId: string) {
+    const response = await http.post<any>(`/users/bidder/update/${userId}`, payload)
+
+    return response.data
+}
+
+export async function updateBidderCompany(payload: ICompany, userId: string) {
+    const response = await http.post<any>(`/users/bidder/update-company/${userId}`, payload)
 
     return response.data
 }

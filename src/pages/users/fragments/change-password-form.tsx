@@ -77,7 +77,7 @@ export default function({...props}: IProps) {
 
             <form className="space-y-4" onSubmit={handleSubmit(submitCode)}>
                 <p className="py-3 px-4 border-l-2 border-slate-200 bg-slate-100 text-sm rounded-md">
-                    Password should be atleast 6 characters long and should include uppercase, lowercase letters, numbers and atleast one special character"
+                    Password should be atleast 6 characters long and should include uppercase, lowercase letters, numbers and atleast one special character
                 </p>
 
                 <TextInput 

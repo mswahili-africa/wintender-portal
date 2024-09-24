@@ -23,19 +23,6 @@ const Header = () => {
                             <IconMenu2 className="text-slate-500" />
                         </button>
                     </div>
-                    <div>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none ">
-                                <IconSearch className="h-[20px] text-slate-500" />
-                            </div>
-                            <input
-                                type="search"
-                                id="default-search"
-                                className="block w-full  pl-10 text-sm  input-normal"
-                                placeholder="Search "
-                            />
-                        </div>
-                    </div>
                 </div>
             </div>
             <div>
@@ -78,7 +65,7 @@ const Header = () => {
                                 <div className="p-2 text-xs md:text-sm text-slate-600">
                                     <Menu.Item>
                                         <Link 
-                                            to={`/users/${auth.user.displayName.replace(".", "")}`} 
+                                            to={`/users/${auth.user.id}`} 
                                             className="flex items-center border border-transparent hover:border-slate-200 hover:bg-slate-50 rounded-md font-medium py-2 px-3">
                                             <IconUserCircle className="h-5 w-5 text-slate-600 mr-3" />
                                             <span>Profile</span>

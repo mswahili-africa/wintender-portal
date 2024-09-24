@@ -49,7 +49,7 @@ function App() {
                             <Route path="categories" element={<Categories />}/>
                             <Route path="users" element={<Users />}/>
                             <Route path="bidders" element={<Bidders />}/>
-                            <Route path="users/:username" element={<UserDetail />}/>
+                            <Route path="users/:userId" element={<UserDetail />}/>
                             <Route path="roles" element={<Roles />}/>
 
                         </Route>

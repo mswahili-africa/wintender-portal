@@ -1,6 +1,6 @@
 import http from "../http";
 import { ILoginResponse, ICountry, IRole, IlistResponse } from "@/types";
-import { IConfirmPasswordResetForm, IRegisterForm } from "@/types/forms";
+import { IBidderRegisterForm, IConfirmPasswordResetForm, IRegisterForm } from "@/types/forms";
 
 
 export async function getRoles(params: {}) {
@@ -66,6 +66,9 @@ export async function updateUser(payload: IRegisterForm, userId: string) {
 
 export async function signup(payload: IRegisterForm) {
     const response = await http.post<any>("/users/user/create", payload)
+}
 
+export async function bidderRegister(payload: IBidderRegisterForm) {
+    const response = await http.post<any>("/users/bidder/register", payload)
 }
 

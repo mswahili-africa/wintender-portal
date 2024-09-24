@@ -107,9 +107,17 @@ export interface IRole {
   archive: string;
 }
 
+export interface ICategory {
+  id: string;
+  name: string;
+  categoryGroup: string;
+  code: string;
+}
+
 export interface IUser {
   id: string;
   name: string;
+  account: string;
   address: string;
   phoneNumber: string;
   email: string;
@@ -119,13 +127,11 @@ export interface IUser {
   status: string;
   displayName: string;
   lastLogin: number;
+  avatar: string;
   role: string;
+  company: ICompany;
   updatedBy: string;
   updatedAt: number;
-  countryId: string;
-  vendorId: string;
-  resellerId: null;
-  salesOfficerId: null;
   nationalId: string;
 }
 
@@ -142,6 +148,16 @@ export interface IEntity {
   createdAt: number;
   updatedAt: number;
   status: string;
+}
+
+export interface ICompany {
+  name: string;
+  primaryNumber: string;
+  address: string;
+  tin: string;
+  email: string;
+  website: string;
+  categories: string[];
 }
 
 export interface ITenderCategory {
@@ -228,6 +244,7 @@ export interface IDoItForMe {
   tender: ITenders;
   comments: string;
   status: string;
+  company: ICompany;
   createdBy: string;
   updatedBy: string;
   createdAt: number;
