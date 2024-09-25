@@ -78,6 +78,7 @@ export interface IAuthUser {
   avatar: string;
   email: string;
   username: string;
+  account: string;
   status: string;
 }
 
@@ -159,6 +160,14 @@ export interface ICompany {
   website: string;
   categories: string[];
 }
+
+export interface ICompanyDocuments {
+  id: string;
+  documentNumber: string;
+  documentType: string;
+  filePath: string;
+}
+
 
 export interface ITenderCategory {
   id: string;

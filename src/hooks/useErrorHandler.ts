@@ -18,7 +18,7 @@ export default function() {
                     message: "Session has expired. You will be logged out shortly.",
                     theme: "warning",
                 });
-                setTimeout(() => {closePopup(); store.logout()}, 4000)
+                setTimeout(() => {closePopup(); store.logout()}, 2000)
                 break;
             case 402:
             case 403:

@@ -9,7 +9,8 @@ import {
     IconBrandOffice,
     IconReportMoney,
     IconCategory,
-    IconUsersGroup
+    IconUsersGroup,
+    IconFiles
 } from "@tabler/icons-react";
 import React from "react";
 
@@ -99,6 +100,14 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> }
         ],
+    },
+    {
+        path: "/compliance",
+        label: "Compliance",
+        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
+        subMenu: [
+            { path: "/company-documents", label: "Documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+        ],
     }
 ];
 
@@ -116,7 +125,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal"),
     PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal"),
     BIDDER: () => allMenus
-        .filter(menu => ["Tender", "Finance", "Applications", "Dashboard"].includes(menu.label))  // Only show the allowed menus
+        .filter(menu => ["Tender", "Finance", "Applications", "Dashboard","Compliance"].includes(menu.label))  // Only show the allowed menus
         .map(menu =>
             menu.label === "Tender"
                 ? {

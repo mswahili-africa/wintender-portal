@@ -62,7 +62,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
             onSuccess();
         },
         onError: (error: any) => {
-            toast.error("Failed to upload firmware " + error);
+            toast.error("Failed to upload tender " + error);
         },
     });
 

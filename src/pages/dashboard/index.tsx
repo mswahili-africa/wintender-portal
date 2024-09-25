@@ -3,7 +3,8 @@ import {
     IconGitPullRequest,
     IconFileText,
     IconReportMoney,
-    IconPigMoney
+    IconPigMoney,
+    IconUser
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -17,7 +18,11 @@ import { ISummaryReport } from "@/types";
 type DashboardStats = ISummaryReport;
 
 export default function Dashboard() {
+
     const auth = useSnapshot(authStore);
+
+  const account = auth?.user?.account || "";
+
     const [stats, setStats] = useState<DashboardStats | null>(null); // State to store API data
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -106,9 +111,17 @@ export default function Dashboard() {
     );
 
       const BidderStats = () => (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
+            <Link to="/profile">
+                <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <IconUser className="text-yellow-500 w-8 h-8 mb-4" />
+                    <h3 className="text-xl font-bold">{account}</h3>
+                    <p className="text-gray-600">My Account</p>
+                </div>
+            </Link>
+
             <Link to="/tenders">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
+                <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconFileText className="text-green-600 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Tenders</h3>
                     <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
@@ -116,7 +129,7 @@ export default function Dashboard() {
             </Link>
 
             <Link to="/do-it-for-me">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
+                <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Requests</h3>
                     <p className="text-gray-600">My Requests: {stats?.statistics.requests}</p>
