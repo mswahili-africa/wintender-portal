@@ -297,7 +297,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                         </label>
 
                         <input
-                            type="date"
+                            type="datetime-local"
                             className={`${errors.openDate?.type === "required"
                                 ? "input-error"
                                 : "input-normal"
@@ -316,7 +316,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                             </label>
 
                             <input
-                                type="date"
+                                type="datetime-local"
                                 className={`${errors.closeDate?.type === "required"
                                     ? "input-error"
                                     : "input-normal"

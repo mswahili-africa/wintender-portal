@@ -1,5 +1,5 @@
 import http from "@/http";
-import { IQueryParams, IEntity,IlistResponse, ICompanyDocuments } from "@/types";
+import { IQueryParams, IEntity, IlistResponse, ICompanyDocuments } from "@/types";
 
 
 export async function getEntities(params: IQueryParams) {
@@ -10,8 +10,12 @@ export async function getEntities(params: IQueryParams) {
     return response.data
 }
 
-export async function createEntity(payload: IEntity) {
-    const response = await http.post<IEntity>("/entities/create", payload)
+export async function createEntity(payload: FormData) {
+    const response = await http.post<any>("/entities/create", payload, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
 
     return response.data
 }
@@ -32,7 +36,7 @@ export async function uploadDocument(payload: FormData) {
     return response.data
 }
 
-export async function getDocuments(account: string,params: IQueryParams) {
+export async function getDocuments(account: string, params: IQueryParams) {
     const response = await http.get<IlistResponse<ICompanyDocuments>>(`/entities/company/document/list/${account}`, {
         params: params
     })

@@ -27,9 +27,6 @@ export default function ({ ...props }: IProps) {
             setOpen(false);
             toast.success("POS Requested");
             props.onSuccess();
-        },
-        onError: (error: any) => {
-            toast.error("Failed to create payment Request");
         }
     })
 

@@ -9,7 +9,7 @@ const columns: IColumn[] = [
   },
   {
     name: "documentNumber",
-    label: "Reference",
+    label: "Number",
     sortable: false,
     plainObject: false,
   },

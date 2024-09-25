@@ -1,10 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconPlus } from "@tabler/icons-react";
+import { IconFileText, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { object, string } from "yup";
+import { mixed, object, string } from "yup";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import { createEntity, updateEntity } from "@/services/entities";
@@ -17,6 +17,7 @@ interface IProps {
 }
 
 const schema = object().shape({
+  logoFile: mixed().required("Logo File is required"),
   name: string().required("Name is required"),
   primaryNumber: string().required("Primary Number is required"),
   address: string().required("Address is required"),
@@ -26,28 +27,38 @@ const schema = object().shape({
 
 export default function ({ ...props }: IProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const [logoFile, setLogoFile] = useState<string | any>();
+
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     reset,
     formState: { errors },
-} = useForm<any>({
+  } = useForm<any>({
     resolver: yupResolver(schema),
-    defaultValues: { entityType: "", name: "", primaryNumber:"", },
-});
+    defaultValues: { entityType: "", name: "", primaryNumber: "", },
+  });
+
+  watch((data, { name, type }) => {
+    if (name === "logoFile" && type === "change") {
+      setLogoFile(data.tenderFile[0]?.name);
+    }
+  });
 
 
   const createMutation = useMutation({
-    mutationFn: (data: IEntity) => createEntity(data),
+    mutationFn: (data: FormData) => createEntity(data),
     onSuccess: () => {
       reset();
+      setLogoFile(undefined);
       setOpen(false);
-      toast.success("Entity created successful");
-      props.onSuccess();
+      toast.success("Entity created successfully");
+      onSuccess();
     },
     onError: (error: any) => {
-      toast.error("Failed to create Entity");
+      toast.error("Failed to create entity " + error);
     },
   });
 
@@ -66,16 +77,23 @@ export default function ({ ...props }: IProps) {
   });
 
 
+  const submit = (data: Record<string, any>) => {
+    const formData = new FormData();
+    formData.append("file", data.logoFile[0]);
+    formData.append("name", data.name);
+    formData.append("primaryNumber", data.primaryNumber);
+    formData.append("address", data.address);
+    formData.append("entityType", data.entityType);
+    formData.append("email", data.email);
 
-  const submit = (data: IEntity) => {
-    createMutation.mutate(data);
-  }
+    createMutation.mutate(formData);
+  };
 
   useEffect(() => {
     if (props.initials) {
       setValue("name", props.initials.name);
       setValue("primaryNumber", `0${props.initials.primaryNumber.slice(1)}`),
-      setValue("address", props.initials.address);
+        setValue("address", props.initials.address);
       setValue("email", props.initials.email);
       setOpen(true);
     }
@@ -149,6 +167,41 @@ export default function ({ ...props }: IProps) {
             />
           </div>
 
+          <div className="mb-6">
+            <label className="block mb-2">LOGO</label>
+            <label
+              htmlFor="logoFile"
+              className="label block py-10 bg-slate-50 border border-dashed border-slate-200 rounded-md cursor-pointer"
+            >
+              <div className="text-slate-500 text-xs text-center font-light">
+                <IconFileText
+                  size={32}
+                  strokeWidth={1.5}
+                  className="mx-auto mb-4"
+                />
+                {logoFile ? (
+                  <div>{logoFile}</div>
+                ) : (
+                  <Fragment>
+                    <p>Add Entity LOGO .jpg file here</p>
+                    <p className="text-blue-500 font-medium">Click to browse</p>
+                  </Fragment>
+                )}
+              </div>
+              <input
+                type="file"
+                id="logoFile"
+                accept=".jpg"
+                className="hidden"
+                {...register("logoFile")}
+              />
+            </label>
+
+            <p className="text-xs text-green-600 mt-1 mx-0.5">
+              {errors.logoFile?.message?.toString()}
+            </p>
+          </div>
+
           <Button
             type="submit"
             label="Register"
@@ -161,3 +214,7 @@ export default function ({ ...props }: IProps) {
     </div>
   );
 }
+function onSuccess() {
+  throw new Error("Function not implemented.");
+}
+

@@ -13,7 +13,7 @@ const columns: IColumn[] = [
   },
   {
     name: "controlNumber",
-    label: "Bill",
+    label: "Control Number",
     sortable: false,
     plainObject: false,
   },

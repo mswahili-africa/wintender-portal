@@ -8,6 +8,28 @@ const columns: IColumn[] = [
         sortable: false,
         plainObject: false,
         element: (value: string) => <Chip label={value} size="sm" theme={value === 'LOCAL' ? 'primary' : 'warning'} variant="outline" />
+    }, 
+    {
+        name: "entity",
+        label: "Procurement Entity",
+        sortable: false,
+        plainObject: true,
+        element: (row: { entity: any }) => (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                    src={row.entity.filePath}
+                    alt="Entity Logo"
+                    style={{
+                        width: '40px', // Adjust size as needed
+                        height: '40px',
+                        borderRadius: '50%', // Makes the image round
+                        objectFit: 'cover', // Ensures the image covers the area
+                        marginRight: '8px', // Space between logo and name
+                    }}
+                />
+                <span>{row.entity.name}</span>
+            </div>
+        ),
     },
     {
         name: "title",

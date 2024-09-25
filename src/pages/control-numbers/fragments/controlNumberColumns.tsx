@@ -2,22 +2,14 @@ import Chip from "@/components/chip/Chip";
 import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
-  {
-    name: "bidder",
-    label: "Account",
-    sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row.doForMeApplication.user?.account;
-    },
-  },
+
   {
     name: "reference",
     label: "Reference",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.doForMeApplication.user?.account;
+      return row.doForMeApplication?.reference;
     },
   },
   {
@@ -30,21 +22,18 @@ const columns: IColumn[] = [
     },
   },
   {
-    name: "reference",
-    label: "Reference",
+    name: "controlNumber",
+    label: "Control Number",
     sortable: false,
     plainObject: true,
-    element: (row: any) => {
-      return row.doForMeApplication?.reference;
-    },
   },
   {
-      name: "Outstanding",
-      label: "Outstanding",
+      name: "Fees Payable",
+      label: "Fees Payable",
       sortable: false,
       plainObject: true,
       element: (row: any) => {
-          const amount = row.principleAmount - row.paidAmount;
+          const amount = row.principleAmount;
           const formattedAmount = new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: 'TZS',
