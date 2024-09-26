@@ -55,7 +55,6 @@ export default function ({ ...props }: IProps) {
       setLogoFile(undefined);
       setOpen(false);
       toast.success("Entity created successfully");
-      onSuccess();
     },
     onError: (error: any) => {
       toast.error("Failed to create entity " + error);
@@ -213,8 +212,5 @@ export default function ({ ...props }: IProps) {
       </Modal>
     </div>
   );
-}
-function onSuccess() {
-  throw new Error("Function not implemented.");
 }
 

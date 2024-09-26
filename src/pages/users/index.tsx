@@ -48,7 +48,7 @@ export default function() {
                 columns={columns}
                 data={users ? users.content : []}
                 isLoading={isLoading}
-                hasSelection={true}
+                hasSelection={false}
                 hasActions={true}
                 onSorting={handleSorting}
                 actionSlot={(content: any) => {

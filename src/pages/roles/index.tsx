@@ -33,7 +33,7 @@ export default function() {
                     columns={columns}
                     data={roles? roles.content : []}
                     isLoading={isLoading}
-                    hasSelection={true}
+                    hasSelection={false}
                     hasActions={false}
                     onSorting={handleSorting}
                     actionSlot={(content: any) => {

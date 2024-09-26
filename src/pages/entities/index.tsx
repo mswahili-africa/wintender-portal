@@ -49,7 +49,7 @@ export default function () {
                 columns={columns}
                 data={entities ? entities.content : []}
                 isLoading={isLoading}
-                hasSelection={true}
+                hasSelection={false}
                 hasActions={false}
                 onSorting={handleSorting}
                 actionSlot={(content: IEntity) => {

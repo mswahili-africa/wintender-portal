@@ -50,7 +50,7 @@ export default function CategoryList() {
                     columns={columns}
                     data={categories?.content || []}
                     isLoading={isLoading}
-                    hasSelection={true}
+                    hasSelection={false}
                     hasActions={false}
                     onSorting={handleSorting}
                 />

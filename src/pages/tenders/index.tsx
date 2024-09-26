@@ -104,7 +104,7 @@ export default function TendersTable() {
                     columns={columns}
                     data={getTenders ? getTenders.content : []}
                     isLoading={isLoading}
-                    hasSelection={true}
+                    hasSelection={false}
                     hasActions={true}
                     onSorting={handleSorting}
                     actionSlot={(content: ITenders) => {
@@ -180,7 +180,7 @@ export default function TendersTable() {
                                     const remainingTime = closeDate - currentDate;
                                     const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-                                    return remainingDays <= 7 ? 'CLOSING' : selectedTender.status;
+                                    return remainingDays <= 2 ? 'CLOSING' : selectedTender.status;
                                 })()} size="sm" theme="success" />
                             </div>
                             <div className="flex items-center">
