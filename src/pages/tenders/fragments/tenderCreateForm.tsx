@@ -1,16 +1,16 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
-import useEntities from "@/hooks/useEntities";
-import useCategories from "@/hooks/useCategories";
-import { createTender } from "@/services/tenders";
+import { getEntities } from "@/services/entities";
+import { createTender, getCategories } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { mixed, object, string } from "yup";
+import Select from "react-select"; // Import react-select
 
 interface IProps {
     onSuccess: () => void;
@@ -33,51 +33,68 @@ const schema = object().shape({
 export default function TenderUpload({ onSuccess, initials }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [tenderFile, setTenderFile] = useState<string | any>();
+    const [categories, setCategories] = useState<any[]>([]); 
+    const [entities, setEntities] = useState<any[]>([]); 
+
     const {
         register,
         handleSubmit,
         watch,
         reset,
+        setValue, // Added for setting values programmatically
         formState: { errors },
     } = useForm<any>({
         resolver: yupResolver(schema),
-        defaultValues: { tenderFile: "", title: "", tenderNumber: "", region: "", summary: "", tenderType: "", category: "", entity: "", openDate: "", closeDate: "" },
+        defaultValues: {
+            tenderFile: "", 
+            title: "", 
+            tenderNumber: "", 
+            region: "", 
+            summary: "", 
+            tenderType: "", 
+            category: "", 
+            entity: "", 
+            openDate: "", 
+            closeDate: "",
+        },
     });
 
+    // Watch for file changes
     watch((data, { name, type }) => {
         if (name === "tenderFile" && type === "change") {
             setTenderFile(data.tenderFile[0]?.name);
         }
     });
 
-    const openDate = watch("openDate");
+    // Fetch categories
+    useEffect(() => {
+        async function fetchCategories() {
+            try {
+                const allCategories = await getCategories({ page: 0, size: 500 });
+                setCategories(allCategories.content.map(c => ({ value: c.id, label: c.categoryGroup +": "+ c.name })));
+            } catch (error) {
+                console.error("Failed to fetch categories", error);
+            }
+        }
 
-    const uploadTenderMutation = useMutation({
-        mutationFn: (data: FormData) => createTender(data),
-        onSuccess: () => {
-            reset();
-            setTenderFile(undefined);
-            setOpen(false);
-            toast.success("Tender uploaded successfully");
-            onSuccess();
-        },
-        onError: (error: any) => {
-            toast.error("Failed to upload tender " + error);
-        },
-    });
+        fetchCategories();
+    }, []);
 
-    const { entities } = useEntities({
-        page: 0,
-        search: "",
-        filter: {},
-    });
+    // Fetch entities
+    useEffect(() => {
+        async function fetchEntities() {
+            try {
+                const allEntities = await getEntities({ page: 0, size: 500 });
+                setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name }))); // Format for react-select
+            } catch (error) {
+                console.error("Failed to fetch entities", error);
+            }
+        }
 
-    const { categories } = useCategories({
-        page: 0,
-        search: "",
-        filter: {},
-    });
+        fetchEntities();
+    }, []);
 
+    // Handle form submission
     const submit = (data: Record<string, any>) => {
         const formData = new FormData();
         formData.append("file", data.tenderFile[0]);
@@ -93,6 +110,23 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
 
         uploadTenderMutation.mutate(formData);
     };
+
+    // Use mutation for uploading tender
+    const uploadTenderMutation = useMutation({
+        mutationFn: (data: FormData) => createTender(data),
+        onSuccess: () => {
+            reset();
+            setTenderFile(undefined);
+            setOpen(false);
+            toast.success("Tender uploaded successfully");
+            onSuccess();
+        },
+        onError: (error: any) => {
+            toast.error("Failed to upload tender " + error);
+        },
+    });
+
+    const openDate = watch("openDate");
 
     return (
         <div className="max-w-max">
@@ -112,16 +146,14 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                 onClose={(v) => setOpen(v)}
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
+                    {/* Region */}
                     <div className="mb-2">
                         <label htmlFor="region" className="block mb-2">
                             Region
                         </label>
 
                         <select
-                            className={`${errors.region?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
+                            className={`${errors.region?.type === "required" ? "input-error" : "input-normal"}`}
                             {...register("region", { required: true })}
                         >
                             <option value="LOCAL">LOCAL</option>
@@ -131,39 +163,14 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                             {errors.region?.message?.toString()}
                         </p>
                     </div>
-                    <div className="mb-2">
-                        <label htmlFor="Entity" className="block mb-2">
-                            Entity
-                        </label>
-
-                        <select
-                            className={`${errors.entity?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("entity", { required: true })}
-                        >
-                            <option value=""></option>
-                            {
-                                entities &&
-                                entities.content.map((item) => (
-                                    <option value={item.id} key={item.id}>{item.name}</option>
-                                ))}
-                        </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.entity?.message?.toString()}
-                        </p>
-                    </div>
+                    {/* Tender Type */}
                     <div className="mb-2">
                         <label htmlFor="tenderType" className="block mb-2">
                             Type
                         </label>
 
                         <select
-                            className={`${errors.tenderType?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
+                            className={`${errors.tenderType?.type === "required" ? "input-error" : "input-normal"}`}
                             {...register("tenderType", { required: true })}
                         >
                             <option value="EXPRESSION_OF_INTEREST">EXPRESSION OF INTEREST (EI)</option>
@@ -177,25 +184,35 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                         </p>
                     </div>
 
+                    {/* Entity with search */}
+                    <div className="mb-2">
+                        <label htmlFor="entity" className="block mb-2">
+                            Entity
+                        </label>
+
+                        <Select
+                            options={entities}
+                            onChange={(selectedOption) => setValue("entity", selectedOption?.value)} // Set the selected entity value
+                            className={errors.entity ? "input-error" : "input-normal"}
+                            placeholder="Search for an entity"
+                        />
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.entity?.message?.toString()}
+                        </p>
+                    </div>
+
+                    {/* Category with search */}
                     <div className="mb-2">
                         <label htmlFor="category" className="block mb-2">
                             Category
                         </label>
 
-                        <select
-                            className={`${errors.category?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("category", { required: true })}
-                        >
-                            <option value=""></option>
-                            {
-                                categories &&
-                                categories.content.map((item) => (
-                                    <option value={item.id} key={item.id}>{item.name}</option>
-                                ))}
-                        </select>
+                        <Select
+                            options={categories}
+                            onChange={(selectedOption) => setValue("category", selectedOption?.value)} // Set the selected category value
+                            className={errors.category ? "input-error" : "input-normal"}
+                            placeholder="Search for a category"
+                        />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.category?.message?.toString()}
                         </p>
@@ -328,7 +345,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                             </p>
                         </div>
                     )}
-
+                    
                     <Button
                         type="submit"
                         label="Upload"

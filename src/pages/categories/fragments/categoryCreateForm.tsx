@@ -92,7 +92,7 @@ export default function CategoryCreate({ onSuccess, initials }: IProps) {
                         >
                             <option value="GOODS">GOODS</option>
                             <option value="SERVICE">SERVICE</option>
-                            <option value="WORK">WORK</option>
+                            <option value="WORKS">WORKS</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.categoryGroup?.message?.toString()}
