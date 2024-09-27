@@ -4,13 +4,14 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { IConfirmPasswordResetForm } from "@/types/forms";
-import { number, object, ref, string } from "yup";
+import { object, ref, string } from "yup";
+import { useState } from "react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react"; // Import Tabler Icons
 import Logo from "@/assets/images/logo.png";
 import Button from "@/components/button/Button";
 import { confirmResetPassword } from "@/services/auth";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
-
 
 interface IResetPassword {
     email: string
@@ -30,6 +31,9 @@ const schema = object().shape({
 export default function () {
     const store = useSnapshot(authStore);
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // For repeat password
+
     const { register, handleSubmit, formState: { errors } } = useForm<IResetPassword >({
         resolver: yupResolver(schema),
     });
@@ -72,8 +76,8 @@ export default function () {
                 <div>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit(submit)}>
                         <p className="py-3 px-4 border-l-2 border-slate-200 bg-slate-100 text-xs rounded-md">
-                            Password should be atleast 6 characters long and should include uppercase, 
-                            lowercase letters, numbers and atleast one special character"
+                            Password should be at least 6 characters long and should include uppercase, 
+                            lowercase letters, numbers, and at least one special character.
                         </p>
 
                         <div>
@@ -92,11 +96,18 @@ export default function () {
                             <label htmlFor="password" className="block mb-2">
                                 Password
                             </label>
-                            <input 
-                                type="password" 
-                                className={`${errors.password?.message ? 'input-error' : 'input-normal'}`}
-                                {...register("password")} />
-                            
+                            <div className="relative">
+                                <input 
+                                    type={showPassword ? "text" : "password"} // Toggle between text and password
+                                    className={`${errors.password?.message ? 'input-error' : 'input-normal'}`}
+                                    {...register("password")} />
+                                <span 
+                                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                                >
+                                    {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />} {/* Tabler Icons */}
+                                </span>
+                            </div>
                             <p className="text-xs text-red-600">{errors.password?.message}</p>
                         </div>
 
@@ -104,10 +115,18 @@ export default function () {
                             <label htmlFor="passwordConfirmation" className="block mb-2">
                                 Repeat Password
                             </label>
-                            <input 
-                                type="password" 
-                                className={`${errors.passwordConfirmation?.message ? 'input-error' : 'input-normal'}`}
-                                {...register("passwordConfirmation")} />
+                            <div className="relative">
+                                <input 
+                                    type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
+                                    className={`${errors.passwordConfirmation?.message ? 'input-error' : 'input-normal'}`}
+                                    {...register("passwordConfirmation")} />
+                                <span 
+                                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle password visibility
+                                >
+                                    {showConfirmPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />} {/* Tabler Icons */}
+                                </span>
+                            </div>
                             <p className="text-xs text-red-600">{errors.passwordConfirmation?.message}</p>
                         </div>
 

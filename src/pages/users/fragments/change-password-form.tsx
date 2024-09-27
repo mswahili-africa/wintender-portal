@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { IConfirmPasswordResetForm } from "@/types/forms";
 import { number, object, ref, string } from "yup";
 import Button from "@/components/button/Button";
-import {confirmResetPassword, confirmUser } from "@/services/auth";
+import { confirmResetPassword, confirmUser } from "@/services/auth";
 import TextInput from "@/components/widgets/forms/TextInput";
 import { useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
@@ -16,15 +16,14 @@ interface IProps {
     title?: string
 }
 
-
 const schema = object().shape({
     confirmationCode: string().required("Confirmation code is required"),
-    password: string().min(6).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, "please follow password creation guidelines").required("password is required"),
+    password: string().min(6).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, "please follow password creation guidelines").required("Password is required"),
     passwordConfirmation: string().required("Please repeat your password")
     .oneOf([ref("password")], "Passwords must match"),
 })
 
-export default function({...props}: IProps) {
+export default function({...props}: IProps) { 
     const store = useSnapshot(authStore);
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm<{
@@ -61,11 +60,9 @@ export default function({...props}: IProps) {
         let _data = {
             "email": props.email,
             "password" : data.password,
-            "confirmPassword": data.password,
+            "confirmPassword": data.passwordConfirmation,
             "confirmationCode" : data.confirmationCode
         }
-
-
         confirmResetMutation.mutate(_data);
     }
 
@@ -77,7 +74,7 @@ export default function({...props}: IProps) {
 
             <form className="space-y-4" onSubmit={handleSubmit(submitCode)}>
                 <p className="py-3 px-4 border-l-2 border-slate-200 bg-slate-100 text-sm rounded-md">
-                    Password should be atleast 6 characters long and should include uppercase, lowercase letters, numbers and atleast one special character
+                    Password should be at least 6 characters long and should include uppercase, lowercase letters, numbers, and at least one special character.
                 </p>
 
                 <TextInput 
@@ -109,7 +106,8 @@ export default function({...props}: IProps) {
                     label="Submit Code" 
                     theme="primary"
                     size="md" 
-                    loading={confirmResetMutation.isLoading} />
+                    loading={confirmResetMutation.isLoading} 
+                />
             </form>
         </section>
     )

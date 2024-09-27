@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { useState } from "react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react"; // Importing Tabler Icons
 import Logo from "@/assets/images/logo.png";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
@@ -15,6 +16,7 @@ export default function Login() {
     const navigate = useNavigate();
     const store = useSnapshot(authStore);
     const [create, setCreate] = useState(false); // State to control modal visibility
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<ILoginForm>({
         defaultValues: {
@@ -37,7 +39,7 @@ export default function Login() {
         mutate(input);
     };
 
-    return (
+    return ( 
         <div className="flex h-screen items-center justify-center bg-slate-50">
             <div className="w-1/2 lg:w-1/3 2xl:w-1/4 p-10 bg-white h-auto rounded-md shadow-sm">
                 <div className="flex flex-col justify-between items-center mb-8">
@@ -57,10 +59,18 @@ export default function Login() {
                         </div>
                         <div>
                             <label htmlFor="password" className="block mb-2">Password</label>
-                            <input
-                                type="password"
-                                className={`${errors.password ? 'input-error' : 'input-normal'}`}
-                                {...register('password', { required: true })} />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? 'text' : 'password'}  // Toggle between text and password
+                                    className={`${errors.password ? 'input-error' : 'input-normal'}`}
+                                    {...register('password', { required: true })} />
+                                <span 
+                                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                                >
+                                    {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />} {/* Tabler Icons */}
+                                </span>
+                            </div>
                         </div>
                         <Button
                             type="submit"
