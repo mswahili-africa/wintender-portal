@@ -23,6 +23,7 @@ const schema = object().shape({
   address: string().required("Address is required"),
   entityType: string().required("Type is required"),
   email: string().required("Email is required"),
+  summary: string().required("Summary is required"),
 });
 
 export default function ({ ...props }: IProps) {
@@ -84,7 +85,7 @@ export default function ({ ...props }: IProps) {
     formData.append("address", data.address);
     formData.append("entityType", data.entityType);
     formData.append("email", data.email);
-
+    formData.append("summary", data.summary);
     createMutation.mutate(formData);
   };
 
@@ -94,6 +95,7 @@ export default function ({ ...props }: IProps) {
       setValue("primaryNumber", `0${props.initials.primaryNumber.slice(1)}`),
         setValue("address", props.initials.address);
       setValue("email", props.initials.email);
+      setValue("summary", props.initials.summary);
       setOpen(true);
     }
   }, [props.initials]);
@@ -164,6 +166,24 @@ export default function ({ ...props }: IProps) {
               hasError={errors.email?.type != undefined}
               register={register("email")}
             />
+          </div>
+
+          <div className="mb-2">
+            <label htmlFor="summary" className="block mb-2">
+              Summary
+            </label>
+
+            <textarea
+              rows={3}
+              className={`${errors.summary?.type === "required"
+                ? "input-error"
+                : "input-normal"
+                }`}
+              {...register("summary", { required: true })}
+            ></textarea>
+            <p className="text-xs text-red-500 mt-1 mx-0.5">
+              {errors.summary?.message?.toString()}
+            </p>
           </div>
 
           <div className="mb-6">

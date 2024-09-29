@@ -144,6 +144,7 @@ export interface IEntity {
   primaryNumber: string;
   address: string;
   email: string;
+  summary: string;
   createdBy: string;
   updatedBy: string;
   createdAt: number;

@@ -113,6 +113,14 @@ export interface IMessage {
     message: string
 }
 
+export interface IPublisherReport {
+    id:       string
+    email: string
+    name:       string
+    phoneNumber: string
+    numberOfTenders: number
+}
+
 export interface IPaymentForm {
     controlNumber:        string
     account: string

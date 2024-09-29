@@ -3,8 +3,6 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { getEntities } from "@/services/entities";
 import useErrorHandler from "./useErrorHandler";
-import entities from "@/pages/entities";
-
 
 interface IProps {
     page: number

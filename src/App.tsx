@@ -21,6 +21,7 @@ import Categories from "./pages/categories";
 import ContrlNumbers from "./pages/control-numbers";
 import Bidders from "./pages/bidders";
 import CompanyDocuments from "./pages/complience";
+import PublisherPerformance from "./pages/publisher-reports";
 
 export const queryClient = new QueryClient({});
 
@@ -52,6 +53,7 @@ function App() {
                             <Route path="bidders" element={<Bidders />}/>
                             <Route path="users/:userId" element={<UserDetail />}/>
                             <Route path="roles" element={<Roles />}/>
+                            <Route path="publisher-perfomance" element={<PublisherPerformance />}/>
                             <Route path="company-documents" element={<CompanyDocuments />}/>
                         </Route>
 
