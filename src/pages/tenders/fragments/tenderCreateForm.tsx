@@ -178,6 +178,10 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                             <option value="REQUEST_FOR_QUOTATION">REQUEST FOR QUOTATION (RFQ)</option>
                             <option value="PRE_QUALIFICATION">PRE QUALIFICATION (PQ)</option>
                             <option value="REQUEST_FOR_BID">REQUEST FOR BID (RFB)</option>
+                            <option value="REQUEST_FOR_TENDER">REQUEST FOR TENDER (RFT)</option>
+                            <option value="INVITATION_TO_TENDER">INVITATION TO TENDER (ITT)</option>
+                            <option value="INVITATION_TO_BID">INVITATION TO BID (IFB)</option>
+                            <option value="⁠REQUEST_FOR_INFORMATION">⁠REQUEST FOR INFORMATION (RFI)</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.tenderType?.message?.toString()}
