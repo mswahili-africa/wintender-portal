@@ -3,16 +3,9 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
     {
-        name: "region",
-        label: "Region",
-        sortable: false,
-        plainObject: false,
-        element: (value: string) => <Chip label={value} size="sm" theme={value === 'LOCAL' ? 'primary' : 'warning'} variant="outline" />
-    }, 
-    {
         name: "entity",
         label: "Procurement Entity",
-        sortable: false,
+        sortable: true,
         plainObject: true,
         element: (row: { entity: any }) => (
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -27,7 +20,7 @@ const columns: IColumn[] = [
                         marginRight: '8px', // Space between logo and name
                     }}
                 />
-                <span>{row.entity.name}</span>
+                <span>{row.entity.name.toUpperCase()}</span>
             </div>
         ),
     },

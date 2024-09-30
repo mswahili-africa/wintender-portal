@@ -20,7 +20,7 @@ const columns: IColumn[] = [
                         marginRight: '8px', // Space between logo and name
                     }}
                 />
-                <span>{row.name}</span> {/* Display the name next to the logo */}
+                <span>{row.name.toUpperCase()}</span> {/* Display the name next to the logo */}
             </div>
         ),
     },

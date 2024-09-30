@@ -10,7 +10,7 @@ import ForgotPassword from "./pages/auth/forgot-password";
 import ResetPassword from "./pages/auth/reset-password";
 import Dashboard from "./pages/dashboard";
 import Payments from "./pages/payments";
-import Tenders from "./pages/tenders";
+import Tenders from "./pages/tenders/local-tenders";
 import Users from "./pages/users";
 import UserDetail from "./pages/users/_username";
 import Entities from "./pages/entities";
@@ -22,6 +22,7 @@ import ContrlNumbers from "./pages/control-numbers";
 import Bidders from "./pages/bidders";
 import CompanyDocuments from "./pages/complience";
 import PublisherPerformance from "./pages/publisher-reports";
+import TenderList from "./pages/tenders/fragments";
 
 export const queryClient = new QueryClient({});
 
@@ -46,7 +47,7 @@ function App() {
                             <Route index element = {<Dashboard/>}/>
                             <Route path="entities" element={<Entities/>}/>
                             <Route path="do-it-for-me" element={<ContrlNumbers/>}/>
-                            <Route path="tenders" element={<Tenders />}/>
+                            <Route path="tenders" element={<TenderList />}/>
                             <Route path="payments" element={<Payments />}/>
                             <Route path="categories" element={<Categories />}/>
                             <Route path="users" element={<Users />}/>

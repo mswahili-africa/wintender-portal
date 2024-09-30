@@ -12,8 +12,16 @@ export async function downloadTenderDocument(id: string) {
     return response.data
 }
 
-export async function getTenders(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list", {
+export async function getTendersLocal(params: IQueryParams) {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list-local", {
+        params: params
+    })
+
+    return response.data
+}
+
+export async function getTendersInternational(params: IQueryParams) {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list-international", {
         params: params
     })
 

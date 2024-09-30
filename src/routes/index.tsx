@@ -54,7 +54,7 @@ const allMenus: IRoute[] = [
     },
     {
         path: "/applications",
-        label: "Applications",
+        label: "Do it for me",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/do-it-for-me", label: "Request", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
