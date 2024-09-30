@@ -1,9 +1,9 @@
-import { IconDeviceMobileMessage, IconMessage, IconStatusChange } from "@tabler/icons-react";
+import { IconDeviceMobileMessage, IconMessage, IconStatusChange, IconUserOff } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
-import columns from "./fragments/user-columns";
+import columns from "./fragments/bidder-columns";
 import { IUser } from "@/types";
 import { getUserRole } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import SMSModal from "./fragments/SMSModel";
 import { sendMessageSingle } from "@/services/commons";
 import usePopup from "@/hooks/usePopup";
 import { IMessage } from "@/types/forms";
+import { resetUser } from "@/services/auth";
 
 export default function Bidders() {
     const [page, setPage] = useState<number>(0);
@@ -49,6 +50,17 @@ export default function Bidders() {
         },
     });
 
+    const resetMutation = useMutation({
+        mutationFn: (userId: string) => resetUser(userId),
+        onSuccess: () => {
+            toast.success("Resetted successfully");
+            refetch();
+        },
+        onError: () => {
+            toast.error("Change failed");
+        },
+    });
+
     const sendSMS = useMutation({
         mutationFn: (data: IMessage) => sendMessageSingle(data),
         onSuccess: () => {
@@ -70,6 +82,19 @@ export default function Bidders() {
             message: "Please verify that you want to change bidder status.",
             onConfirm: () => {
                 changeMutation.mutate(payload.id);
+                refetch();
+            },
+            onCancel: () => { },
+        });
+    };
+
+    const handleResetUser = (payload: IUser) => {
+        showConfirmation({
+            theme: "danger",
+            title: "Reset user?",
+            message: "Please verify that you want to reset user account.",
+            onConfirm: () => {
+                resetMutation.mutate(payload.id);
                 refetch();
             },
             onCancel: () => { },
@@ -124,7 +149,7 @@ export default function Bidders() {
                     return (
                         <div className="flex justify-center space-x-3">
                             {(userRole === "MANAGER" || userRole == "ADMINISTRATOR" || userRole == "ACCOUNTANT") &&
-                                content.status != "REQUESTED" && (
+                                (content.status != "NEEDPASSWORDCHANGE" && content.status != "INACTIVE") && (
                                     <Fragment>
                                         <button
                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
@@ -135,13 +160,25 @@ export default function Bidders() {
                                     </Fragment>
                                 )}
                             {(userRole === "MANAGER" || userRole == "ADMINISTRATOR") &&
-                                content.status != "REQUESTED" && (
+                                content.status != "NEEDPASSWORDCHANGE" && (
                                     <Fragment>
                                         <button
                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                                             onClick={() => changeStatus(content)}
                                         >
                                             <IconStatusChange size={20} />
+                                        </button>
+                                    </Fragment>
+                                )}
+
+                            {(userRole === "MANAGER" || userRole == "ADMINISTRATOR") &&
+                                content.status != "INACTIVE" && (
+                                    <Fragment>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                            onClick={() => handleResetUser(content)}
+                                        >
+                                            <IconUserOff size={20} />
                                         </button>
                                     </Fragment>
                                 )}

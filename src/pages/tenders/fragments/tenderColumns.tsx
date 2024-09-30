@@ -57,7 +57,7 @@ const columns: IColumn[] = [
             const remainingTime = closeDate - currentDate;
             const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-            const displayStatus = remainingDays <= 7 ? 'CLOSING' : row.status;
+            const displayStatus = remainingDays <= 2 ? 'CLOSING' : row.status;
 
             return (
                 <Chip 

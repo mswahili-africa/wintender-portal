@@ -167,7 +167,7 @@ export default function ContrlNumbers () {
                   const remainingTime = closeDate - currentDate;
                   const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-                  return remainingDays <= 7 ? 'CLOSING' : selectedTender.status;
+                  return remainingDays <= 2 ? 'CLOSING' : selectedTender.status;
                 })()} size="sm" theme="success" />
               </div>
               <div className="flex items-center">

@@ -33,13 +33,13 @@ export async function logout(payload: {username: string, accessToken: string}) {
 
 // pass email for such user
 export async function forgotPassword(payload: {username: string}) {
-    const response = await http.post<any>("/users/auth/resetPassword", payload)
+    const response = await http.post<any>("/users/auth/reset-password", payload)
 
     return response.data
 }
 
 export async function confirmResetPassword(payload: IConfirmPasswordResetForm) {
-    const response = await http.post<any>("/users/auth/confirmReset", payload)
+    const response = await http.post<any>("/users/auth/confirm-reset", payload)
 
     return response.data
 }
@@ -50,6 +50,11 @@ export async function confirmUser(userId:string) {
     return response.data
 }
 
+export async function resetUser(id: string) {
+    const response = await http.put<any>(`/users/auth/reset-user/${id}`)
+
+    return response.data
+}
 
 export async function updateUser(payload: IRegisterForm, userId: string) {
     const response = await http.put<any>(`/users/user/update/${userId}`, payload)
