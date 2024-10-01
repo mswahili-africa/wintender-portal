@@ -4,13 +4,6 @@ import useErrorHandler from "./useErrorHandler";
 import { getStatistics } from "@/services/dashboard";
 
 
-interface IProps {
-    page: number
-    search?: string
-    sort?: string
-    filter?: Record<string, any>
-}
-
 export default function() {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
@@ -19,7 +12,7 @@ export default function() {
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 20000
     });
-
+ 
     return {
         isLoading,
         isError,

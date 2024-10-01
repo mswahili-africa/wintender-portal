@@ -29,7 +29,7 @@ export default function() {
                     message: "Oops! Something went wrong on our end. Please try again later.",
                     theme: "warning",
                 });
-                // setTimeout(() => { closePopup(); store.logout() }, 3000)
+                setTimeout(() => { closePopup(); store.logout() }, 3000)
                 break;
             case 502:
             case 504:
@@ -38,7 +38,7 @@ export default function() {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                // setTimeout(() => {closePopup(); store.logout()}, 3000)
+                setTimeout(() => {closePopup(); store.logout()}, 3000)
                 break;
             case 503:
                 showMessage({
@@ -46,7 +46,7 @@ export default function() {
                     message: "We're sorry, but the service is currently unavailable. Please try again later.",
                     theme: "warning",
                 });
-                // setTimeout(() => {closePopup(); store.logout()}, 3000)
+                setTimeout(() => {closePopup(); store.logout()}, 3000)
                 break;
             default:
                 showMessage({
@@ -54,7 +54,7 @@ export default function() {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                // setTimeout(() => { closePopup(); store.logout() }, 2000)
+                setTimeout(() => { closePopup(); store.logout() }, 2000)
                 break;
         }
     }

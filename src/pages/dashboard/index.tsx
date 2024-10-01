@@ -21,26 +21,29 @@ export default function Dashboard() {
 
     const auth = useSnapshot(authStore);
 
-  const account = auth?.user?.account || "";
+    const userId = auth?.user?.id || "";
+    const account = auth?.user?.account || "00000000";
 
     const [stats, setStats] = useState<DashboardStats | null>(null); // State to store API data
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                setLoading(true);
-                const response = await getSummaryReport();
-                setStats(response);
-            } catch (err) {
-                setError('Failed to load summary report. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (userId != "") {
+            const fetchStats = async () => {
+                try {
+                    setLoading(true);
+                    const response = await getSummaryReport();
+                    setStats(response);
+                } catch (err) {
+                    setError('Failed to load summary report. Please try again later.');
+                } finally {
+                    setLoading(false);
+                }
+            };
 
-        fetchStats();
+            fetchStats();
+        }
     }, []);
 
     // Skeleton Loader Component
@@ -90,8 +93,8 @@ export default function Dashboard() {
         </div>
     );
 
-    
-     const PublisherStats = () => (
+
+    const PublisherStats = () => (
         <div className="grid grid-cols-2 gap-4">
             <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
@@ -110,7 +113,7 @@ export default function Dashboard() {
         </div>
     );
 
-      const BidderStats = () => (
+    const BidderStats = () => (
         <div className="grid grid-cols-3 gap-4">
             <Link to="/profile">
                 <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
