@@ -3,7 +3,7 @@ import welcomeImage from "@/assets/images/welcome-banner.png";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
 
-export default function() {
+export default function WelcomeBanner() {
     const auth  = useSnapshot(authStore);
 
     return (
@@ -19,7 +19,7 @@ export default function() {
                     <div className="flex flex-col p-5 lg:gap-1">
                         <div>
                             <h1 className=" font-semibold text-2xl">
-                                { auth.user?.role.role.includes("Vendor") ? "Vendor Information" : "Explore the afodability" }
+                                { auth.user?.role.role.includes("Vendor") ? "Vendor Information" : "APPLY. WIN. EXECUTE." }
                             </h1>
                             <p className=" font-light text-sm lg:max-w-[600px] lg:pt-4">
                                 Wintender Portal.

@@ -3,13 +3,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { IConfirmPasswordResetForm } from "@/types/forms";
-import { number, object, ref, string } from "yup";
+import { object, ref, string } from "yup";
 import Button from "@/components/button/Button";
 import { confirmResetPassword, confirmUser } from "@/services/auth";
-import TextInput from "@/components/widgets/forms/TextInput";
 import { useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
+import { useState } from "react";
+import { IconEye, IconEyeX } from "@tabler/icons-react";
 
 interface IProps {
     email: string,
@@ -18,12 +19,55 @@ interface IProps {
 
 const schema = object().shape({
     confirmationCode: string().required("Confirmation code is required"),
-    password: string().min(6).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, "please follow password creation guidelines").required("Password is required"),
+    password: string().min(6).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, "Please follow password creation guidelines").required("Password is required"),
     passwordConfirmation: string().required("Please repeat your password")
     .oneOf([ref("password")], "Passwords must match"),
-})
+});
 
-export default function({...props}: IProps) { 
+interface TextInputProps {
+    type: string;
+    label: string;
+    hasError: boolean;
+    error?: string;
+    register: any;
+}
+
+function TextInput({ type, label, hasError, error, register }: TextInputProps) {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(prev => !prev);
+    };
+
+    return (
+        <div className="relative">
+            <label className="block text-sm font-medium mb-1">{label}</label>
+            <div className="relative">
+                <input
+                    type={type === "password" ? (showPassword ? "text" : "password") : type}
+                    className={`border ${hasError ? "border-red-500" : "border-gray-300"} rounded-md w-full p-2 pr-10`} // Adjusted padding for icon
+                    {...register}
+                />
+                {type === "password" && (
+                    <button
+                        type="button"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 focus:outline-none"
+                        onClick={togglePasswordVisibility}
+                    >
+                        {showPassword ? (
+                            <IconEyeX className="h-5 w-5 text-gray-500" />
+                        ) : (
+                            <IconEye className="h-5 w-5 text-gray-500" />
+                        )}
+                    </button>
+                )}
+            </div>
+            {error && <span className="text-red-500 text-sm">{error}</span>}
+        </div>
+    );
+}
+
+export default function ConfirmPasswordResetForm({ email, title }: IProps) { 
     const store = useSnapshot(authStore);
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm<{
@@ -58,7 +102,7 @@ export default function({...props}: IProps) {
 
     const submitCode = (data: any) => {
         let _data = {
-            "email": props.email,
+            "email": email,
             "password" : data.password,
             "confirmPassword": data.passwordConfirmation,
             "confirmationCode" : data.confirmationCode
@@ -69,7 +113,7 @@ export default function({...props}: IProps) {
     return (
         <section>
             <h4 className="text-sm uppercase font-medium mb-8 max-w-max">
-                { props.title ? props.title : "Confirm Password Reset" }
+                { title ? title : "Confirm Password Reset" }
             </h4>
 
             <form className="space-y-4" onSubmit={handleSubmit(submitCode)}>

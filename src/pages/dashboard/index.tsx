@@ -14,39 +14,38 @@ import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
 import { getSummaryReport } from "@/services/reports";
 import { ISummaryReport } from "@/types";
+import WelcomeBanner from "./fragments/Welcomebanner";
 
 type DashboardStats = ISummaryReport;
 
 export default function Dashboard() {
 
     const auth = useSnapshot(authStore);
-
     const userId = auth?.user?.id || "";
     const account = auth?.user?.account || "00000000";
 
-    const [stats, setStats] = useState<DashboardStats | null>(null); // State to store API data
+    const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (userId != "") {
-            const fetchStats = async () => {
-                try {
-                    setLoading(true);
-                    const response = await getSummaryReport();
-                    setStats(response);
-                } catch (err) {
-                    setError('Failed to load summary report. Please try again later.');
-                } finally {
-                    setLoading(false);
-                }
-            };
+        const fetchStats = async () => {
+            try {
+                setLoading(true);
+                const response = await getSummaryReport();
+                setStats(response);
+            } catch (err) {
+                setError('Failed to load summary report. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        if (userId !== "") {
             fetchStats();
         }
-    }, []);
+    }, [userId]);
 
-    // Skeleton Loader Component
     const SkeletonLoader = () => (
         <div className="grid grid-cols-2 gap-4">
             {Array(4).fill(0).map((_, i) => (
@@ -59,7 +58,6 @@ export default function Dashboard() {
         </div>
     );
 
-    // Admin Stats Component
     const AdminStats = () => (
         <div className="grid grid-cols-2 gap-4">
             <Link to="/tenders">
@@ -92,7 +90,6 @@ export default function Dashboard() {
             </Link>
         </div>
     );
-
 
     const PublisherStats = () => (
         <div className="grid grid-cols-2 gap-4">
@@ -143,9 +140,11 @@ export default function Dashboard() {
 
     return (
         <div className="p-3 bg-gray-50 min-h-screen">
+            <WelcomeBanner /> {/* Include the WelcomeBanner component */}
+
             {auth.user && (auth.user.role.role.includes("MANAGER") || auth.user.role.role.includes("ADMINISTRATOR") || auth.user.role.role.includes("ACCOUNTANT")) && (
                 <div>
-                    <h2 className="text-2xl font-bold mb-6">Manager</h2>
+                    <br></br>
                     {loading ? <SkeletonLoader /> : <AdminStats />}
                 </div>
             )}
@@ -153,7 +152,7 @@ export default function Dashboard() {
             {auth.user &&
                 auth.user.role.role.includes("PUBLISHER") && (
                     <div>
-                        <h2 className="text-2xl font-bold mb-6"> Publisher</h2>
+                        <br></br>
                         {loading ? <SkeletonLoader /> : <PublisherStats />}
                     </div>
                 )}
@@ -161,12 +160,12 @@ export default function Dashboard() {
             {auth.user &&
                 auth.user.role.role.includes("BIDDER") && (
                     <div>
-                        <h2 className="text-2xl font-bold mb-6"> Tenders</h2>
+                        <br></br>
                         {loading ? <SkeletonLoader /> : <BidderStats />}
                     </div>
                 )}
 
-            {error && <div className="text-red-500 mt-4">{error}</div>} {/* Display error message */}
+            {error && <div className="text-red-500 mt-4">{error}</div>}
         </div>
     );
 }
