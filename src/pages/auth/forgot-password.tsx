@@ -20,7 +20,7 @@ export default function () {
         mutationFn: (data: { username: string }) => forgotPassword(data),
         onSuccess: () => {
             toast.success("Reset instruction has been sent to your email");
-            reset();
+            navigate("/reset-password", {replace: false});  
         },
         onError: (error: any) => { }
     });

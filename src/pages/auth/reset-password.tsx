@@ -28,6 +28,7 @@ const schema = object().shape({
     .oneOf([ref("password")], "Passwords must match"),
 })
 
+
 export default function () {
     const store = useSnapshot(authStore);
     const navigate = useNavigate();
@@ -36,6 +37,12 @@ export default function () {
 
     const { register, handleSubmit, formState: { errors } } = useForm<IResetPassword >({
         resolver: yupResolver(schema),
+        defaultValues: {
+            email: "",
+            password:"",
+            passwordConfirmation:"",
+            confirmationCode:""
+        }
     });
 
     const {mutate, isLoading} = useMutation({
@@ -86,6 +93,7 @@ export default function () {
                             </label>
                             <input 
                                 type="email" 
+                                autoComplete="off" 
                                 className={`${errors.email?.message ? 'input-error' : 'input-normal'}`}
                                 {...register("email")} />
                             
@@ -98,6 +106,7 @@ export default function () {
                             </label>
                             <div className="relative">
                                 <input 
+                                    autoComplete="off" 
                                     type={showPassword ? "text" : "password"} // Toggle between text and password
                                     className={`${errors.password?.message ? 'input-error' : 'input-normal'}`}
                                     {...register("password")} />
@@ -117,6 +126,7 @@ export default function () {
                             </label>
                             <div className="relative">
                                 <input 
+                                    autoComplete="off" 
                                     type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
                                     className={`${errors.passwordConfirmation?.message ? 'input-error' : 'input-normal'}`}
                                     {...register("passwordConfirmation")} />
@@ -135,6 +145,7 @@ export default function () {
                                 Confirmation Code
                             </label>
                             <input 
+                                autoComplete="off" 
                                 type="text" 
                                 className={`${errors.confirmationCode?.message ? 'input-error' : 'input-normal'}`}
                                 {...register("confirmationCode")} />

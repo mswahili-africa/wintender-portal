@@ -23,7 +23,7 @@ export default function({...props}: IProps) {
     });
 
     const submitReset = () => {
-        showConfirmation({
+        showConfirmation({ 
             theme: "danger",
             title: "Reset Password",
             message: "Password reset confirmation code will be sent to your account for password change. Agree to initiate this process.",
