@@ -4,7 +4,6 @@ import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
 import { getPayments } from "../services/payments";
 
-
 interface IProps {
     page: number
     search?: string

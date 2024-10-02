@@ -24,7 +24,7 @@ export default function CompanyDocuments() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
   const [sort, setSort] = useState<string>("createdAt,desc");
-  const [filter, setFilter] = useState<any>();
+  const [filter] = useState<any>();
   const { showConfirmation } = usePopup();
   const [selectedDocument, setSelectedDocument] = useState<ICompanyDocuments | null>(null);
 
@@ -94,7 +94,7 @@ export default function CompanyDocuments() {
           columns={columns}
           data={documents ? documents.content : []}
           isLoading={isLoading}
-          hasSelection={true}
+          hasSelection={false}
           hasActions={true}
           onSorting={handleSorting}
           actionSlot={(content: ICompanyDocuments) => {

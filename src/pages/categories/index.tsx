@@ -3,7 +3,6 @@ import { debounce } from "lodash"; // Debouncing to reduce search input triggers
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useCategories from "@/hooks/useCategories";
-import usePopup from "@/hooks/usePopup";
 import columns from "./fragments/categoryColumns";
 import CategoryCreate from "./fragments/categoryCreateForm";
 
@@ -11,8 +10,7 @@ export default function CategoryList() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string | undefined>(undefined);
     const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter, setFilter] = useState<Record<string, any> | undefined>(undefined); // Set a specific type if possible
-    const { showConfirmation } = usePopup();
+    const [filter] = useState<Record<string, any> | undefined>(undefined);
 
     const { categories, isLoading, refetch } = useCategories({
         page,
@@ -20,10 +18,6 @@ export default function CategoryList() {
         sort,
         filter
     });
-
-    const handleSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-    }, 300);
 
     const handleSorting = (field: string, direction: SortDirection) => {
         setSort(`${field},${direction.toLowerCase()}`);
@@ -37,13 +31,12 @@ export default function CategoryList() {
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                <div className="flex justify-between items-center p-4 border-b border-slate-200">
+            <div className="flex justify-between items-center p-4 border-b border-slate-200">
                     <input
                         type="text"
                         placeholder="Search"
                         className="input-normal py-2 w-1/2 lg:w-1/4"
-                        onChange={handleSearchChange}
-                    />
+                        onChange={(e) => setSearch(e.target.value)} />
                 </div>
 
                 <Table

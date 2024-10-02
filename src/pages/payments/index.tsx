@@ -17,7 +17,7 @@ export default function () {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
   const [sort, setSort] = useState<string>("createdAt,desc");
-  const [filter, setFilter] = useState<any>();
+  const [filter] = useState<any>();
   const { showConfirmation } = usePopup();
   const { payments, isLoading, refetch } = usePayments({
     page: page,
@@ -101,7 +101,7 @@ export default function () {
           columns={columns}
           data={payments ? payments.content : []}
           isLoading={isLoading}
-          hasSelection={true}
+          hasSelection={false}
           hasActions={true}
           onSorting={handleSorting}
           actionSlot={(content: IPayment) => {

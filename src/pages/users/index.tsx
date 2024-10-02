@@ -12,7 +12,7 @@ export default function() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter, setFilter] = useState<any>();
+    const [filter] = useState<any>();
     const [update, setUpdate] = useState<IUser>();
 
     const { users, isLoading, refetch } = useUsers({

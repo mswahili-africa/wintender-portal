@@ -20,7 +20,7 @@ export default function LocalTenders() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter, setFilter] = useState<any>({});
+    const [filter] = useState<any>({});
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const { showConfirmation } = usePopup();
     const { getTenders, isLoading, refetch } = useTenders({
@@ -30,15 +30,6 @@ export default function LocalTenders() {
         filter: filter
     });
 
-     // State for active tab
-     const [activeTab, setActiveTab] = useState<string>("LOCAL");
-
-     useEffect(() => {
-         // Update the filter whenever the active tab changes
-         setFilter({ region: activeTab });
-         refetch(); // Refetch the tenders based on the active tab
-     }, [activeTab]); // Dependency on activeTab
- 
 
     const doItForMeMutation = useMutation({
         mutationFn: async (tenderId: string) => requestDoForMe(tenderId),
@@ -85,10 +76,6 @@ export default function LocalTenders() {
         if (selectedTender) {
             doItForMeMutation.mutate(selectedTender.id);
         }
-    };
-
-    const handleTabClick = (tab: string) => {
-        setActiveTab(tab);
     };
 
     return (
