@@ -22,7 +22,7 @@ export default function WelcomeBanner() {
                                 { auth.user?.role.role.includes("Vendor") ? "Vendor Information" : "APPLY. WIN. EXECUTE." }
                             </h1>
                             <p className=" font-light text-sm lg:max-w-[600px] lg:pt-4">
-                                Wintender Portal.
+                            We're thrilled to have you back! Welcome to Wintender Gen.2. We're excited to introduce the second generation of our service, designed to help you reach your goals more easily.
                             </p>
                         </div>
                     </div>
