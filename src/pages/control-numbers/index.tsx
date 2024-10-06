@@ -13,6 +13,7 @@ import useControlNumber from "@/hooks/useControlNumber";
 import TenderViewModelDoItForMe from "./fragments/tenderViewModelDoItForMe";
 import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
+import PrivateTenderRequest from "./fragments/privateRequestForm";
 
 export default function ContrlNumbers () {
   const [page, setPage] = useState<number>(0);
@@ -66,9 +67,15 @@ export default function ContrlNumbers () {
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-semibold">Requests</h2>
-      </div>
-
+                <h2 className="text-lg font-bold">Requests</h2>
+                {(userRole === "BIDDER") && (
+                    <PrivateTenderRequest
+                        onSuccess={() => {
+                            refetch();
+                        }}
+                    />
+                )}
+            </div>
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
         <div className="flex justify-between items-center p-4 border-b border-slate-200">
           <input

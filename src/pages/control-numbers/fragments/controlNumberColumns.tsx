@@ -4,6 +4,24 @@ import { IColumn } from "@/components/widgets/table/Table";
 const columns: IColumn[] = [
 
   {
+    name: "type",
+    label: "type",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      return row.doForMeApplication?.tender?.tenderGroup;
+    },
+  }, 
+  {
+    name: "bidder",
+    label: "bidder",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      return row.doForMeApplication?.user?.company?.name;
+    },
+  },
+  {
     name: "reference",
     label: "Reference",
     sortable: false,

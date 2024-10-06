@@ -4,13 +4,13 @@ import { getEntities } from "@/services/entities";
 import { createTender, getCategories } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconFileText, IconPlus } from "@tabler/icons-react";
+import { IconFileText, IconGitPullRequest, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { mixed, number, object, string } from "yup";
-import Select from "react-select"; // Import react-select
+import { mixed, object, string } from "yup";
+import Select from "react-select";
 
 interface IProps {
     onSuccess: () => void;
@@ -28,10 +28,9 @@ const schema = object().shape({
     entity: string().required("Entity is required"),
     openDate: string().required("Open Date is required"),
     closeDate: string().required("Close Date is required"),
-    consultationFee: number().required("Consultation Fee is required"),
 });
 
-export default function TenderUpload({ onSuccess, initials }: IProps) {
+export default function PrivateTenderRequest({ onSuccess, initials }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
@@ -57,7 +56,6 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
             entity: "",
             openDate: "",
             closeDate: "",
-            consulatationFee: 0,
         },
     });
 
@@ -106,11 +104,10 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
         formData.append("summary", data.summary);
         formData.append("openDate", data.openDate);
         formData.append("closeDate", data.closeDate);
-        formData.append("tenderGroup", "PUBLIC");
+        formData.append("tenderGroup", "PRIVATE");
         formData.append("tenderType", data.tenderType);
         formData.append("category", data.category);
         formData.append("entity", data.entity);
-        formData.append("consultationFee",data.consultationFee)
 
         uploadTenderMutation.mutate(formData);
     };
@@ -122,11 +119,11 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
             reset();
             setTenderFile(undefined);
             setOpen(false);
-            toast.success("Tender uploaded successfully");
+            toast.success("Request sent successfully");
             onSuccess();
         },
         onError: (error: any) => {
-            toast.error("Failed to upload tender " + error);
+            toast.error("Failed to send reqquest" + error);
         },
     });
 
@@ -136,8 +133,8 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
         <div className="max-w-max">
             <Button
                 type="button"
-                label="Tender"
-                icon={<IconPlus size={18} />}
+                label="Request"
+                icon={<IconGitPullRequest size={18} />}
                 theme="primary"
                 size="md"
                 onClick={() => setOpen(true)}
@@ -145,11 +142,14 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
 
             <Modal
                 size="sm"
-                title="Upload New Tender"
+                title="Private Request"
                 isOpen={open}
                 onClose={(v) => setOpen(v)}
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
+                    <div className="mb-2">
+                        <span className="text-xs text-red-500 mt-1 mx-0.5">Send us a tender you need us to do it for you privately</span>
+                    </div>
                     {/* Region */}
                     <div className="mb-2">
                         <label htmlFor="region" className="block mb-2">
@@ -355,34 +355,9 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                         </div>
                     )}
 
-                    <div className="mb-2">
-                        <label htmlFor="consultationFee" className="block mb-2">
-                            Consultation Fee
-                        </label>
-
-                        <select
-                            className={`${errors.consultationFee?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("consultationFee", { required: true })}
-                        >
-                            <option value="200000">200,000</option>
-                            <option value="250000">250,000</option>
-                            <option value="300000">300,000</option>
-                            <option value="350000">350,000</option>
-                            <option value="400000">400,000</option>
-                            <option value="450000">450,000</option>
-                            <option value="500000">500,000</option>
-                            <option value="550000">550,000</option>
-                            <option value="600000">⁠600,000</option>
-                            <option value="650000">650,000</option>
-                            <option value="700000">700,000</option>
-                        </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.consultationFee?.message?.toString()}
-                        </p>
-                    </div>
                     <Button
                         type="submit"
-                        label="Upload"
+                        label="Send"
                         theme="primary"
                         size="md"
                         loading={uploadTenderMutation.isLoading}

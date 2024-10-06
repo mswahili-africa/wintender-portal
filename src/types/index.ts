@@ -192,6 +192,7 @@ export interface ITenders {
   openDate: string;
   closeDate: number;
   tenderType: string;
+  consulationFee: string;
   category: ITenderCategory;
   entity: IEntity;
   status: string;

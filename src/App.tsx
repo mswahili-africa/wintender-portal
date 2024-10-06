@@ -10,7 +10,7 @@ import ForgotPassword from "./pages/auth/forgot-password";
 import ResetPassword from "./pages/auth/reset-password";
 import Dashboard from "./pages/dashboard";
 import Payments from "./pages/payments";
-import Tenders from "./pages/tenders/local-tenders";
+import Tenders from "./pages/tenders/private-tenders";
 import Users from "./pages/users";
 import UserDetail from "./pages/users/_username";
 import Entities from "./pages/entities";

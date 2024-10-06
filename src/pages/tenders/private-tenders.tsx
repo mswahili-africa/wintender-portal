@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useTenders from "@/hooks/useTendersLocal";
+import useTenders from "@/hooks/useTendersPrivate";
 import usePopup from "@/hooks/usePopup";
 import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
@@ -16,7 +16,7 @@ import Chip from "@/components/chip/Chip";
 import { getUserRole } from "@/utils";
 
 
-export default function LocalTenders() {
+export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
