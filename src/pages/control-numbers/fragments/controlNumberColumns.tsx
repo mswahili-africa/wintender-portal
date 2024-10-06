@@ -4,14 +4,19 @@ import { IColumn } from "@/components/widgets/table/Table";
 const columns: IColumn[] = [
 
   {
-    name: "type",
+    name: "group",
     label: "type",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.doForMeApplication?.tender?.tenderGroup;
+      const tenderGroup = row.doForMeApplication?.tender?.tenderGroup;
+      
+      const theme: "primary" | "warning" =
+        tenderGroup === "PRIVATE" ? "primary" : "warning";
+  
+      return <Chip label={tenderGroup} size="sm" theme={theme} variant="outline" />;
     },
-  }, 
+  },  
   {
     name: "bidder",
     label: "bidder",
