@@ -68,7 +68,7 @@ export default function ContrlNumbers () {
     <div>
       <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Requests</h2>
-                {(userRole === "BIDDER") && (
+                {(userRole === "ADMINISTRATOR") && (
                     <PrivateTenderRequest
                         onSuccess={() => {
                             refetch();

@@ -4,7 +4,7 @@ import { getEntities } from "@/services/entities";
 import { createTender, getCategories } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconFileText, IconGitPullRequest, IconPlus } from "@tabler/icons-react";
+import { IconCrown, IconFileText } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -134,7 +134,7 @@ export default function PrivateTenderRequest({ onSuccess, initials }: IProps) {
             <Button
                 type="button"
                 label="Request"
-                icon={<IconGitPullRequest size={18} />}
+                icon={<IconCrown size={18} />}
                 theme="primary"
                 size="md"
                 onClick={() => setOpen(true)}
@@ -142,7 +142,7 @@ export default function PrivateTenderRequest({ onSuccess, initials }: IProps) {
 
             <Modal
                 size="sm"
-                title="Private Request"
+                title="Do it For Me Private Request"
                 isOpen={open}
                 onClose={(v) => setOpen(v)}
             >
