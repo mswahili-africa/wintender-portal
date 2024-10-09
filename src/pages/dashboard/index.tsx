@@ -85,7 +85,12 @@ export default function Dashboard() {
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconReportMoney className="text-purple-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Payment</h3>
-                    <p className="text-gray-600">Total Collection: TZS{stats?.statistics.payments}</p>
+                    <p className="text-gray-600">Total Collection: {new Intl.NumberFormat('en-TZ', {
+                            style: 'decimal',
+                            currency: 'TZS',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(stats?.statistics.payments ?? 0)}</p>
                 </div>
             </Link>
         </div>
@@ -104,7 +109,14 @@ export default function Dashboard() {
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconPigMoney className="text-purple-500 w-8 h-8 mb-4" />
                     <h3 className="text-xl font-bold">Commission</h3>
-                    <p className="text-gray-600">Total Earned: TZS{stats?.statistics.payments}</p>
+                    <p className="text-gray-600">
+                        Total Earned: TZS {new Intl.NumberFormat('en-TZ', {
+                            style: 'decimal',
+                            currency: 'TZS',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(stats?.statistics.payments ?? 0)}
+                    </p>
                 </div>
             </Link>
         </div>
