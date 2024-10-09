@@ -194,6 +194,7 @@ export interface ITenders {
   tenderType: string;
   consulationFee: string;
   category: ITenderCategory;
+  tenderGroup: string;
   entity: IEntity;
   status: string;
   createdBy: string;

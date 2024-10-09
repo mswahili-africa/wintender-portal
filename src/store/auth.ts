@@ -1,6 +1,8 @@
 import { proxy } from "valtio"
 import { IAuthUser, ILoginResponse } from "@/types/index"
 import { TOKEN_KEY, USER_KEY } from "@/http/constants"
+import { useEffect, useState } from "react"
+import http from "@/http"
 
 export interface AuthStore {
     accessToken: string | null
@@ -64,3 +66,35 @@ export const authStore = proxy<AuthStore>({
     },
 
 });
+
+
+export  function useSession() {
+    const [showModal, setShowModal] = useState(false);
+    useEffect(() => {
+      const responseInterceptor = http.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 500) {
+                setShowModal(true);
+                setTimeout(() => {
+                    authStore.logout();
+                    setShowModal(false);
+              },3000)
+            } else if (error.response && error.response.status === 401) {
+                setShowModal(true);
+                setTimeout(() => {
+                    authStore.logout()
+                    setShowModal(false);
+              },3000)  
+          }
+          return Promise.reject(error);
+        }
+      );
+      return () => {
+        http.interceptors.response.eject(responseInterceptor);
+      };
+    }, []);
+    return {
+      showModal
+  }
+}

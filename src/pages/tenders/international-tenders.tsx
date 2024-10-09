@@ -180,7 +180,13 @@ export default function InternationalTenders() {
                                     const remainingTime = closeDate - currentDate;
                                     const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-                                    return remainingDays <= 2 ? 'CLOSING' : selectedTender.status;
+                                    if (remainingDays < 0) {
+                                        return 'CLOSED';
+                                    } else if (remainingDays <= 2) {
+                                        return 'CLOSING';
+                                    } else {
+                                        return selectedTender.status;
+                                    }
                                 })()} size="sm" theme="success" />
                             </div>
                             <div className="flex items-center">

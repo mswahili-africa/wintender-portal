@@ -17,7 +17,7 @@ export default function({...props}: IProps) {
         queryKey: ["getControlNumber", props.page, props.sort, props?.search , props?.filter],
         queryFn: () => getControlNumber({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000
+        refetchInterval: 100000
     });
 
     useEffect(() => {
@@ -31,4 +31,4 @@ export default function({...props}: IProps) {
         error,
         refetch
     }
-}
+} 

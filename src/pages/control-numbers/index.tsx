@@ -15,7 +15,7 @@ import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
 import PrivateTenderRequest from "./fragments/privateRequestForm";
 
-export default function ContrlNumbers () {
+export default function ContrlNumbers() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
   const [sort, setSort] = useState<string>("createdAt,desc");
@@ -54,7 +54,7 @@ export default function ContrlNumbers () {
         deteleMutation.mutate(payload.doForMeApplication?.id);
         refetch();
       },
-      onCancel: () => {},
+      onCancel: () => { },
     });
   };
 
@@ -67,15 +67,15 @@ export default function ContrlNumbers () {
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Requests</h2>
-                {(userRole === "BIDDER") && (
-                    <PrivateTenderRequest
-                        onSuccess={() => {
-                            refetch();
-                        }}
-                    />
-                )}
-            </div>
+        <h2 className="text-lg font-bold">Requests</h2>
+        {(userRole === "BIDDER") && (
+          <PrivateTenderRequest
+            onSuccess={() => {
+              refetch();
+            }}
+          />
+        )}
+      </div>
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
         <div className="flex justify-between items-center p-4 border-b border-slate-200">
           <input
@@ -113,7 +113,7 @@ export default function ContrlNumbers () {
                       </button>
                     </Fragment>
                   )}
-                  {userRole === "MANAGER" &&
+                {userRole === "MANAGER" &&
                   content.status != "REQUESTED" && (
                     <Fragment>
                       <button
@@ -144,39 +144,77 @@ export default function ContrlNumbers () {
 
       {selectedTender && (
         <TenderViewModelDoItForMe
-          title={selectedTender.doForMeApplication.tender.tenderNumber}
+          tenderGroup={selectedTender.doForMeApplication.tender.tenderGroup}
           onClose={() => setSelectedTender(null)}
         >
           <div className="space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <strong className="w-32 text-gray-600">Bidder:</strong>
+              <h3 className="text-l font-semi-bold text-gray-800">{selectedTender.doForMeApplication.user.company.name}</h3>
+            </div>
+            <div className="flex items-center justify-between mb-4">
+              <strong className="w-32 text-gray-600">Phone:</strong>
+              <a href={`tel:${selectedTender.doForMeApplication.user.company.primaryNumber}`} className="text-l font-semi-bold text-gray-800">
+                {selectedTender.doForMeApplication.user.company.primaryNumber}
+              </a>
+            </div>
+            <div className="flex items-center justify-between mb-4">
+              <strong className="w-32 text-gray-600">Email:</strong>
+              <a href={`mailto:${selectedTender.doForMeApplication.user.company.email}`} className="text-l font-semi-bold text-gray-800">
+                {selectedTender.doForMeApplication.user.company.email}
+              </a>
+            </div>
+
+          </div>
+
+          <hr></hr>
+          <br></br>
+
+          <div className="space-y-4">
             {/* Tender Header */}
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-800">{selectedTender.doForMeApplication.tender.title}</h3>
+              <strong className="w-32 text-gray-600">Title:</strong>
+              <h3 className="flex-1 font-bold text-gray-800">{selectedTender.doForMeApplication.tender.tenderNumber} : {selectedTender.doForMeApplication.tender.title}</h3>
             </div>
 
             {/* Tender Details */}
             <div className="space-y-2">
               <div className="flex items-center">
-                <p className="flex-1">{selectedTender.doForMeApplication.tender.entity.name}</p>
+                <strong className="w-32 text-gray-600">PE:</strong>
+                <p className="flex-1 font-bold text-gray-800">{selectedTender.doForMeApplication.tender.entity.name.toUpperCase()}</p>
               </div>
               <div className="flex items-center">
                 <strong className="w-32 text-gray-600">Category:</strong>
                 <p className="flex-1">{selectedTender.doForMeApplication.tender.category.name}</p>
               </div>
               <div className="flex items-center">
+                <strong className="w-32 text-gray-600">Summary:</strong>
                 <p className="flex-1">{selectedTender.doForMeApplication.tender.summary}</p>
               </div>
 
               <div className="flex items-center">
                 <strong className="w-32 text-gray-600">Status:</strong>
-                <Chip label={(() => {
-                  const currentDate = new Date().getTime();
-                  const closeDate = selectedTender.doForMeApplication.tender.closeDate;
-                  const remainingTime = closeDate - currentDate;
-                  const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+                <Chip
+                  label={(() => {
+                    const currentDate = new Date().getTime();
+                    const closeDate = selectedTender.doForMeApplication.tender.closeDate;
+                    const remainingTime = closeDate - currentDate;
+                    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-                  return remainingDays <= 2 ? 'CLOSING' : selectedTender.status;
-                })()} size="sm" theme="success" />
+                    // Determine the label based on the remaining days
+                    if (remainingDays < 0) {
+                      return 'CLOSED';
+                    } else if (remainingDays <= 2) {
+                      return 'CLOSING';
+                    } else {
+                      return selectedTender.status;
+                    }
+                  })()}
+                  size="sm"
+                  theme="success"
+                />
               </div>
+
               <div className="flex items-center">
                 <strong className="w-32 text-gray-600">Close Date:</strong>
                 <p className="flex-1">{new Date(selectedTender.doForMeApplication.tender.closeDate).toLocaleString()}</p>
