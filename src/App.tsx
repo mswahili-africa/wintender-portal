@@ -24,7 +24,7 @@ import CompanyDocuments from "./pages/complience";
 import PublisherPerformance from "./pages/publisher-reports";
 import TenderList from "./pages/tenders/fragments";
 import { useSession } from "./store/auth";
-// import SessionTimeoutModal from "./components/cards/SessionLogger";
+import SessionTimeoutModal from "./components/cards/SessionLogger";
 
 export const queryClient = new QueryClient({});
 
@@ -36,7 +36,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <PopupProvider>
                 <Toaster position="top-center" reverseOrder={false} />
-                {/* {showModal && <SessionTimeoutModal />} */}
+                {showModal && <SessionTimeoutModal />}
                 <Routes>
                     <Route>
                         <Route path="/login" element={<Login/>}/>

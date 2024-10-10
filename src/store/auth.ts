@@ -74,13 +74,7 @@ export  function useSession() {
       const responseInterceptor = http.interceptors.response.use(
         response => response,
         error => {
-            if (error.response && error.response.status === 500) {
-                setShowModal(true);
-                setTimeout(() => {
-                    authStore.logout();
-                    setShowModal(false);
-              },3000)
-            } else if (error.response && error.response.status === 401) {
+            if (error.response && error.response.status === 401) {
                 setShowModal(true);
                 setTimeout(() => {
                     authStore.logout()
