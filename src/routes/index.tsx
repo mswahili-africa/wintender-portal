@@ -123,7 +123,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 : menu
         ), 
     ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal"),
-    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Reports"),
+    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal"),
     BIDDER: () => allMenus
         .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard","Compliance"].includes(menu.label))  // Only show the allowed menus
         .map(menu =>
