@@ -1,4 +1,4 @@
-import { IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { getUserRole } from "@/utils";
 import { IControlNumber } from "@/types";
-import { deleteDoForMe } from "@/services/tenders";
+import { deleteDoForMe, updatePrincipleAmount } from "@/services/tenders";
 import useControlNumber from "@/hooks/useControlNumber";
 import TenderViewModelDoItForMe from "./fragments/tenderViewModelDoItForMe";
 import Chip from "@/components/chip/Chip";
@@ -21,6 +21,9 @@ export default function ContrlNumbers() {
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [filter] = useState<any>();
   const [selectedTender, setSelectedTender] = useState<IControlNumber | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
+  const [editAmount, setEditAmount] = useState<number | null>(null);  // For editing principal amount
   const { showConfirmation } = usePopup();
   const { controlNumbers, isLoading, refetch } = useControlNumber({
     page: page,
@@ -43,6 +46,17 @@ export default function ContrlNumbers() {
     },
   });
 
+  const updateAmountMutation = useMutation({
+    mutationFn: ({ id, amount }: { id: string, amount: number }) => updatePrincipleAmount(id, amount),
+    onSuccess: () => {
+      toast.success("Principal amount updated");
+      refetch();
+      setIsEditModalOpen(false);  // Close modal after success
+    },
+    onError: () => {
+      toast.error("Update failed");
+    },
+  });
 
   const reject = (payload: IControlNumber) => {
     showConfirmation({
@@ -58,9 +72,40 @@ export default function ContrlNumbers() {
     });
   };
 
-  const handleView = (content: IControlNumber) => {
+  // Edit Principal Amount Handler
+  const handleEdit = (content: IControlNumber) => {
+    setIsTenderModalOpen(false);
+    setEditAmount(content.principleAmount);
     setSelectedTender(content);
-  }
+    setIsEditModalOpen(true);
+  };
+
+
+  const handleUpdate = () => {
+    if (selectedTender && editAmount !== null) {
+
+      setIsEditModalOpen(false);
+      showConfirmation({
+        theme: "danger",
+        title: "Change",
+        message:
+          "Are you sure you want to change amount?",
+        onConfirm: () => {
+          updateAmountMutation.mutate({ id: selectedTender.doForMeApplication.id, amount: editAmount });
+          refetch();
+        },
+        onCancel: () => { },
+      });
+
+    }
+  };
+
+  // View Tender Details
+  const handleView = (content: IControlNumber) => {
+    setIsEditModalOpen(false);
+    setSelectedTender(content);
+    setIsTenderModalOpen(true);  // Open tender view modal
+  };
 
   const userRole = getUserRole();
 
@@ -105,17 +150,17 @@ export default function ContrlNumbers() {
                 {userRole === "BIDDER" &&
                   content.status == "REQUESTED" && (
                     <Fragment>
-                      <button
-                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                        onClick={() => reject(content)}
-                      >
+                      <button className="text-red-600 hover:text-red-700" onClick={() => reject(content)}>
                         <IconSquareRoundedMinus size={20} />
                       </button>
                     </Fragment>
                   )}
-                {userRole === "MANAGER" &&
-                  content.status != "REQUESTED" && (
+                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") &&
+                  content.status == "REQUESTED" && (
                     <Fragment>
+                      <button className="hover:text-green-700" onClick={() => handleEdit(content)}>
+                        <IconEdit size={20} />
+                      </button>
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                         onClick={() => reject(content)}
@@ -142,7 +187,30 @@ export default function ContrlNumbers() {
         </div>
       </div>
 
-      {selectedTender && (
+
+      {/* Edit Modal */}
+      {isEditModalOpen && selectedTender && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">  {/* Add overlay for better visibility */}
+          <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
+            <h3 className="font-bold text-lg mb-4">Edit Consultation Fee</h3>
+            <div className="mb-4">
+              <label className="block mb-2 text-sm text-gray-600">Principal Amount</label>
+              <input
+                type="number"
+                value={editAmount ?? ""}
+                onChange={(e) => setEditAmount(Number(e.target.value))}
+                className="input-normal w-full"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button label="Cancel" theme="danger" onClick={() => setIsEditModalOpen(false)} />
+              <Button label="Save" theme="primary" onClick={handleUpdate} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isTenderModalOpen && selectedTender && (
         <TenderViewModelDoItForMe
           tenderGroup={selectedTender.doForMeApplication.tender.tenderGroup}
           onClose={() => setSelectedTender(null)}
@@ -150,7 +218,7 @@ export default function ContrlNumbers() {
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-4">
               <strong className="w-32 text-gray-600">Bidder:</strong>
-              <h3 className="text-l font-semi-bold text-gray-800">{selectedTender.doForMeApplication.user.company.name}</h3>
+              <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{selectedTender.doForMeApplication.user.account}</strong> : {selectedTender.doForMeApplication.user.company.name}</h3>
             </div>
             <div className="flex items-center justify-between mb-4">
               <strong className="w-32 text-gray-600">Phone:</strong>
@@ -219,14 +287,21 @@ export default function ContrlNumbers() {
                 <strong className="w-32 text-gray-600">Close Date:</strong>
                 <p className="flex-1">{new Date(selectedTender.doForMeApplication.tender.closeDate).toLocaleString()}</p>
               </div>
+
+              <br></br>
+              <hr></hr>
               <div className="flex items-center">
-                <strong className="w-32 text-gray-600">Consultation Fee:</strong>
-                <p className="flex-1">{selectedTender.doForMeApplication.tender.consulationFee}</p>
+                <strong className="w-50 text-gray-600">Consultation Fee:</strong>
+                <p className="flex-1">
+                  <strong className="w-40 text-gray-600">
+                    TZS {new Intl.NumberFormat().format(selectedTender.principleAmount)}
+                  </strong>
+                </p>
               </div>
             </div>
 
             <hr></hr>
-            
+
 
             {/* PDF Viewer */}
             <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>

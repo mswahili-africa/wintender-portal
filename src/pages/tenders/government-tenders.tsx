@@ -193,9 +193,15 @@ export default function GovernmentTenders() {
                                 <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
                             </div>
 
+                            <br></br>
+                            <hr></hr>
                             <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Consultation Fee:</strong>
-                                <p className="flex-1">{selectedTender.consulationFee}</p>
+                                <strong className="w-50 text-gray-600">Consultation Fee:</strong>
+                                <p className="flex-1">
+                                    <strong className="w-40 text-gray-600">
+                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
+                                    </strong>
+                                </p>
                             </div>
                         </div>
 

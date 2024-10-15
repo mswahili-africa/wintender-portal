@@ -192,7 +192,7 @@ export interface ITenders {
   openDate: string;
   closeDate: number;
   tenderType: string;
-  consulationFee: number;
+  consultationFee: number;
   category: ITenderCategory;
   tenderGroup: string;
   entity: IEntity;
@@ -266,6 +266,7 @@ export interface IDoItForMe {
 export interface IControlNumber {
   id: string;
   doForMeApplication: IDoItForMe;
+  principleAmount: number;
   paidAmount: string;
   controlNumber: ITenders;
   status: string;
