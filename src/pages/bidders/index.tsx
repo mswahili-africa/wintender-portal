@@ -214,17 +214,21 @@ export default function Bidders() {
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Type your message here"
+                                maxLength={160} // Limit to 160 characters
                             />
+                            <p className="text-sm text-gray-500">
+                                {message.length}/160 characters
+                            </p>
                         </div>
                     )}
                     {selectedUser && (
                         <>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
                                 <input
                                     type="text"
                                     className="input-normal w-full mb-4"
-                                    value={selectedUser.phoneNumber}
+                                    value={selectedUser.company.name+' - '+selectedUser.phoneNumber}
                                     readOnly
                                 />
                             </div>
@@ -236,7 +240,11 @@ export default function Bidders() {
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder="Type your message here"
+                                    maxLength={160} // Limit to 160 characters
                                 />
+                                <p className="text-sm text-gray-500">
+                                    {message.length}/160 characters
+                                </p>
                             </div>
                         </>
                     )}

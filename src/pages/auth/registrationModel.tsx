@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { object, string } from "yup";
+import usePopup from "@/hooks/usePopup";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import { bidderRegister } from "@/services/auth";
@@ -31,6 +31,9 @@ const schema = yup.object().shape({
 });
 
 export default function RegistrationModel({ onSuccess, initials, isOpen, onClose }: IProps) {
+
+    const { showMessage, closePopup } = usePopup();
+
     const {
         register,
         handleSubmit,
@@ -43,9 +46,14 @@ export default function RegistrationModel({ onSuccess, initials, isOpen, onClose
     const createMutation = useMutation({
         mutationFn: (data: IBidderRegisterForm) => bidderRegister(data),
         onSuccess: (res) => {
-            reset();
-            onClose();
-            toast.success("Registration successful");
+            onClose(); 
+            showMessage({
+                title: "Registration successful",
+                message: "Temporary Password has been sent to your Email and SMS, You can change your your password any time you wish through profile.",
+                theme: "success",
+            });
+            setTimeout(() => {closePopup(); reset();}, 10000)
+
             onSuccess();
         },
         onError: (error: any) => {

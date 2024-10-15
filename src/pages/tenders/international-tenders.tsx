@@ -193,6 +193,10 @@ export default function InternationalTenders() {
                                 <strong className="w-32 text-gray-600">Close Date:</strong>
                                 <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
                             </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Consultation Fee:</strong>
+                                <p className="flex-1">{selectedTender.consulationFee}</p>
+                            </div>
                         </div>
 
                         <hr></hr>

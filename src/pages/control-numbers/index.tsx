@@ -219,9 +219,14 @@ export default function ContrlNumbers() {
                 <strong className="w-32 text-gray-600">Close Date:</strong>
                 <p className="flex-1">{new Date(selectedTender.doForMeApplication.tender.closeDate).toLocaleString()}</p>
               </div>
+              <div className="flex items-center">
+                <strong className="w-32 text-gray-600">Consultation Fee:</strong>
+                <p className="flex-1">{selectedTender.doForMeApplication.tender.consulationFee}</p>
+              </div>
             </div>
 
             <hr></hr>
+            
 
             {/* PDF Viewer */}
             <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
