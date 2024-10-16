@@ -78,6 +78,12 @@ export async function updatePrincipleAmount(id: string, amount: number) {
     return response.data;
 }
 
+export async function updateStatus(id: string, comment: string, status: string) {
+    const response = await http.put<any>(`/applications/do-for-me/update/${id}`, { status: status, comments: comment });
+
+    return response.data;
+}
+
 
 export async function getDoForMe(params: {}) {
     const response = await http.get<IlistResponse<any>>("/applications/do-for-me/list", {

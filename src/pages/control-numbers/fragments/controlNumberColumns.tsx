@@ -68,12 +68,13 @@ const columns: IColumn[] = [
     name: "status",
     label: "Status",
     sortable: false,
-    plainObject: false,
-    element: (value: string) => {
+    plainObject: true,
+    element: (row: any) => {
       let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
 
-      switch (value) {
+      switch (row.doForMeApplication?.status) {
         case "SUCCESS":
+        case "COMPLETED":
           theme = "success";
           break;
         case "REQUESTED":
@@ -82,15 +83,18 @@ const columns: IColumn[] = [
         case "ON_PROGRESS":
           theme = "pending";
           break;
-        case "REJECTED":
+          case "RETURNED":
+          theme = "warning";
+          break;
+        case "CANCELED":
           theme = "danger";
           break;
         default:
-          theme = "primary"; // Fallback for unknown statuses
+          theme = "danger"; // Fallback for unknown statuses
       }
   
-      return <Chip label={value} size="sm" theme={theme} variant="outline" />;
-    }
+      return <Chip label={row.doForMeApplication?.status} size="sm" theme={theme} variant="outline" />;
+    },
   },
   
   {

@@ -1,4 +1,4 @@
-import { IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -8,12 +8,15 @@ import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { getUserRole } from "@/utils";
 import { IControlNumber } from "@/types";
-import { deleteDoForMe, updatePrincipleAmount } from "@/services/tenders";
+import { deleteDoForMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
 import useControlNumber from "@/hooks/useControlNumber";
 import TenderViewModelDoItForMe from "./fragments/tenderViewModelDoItForMe";
 import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
 import PrivateTenderRequest from "./fragments/privateRequestForm";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { object, string } from "yup";
 
 export default function ContrlNumbers() {
   const [page, setPage] = useState<number>(0);
@@ -22,6 +25,7 @@ export default function ContrlNumbers() {
   const [filter] = useState<any>();
   const [selectedTender, setSelectedTender] = useState<IControlNumber | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
   const [editAmount, setEditAmount] = useState<number | null>(null);  
   const { showConfirmation } = usePopup();
@@ -31,6 +35,21 @@ export default function ContrlNumbers() {
     sort: sort,
     filter: filter,
   });
+
+  const schema = object().shape({
+    status: string().required("Status is required"),
+    comments: string().required("Comment is required"),
+  });
+  
+  const {
+    register,
+    formState: { errors },
+    getValues,
+  } = useForm<any>({
+    resolver: yupResolver(schema),
+    defaultValues: { status: "", comments: "" },
+  });
+
   const handleSorting = (field: string, direction: SortDirection) => {
     setSort(`${field},${direction.toLowerCase()}`);
   };
@@ -49,9 +68,21 @@ export default function ContrlNumbers() {
   const updateAmountMutation = useMutation({
     mutationFn: ({ id, amount }: { id: string, amount: number }) => updatePrincipleAmount(id, amount),
     onSuccess: () => {
-      toast.success("Principal amount updated");
+      toast.success("Consultation fee updated");
       refetch();
-      setIsEditModalOpen(false);  // Close modal after success
+      setIsEditModalOpen(false); 
+    },
+    onError: () => {
+      toast.error("Update failed");
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, comments,status }: { id: string, comments: string, status: string }) => updateStatus(id, comments, status),
+    onSuccess: () => {
+      toast.success("Status changed");
+      refetch();
+      setIsStatusModalOpen(false); 
     },
     onError: () => {
       toast.error("Update failed");
@@ -80,6 +111,45 @@ export default function ContrlNumbers() {
     setIsEditModalOpen(true);
   };
 
+   // Edit Status Handler
+   const handleStatusChange = (content: IControlNumber) => {
+    setIsTenderModalOpen(false);
+    setIsTenderModalOpen(false);
+    setSelectedTender(content);
+    setIsStatusModalOpen(true);
+  };
+
+  const handlStatusUpdate = () => {
+    const { status, comments } = getValues(); // Extract status and comments from the form
+  
+    if (selectedTender && status && comments) {
+      setIsStatusModalOpen(false);
+      showConfirmation({
+        theme: "warning", // Adjust the theme to fit status updates
+        title: "Change Status",
+        message: "Are you sure you want to change the status and add a comments?",
+        onConfirm: () => {
+          updateStatusMutation.mutate({
+            id: selectedTender.id,
+            comments: comments, 
+            status: status
+          });
+          refetch();
+        },
+        onCancel: () => {},
+      });
+    } else {
+      toast.error("Please fill in both status and comments.");
+    }
+  };
+  
+
+   // View Tender Details
+   const handleView = (content: IControlNumber) => {
+    setIsEditModalOpen(false);
+    setSelectedTender(content);
+    setIsTenderModalOpen(true);  // Open tender view modal
+  };
 
   const handleUpdate = () => {
     if (selectedTender && editAmount !== null) {
@@ -100,13 +170,7 @@ export default function ContrlNumbers() {
     }
   };
 
-  // View Tender Details
-  const handleView = (content: IControlNumber) => {
-    setIsEditModalOpen(false);
-    setSelectedTender(content);
-    setIsTenderModalOpen(true);  // Open tender view modal
-  };
-
+ 
   const userRole = getUserRole();
 
   return (
@@ -148,7 +212,7 @@ export default function ContrlNumbers() {
                   <IconEye size={20} />
                 </button>
                 {userRole === "BIDDER" &&
-                  content.status == "REQUESTED" && (
+                  content.doForMeApplication.status == "REQUESTED" && (
                     <Fragment>
                       <button className="text-red-600 hover:text-red-700" onClick={() => reject(content)}>
                         <IconSquareRoundedMinus size={20} />
@@ -156,16 +220,16 @@ export default function ContrlNumbers() {
                     </Fragment>
                   )}
                 {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") &&
-                  content.status == "REQUESTED" && (
+                  content.doForMeApplication.status == "REQUESTED" && (
                     <Fragment>
                       <button className="hover:text-green-700" onClick={() => handleEdit(content)}>
                         <IconEdit size={20} />
                       </button>
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                        onClick={() => reject(content)}
+                        onClick={() => handleStatusChange(content)}
                       >
-                        <IconSquareRoundedMinus size={20} />
+                        <IconCheckbox size={20} />
                       </button>
                     </Fragment>
                   )}
@@ -187,6 +251,58 @@ export default function ContrlNumbers() {
         </div>
       </div>
 
+
+      {/* Staus Modal */}
+      {isStatusModalOpen && selectedTender && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
+            <h3 className="font-bold text-lg mb-4">Manager Request</h3>
+            <div className="mb-2">
+            <label htmlFor="status" className="block mb-2">
+              Status
+            </label>
+
+            <select
+              className={`${errors.status?.type === "required"
+                ? "input-error"
+                : "input-normal"
+                }`}
+              {...register("status", { required: true })}
+            >
+              <option value="ON_PROGRESS">ON PROGRESS</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="RETURNED">RETURNED</option>
+              <option value="CANCELED">CANCELED</option>
+            </select>
+            <p className="text-xs text-red-500 mt-1 mx-0.5">
+              {errors.status?.message?.toString()}
+            </p>
+          </div>
+          <div className="mb-2">
+            <label htmlFor="comments" className="block mb-2">
+            Comments
+            </label>
+
+            <textarea
+              rows={3}
+              className={`${errors.comments?.type === "required"
+                ? "input-error"
+                : "input-normal"
+                }`}
+              {...register("comments", { required: true })}
+            ></textarea>
+            <p className="text-xs text-red-500 mt-1 mx-0.5">
+              {errors.comments?.message?.toString()}
+            </p>
+          </div>
+
+            <div className="flex justify-end space-x-2">
+              <Button label="Cancel" theme="danger" onClick={() => setIsStatusModalOpen(false)} />
+              <Button label="Save" theme="primary" onClick={handlStatusUpdate} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       {isEditModalOpen && selectedTender && (

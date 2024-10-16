@@ -269,6 +269,7 @@ export interface IControlNumber {
   principleAmount: number;
   paidAmount: string;
   controlNumber: ITenders;
+  comment: string;
   status: string;
   createdBy: string;
   updatedBy: string;
