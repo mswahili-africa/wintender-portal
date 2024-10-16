@@ -23,7 +23,7 @@ export default function ContrlNumbers() {
   const [selectedTender, setSelectedTender] = useState<IControlNumber | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
-  const [editAmount, setEditAmount] = useState<number | null>(null);  // For editing principal amount
+  const [editAmount, setEditAmount] = useState<number | null>(null);  
   const { showConfirmation } = usePopup();
   const { controlNumbers, isLoading, refetch } = useControlNumber({
     page: page,
@@ -91,7 +91,7 @@ export default function ContrlNumbers() {
         message:
           "Are you sure you want to change amount?",
         onConfirm: () => {
-          updateAmountMutation.mutate({ id: selectedTender.doForMeApplication.id, amount: editAmount });
+          updateAmountMutation.mutate({ id: selectedTender.id, amount: editAmount });
           refetch();
         },
         onCancel: () => { },
