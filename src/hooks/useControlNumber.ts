@@ -14,11 +14,11 @@ interface IProps {
 export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getControlNumber", props.page, props.sort, props?.search , props?.filter],
+        queryKey: ["getControlNumber", props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getControlNumber({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 100000
-    });
+    }); 
 
     useEffect(() => {
         refetch();

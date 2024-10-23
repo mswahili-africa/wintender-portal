@@ -220,11 +220,16 @@ export default function ContrlNumbers() {
                     </Fragment>
                   )}
                 {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") &&
-                  content.doForMeApplication.status == "REQUESTED" && (
+                  content.doForMeApplication.status == "REQUESTED"  && (
                     <Fragment>
                       <button className="hover:text-green-700" onClick={() => handleEdit(content)}>
                         <IconEdit size={20} />
                       </button>
+                    </Fragment>
+                  )}
+                  {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") &&
+                  (content.doForMeApplication.status == "REQUESTED" || content.doForMeApplication.status == "ON_PROGRESS") && (
+                    <Fragment>
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                         onClick={() => handleStatusChange(content)}

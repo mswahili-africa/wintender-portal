@@ -14,7 +14,7 @@ interface IProps {
 export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getPayments", props.page, props.sort, props?.search, , props?.filter],
+        queryKey: ["getPayments", props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getPayments({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 20000

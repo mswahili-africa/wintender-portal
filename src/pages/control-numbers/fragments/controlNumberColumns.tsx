@@ -51,18 +51,29 @@ const columns: IColumn[] = [
     plainObject: true,
   },
   {
-      name: "Fees Payable",
-      label: "Fees Payable",
-      sortable: false,
-      plainObject: true,
-      element: (row: any) => {
-          const amount = row.principleAmount;
-          const formattedAmount = new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'TZS',
-          }).format(amount);
-          return formattedAmount;
-      }
+    name: "Fees",
+    label: "Fees",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      const amount = row.principleAmount;
+      const formattedAmount = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'TZS',
+      }).format(amount);
+
+      const status = row.doForMeApplication?.status;
+      const theme = status === "SUCCESS" ? "primary" : "warning"; // Default to warning
+
+      return (
+        <Chip
+          label={formattedAmount}
+          size="sm"
+          theme={theme}
+          variant="outline"
+        />
+      );
+    },
   },
   {
     name: "status",
@@ -81,10 +92,10 @@ const columns: IColumn[] = [
           theme = "secondary";
           break;
         case "ON_PROGRESS":
-          theme = "pending";
+          theme = "warning";
           break;
           case "RETURNED":
-          theme = "warning";
+          theme = "danger";
           break;
         case "CANCELED":
           theme = "danger";
