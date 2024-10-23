@@ -62,7 +62,7 @@ const columns: IColumn[] = [
         currency: 'TZS',
       }).format(amount);
 
-      const status = row.doForMeApplication?.status;
+      const status = row.status;
       const theme = status === "SUCCESS" ? "primary" : "warning"; // Default to warning
 
       return (
