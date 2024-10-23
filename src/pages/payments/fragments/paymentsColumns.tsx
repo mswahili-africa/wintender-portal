@@ -8,7 +8,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.user.account + " - "+row.user.name;
+      return row.user.account + " - "+row.user.company.name;
     },
   },
   {
