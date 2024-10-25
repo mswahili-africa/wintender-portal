@@ -9,7 +9,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const tenderGroup = row.doForMeApplication?.tender?.tenderGroup;
+      const tenderGroup = row.tender?.tenderGroup;
       
       const theme: "primary" | "warning" =
         tenderGroup === "PRIVATE" ? "primary" : "warning";
@@ -18,21 +18,12 @@ const columns: IColumn[] = [
     },
   },  
   {
-    name: "bidder",
-    label: "bidder",
-    sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row.doForMeApplication?.user?.company?.name;
-    },
-  },
-  {
     name: "reference",
     label: "Reference",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.doForMeApplication?.reference;
+      return row.reference;
     },
   },
   {
@@ -41,7 +32,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.doForMeApplication?.tender?.tenderNumber;
+      return row.tender?.tenderNumber;
     },
   },
   {
@@ -49,6 +40,9 @@ const columns: IColumn[] = [
     label: "Control Number",
     sortable: false,
     plainObject: true,
+    element: (row: any) => {
+      return row.controlNumber.controlNumber;
+    },
   },
   {
     name: "Fees",
@@ -56,7 +50,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const amount = row.principleAmount;
+      const amount = row.controlNumber.principleAmount;
       const formattedAmount = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'TZS',
@@ -83,7 +77,7 @@ const columns: IColumn[] = [
     element: (row: any) => {
       let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
 
-      switch (row.doForMeApplication?.status) {
+      switch (row.status) {
         case "SUCCESS":
         case "COMPLETED":
           theme = "success";
@@ -104,7 +98,7 @@ const columns: IColumn[] = [
           theme = "danger"; // Fallback for unknown statuses
       }
   
-      return <Chip label={row.doForMeApplication?.status} size="sm" theme={theme} variant="outline" />;
+      return <Chip label={row.status} size="sm" theme={theme} variant="outline" />;
     },
   },
   

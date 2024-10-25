@@ -52,14 +52,14 @@ const allMenus: IRoute[] = [
             { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> }
         ],
     },
-    // {
-    //     path: "/applications",
-    //     label: "Do it for me",
-    //     icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
-    //     subMenu: [
-    //         { path: "/do-it-for-me", label: "Do it for me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
-    //     ],
-    // },
+    {
+        path: "/applications",
+        label: "Do it for me",
+        icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
+        subMenu: [
+            { path: "/do-it-for-me", label: "Do it for me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+        ],
+    },
     {
         path: "/entities",
         label: "Entities",

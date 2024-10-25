@@ -194,15 +194,6 @@ export default function GovernmentTenders() {
                             </div>
 
                             <br></br>
-                            <hr></hr>
-                            <div className="flex items-center">
-                                <strong className="w-50 text-gray-600">Consultation Fee:</strong>
-                                <p className="flex-1">
-                                    <strong className="w-40 text-gray-600">
-                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
-                                    </strong>
-                                </p>
-                            </div>
                         </div>
 
                         <hr></hr>

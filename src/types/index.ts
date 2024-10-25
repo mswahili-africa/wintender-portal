@@ -1,3 +1,5 @@
+import { List } from "lodash";
+
 export interface IGenericResponse {
   statusCodeValue: number;
   message: string;
@@ -265,11 +267,33 @@ export interface IDoItForMe {
 
 export interface IControlNumber {
   id: string;
-  doForMeApplication: IDoItForMe;
   principleAmount: number;
   paidAmount: string;
   controlNumber: ITenders;
   comment: string;
+  status: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface IApplicationGroup {
+  id: string;
+  user: IUser;
+  application: Array<IApplications>;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface IApplications {
+  id: string;
+  reference: string;
+  tender: ITenders;
+  comments: string;
+  controlNumber: IControlNumber;
   status: string;
   createdBy: string;
   updatedBy: string;
