@@ -22,7 +22,7 @@ interface ApplicationsListProps {
     onRefetch: () => void; // Function to refetch data if needed
 }
 
-export default function ApplicationsList({ applicationGroup, applicationList, onClose }: ApplicationsListProps) {
+export default function ApplicationsList({ applicationGroup, applicationList, onClose ,onRefetch}: ApplicationsListProps) {
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<string>("createdAt,desc"); const [filter] = useState<any>();
     const [selectedGroup, setSelectedGroup] = useState<IApplicationGroup | null>(null);
@@ -87,17 +87,26 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
             message:
                 "This action cannot be undone. Please verify that you want to delete.",
             onConfirm: () => {
-                deteleMutation.mutate(payload.id);
+                deteleMutation.mutate(payload.id, {
+                    onSuccess: () => {
+                        onClose(); // Close the modal
+                        onRefetch(); // Refetch data in the main group
+                    },
+                    onError: (error: any) => {
+                        toast.error("Delete failed");
+                    }
+                });
             },
-            onCancel: () => { },
+            onCancel: () => {},
         });
     };
+    
 
     // Edit Principal Amount Handler
     const handleEdit = (content: IApplications) => {
         setIsTenderModalOpen(false);
         setEditAmount(content.controlNumber.principleAmount);
-        setSelectedTender(content.tender);
+        setSelectedApplication(content);
         setIsEditModalOpen(true);
     };
 
@@ -105,33 +114,9 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
     const handleStatusChange = (content: IApplications) => {
         setIsTenderModalOpen(false);
         setIsTenderModalOpen(false);
-        setSelectedTender(content.tender);
+        setSelectedApplication(content);
         setIsStatusModalOpen(true);
     };
-
-    const handlStatusUpdate = () => {
-        const { status, comments } = getValues(); // Extract status and comments from the form
-
-        if (selectedTender && status && comments) {
-            setIsStatusModalOpen(false);
-            showConfirmation({
-                theme: "warning", // Adjust the theme to fit status updates
-                title: "Change Status",
-                message: "Are you sure you want to change the status and add a comments?",
-                onConfirm: () => {
-                    updateStatusMutation.mutate({
-                        id: selectedTender.id,
-                        comments: comments,
-                        status: status
-                    });
-                },
-                onCancel: () => { },
-            });
-        } else {
-            toast.error("Please fill in both status and comments.");
-        }
-    };
-
 
     // View Tender Details
     const handleView = (group: IApplicationGroup, application: IApplications, tender: ITenders) => {
@@ -142,23 +127,58 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
         setIsTenderModalOpen(true);  // Open tender view modal
     };
 
+    const handlStatusUpdate = () => {
+        const { status, comments } = getValues(); // Extract status and comments from the form
+    
+        if (selectedApplication && status && comments) {
+            setIsStatusModalOpen(false);
+            showConfirmation({
+                theme: "warning", // Adjust the theme to fit status updates
+                title: "Change Status",
+                message: "Are you sure you want to change the status and add comments?",
+                onConfirm: () => {
+                    updateStatusMutation.mutate(
+                        {
+                            id: selectedApplication.id,
+                            comments: comments,
+                            status: status
+                        },
+                        {
+                            onSuccess: () => {
+                                onRefetch(); // Trigger refetch for main group data
+                            }
+                        }
+                    );
+                },
+                onCancel: () => {},
+            });
+        } else {
+            toast.error("Please fill in both status and comments.");
+        }
+    };
+    
     const handleUpdate = () => {
-        if (selectedTender && editAmount !== null) {
-
+        if (selectedApplication && editAmount !== null) {
             setIsEditModalOpen(false);
             showConfirmation({
                 theme: "danger",
-                title: "Change",
-                message:
-                    "Are you sure you want to change amount?",
+                title: "Change Amount",
+                message: "Are you sure you want to change the amount?",
                 onConfirm: () => {
-                    updateAmountMutation.mutate({ id: selectedTender.id, amount: editAmount });
+                    updateAmountMutation.mutate(
+                        { id: selectedApplication.id, amount: editAmount },
+                        {
+                            onSuccess: () => {
+                                onRefetch(); // Trigger refetch for main group data
+                            }
+                        }
+                    );
                 },
-                onCancel: () => { },
+                onCancel: () => {},
             });
-
         }
     };
+    
 
     const userRole = getUserRole();
 
@@ -220,7 +240,7 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                 />
 
                 {/* Staus Modal */}
-                {isStatusModalOpen && selectedTender && (
+                {isStatusModalOpen && selectedApplication && (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
                             <h3 className="font-bold text-lg mb-4">Manager Request</h3>
@@ -272,7 +292,7 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                 )}
 
                 {/* Edit Modal */}
-                {isEditModalOpen && selectedTender && (
+                {isEditModalOpen && selectedApplication && (
                     <div className="fixed inset-0 flex items-center justify-center z-70">  {/* Add overlay for better visibility */}
                         <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
                             <h3 className="font-bold text-lg mb-4">Edit Consultation Fee</h3>

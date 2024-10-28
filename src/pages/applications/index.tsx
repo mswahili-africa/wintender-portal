@@ -11,13 +11,13 @@ import { IApplicationGroup } from "@/types";
 import { IconEye } from "@tabler/icons-react";
 
 
-
 export default function ApplicationGroups() {
   const userRole = getUserRole();
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("updatedAt,desc");
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<IApplicationGroup | null>(null); // Track selected group
 
   // Fetch data using custom hook
@@ -44,6 +44,7 @@ export default function ApplicationGroups() {
   // Handle opening the ApplicationsList modal
   const handleViewApplications = (group: IApplicationGroup) => {
     setSelectedGroup(group);
+    setIsGroupModalOpen(true);
   };
 
   return (
@@ -83,7 +84,7 @@ export default function ApplicationGroups() {
         />
 
         {/* Modal to display selected group's applications */}
-        {selectedGroup && (
+        {isGroupModalOpen && selectedGroup && (
           <ApplicationsList
             applicationGroup={selectedGroup}
             applicationList={selectedGroup.application}
