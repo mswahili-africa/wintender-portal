@@ -16,7 +16,7 @@ export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["getTendersGovernment", props.page, props.sort, props?.search, props?.filter],
-        queryFn: () => getTendersGovernment({page: props.page, size: 10, sort: props.sort, search: props.search}),
+        queryFn: () => getTendersGovernment({page: props.page, size: 30, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 100000
     });
