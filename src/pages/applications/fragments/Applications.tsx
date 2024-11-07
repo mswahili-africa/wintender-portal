@@ -1,7 +1,7 @@
 import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import columns from "./applicationListColumns";
+import applicationListColumns from "./applicationListColumns";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { getUserRole } from "@/utils";
@@ -14,17 +14,20 @@ import { useMutation } from "@tanstack/react-query";
 import Button from "@/components/button/Button";
 import TenderViewModelDoItForMe from "./tenderViewModelDoItForMe";
 import Chip from "@/components/chip/Chip";
+import useApplicationsList from "@/hooks/useApplicationsList";
+import Pagination from "@/components/widgets/table/Pagination";
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
-    applicationList: IApplications[];
+    groupId: string;
     onClose: () => void; // Function to close the modal
     onRefetch: () => void; // Function to refetch data if needed
 }
 
-export default function ApplicationsList({ applicationGroup, applicationList, onClose ,onRefetch}: ApplicationsListProps) {
+export default function ApplicationsList({ applicationGroup, groupId, onClose, onRefetch }: ApplicationsListProps) {
+    const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
-    const [sort, setSort] = useState<string>("createdAt,desc"); const [filter] = useState<any>();
+    const [sort, setSort] = useState<string>("updatedAt,desc");
     const [selectedGroup, setSelectedGroup] = useState<IApplicationGroup | null>(null);
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
@@ -33,6 +36,15 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const { showConfirmation } = usePopup();
+
+    // Fetch data using custom hook
+    const { applicationList, isLoading, refetch } = useApplicationsList({
+        groupId,
+        page,
+        search,
+        sort,
+        filter: undefined,
+    });
 
     const schema = object().shape({
         status: string().required("Status is required"),
@@ -44,14 +56,12 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
         defaultValues: { status: "", comments: "" },
     });
 
-    const handleSorting = (field: string, direction: SortDirection) => {
-        setSort(`${field},${direction.toLowerCase()}`);
-    };
-
+   
     const deteleMutation = useMutation({
         mutationFn: (doItForMeId: string) => deleteDoForMe(doItForMeId),
         onSuccess: (res) => {
             toast.success("Request deleted successful");
+            refetch();
         },
         onError: (error: any) => {
             toast.error("Delete failed");
@@ -62,6 +72,7 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
         mutationFn: ({ id, amount }: { id: string, amount: number }) => updatePrincipleAmount(id, amount),
         onSuccess: () => {
             toast.success("Consultation fee updated");
+            refetch();
             setIsEditModalOpen(false);
         },
         onError: () => {
@@ -73,6 +84,7 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
         mutationFn: ({ id, comments, status }: { id: string, comments: string, status: string }) => updateStatus(id, comments, status),
         onSuccess: () => {
             toast.success("Status changed");
+            refetch();
             setIsStatusModalOpen(false);
         },
         onError: () => {
@@ -90,6 +102,8 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                 deteleMutation.mutate(payload.id, {
                     onSuccess: () => {
                         onClose(); // Close the modal
+
+                        refetch();
                         onRefetch(); // Refetch data in the main group
                     },
                     onError: (error: any) => {
@@ -97,10 +111,10 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                     }
                 });
             },
-            onCancel: () => {},
+            onCancel: () => { },
         });
     };
-    
+
 
     // Edit Principal Amount Handler
     const handleEdit = (content: IApplications) => {
@@ -129,7 +143,7 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
 
     const handlStatusUpdate = () => {
         const { status, comments } = getValues(); // Extract status and comments from the form
-    
+
         if (selectedApplication && status && comments) {
             setIsStatusModalOpen(false);
             showConfirmation({
@@ -150,13 +164,13 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                         }
                     );
                 },
-                onCancel: () => {},
+                onCancel: () => { },
             });
         } else {
             toast.error("Please fill in both status and comments.");
         }
     };
-    
+
     const handleUpdate = () => {
         if (selectedApplication && editAmount !== null) {
             setIsEditModalOpen(false);
@@ -174,70 +188,61 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                         }
                     );
                 },
-                onCancel: () => {},
+                onCancel: () => { },
             });
         }
     };
-    
+
 
     const userRole = getUserRole();
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
-            <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] p-4 z-10"> {/* Added z-60 */}
+            <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[80vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="font-bold text-lg">Requests</h3>
                     <button onClick={onClose} className="text-red-500">Close</button>
                 </div>
 
 
-                <Table
-                    columns={columns}
-                    data={applicationList}
-                    isLoading={false} // Change this if you have loading state
-                    hasSelection={false}
-                    hasActions={true}
-                    onSorting={handleSorting}
-                    actionSlot={(content: IApplications) => {
-                        return (
+                {isLoading ? (
+                    <div className="flex justify-center items-center my-8">
+                        <span className="text-gray-500">Loading data...</span>
+                    </div>
+                ) : (
+                    <Table
+                        columns={applicationListColumns}
+                        data={applicationList?.content || []}
+                        isLoading={isLoading}
+                        hasSelection={false}
+                        hasActions={true}
+                        actionSlot={(applicationList: IApplications) => (
                             <div className="flex justify-center items-center space-x-3">
                                 <button
                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(applicationGroup, content, content.tender)}
+                                    onClick={() => handleView(applicationGroup, applicationList, applicationList.tender)}
                                 >
                                     <IconEye size={20} />
                                 </button>
-                                {userRole === "BIDDER" &&
-                                    content.status == "REQUESTED" && (
-                                        <Fragment>
-                                            <button className="text-red-600 hover:text-red-700" onClick={() => reject(content)}>
-                                                <IconSquareRoundedMinus size={20} />
-                                            </button>
-                                        </Fragment>
-                                    )}
-                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") &&
-                                    content.status == "REQUESTED" && (
-                                        <Fragment>
-                                            <button className="hover:text-green-700" onClick={() => handleEdit(content)}>
-                                                <IconEdit size={20} />
-                                            </button>
-                                        </Fragment>
-                                    )}
-                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") &&
-                                    (content.status == "REQUESTED" || content.status == "ON_PROGRESS") && (
-                                        <Fragment>
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                                onClick={() => handleStatusChange(content)}
-                                            >
-                                                <IconCheckbox size={20} />
-                                            </button>
-                                        </Fragment>
-                                    )}
+                                {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
+                                    <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
+                                        <IconSquareRoundedMinus size={20} />applicationList
+                                    </button>
+                                )}
+                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && applicationList.status === "REQUESTED" && (
+                                    <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
+                                        <IconEdit size={20} />
+                                    </button>
+                                )}
+                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (applicationList.status === "REQUESTED" || applicationList.status === "ON_PROGRESS") && (
+                                    <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(applicationList)}>
+                                        <IconCheckbox size={20} />
+                                    </button>
+                                )}
                             </div>
-                        );
-                    }}
-                />
+                        )}
+                    />
+                )}
 
                 {/* Staus Modal */}
                 {isStatusModalOpen && selectedApplication && (
@@ -426,6 +431,16 @@ export default function ApplicationsList({ applicationGroup, applicationList, on
                         </div>
                     </TenderViewModelDoItForMe>
                 )}
+
+                <div className="flex justify-between items-center p-4 lg:px-8">
+                    {applicationList?.pageable && (
+                        <Pagination
+                            currentPage={page}
+                            setCurrentPage={setPage}
+                            pageCount={applicationList.totalPages}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     );

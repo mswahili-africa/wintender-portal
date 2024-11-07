@@ -11,7 +11,8 @@ export type UserRole =
     | "BIDDER"
     | "PUBLISHER"
     | "ACCOUNTANT"
-    | "MANAGER";
+    | "MANAGER"
+    | "LEGAL";
 
 export const getUserRole = (): UserRole => {
     const userInfo = JSON.parse(localStorage.getItem("sr-dash-client") || "{}");

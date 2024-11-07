@@ -281,7 +281,7 @@ export interface IControlNumber {
 export interface IApplicationGroup {
   id: string;
   user: IUser;
-  application: Array<IApplications>;
+  application: List<string>;
   createdBy: string;
   updatedBy: string;
   createdAt: number;

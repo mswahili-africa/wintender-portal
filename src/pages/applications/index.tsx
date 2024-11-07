@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { debounce } from "lodash";
 import { getUserRole } from "@/utils";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useApplications from "@/hooks/useApplications";
 import columns from "./fragments/applicationGroupColumns";
 import PrivateTenderRequest from "./fragments/privateRequestForm";
 import ApplicationsList from "./fragments/Applications";
 import { IApplicationGroup } from "@/types";
 import { IconEye } from "@tabler/icons-react";
+import useApplicationsGroup from "@/hooks/useApplicationsGroup";
 
 
 export default function ApplicationGroups() {
@@ -16,12 +15,11 @@ export default function ApplicationGroups() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("updatedAt,desc");
-  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<IApplicationGroup | null>(null); // Track selected group
 
   // Fetch data using custom hook
-  const { applicationGroup, isLoading, refetch } = useApplications({
+  const { applicationGroup, isLoading, refetch } = useApplicationsGroup({
     page,
     search,
     sort,
@@ -31,14 +29,6 @@ export default function ApplicationGroups() {
   // Handle sorting of table columns
   const handleSorting = (field: string, direction: SortDirection) => {
     setSort(`${field},${direction.toLowerCase()}`);
-  };
-
-  // Toggle expanded row state
-  const handleGroupClick = (groupId: string) => {
-    setExpandedRows((prev) => ({
-      ...prev,
-      [groupId]: !prev[groupId], // Toggle expanded state for the clicked group
-    }));
   };
 
   // Handle opening the ApplicationsList modal
@@ -87,7 +77,7 @@ export default function ApplicationGroups() {
         {isGroupModalOpen && selectedGroup && (
           <ApplicationsList
             applicationGroup={selectedGroup}
-            applicationList={selectedGroup.application}
+            groupId={selectedGroup.id}
             onClose={() => setSelectedGroup(null)} // Close the modal
             onRefetch={refetch} // Pass the refetch function
           />

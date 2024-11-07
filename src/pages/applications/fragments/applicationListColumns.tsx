@@ -41,7 +41,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.controlNumber.controlNumber;
+      return row.controlNumber?.controlNumber;
     },
   },
   {
@@ -50,7 +50,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const amount = row.controlNumber.principleAmount;
+      const amount = row.controlNumber?.principleAmount;
       const formattedAmount = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'TZS',
@@ -107,8 +107,8 @@ const columns: IColumn[] = [
     label: "Updated At",
     sortable: true,
     plainObject: false,
-    element: (value: number) =>
-      new Date(value).toLocaleString(),
+    element: (value: number | null) => 
+      value ? new Date(value).toLocaleString() : "-", // Show "-" or "Loading..." when value is undefined
   },
 ];
 

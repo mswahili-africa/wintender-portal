@@ -13,7 +13,7 @@ export async function downloadTenderDocument(id: string) {
 }
 
 export async function getTendersPrivate(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list-private", {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list/private", {
         params: params
     })
 
@@ -21,7 +21,7 @@ export async function getTendersPrivate(params: IQueryParams) {
 }
 
 export async function getTendersGovernment(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list-government", {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list/government", {
         params: params
     })
 
@@ -29,7 +29,7 @@ export async function getTendersGovernment(params: IQueryParams) {
 }
 
 export async function getTendersInternational(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list-international", {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list/international", {
         params: params
     })
 
@@ -85,8 +85,16 @@ export async function updateStatus(id: string, comment: string, status: string) 
 }
 
 
-export async function getDoForMe(params: {}) {
-    const response = await http.get<IlistResponse<any>>("/applications/do-for-me/list", {
+export async function getDoForMeGroup(params: {}) {
+    const response = await http.get<IlistResponse<any>>("/applications/do-for-me/list/group", {
+        params: params
+    })
+
+    return response.data
+}
+
+export async function getDoForMeApplication(groupId: string,params: {}) {
+    const response = await http.get<IlistResponse<any>>(`/applications/do-for-me/list/application/${groupId}`, {
         params: params
     })
 
