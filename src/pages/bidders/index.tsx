@@ -1,4 +1,4 @@
-import { IconDeviceMobileMessage, IconMessage, IconStatusChange, IconUserOff } from "@tabler/icons-react";
+import { IconDeviceMobileMessage, IconFile, IconMessage, IconStatusChange, IconUserOff } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -182,6 +182,19 @@ export default function Bidders() {
                                         </button>
                                     </Fragment>
                                 )}
+
+                                {(userRole === "LEGAL" || userRole == "ADMINISTRATOR") &&
+                                content.status != "INACTIVE" && (
+                                    <Fragment>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                            onClick={() => handleResetUser(content)}
+                                        >
+                                            <IconFile size={20} />
+                                        </button>
+                                    </Fragment>
+                                )}
+
                         </div>
                     );
                 }}
@@ -259,8 +272,4 @@ export default function Bidders() {
             )}
         </div>
     );
-}
-
-function showConfirmation(arg0: { theme: string; title: string; message: string; onConfirm: () => void; onCancel: () => void; }) {
-    throw new Error("Function not implemented.");
 }
