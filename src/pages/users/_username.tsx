@@ -25,9 +25,12 @@ export default function UserProfile() {
         return auth.user?.id === userId;
     };
 
-    const filteredCategories = categories.filter(category =>
+    const filteredCategories = categories
+    .filter(category =>
         `${category.categoryGroup} ${category.name}`.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    )
+    .sort((a, b) => a.categoryGroup.localeCompare(b.categoryGroup) || a.name.localeCompare(b.name));
+
 
     useEffect(() => {
         async function fetchUser() {
