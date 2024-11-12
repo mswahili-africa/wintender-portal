@@ -162,7 +162,6 @@ export interface ICompany {
   tin: string;
   email: string;
   website: string;
-  plan: IPlan;
   categories: string[];
 }
 
