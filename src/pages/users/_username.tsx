@@ -17,12 +17,17 @@ export default function UserProfile() {
     const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [categories, setCategories] = useState<ICategory[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
     const accountOwner = (): boolean => {
         return auth.user?.id === userId;
     };
+
+    const filteredCategories = categories.filter(category =>
+        `${category.categoryGroup} ${category.name}`.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     useEffect(() => {
         async function fetchUser() {
@@ -52,6 +57,7 @@ export default function UserProfile() {
             try {
                 const data = await getCategories({
                     page: 0,
+                    size: 300,
                     search: "",
                     filter: {},
                 });
@@ -296,24 +302,34 @@ export default function UserProfile() {
                             <p className="text-red-500">Company information not available</p>
                         )}
                     </div>
+                    
                     <div className="w-1/2 pl-4">
-                        <h2 className="text-lg font-semibold mb-4">Select Categories</h2>
-                        {categories.map(category => (
-                            <div key={category.id} className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    id={`category-${category.id}`}
-                                    checked={selectedCategories.includes(category.id)} // Ensure this matches the IDs from your categories array
-                                    onChange={() => handleCategoryChange(category.id)}
-                                    className="mr-2"
-                                />
-                                <label htmlFor={`category-${category.id}`} className="text-sm">
-                                    {category.categoryGroup} - {category.name}
-                                </label>
-                            </div>
-                        ))}
-
+            <h2 className="text-lg font-semibold mb-4">Select Categories</h2>
+            <input
+                type="text"
+                placeholder="Search categories..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="mb-4 p-2 border border-gray-300 rounded w-full"
+            />
+            <div className="max-h-64 overflow-y-auto">
+                {filteredCategories.map(category => (
+                    <div key={category.id} className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id={`category-${category.id}`}
+                            checked={selectedCategories.includes(category.id)}
+                            onChange={() => handleCategoryChange(category.id)}
+                            className="mr-2"
+                        />
+                        <label htmlFor={`category-${category.id}`} className="text-sm">
+                            {category.categoryGroup} - {category.name}
+                        </label>
                     </div>
+                ))}
+            </div>
+        </div>
+
                 </div>
 
                 {/* Password Tab */}
