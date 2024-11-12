@@ -10,7 +10,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { mixed, number, object, string } from "yup";
-import Select from "react-select"; // Import react-select
+import Select from "react-select";
 
 interface IProps {
     onSuccess: () => void;

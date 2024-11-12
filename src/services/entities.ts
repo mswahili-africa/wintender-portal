@@ -1,5 +1,6 @@
 import http from "@/http";
-import { IQueryParams, IEntity, IlistResponse, ICompanyDocuments } from "@/types";
+import { IQueryParams, IEntity, IlistResponse, ICompanyDocuments, ICompany } from "@/types";
+import { IPlan } from "@/types/forms";
 
 
 export async function getEntities(params: IQueryParams) {
@@ -24,6 +25,20 @@ export async function updateEntity(id: string, payload: IEntity) {
     const response = await http.put<IEntity>(`/entities/update/${id}`, payload)
 
     return response.data;
+}
+
+export async function setCompanyPlan(payload: IPlan) {
+    const response = await http.post<IPlan>(`/entities/plan/create`, payload)
+
+    return response.data;
+}
+
+export async function getCompanyPlans(params: IQueryParams) {
+    const response = await http.get<IlistResponse<ICompany>>(`/entities/plan/list`, {
+        params: params
+    })
+
+    return response.data
 }
 
 export async function uploadDocument(payload: FormData) {

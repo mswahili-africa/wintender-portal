@@ -10,7 +10,8 @@ import {
     IconReportMoney,
     IconCategory,
     IconUsersGroup,
-    IconFiles
+    IconFiles,
+    IconCalendarUser
 } from "@tabler/icons-react";
 import React from "react";
 
@@ -82,6 +83,7 @@ const allMenus: IRoute[] = [
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+            { path: "/company-plans", label: "Plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },
     {

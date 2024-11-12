@@ -24,6 +24,7 @@ import TenderList from "./pages/tenders/fragments";
 import { useSession } from "./store/auth";
 import SessionTimeoutModal from "./components/cards/SessionLogger";
 import ApplicationGroups from "./pages/applications";
+import CompanyPlans from "./pages/plans";
 
 export const queryClient = new QueryClient({});
 
@@ -61,6 +62,7 @@ function App() {
                             <Route path="roles" element={<Roles />}/>
                             <Route path="publisher-perfomance" element={<PublisherPerformance />}/>
                             <Route path="company-documents" element={<CompanyDocuments />}/>
+                            <Route path="company-plans" element={<CompanyPlans />}/>
                         </Route>
 
                         <Route path="*" element={<NoMatch/>}/>

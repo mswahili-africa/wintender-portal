@@ -113,6 +113,14 @@ export interface IMessage {
     message: string
 }
 
+export interface IPlan {
+    companyId:       string
+    plan: string
+    maxTenders: number
+    numberOfMonths: number
+    amount: number
+}
+
 export interface IPublisherReport {
     id:       string
     email: string

@@ -9,7 +9,7 @@ import { getUserRole } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus } from "@/services/user";
-import SMSModal from "./fragments/SMSModel";
+import SMSModal from "./fragments/sms-model";
 import { sendMessageSingle } from "@/services/commons";
 import usePopup from "@/hooks/usePopup";
 import { IMessage } from "@/types/forms";
@@ -211,7 +211,6 @@ export default function Bidders() {
                 )}
             </div>
 
-            {/* Redesigned Modal for sending SMS */}
             {isModalOpen && (
                 <SMSModal
                     isOpen={isModalOpen}
