@@ -1,6 +1,6 @@
 import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
-import { Fragment, useState } from "react";
-import { SortDirection, Table } from "@/components/widgets/table/Table";
+import { useState } from "react";
+import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
@@ -28,7 +28,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<string>("updatedAt,desc");
-    const [selectedGroup, setSelectedGroup] = useState<IApplicationGroup | null>(null);
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -39,6 +38,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
+        applicationGroup,
         groupId,
         page,
         search,
@@ -51,7 +51,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         comments: string().required("Comment is required"),
     });
 
-    const { register, formState: { errors }, getValues, handleSubmit } = useForm({
+    const { register, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
         defaultValues: { status: "", comments: "" },
     });
@@ -133,9 +133,8 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     };
 
     // View Tender Details
-    const handleView = (group: IApplicationGroup, application: IApplications, tender: ITenders) => {
+    const handleView = (application: IApplications, tender: ITenders) => {
         setIsEditModalOpen(false);
-        setSelectedGroup(group);
         setSelectedTender(tender);
         setSelectedApplication(application);
         setIsTenderModalOpen(true);  // Open tender view modal
@@ -207,7 +206,8 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
                 {isLoading ? (
                     <div className="flex justify-center items-center my-8">
-                        <span className="text-gray-500">Loading data...</span>
+                        <div className="loader w-8 h-8 border-4 border-t-4 border-gray-300 rounded-full animate-spin"></div>
+                        <span className="ml-2 text-gray-500">Loading data...</span>
                     </div>
                 ) : (
                     <Table
@@ -220,7 +220,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             <div className="flex justify-center items-center space-x-3">
                                 <button
                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(applicationGroup, applicationList, applicationList.tender)}
+                                    onClick={() => handleView(applicationList, applicationList.tender)}
                                 >
                                     <IconEye size={20} />
                                 </button>
@@ -318,7 +318,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     </div>
                 )}
 
-                {isTenderModalOpen && selectedGroup && selectedTender && selectedApplication && (
+                {isTenderModalOpen && selectedTender && selectedApplication && (
                     <TenderViewModelDoItForMe
                         tenderGroup={selectedTender.tenderGroup}
                         onClose={() => setSelectedTender(null)}
@@ -326,18 +326,18 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         <div className="space-y-4">
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Bidder:</strong>
-                                <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{selectedGroup.user.account}</strong> : {selectedGroup.user.company.name}</h3>
+                                <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{applicationGroup.user.account}</strong> : {applicationGroup.user.company.name}</h3>
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Phone:</strong>
-                                <a href={`tel:${selectedGroup.user.company.primaryNumber}`} className="text-l font-semi-bold text-gray-800">
-                                    {selectedGroup.user.company.primaryNumber}
+                                <a href={`tel:${applicationGroup.user.company.primaryNumber}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicationGroup.user.company.primaryNumber}
                                 </a>
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Email:</strong>
-                                <a href={`mailto:${selectedGroup.user.company.email}`} className="text-l font-semi-bold text-gray-800">
-                                    {selectedGroup.user.company.email}
+                                <a href={`mailto:${applicationGroup.user.company.email}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicationGroup.user.company.email}
                                 </a>
                             </div>
 

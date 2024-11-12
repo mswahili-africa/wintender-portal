@@ -16,10 +16,10 @@ export default function ApplicationGroups() {
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("updatedAt,desc");
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<IApplicationGroup | null>(null); // Track selected group
+  const [selectedGroupList, setSelectedGroupList] = useState<IApplicationGroup | null>(null); // Track selected group
 
   // Fetch data using custom hook
-  const { applicationGroup, isLoading, refetch } = useApplicationsGroup({
+  const { applicationGroupList, isLoading, refetch } = useApplicationsGroup({
     page,
     search,
     sort,
@@ -33,7 +33,7 @@ export default function ApplicationGroups() {
 
   // Handle opening the ApplicationsList modal
   const handleViewApplications = (group: IApplicationGroup) => {
-    setSelectedGroup(group);
+    setSelectedGroupList(group);
     setIsGroupModalOpen(true);
   };
 
@@ -59,7 +59,7 @@ export default function ApplicationGroups() {
         {/* Render the main table with application groups */}
         <Table
           columns={columns}
-          data={applicationGroup?.content || []}
+          data={applicationGroupList?.content || []}
           isLoading={isLoading}
           hasSelection={false}
           hasActions={true}
@@ -74,22 +74,25 @@ export default function ApplicationGroups() {
         />
 
         {/* Modal to display selected group's applications */}
-        {isGroupModalOpen && selectedGroup && (
+        {isGroupModalOpen && selectedGroupList && (
           <ApplicationsList
-            applicationGroup={selectedGroup}
-            groupId={selectedGroup.id}
-            onClose={() => setSelectedGroup(null)} // Close the modal
+            applicationGroup={selectedGroupList}
+            groupId={selectedGroupList.id}
+            onClose={() => {
+              setSelectedGroupList(null); // Clear the data
+              setIsGroupModalOpen(false); // Close the modal
+            }}
             onRefetch={refetch} // Pass the refetch function
           />
         )}
 
         {/* Pagination control */}
         <div className="flex justify-between items-center p-4 lg:px-8">
-          {applicationGroup?.pageable && (
+          {applicationGroupList?.pageable && (
             <Pagination
               currentPage={page}
               setCurrentPage={setPage}
-              pageCount={applicationGroup.totalPages}
+              pageCount={applicationGroupList.totalPages}
             />
           )}
         </div>

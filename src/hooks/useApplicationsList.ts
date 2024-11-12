@@ -3,8 +3,10 @@ import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
 import { getDoForMeApplication } from "@/services/tenders";
+import { IApplicationGroup } from "@/types";
 
 interface IProps {
+    applicationGroup: IApplicationGroup
     groupId: string
     page: number
     search?: string
@@ -15,7 +17,7 @@ interface IProps {
 export default function({groupId,...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getApplications", props.page, props.sort, props?.search, props?.filter],
+        queryKey: [props.applicationGroup.id, props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getDoForMeApplication(groupId,{page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 100000
