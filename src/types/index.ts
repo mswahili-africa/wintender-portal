@@ -75,7 +75,7 @@ export interface IPermission {
 }
 
 export interface IAuthUser {
-  role: IUserRole;
+  role: string;
   displayName: string;
   id: string;
   avatar: string;
@@ -132,7 +132,7 @@ export interface IUser {
   displayName: string;
   lastLogin: number;
   avatar: string;
-  role: string;
+  roleId: string;
   company: ICompany;
   updatedBy: string;
   updatedAt: number;

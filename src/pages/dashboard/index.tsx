@@ -153,7 +153,7 @@ export default function Dashboard() {
         <div className="p-3 bg-gray-50 min-h-screen">
             <WelcomeBanner /> {/* Include the WelcomeBanner component */}
 
-            {auth.user && (auth.user.role.role.includes("MANAGER") || auth.user.role.role.includes("BIDDER") || auth.user.role.role.includes("ACCOUNTANT")) && (
+            {auth.user && (auth.user.role.includes("MANAGER") || auth.user.role.includes("BIDDER") || auth.user.role.includes("ACCOUNTANT")) && (
                 <div>
                     <br></br>
                     {loading ? <SkeletonLoader /> : <BidderStats />}
@@ -161,7 +161,7 @@ export default function Dashboard() {
             )}
 
             {auth.user &&
-                auth.user.role.role.includes("PUBLISHER") && (
+                auth.user.role.includes("PUBLISHER") && (
                     <div>
                         <br></br>
                         {loading ? <SkeletonLoader /> : <PublisherStats />}
@@ -169,7 +169,7 @@ export default function Dashboard() {
                 )}
 
             {auth.user &&
-                auth.user.role.role.includes("ADMINISTRATOR") && (
+                auth.user.role.includes("ADMINISTRATOR") && (
                     <div>
                         <br></br>
                         {loading ? <SkeletonLoader /> : <AdminStats />}
