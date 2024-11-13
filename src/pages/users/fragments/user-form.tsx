@@ -186,7 +186,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
                 <option value=""></option>
                 {roles?.content
                   .filter((item: IRole) => {
-                    const userRole = auth.user?.role.role;
+                    const userRole = auth.user?.role;
 
                     // For any role which is not ADMINISTRATOR, don't show any options
                     if (!userRole?.includes("ADMINISTRATOR")) {
@@ -198,7 +198,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
                   })
                   .map((item: IRole) => (
                     <option
-                      selected={item.id === initials?.role}
+                      selected={item.id === initials?.roleId}
                       value={item.id}
                       key={item.id}
                     >
