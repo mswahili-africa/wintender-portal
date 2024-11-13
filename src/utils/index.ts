@@ -16,5 +16,5 @@ export type UserRole =
 
 export const getUserRole = (): UserRole => {
     const userInfo = JSON.parse(localStorage.getItem("sr-dash-client") || "{}");
-    return userInfo.role?.role; // Default to "BIDDER" if no role found
+    return userInfo?.role; // Default to "BIDDER" if no role found
 };

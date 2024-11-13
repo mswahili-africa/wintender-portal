@@ -57,7 +57,7 @@ const Header = () => {
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Role</span>
-                                            <span>{auth.user.role.role}</span>
+                                            <span>{auth.user.role}</span>
                                         </div>
                                     </div>
                                 </div>

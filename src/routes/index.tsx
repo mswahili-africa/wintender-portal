@@ -33,7 +33,7 @@ type UserRole =
 
 const getUserRole = (): UserRole => {
     const userInfo = JSON.parse(localStorage.getItem("sr-dash-client") || "{}");
-    return userInfo.role?.role || "BIDDER"; // Default to "BIDDER" if no role found
+    return userInfo?.role || "BIDDER"; // Default to "BIDDER" if no role found
 };
 
 const userRole = getUserRole();
