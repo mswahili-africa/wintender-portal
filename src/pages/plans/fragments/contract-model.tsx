@@ -1,16 +1,17 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
-import { getEntities, setCompanyPlan } from "@/services/entities";
+import { setCompanyPlan } from "@/services/entities";
 import { IPlan } from "@/types/forms";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { object, string } from "yup";
 import Select from "react-select";
 import { getBidders } from "@/services/user";
+import { debounce } from "lodash";
 
 interface IProps {
     onSuccess: () => void;
@@ -25,6 +26,7 @@ const schema = object().shape({
 export default function ContractModal({ onSuccess, initials }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [entities, setEntities] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
     const [planType, setPlanType] = useState<string>("RETAINER");
 
     const {
@@ -35,7 +37,7 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
         formState: { errors },
     } = useForm<any>({
         resolver: yupResolver(schema),
-        defaultValues: { plan: "", maxTenders: 0, numberOfMonths: 3, amount: 0 },
+        defaultValues: { planType: "", maxTenders: 10, numberOfMonths: 3, amount: 0 },
     });
 
     const createPlan = useMutation({
@@ -55,22 +57,38 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
         createPlan.mutate(data);
     };
 
-    useEffect(() => {
-        async function fetchEntities() {
-            try {
-                const allEntities = await getBidders({ page: 0, size: 59 });
-                setEntities(allEntities.content.map(e => ({ value: e.id, label: e.company.name })));
-            } catch (error) {
-                console.error("Failed to fetch entities", error);
-            }
+    const fetchEntities = useCallback(async (search = "") => {
+        if (!search) {
+            setEntities([]);
+            return;
         }
-        fetchEntities();
+
+        setLoading(true);
+        try {
+            const allEntities = await getBidders({ page: 0, size: 5, search });
+            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.company.name })));
+        } catch (error) {
+            console.error("Failed to fetch entities", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    const debouncedFetchEntities = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchEntities(inputValue);
+            } else {
+                setEntities([]); // Clear entities if less than 5 characters
+            }
+        }, 5),
+        [fetchEntities]
+    );
 
     const handlePlanTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedPlan = event.target.value;
         setPlanType(selectedPlan);
-        setValue("maxTenders", selectedPlan === "RETAINER" ? 0 : undefined); // Clear maxTenders if CONTRACT
+        setValue("maxTenders", selectedPlan === "RETAINER" ? 10 : undefined); // Clear maxTenders if CONTRACT
     };
 
     return (
@@ -86,20 +104,22 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
 
             <Modal size="sm" title="Create Company Plan" isOpen={open} onClose={(v) => setOpen(v)}>
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                    <div className="mb-2">
-                        <label htmlFor="bidder" className="block mb-2">
-                            Bidder
-                        </label>
-                        <Select
-                            options={entities}
-                            onChange={(selectedOption) => setValue("bidder", selectedOption?.value)}
-                            className={errors.bidder ? "input-error" : "input-normal"}
-                            placeholder="Search for an bidder"
-                        />
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.bidder?.message?.toString()}
-                        </p>
-                    </div>
+                <div className="mb-2">
+            <label htmlFor="com" className="block mb-2">
+                Bidder
+            </label>
+            <Select
+                options={entities}
+                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                onChange={(selectedOption) => setValue("bidder", selectedOption?.value)}
+                isLoading={loading}
+                className={errors.bidder ? "input-error" : "input-normal"}
+                placeholder="Search for a bidder"
+            />
+            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                {errors.bidder?.message?.toString()}
+            </p>
+        </div>
 
                     <div className="mb-2">
                         <label htmlFor="planType" className="block mb-2">
