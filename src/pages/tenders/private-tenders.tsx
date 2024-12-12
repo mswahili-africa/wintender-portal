@@ -1,4 +1,4 @@
-import { IconTrash, IconEye } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
 import { getUserRole } from "@/utils";
+import TenderEdit from "./fragments/tenderEditForm";
 
 
 export default function PrivateTenders() {
@@ -22,6 +23,7 @@ export default function PrivateTenders() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
+    const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const { getTenders, isLoading, refetch } = useTenders({
         page: page,
@@ -43,7 +45,7 @@ export default function PrivateTenders() {
 
     const deleteMutation = useMutation({
         mutationFn: (data: ITenders) => deleteTenders(data.id),
-        onSuccess: (res) => {
+        onSuccess: () => {
             refetch();
             toast.success("Tender deleted successfully");
         },
@@ -70,6 +72,14 @@ export default function PrivateTenders() {
         setSelectedTender(content);
     }
 
+    const handleEdit = (content: ITenders) => {
+        setEditTender(content);
+    }
+
+    const handleEditModalClose = () => {
+        setEditTender(undefined);
+    };
+
     const userRole = getUserRole();
 
     const handleDoItForMeClick = () => {
@@ -90,6 +100,17 @@ export default function PrivateTenders() {
                     />
                 )}
             </div>
+
+            {editTender ? (
+                <TenderEdit
+                    initials={editTender}
+                    onSuccess={() => {
+                        setEditTender(null);
+                        refetch();
+                    }}
+                    onClose={handleEditModalClose}
+                />
+            ) : null}
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                 <div className="flex justify-between items-center p-4 border-b border-slate-200">
@@ -117,15 +138,24 @@ export default function PrivateTenders() {
                                     <IconEye size={20} />
                                 </button>
                                 {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
-                                    <Fragment>
+                                    <><Fragment>
 
                                         <button
                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => handleDelete(content)}
+                                            onClick={() => handleEdit(content)}
                                         >
-                                            <IconTrash size={20} />
+                                            <IconEdit size={20} />
                                         </button>
                                     </Fragment>
+                                        <Fragment>
+
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                onClick={() => handleDelete(content)}
+                                            >
+                                                <IconTrash size={20} />
+                                            </button>
+                                        </Fragment></>
                                 )}
                             </div>
                         );

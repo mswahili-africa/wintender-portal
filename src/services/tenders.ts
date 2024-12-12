@@ -46,6 +46,16 @@ export async function createTender(payload: FormData) {
     return response.data
 }
 
+export async function updateTender(id: string,payload: FormData) {
+    const response = await http.post<any>(`/tenders/tender/update/${id}`, payload, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+
+    return response.data
+}
+
 export async function deleteTenders(id: string) {
     const response = await http.delete<any>(`/tenders/tender/delete/${id}`);
 

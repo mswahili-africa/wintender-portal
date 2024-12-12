@@ -47,11 +47,11 @@ export default function Dashboard() {
     }, [userId]);
 
     const SkeletonLoader = () => (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-4 gap-4">
             {Array(4).fill(0).map((_, i) => (
                 <div key={i} className="bg-white shadow-md p-6 rounded-lg">
                     <Skeleton width={32} height={32} circle />
-                    <h3 className="text-xl font-bold mt-4"><Skeleton width={150} /></h3>
+                    <h3 className="text-l font-bold mt-4"><Skeleton width={150} /></h3>
                     <p className="text-gray-600"><Skeleton width={100} /></p>
                 </div>
             ))}
@@ -59,33 +59,33 @@ export default function Dashboard() {
     );
 
     const AdminStats = () => (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-4 gap-4">
             <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconFileText className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Tenders</h3>
+                    <IconFileText className="text-green-600 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Tenders</h3>
                     <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
                 </div>
             </Link>
             <Link to="/bidders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconUsersGroup className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Bidders</h3>
+                    <IconUsersGroup className="text-green-600 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Bidders</h3>
                     <p className="text-gray-600">Active: {stats?.statistics.bidders}</p>
                 </div>
             </Link>
             <Link to="/do-it-for-me">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Requests</h3>
-                    <p className="text-gray-600">Do it for me: {stats?.statistics.requests}</p>
+                    <IconGitPullRequest className="text-yellow-500 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Do it for me</h3>
+                    <p className="text-gray-600">Requests: {stats?.statistics.requests}</p>
                 </div>
             </Link>
             <Link to="/payments">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconReportMoney className="text-purple-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Payment</h3>
-                    <p className="text-gray-600">Total Collection: {new Intl.NumberFormat('en-TZ', {
+                    <IconReportMoney className="text-purple-500 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Payment</h3>
+                    <p className="text-gray-600">Total: {new Intl.NumberFormat('en-TZ', {
                             style: 'decimal',
                             currency: 'TZS',
                             minimumFractionDigits: 2,
@@ -97,18 +97,18 @@ export default function Dashboard() {
     );
 
     const PublisherStats = () => (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-4 gap-4">
             <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconFileText className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Tenders</h3>
+                    <IconFileText className="text-green-600 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Tenders</h3>
                     <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
                 </div>
             </Link>
             <Link to="/publisher-reports">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconPigMoney className="text-purple-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Commission</h3>
+                    <IconPigMoney className="text-purple-500 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Commission</h3>
                     <p className="text-gray-600">
                         Total Earned: TZS {new Intl.NumberFormat('en-TZ', {
                             style: 'decimal',
@@ -123,34 +123,34 @@ export default function Dashboard() {
     );
 
     const BidderStats = () => (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
             <Link to={`/users/${userId}`}>
                 <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconUser className="text-yellow-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">{account}</h3>
-                    <p className="text-gray-600">My Account</p>
+                    <IconUser className="text-yellow-500 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">{account}</h3>
+                    <p className="text-gray-600">Account</p>
                 </div>
             </Link>
             <Link to="/tenders">
                 <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconFileText className="text-green-600 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Tenders</h3>
+                    <IconFileText className="text-green-600 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Tenders</h3>
                     <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
                 </div>
             </Link>
 
             <Link to="/do-it-for-me">
                 <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconGitPullRequest className="text-yellow-500 w-8 h-8 mb-4" />
-                    <h3 className="text-xl font-bold">Requests</h3>
-                    <p className="text-gray-600">My Requests: {stats?.statistics.requests}</p>
+                    <IconGitPullRequest className="text-yellow-500 w-6 h-6 mb-4" />
+                    <h3 className="text-l font-bold">Requests</h3>
+                    <p className="text-gray-600">Requests: {stats?.statistics.requests}</p>
                 </div>
             </Link>
         </div>
     );
 
     return (
-        <div className="p-3 bg-gray-50 min-h-screen">
+        <div className="p-1 min-h-screen">
             <WelcomeBanner /> {/* Include the WelcomeBanner component */}
 
             {auth.user && (auth.user.role.includes("MANAGER") || auth.user.role.includes("BIDDER") || auth.user.role.includes("ACCOUNTANT")) && (

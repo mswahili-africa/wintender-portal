@@ -192,7 +192,7 @@ export interface ITenders {
   title: string;
   summary: string;
   filePath: string;
-  openDate: string;
+  openDate: number;
   closeDate: number;
   tenderType: string;
   consultationFee: number;
