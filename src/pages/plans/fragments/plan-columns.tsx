@@ -5,18 +5,14 @@ import { IRole, IUser } from "@/types";
 const columns: IColumn[] = [
 
   {
-    name: "name",
+    name: "companyName",
     label: "Company",
     sortable: false,
-    plainObject: true,
-    element: (value: IUser) => {
-      const companyName = value.name;
-      return companyName ? companyName.toUpperCase() : "";
-    }
+    plainObject: false,
   },
   {
 
-    name: "primaryNumber",
+    name: "companyPrimaryNumber",
     label: "Phone",
     sortable: false,
     plainObject: false,
@@ -25,73 +21,49 @@ const columns: IColumn[] = [
     name: "plan",
     label: "plan",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row?.plan?.plan;
-    },
+    plainObject: false,
   },
   {
     name: "maxTenders",
     label: "Tenders",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row?.plan?.maxTenders;
-    },
+    plainObject: false,
   },
   {
-    name: "numberOfMonths",
-    label: "months",
+    name: "controlNumber",
+    label: "Control Number",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row?.plan?.numberOfMonths;
-    },
+    plainObject: false,
   },
   {
-    name: "amount",
+    name: "principleAmount",
     label: "amount",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row?.plan?.numberOfMonths;
-    },
+    plainObject: false,
   },
   {
     name: "status",
-    label: "status",
+    label: "Status",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const planStatus = row?.plan?.status || 'PENDING';
-      const displayValue = planStatus === "PENDING" ? "PENDING" : planStatus;
+        const currentDate = new Date().getTime();
+        const expiryDate = row.expiryDate;
+        const remainingTime = expiryDate - currentDate;
+        const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-      const chipTheme =
-        displayValue === "SUCCESS" ? "success" :
-          displayValue === "PENDING" ? "warning" : 
-            "danger"; 
+        const displayStatus = remainingDays <= 0 ? 'EXPIRED' : row.status;
 
-      return (
-        <Chip
-          label={displayValue}
-          size="sm"
-          theme={chipTheme}
-          variant="outline"
-        />
-      );
-    },
-  },
-  {
-    name: "expiryDate",
-    label: "expiry",
-    sortable: true,
-    plainObject: true,
-    element: (row: any) => {
-      const expiryTimestamp = row?.plan?.expiryDate;
-      if (!expiryTimestamp) return 'No Expiry'; // Handle case where expiryDate is missing
-      return new Date(expiryTimestamp).toLocaleString();
-    },
-  },
+        return (
+            <Chip 
+                label={displayStatus} 
+                size="sm" 
+                theme={displayStatus === 'EXPIRED' ? 'danger' : 'success'} 
+                variant="outline" 
+            />
+        );
+    }
+},
 
   {
     name: "createdAt",

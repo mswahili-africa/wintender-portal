@@ -12,7 +12,7 @@ export default function CompanyPlans() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter, setFilter] = useState<any>();
 
-    const userRole = getUserRole();
+    const userRole = getUserRole(); 
 
     const { companyPlans, isLoading, refetch } = useCompanyPlans({
         page: page,

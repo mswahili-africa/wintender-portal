@@ -183,7 +183,13 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
                         </p>
                     </div>
 
-                    <Button type="submit" label="Set" theme="primary" size="md" />
+                    <Button
+                        type="submit"
+                        label={createPlan.isLoading ? "Creating..." : "Create"}
+                        theme="primary"
+                        size="md"
+                        disabled={createPlan.isLoading}
+                    />
                 </form>
             </Modal>
         </div>

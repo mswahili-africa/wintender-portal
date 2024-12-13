@@ -156,6 +156,7 @@ export interface IEntity {
 }
 
 export interface ICompany {
+  id: string
   name: string;
   primaryNumber: string;
   address: string;
