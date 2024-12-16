@@ -37,9 +37,17 @@ const columns: IColumn[] = [
   },
   {
     name: "principleAmount",
-    label: "amount",
+    label: "Amount",
     sortable: false,
     plainObject: false,
+    element: (value: number) => {
+      const formattedAmount = value.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      });
+
+      return <span>{formattedAmount}</span>;
+    },
   },
   {
     name: "status",
@@ -58,7 +66,7 @@ const columns: IColumn[] = [
             <Chip 
                 label={displayStatus} 
                 size="sm" 
-                theme={displayStatus === 'EXPIRED' ? 'danger' : 'success'} 
+                theme={displayStatus === 'SUCCESS' ? 'success' : 'danger'} 
                 variant="outline" 
             />
         );

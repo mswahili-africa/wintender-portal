@@ -74,7 +74,8 @@ const allMenus: IRoute[] = [
         label: "Finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/payments", label: "Payments", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
+            { path: "/payments", label: "Transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
+            { path: "/company-plans", label: "Payment Plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },
     {
@@ -83,7 +84,6 @@ const allMenus: IRoute[] = [
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
-            { path: "/company-plans", label: "Plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },
     {

@@ -47,14 +47,14 @@ export default function ({ ...props }: IProps) {
         <div className="max-w-max">
             <Button
                 type="button"
-                label="Make payment"
+                label="Receive payment"
                 icon={<IconPlus size={18} />}
                 theme="primary"
                 size="md"
                 onClick={() => setOpen(true)}
             />
 
-            <Modal size="sm" title="Make payment" isOpen={open} onClose={(v) => setOpen(v)}>
+            <Modal size="sm" title="Receive payment" isOpen={open} onClose={(v) => setOpen(v)}>
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
                     <div className="mb-4">
                         <label htmlFor="Account" className="block mb-2">Control Number</label>
