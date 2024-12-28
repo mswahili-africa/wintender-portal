@@ -1,4 +1,4 @@
-import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconCheckbox, IconEdit, IconEye, IconFile, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
@@ -16,6 +16,8 @@ import TenderViewModelDoItForMe from "./tenderViewModelDoItForMe";
 import Chip from "@/components/chip/Chip";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import Pagination from "@/components/widgets/table/Pagination";
+import { useNavigate } from "react-router-dom";
+import Loader from "@/components/spinners/Loader";
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
@@ -35,7 +37,8 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const { showConfirmation } = usePopup();
-
+  const navigate = useNavigate();
+  
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
         applicationGroup,
@@ -192,6 +195,12 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         }
     };
 
+    const viewProfomaInvoice = (applicationGroup: IApplicationGroup, application: IApplications) => {
+        navigate(`/application-profoma-invoice`, {
+            state: { applicationGroupData: applicationGroup, applicationData: application }
+        });
+    };
+
 
     const userRole = getUserRole();
 
@@ -205,10 +214,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
 
                 {isLoading ? (
-                    <div className="flex justify-center items-center my-8">
-                        <div className="loader w-8 h-8 border-4 border-t-4 border-gray-300 rounded-full animate-spin"></div>
-                        <span className="ml-2 text-gray-500">Loading data...</span>
-                    </div>
+                    <Loader message="Fetching applications..." />
                 ) : (
                     <Table
                         columns={applicationListColumns}
@@ -226,7 +232,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 </button>
                                 {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
                                     <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
-                                        <IconSquareRoundedMinus size={20} />applicationList
+                                        <IconSquareRoundedMinus size={20} />
                                     </button>
                                 )}
                                 {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && applicationList.status === "REQUESTED" && (
@@ -239,6 +245,15 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         <IconCheckbox size={20} />
                                     </button>
                                 )}
+
+                            {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && (
+                                <button
+                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                    onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
+                                >
+                                    <IconFile size={20} />
+                                </button>
+                                 )}
                             </div>
                         )}
                     />

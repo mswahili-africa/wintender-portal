@@ -9,7 +9,6 @@ import { IApplicationGroup } from "@/types";
 import { IconEye } from "@tabler/icons-react";
 import useApplicationsGroup from "@/hooks/useApplicationsGroup";
 
-
 export default function ApplicationGroups() {
   const userRole = getUserRole();
   const [page, setPage] = useState<number>(0);

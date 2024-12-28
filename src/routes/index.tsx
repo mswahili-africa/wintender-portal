@@ -127,15 +127,20 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal" && menu.label !== "Compliance"),
     PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance"),
     BIDDER: () => allMenus
-        .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard","Compliance"].includes(menu.label))  // Only show the allowed menus
-        .map(menu =>
-            menu.label === "Tender"
-                ? {
-                      ...menu,
-                      subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories"),  // Exclude Categories sub-menu
-                  }
-                : menu
-        ),
+    .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard", "Compliance"].includes(menu.label))  // Only show the allowed menus
+    .map(menu =>
+        menu.label === "Tender"
+            ? {
+                  ...menu,
+                  subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories"),  // Exclude Categories sub-menu
+              }
+            : menu.label === "Finance"
+            ? {
+                  ...menu,
+                  subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans"),  // Exclude Payment Plans sub-menu
+              }
+            : menu
+    ),
 };
 
 

@@ -113,6 +113,7 @@ export default function UserProfile() {
         if (!user || !user.company) return;
 
         const payload = {
+            id: user.company.id || "",
             name: user.company.name || "",
             tin: user.company.tin || "",
             primaryNumber: user.company.primaryNumber || "",

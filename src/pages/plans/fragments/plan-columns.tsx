@@ -1,19 +1,11 @@
 import { IColumn } from "@/components/widgets/table/Table";
 import Chip from "@/components/chip/Chip";
-import { IRole, IUser } from "@/types";
 
 const columns: IColumn[] = [
 
   {
     name: "companyName",
     label: "Company",
-    sortable: false,
-    plainObject: false,
-  },
-  {
-
-    name: "companyPrimaryNumber",
-    label: "Phone",
     sortable: false,
     plainObject: false,
   },

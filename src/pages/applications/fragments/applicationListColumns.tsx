@@ -36,15 +36,6 @@ const columns: IColumn[] = [
     },
   },
   {
-    name: "controlNumber",
-    label: "Control Number",
-    sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row.controlNumber?.controlNumber;
-    },
-  },
-  {
     name: "Fees",
     label: "Fees",
     sortable: false,
@@ -56,17 +47,7 @@ const columns: IColumn[] = [
         currency: 'TZS',
       }).format(amount);
 
-      const status = row.status;
-      const theme = status === "SUCCESS" ? "primary" : "warning"; // Default to warning
-
-      return (
-        <Chip
-          label={formattedAmount}
-          size="sm"
-          theme={theme}
-          variant="outline"
-        />
-      );
+      return formattedAmount
     },
   },
   {

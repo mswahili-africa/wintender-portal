@@ -25,6 +25,7 @@ import { useSession } from "./store/auth";
 import SessionTimeoutModal from "./components/cards/SessionLogger";
 import ApplicationGroups from "./pages/applications";
 import CompanyPlans from "./pages/plans";
+import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 
 export const queryClient = new QueryClient({});
 
@@ -63,6 +64,7 @@ function App() {
                             <Route path="publisher-perfomance" element={<PublisherPerformance />}/>
                             <Route path="company-documents" element={<CompanyDocuments />}/>
                             <Route path="company-plans" element={<CompanyPlans />}/>
+                            <Route path="application-profoma-invoice" element={<ApplicationInvoice />}/>
                         </Route>
 
                         <Route path="*" element={<NoMatch/>}/>
