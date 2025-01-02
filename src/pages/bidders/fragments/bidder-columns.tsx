@@ -1,6 +1,6 @@
 import { IColumn } from "@/components/widgets/table/Table";
 import Chip from "@/components/chip/Chip";
-import { IRole, IUser } from "@/types";
+import { IUser } from "@/types";
 
 const columns: IColumn[] = [
 

@@ -1,5 +1,6 @@
+import { TOKEN_KEY } from "@/http/constants";
 import http from "../http";
-import { ILoginResponse, ICountry, IRole, IlistResponse } from "@/types";
+import { ILoginResponse, ICountry, IRole, IlistResponse, IToken } from "@/types";
 import { IBidderRegisterForm, IConfirmPasswordResetForm, IRegisterForm } from "@/types/forms";
 
 
@@ -26,7 +27,13 @@ export async function login(payload: {username: string, password: string}) {
 }
 
 export async function logout(payload: {username: string, accessToken: string}) {
-    const response = await http.post<any>("/authentication/signout", payload)
+    const response = await http.post<any>("/users/auth/signout", payload)
+
+    return response.data
+}
+
+export async function tokenInfo() {
+    const response = await http.get<any>("/users/auth/token-info")
 
     return response.data
 }
@@ -77,3 +84,7 @@ export async function bidderRegister(payload: IBidderRegisterForm) {
     const response = await http.post<any>("/users/bidder/register", payload)
 }
 
+export function isAuthenticated(): boolean {
+    const token = localStorage.getItem(TOKEN_KEY); // Retrieve the token from localStorage
+    return !!token; // Return true if a token exists, false otherwise
+}

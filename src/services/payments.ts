@@ -1,4 +1,4 @@
-import {  IPaymentForm } from "@/types/forms";
+import {  IPaymentForm, IUSSDPushRequest } from "@/types/forms";
 import http from "../http";
 import { IQueryParams, IlistResponse } from "@/types";
 
@@ -20,6 +20,18 @@ export async function getPayments(params: IQueryParams) {
 
 export async function createPayment(payload: IPaymentForm) {
     const response = await http.post<any>("/finance/payment/pos/request", payload)
+
+    return response.data
+}
+
+export async function USSDPushRequest(payload: IUSSDPushRequest) {
+    const response = await http.post<any>("/finance/payment/ussd/request", payload)
+
+    return response.data
+}
+
+export async function USSDPushEnquiry(id: string) {
+    const response = await http.post<any>(`/finance/payment/ussd/enquiry/${id}`)
 
     return response.data
 }

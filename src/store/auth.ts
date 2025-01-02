@@ -3,6 +3,7 @@ import { IAuthUser, ILoginResponse } from "@/types/index"
 import { TOKEN_KEY, USER_KEY } from "@/http/constants"
 import { useEffect, useState } from "react"
 import http from "@/http"
+import { clearUserData } from "@/hooks/useUserData";
 
 export interface AuthStore {
     accessToken: string | null
@@ -33,7 +34,7 @@ export const authStore = proxy<AuthStore>({
         if(authStore.sessionToken) {
             return authStore.sessionToken
         }
-        authStore.sessionToken = localStorage.getItem("sr-dash-st");
+        authStore.sessionToken = localStorage.getItem(TOKEN_KEY);
         return  authStore.sessionToken
     },
 
@@ -58,6 +59,7 @@ export const authStore = proxy<AuthStore>({
         authStore.accessToken = null;
         
         localStorage.removeItem(TOKEN_KEY);
+        clearUserData();
 
         authStore.user = null;
         localStorage.removeItem(USER_KEY);

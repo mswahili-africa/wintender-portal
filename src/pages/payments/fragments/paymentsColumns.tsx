@@ -3,13 +3,10 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
   {
-    name: "bidder",
-    label: "Account",
+    name: "company",
+    label: "company",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row.user.company.name;
-    },
+    plainObject: false,
   },
   {
     name: "controlNumber",
@@ -38,8 +35,8 @@ const columns: IColumn[] = [
     },
   },
   {
-    name: "mno",
-    label: "MNO",
+    name: "paymentReason",
+    label: "Reason",
     sortable: false,
     plainObject: false,
   },
@@ -73,8 +70,8 @@ const columns: IColumn[] = [
   },
 
   {
-    name: "updatedAt",
-    label: "Updated At",
+    name: "createdAt",
+    label: "Date",
     sortable: true,
     plainObject: false,
     element: (value: number) =>

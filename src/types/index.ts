@@ -103,6 +103,17 @@ export interface ICountry {
   updatedAt: number;
 }
 
+export interface IToken {
+  userId: string;
+  email: string;
+  name: string;
+  phoneNumber: string;
+  avatar: number;
+  status: string;
+  subscription: number;
+  role: string;
+}
+
 export interface IRole {
   id: string;
   role: string;

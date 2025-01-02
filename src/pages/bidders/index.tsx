@@ -5,7 +5,7 @@ import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
 import { IUser } from "@/types";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus } from "@/services/user";
@@ -26,7 +26,8 @@ export default function Bidders() {
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const { showConfirmation } = usePopup();
 
-    const userRole = getUserRole();
+    const { userData } = useUserDataContext();
+const userRole = userData?.role || "BIDDER";
 
     const { bidders, isLoading, refetch } = useBidders({
         page: page,

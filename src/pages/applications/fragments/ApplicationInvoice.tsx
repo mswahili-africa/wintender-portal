@@ -5,6 +5,7 @@ import Logo from "@/assets/images/logo-long.png";
 import html2pdf from "html2pdf.js";
 import Button from "@/components/button/Button";
 import { useLocation } from "react-router-dom";
+import Chip from "@/components/chip/Chip";
 
 export default function ApplicationInvoice() {
 
@@ -28,7 +29,7 @@ export default function ApplicationInvoice() {
       <div id="invoice" className="invoice-container">
         <div className="logo-container">
           <div className="invoice-header py-3">
-          <h1 className="text-4xl">INVOICE</h1>
+            <h1 className="text-4xl">INVOICE</h1>
             <p># {applicationData?.tender?.referenceNumber}</p>
             <br></br>
             <table className="invoice-table">
@@ -44,23 +45,6 @@ export default function ApplicationInvoice() {
                 <tr>
                   <td style={{ border: 'none' }}>Control Number:</td>
                   <td style={{ border: 'none' }}>{applicationData?.controlNumber?.controlNumber}</td>
-                </tr>
-                <tr>
-                  <td style={{ border: 'none' }}>Payment Terms:</td>
-                  <td style={{ border: 'none' }}>100%
-                  </td>
-                </tr>
-                <tr style={{ backgroundColor: 'grey', color: 'white' }}>
-                  <th style={{ border: 'none' }}><strong>Balance Due:</strong></th>
-                  <th style={{ border: 'none' }}>
-                    <strong>
-                      {new Intl.NumberFormat('en-TZ', {
-                        style: 'currency',
-                        currency: 'TZS',
-                        minimumFractionDigits: 0,
-                      }).format(applicationData?.controlNumber.principleAmount ?? 0)}
-                    </strong>
-                  </th>
                 </tr>
               </thead>
             </table>
@@ -141,8 +125,12 @@ export default function ApplicationInvoice() {
             </tr>
             <tr>
               <td colSpan={2} style={{ border: 'none' }}></td>
-              <td style={{ border: 'none' }}>Tax (0%):</td>
-              <td style={{ border: 'none' }}>0</td>
+              <td style={{ border: 'none' }}>Tax (18%):</td>
+              <td style={{ border: 'none' }}>{new Intl.NumberFormat('en-TZ', {
+                style: 'currency',
+                currency: 'TZS',
+                minimumFractionDigits: 0,
+              }).format(applicationData?.controlNumber.principleAmount * 0.18)}</td>
             </tr>
             <tr>
               <td colSpan={2} style={{ border: 'none' }}></td>
@@ -151,20 +139,29 @@ export default function ApplicationInvoice() {
                 style: 'currency',
                 currency: 'TZS',
                 minimumFractionDigits: 0,
-              }).format(applicationData?.controlNumber.principleAmount ?? 0)}</strong></td>
+              }).format(applicationData?.controlNumber.principleAmount + (applicationData?.controlNumber.principleAmount * 0.18))}</strong></td>
             </tr>
           </tbody>
         </table>
 
         <div className="py-2">
-          <strong>Notes</strong>
+          <strong>Payment Terms</strong>
           <table className="invoice-table">
             <tbody>
               <tr>
                 <td width={400} style={{ border: 'none' }}>
-                  <p >BANK DETAILS</p>
 
                   <hr className="dashed-line" />
+
+                  <span style={{ display: "inline-flex", alignItems: "center" }}>
+                    100% Pre-Paid 
+                    <Chip
+                      label={applicationData?.controlNumber?.status}
+                      size="sm"
+                      theme={applicationData?.controlNumber?.status === 'SUCCESS' ? 'success' : 'warning'}
+                      variant="outline"
+                    />
+                  </span>
 
                   <p>Bank name: CRDB Bank PLC</p>
                   <p>Account Name: Hatuamoja Company Limited</p>
@@ -172,17 +169,6 @@ export default function ApplicationInvoice() {
                   <p>Branch: Goba</p>
                   <p>SwiftCode: CORUTZTZ</p>
 
-                </td>
-                <td style={{ border: 'none' }}></td>
-              </tr>
-              <tr>
-                <td style={{ border: 'none' }}>
-                  <p>WAKALA JINA: HATUAMOJA COMPANY LIMITED</p>
-
-                  <hr className="dashed-line" />
-
-                  <p>Mixx by YAS : 678079</p>
-                  <p>MPesa : 593337</p>
                 </td>
                 <td style={{ border: 'none' }}></td>
               </tr>

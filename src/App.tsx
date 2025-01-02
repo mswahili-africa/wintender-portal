@@ -26,56 +26,60 @@ import SessionTimeoutModal from "./components/cards/SessionLogger";
 import ApplicationGroups from "./pages/applications";
 import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
+import { UserDataProvider } from "./providers/userDataProvider";
 
 export const queryClient = new QueryClient({});
 
 function App() {
 
-    const {showModal} = useSession();
+    const { showModal } = useSession();
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <PopupProvider>
-                <Toaster position="top-center" reverseOrder={false} />
-                {showModal && <SessionTimeoutModal />}
-                <Routes>
-                    <Route>
-                        <Route path="/login" element={<Login/>}/>
 
-                        <Route path="/register" element={<Register/>}/>
+        <UserDataProvider>
+            <QueryClientProvider client={queryClient}>
+                <PopupProvider>
+                    <Toaster position="top-center" reverseOrder={false} />
+                    {showModal && <SessionTimeoutModal />}
+                    <Routes>
+                        <Route>
+                            <Route path="/login" element={<Login />} />
 
-                        <Route path="/forgot" element={<ForgotPassword />}/>
+                            <Route path="/register" element={<Register />} />
 
-                        <Route path="/reset-password" element={<ResetPassword />} />
+                            <Route path="/forgot" element={<ForgotPassword />} />
 
-                        <Route path="/change-default" element={<ChangeDefaultPassword />} />
+                            <Route path="/reset-password" element={<ResetPassword />} />
 
-                        <Route path="/" element={<AppLayout />}> 
-                            <Route index element = {<Dashboard/>}/>
-                            <Route path="entities" element={<Entities/>}/>
-                            <Route path="do-it-for-me" element={<ApplicationGroups/>}/>
-                            <Route path="tenders" element={<TenderList />}/>
-                            <Route path="payments" element={<Payments />}/>
-                            <Route path="categories" element={<Categories />}/>
-                            <Route path="users" element={<Users />}/>
-                            <Route path="bidders" element={<Bidders />}/>
-                            <Route path="users/:userId" element={<UserDetail />}/>
-                            <Route path="roles" element={<Roles />}/>
-                            <Route path="publisher-perfomance" element={<PublisherPerformance />}/>
-                            <Route path="company-documents" element={<CompanyDocuments />}/>
-                            <Route path="company-plans" element={<CompanyPlans />}/>
-                            <Route path="application-profoma-invoice" element={<ApplicationInvoice />}/>
+                            <Route path="/change-default" element={<ChangeDefaultPassword />} />
+
+                            <Route path="/" element={<AppLayout />}>
+                                <Route index element={<Dashboard />} />
+                                <Route path="entities" element={<Entities />} />
+                                <Route path="do-it-for-me" element={<ApplicationGroups />} />
+                                <Route path="tenders" element={<TenderList />} />
+                                <Route path="payments" element={<Payments />} />
+                                <Route path="categories" element={<Categories />} />
+                                <Route path="users" element={<Users />} />
+                                <Route path="bidders" element={<Bidders />} />
+                                <Route path="users/:userId" element={<UserDetail />} />
+                                <Route path="roles" element={<Roles />} />
+                                <Route path="publisher-perfomance" element={<PublisherPerformance />} />
+                                <Route path="company-documents" element={<CompanyDocuments />} />
+                                <Route path="company-plans" element={<CompanyPlans />} />
+                                <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
+                            </Route>
+
+                            <Route path="*" element={<NoMatch />} />
                         </Route>
+                    </Routes>
 
-                        <Route path="*" element={<NoMatch/>}/>
-                    </Route>
-                </Routes>
-
-                <div>
-                    <Outlet />
-                </div>
-            </PopupProvider>
-        </QueryClientProvider>
+                    <div>
+                        <Outlet />
+                    </div>
+                </PopupProvider>
+            </QueryClientProvider>
+        </UserDataProvider>
     )
 }
 

@@ -13,9 +13,12 @@ import TenderCreateForm from "./fragments/tenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
-
+import { useNavigate } from "react-router-dom";
+import PaymentModal from "./fragments/PaymentModel";
+import { USSDPushEnquiry, USSDPushRequest } from "@/services/payments";
+import { Puff } from "react-loader-spinner";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -25,6 +28,17 @@ export default function PrivateTenders() {
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [paymentId, setPaymentId] = useState<string | null>(null);
+    const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false); // Loading state for enquiry process
+
+    const [paymentDetails, setPaymentDetails] = useState({
+        planId: "66698e3f39cbe2504dd54c57",
+        period: 1,
+        phoneNumber: "",
+        paymentReason: "SUBSCRIPTION"
+    });
+
     const { getTenders, isLoading, refetch } = useTenders({
         page: page,
         search: search,
@@ -32,12 +46,70 @@ export default function PrivateTenders() {
         filter: filter
     });
 
+    const { userData } = useUserDataContext();  // Use the hook to get user data
+    const userRole = userData?.role || "BIDDER"; // Extract role from userData, defaulting to "BIDDER" if not found
+    const subscriptionDays = userData?.subscription;
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (subscriptionDays !== undefined && subscriptionDays < 1) {
+            showConfirmation({
+                theme: "danger",
+                title: "Your subscription has expired",
+                message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
+                onConfirm: () => {
+                    // Open payment modal when confirm is clicked
+                    setIsPaymentModalOpen(true);
+                },
+                onCancel: () => {
+                    // Redirect to home page when cancelled
+                    navigate("/");  // Redirect to home page
+                }
+            });
+        }
+    }, [subscriptionDays, navigate]);
+
+    const paymentMutation = useMutation({
+        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
+        onSuccess: (data) => {
+            toast.success("Payment processed successfully!");
+            setPaymentId(data.id);  // Store the payment ID from the response
+            setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
+            startEnquiry(data.id);  // Start the enquiry API calls
+        },
+        onError: (error) => {
+            toast.error("Payment failed: " + error);
+        }
+    });
+
+    const startEnquiry = (id: string) => {
+        let attemptCount = 0;
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await USSDPushEnquiry(id);
+                // Check if response is successful
+                if (response.code === "SUCCESS") {
+                    toast.success("Payment confirmed.");
+                    setIsLoadingEnquiry(false);  // Stop loader if payment is confirmed
+                    clearInterval(intervalId);
+                    navigate("tenders"); 
+                }
+            } catch (error) {
+                toast.error("Error checking payment status.");
+            }
+
+            attemptCount += 1;
+            if (attemptCount >= 5) {
+                setIsLoadingEnquiry(false);  // Stop loader after 5 attempts
+                clearInterval(intervalId);  // Stop after 5 attempts
+            }
+        }, 5000);  // 5-second interval
+    };
 
     const doItForMeMutation = useMutation({
         mutationFn: async (tenderId: string) => requestDoForMe(tenderId),
-        onSuccess: () => {
-            toast.success("Request processed successfully!");
-        },
+        onSuccess: () => { },
         onError: (error: any) => {
             toast.error(error.message ?? "Failed to process request");
         }
@@ -80,7 +152,6 @@ export default function PrivateTenders() {
         setEditTender(undefined);
     };
 
-    const userRole = getUserRole();
 
     const handleDoItForMeClick = () => {
         if (selectedTender) {
@@ -100,6 +171,30 @@ export default function PrivateTenders() {
                     />
                 )}
             </div>
+
+            {isPaymentModalOpen && (
+                <PaymentModal
+                    paymentDetails={paymentDetails}
+                    setPaymentDetails={setPaymentDetails}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                    onSubmit={() => paymentMutation.mutate(paymentDetails)}
+                >
+                    {/* Show loader and message when enquiry is in progress */}
+                    {isLoadingEnquiry && (
+                        <div className="flex justify-center items-center mt-4">
+                            <Puff
+                                height="60"
+                                width="60"
+                                radius="1"
+                                color="green"
+                                ariaLabel="loading"
+                                visible={isLoadingEnquiry}
+                            />
+                            <p className="mt-4">Please check your phone and accept payment by entering your password.</p>
+                        </div>
+                    )}
+                </PaymentModal>
+            )}
 
             {editTender ? (
                 <TenderEdit

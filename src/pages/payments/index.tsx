@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { approvePayment, rejectPayment } from "@/services/payments";
 import usePopup from "@/hooks/usePopup";
 import PaymentsForm from "./fragments/paymentsForm";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import { IPayment } from "@/types";
 import { update } from "lodash";
 
@@ -66,7 +66,8 @@ export default function () {
     rejectMutation.mutate(payload.id);
   };
 
-  const userRole = getUserRole();
+  const { userData } = useUserDataContext();
+const userRole = userData?.role || "BIDDER";
 
   function setUpdate(update: any) {
     throw new Error("Function not implemented.");

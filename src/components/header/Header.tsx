@@ -3,12 +3,10 @@ import {
     IconBellFilled,
     IconMenu2,
     IconPower,
-    IconSearch,
     IconUserCircle
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
-import Avatar from "@/assets/images/avatar.jpg";
 import { authStore } from "@/store/auth";
 
 const Header = () => {
@@ -54,10 +52,6 @@ const Header = () => {
                                         <div className="flex justify-between">
                                             <span>Mail</span>
                                             <span>{auth.user.email}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Role</span>
-                                            <span>{auth.user.role}</span>
                                         </div>
                                     </div>
                                 </div>

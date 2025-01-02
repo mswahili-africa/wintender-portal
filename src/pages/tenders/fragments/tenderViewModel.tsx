@@ -1,6 +1,6 @@
 import Button from "@/components/button/Button";
 import Spinner from "@/components/spinners/Spinner";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 interface ModalProps {
     title: string;
@@ -10,9 +10,12 @@ interface ModalProps {
     onDoItForMeClick: () => void;
 }
 
-const userRole = getUserRole();
+
 
 const TenderViewModal = ({ title, onClose, children, isLoading, onDoItForMeClick }: ModalProps) => {
+    const { userData } = useUserDataContext();
+    const userRole = userData?.role || "BIDDER";
+
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-green-100 rounded-lg shadow-lg max-w-3xl w-full p-4">

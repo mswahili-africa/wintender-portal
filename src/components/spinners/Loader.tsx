@@ -1,9 +1,16 @@
-const Loader = ({ message = "Loading data..." }: { message?: string }) => (
-    <div className="flex justify-center items-center my-8">
-      <div className="loader w-8 h-8"></div>
-      <span className="ml-2 text-gray-500">{message}</span>
-    </div>
-  );
-  
-  export default Loader;
-  
+import { Puff } from 'react-loader-spinner';
+
+const Loader = () => {
+    return (
+        <div className="flex justify-center items-center space-x-2">
+            <Puff
+                color="#00A651"
+                height={50}
+                width={50}
+            />
+            <div className="text-gray-600">Loading...</div>
+        </div>
+    );
+};
+
+export default Loader;

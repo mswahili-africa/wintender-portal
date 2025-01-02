@@ -4,7 +4,7 @@ import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import { IApplicationGroup, IApplications, ITenders } from "@/types";
 import { deleteDoForMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
 import { useForm } from "react-hook-form";
@@ -37,8 +37,8 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const { showConfirmation } = usePopup();
-  const navigate = useNavigate();
-  
+    const navigate = useNavigate();
+
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
         applicationGroup,
@@ -59,7 +59,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         defaultValues: { status: "", comments: "" },
     });
 
-   
+
     const deteleMutation = useMutation({
         mutationFn: (doItForMeId: string) => deleteDoForMe(doItForMeId),
         onSuccess: (res) => {
@@ -202,7 +202,8 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     };
 
 
-    const userRole = getUserRole();
+    const { userData } = useUserDataContext();
+    const userRole = userData?.role || "BIDDER";
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
@@ -214,7 +215,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
 
                 {isLoading ? (
-                    <Loader message="Fetching applications..." />
+                    <Loader />
                 ) : (
                     <Table
                         columns={applicationListColumns}
@@ -246,14 +247,14 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </button>
                                 )}
 
-                            {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && (
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                    onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
-                                >
-                                    <IconFile size={20} />
-                                </button>
-                                 )}
+                                {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && (
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                        onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
+                                    >
+                                        <IconFile size={20} />
+                                    </button>
+                                )}
                             </div>
                         )}
                     />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationGroupColumns";
@@ -10,7 +10,8 @@ import { IconEye } from "@tabler/icons-react";
 import useApplicationsGroup from "@/hooks/useApplicationsGroup";
 
 export default function ApplicationGroups() {
-  const userRole = getUserRole();
+  const { userData } = useUserDataContext();
+const userRole = userData?.role || "BIDDER";
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("updatedAt,desc");

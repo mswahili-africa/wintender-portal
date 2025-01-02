@@ -13,7 +13,8 @@ import {
     IconFiles,
     IconCalendarUser
 } from "@tabler/icons-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 export interface IRoute {
     path: string;
@@ -29,14 +30,19 @@ type UserRole =
     | "BIDDER"
     | "PUBLISHER"
     | "ACCOUNTANT"
-    | "MANAGER";
+    | "MANAGER"
+    | "LEGAL";
 
-const getUserRole = (): UserRole => {
-    const userInfo = JSON.parse(localStorage.getItem("sr-dash-client") || "{}");
-    return userInfo?.role || "BIDDER"; // Default to "BIDDER" if no role found
+const isValidUserRole = (role: any): role is UserRole => {
+    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL"].includes(role);
 };
 
-const userRole = getUserRole();
+const useUserRole = (): UserRole => {
+    const { userData } = useUserDataContext();
+
+    // Check if the role is valid, otherwise default to "BIDDER"
+    return isValidUserRole(userData?.role) ? userData.role : "BIDDER";
+};
 
 const allMenus: IRoute[] = [
     {
@@ -115,36 +121,36 @@ const allMenus: IRoute[] = [
 
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
-    MANAGER: () =>
-        allMenus.map(menu =>
-            menu.label === "Entities"
-                ? {
-                      ...menu,
-                      subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
-                  }
-                : menu
-        ), 
+    MANAGER: () => allMenus.map(menu => menu.label === "Entities"
+        ? {
+            ...menu,
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
+        }
+        : menu
+    ),
     ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal" && menu.label !== "Compliance"),
     PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance"),
     BIDDER: () => allMenus
-    .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard", "Compliance"].includes(menu.label))  // Only show the allowed menus
-    .map(menu =>
-        menu.label === "Tender"
+        .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
             ? {
-                  ...menu,
-                  subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories"),  // Exclude Categories sub-menu
-              }
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories"), // Exclude Categories sub-menu
+            }
             : menu.label === "Finance"
-            ? {
-                  ...menu,
-                  subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans"),  // Exclude Payment Plans sub-menu
-              }
-            : menu
-    ),
+                ? {
+                    ...menu,
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans"), // Exclude Payment Plans sub-menu
+                }
+                : menu
+        ),
+    LEGAL: function (): IRoute[] {
+        throw new Error("Function not implemented.");
+    }
 };
 
 
-const getRoutesByRole = (role: UserRole): IRoute[] => {
+export const getRoutesByRole = (role: UserRole): IRoute[] => {
     const getRoutes = visibilityRules[role];
     if (typeof getRoutes === "function") {
         return getRoutes();
@@ -152,4 +158,24 @@ const getRoutesByRole = (role: UserRole): IRoute[] => {
     return [];
 };
 
-export const routes: IRoute[] = getRoutesByRole(userRole);
+// Use the hook to get the user's role
+const MyComponent: React.FC = () => {
+    const role = useUserRole();  // Get role from context
+
+    // Now fetch the routes based on the user's role
+    const routes: IRoute[] = getRoutesByRole(role);
+
+    return (
+        <div>
+            {/* Render your menus or routes here */}
+            {routes.map(route => (
+                <div key={route.path}>
+                    <h3>{route.label}</h3>
+                    {/* Render other details or submenus */}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default MyComponent;

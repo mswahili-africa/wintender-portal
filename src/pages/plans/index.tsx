@@ -2,7 +2,7 @@ import { useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/plan-columns";
-import { getUserRole } from "@/utils";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import useCompanyPlans from "@/hooks/useCompanyPlans";
 import ContractModal from "./fragments/contract-model";
 
@@ -12,7 +12,8 @@ export default function CompanyPlans() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter, setFilter] = useState<any>();
 
-    const userRole = getUserRole(); 
+    const { userData } = useUserDataContext();
+const userRole = userData?.role || "BIDDER"; 
 
     const { companyPlans, isLoading, refetch } = useCompanyPlans({
         page: page,

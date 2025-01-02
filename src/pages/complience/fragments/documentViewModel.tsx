@@ -1,7 +1,3 @@
-import Button from "@/components/button/Button";
-import { ReactNode } from "react";
-import Spinner from "@/components/spinners/Spinner";
-
 interface ModalProps {
     documentType: string;
     onClose: () => void;
