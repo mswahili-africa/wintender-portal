@@ -97,7 +97,7 @@ export default function Dashboard() {
     );
 
     const PublisherStats = () => (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4">
             <Link to="/tenders">
                 <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconFileText className="text-green-600 w-6 h-6 mb-4" />
@@ -123,7 +123,7 @@ export default function Dashboard() {
     );
 
     const BidderStats = () => (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 gap-4">
             <Link to={`/users/${userId}`}>
                 <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconUser className="text-yellow-500 w-6 h-6 mb-4" />
@@ -143,7 +143,7 @@ export default function Dashboard() {
                 <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
                     <IconGitPullRequest className="text-yellow-500 w-6 h-6 mb-4" />
                     <h3 className="text-l font-bold">Requests</h3>
-                    <p className="text-gray-600">Requests: {stats?.statistics.requests}</p>
+                    <p className="text-gray-600">Requested: {stats?.statistics.requests}</p>
                 </div>
             </Link>
         </div>
