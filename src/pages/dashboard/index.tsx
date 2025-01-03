@@ -10,8 +10,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { useSnapshot } from "valtio";
-import { authStore } from "@/store/auth";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import { getSummaryReport } from "@/services/reports";
 import { ISummaryReport } from "@/types";
 import WelcomeBanner from "./fragments/Welcomebanner";
@@ -20,9 +19,10 @@ type DashboardStats = ISummaryReport;
 
 export default function Dashboard() {
 
-    const auth = useSnapshot(authStore);
-    const userId = auth?.user?.id || "";
-    const account = auth?.user?.account || "00000000";
+    const { userData } = useUserDataContext();  // Use the hook to get user data
+    const userRole = userData?.role || "BIDDER"; // Extract role from userData, defaulting to "BIDDER" if not found
+    const userId = userData?.userId || "";
+    const account = userData?.account || "00000000";
 
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -86,11 +86,11 @@ export default function Dashboard() {
                     <IconReportMoney className="text-purple-500 w-6 h-6 mb-4" />
                     <h3 className="text-l font-bold">Payment</h3>
                     <p className="text-gray-600">Total: {new Intl.NumberFormat('en-TZ', {
-                            style: 'decimal',
-                            currency: 'TZS',
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        }).format(stats?.statistics.payments ?? 0)}</p>
+                        style: 'decimal',
+                        currency: 'TZS',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).format(stats?.statistics.payments ?? 0)}</p>
                 </div>
             </Link>
         </div>
@@ -153,23 +153,23 @@ export default function Dashboard() {
         <div className="p-1 min-h-screen">
             <WelcomeBanner /> {/* Include the WelcomeBanner component */}
 
-            {auth.user && (auth.user.role.includes("MANAGER") || auth.user.role.includes("BIDDER") || auth.user.role.includes("ACCOUNTANT")) && (
+            {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (
                 <div>
                     <br></br>
                     {loading ? <SkeletonLoader /> : <BidderStats />}
                 </div>
             )}
 
-            {auth.user &&
-                auth.user.role.includes("PUBLISHER") && (
+            {
+                userRole.includes("PUBLISHER") && (
                     <div>
                         <br></br>
                         {loading ? <SkeletonLoader /> : <PublisherStats />}
                     </div>
                 )}
 
-            {auth.user &&
-                auth.user.role.includes("ADMINISTRATOR") && (
+            {
+                userRole.includes("ADMINISTRATOR") && (
                     <div>
                         <br></br>
                         {loading ? <SkeletonLoader /> : <AdminStats />}

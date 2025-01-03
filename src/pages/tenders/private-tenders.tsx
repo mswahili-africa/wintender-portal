@@ -73,7 +73,6 @@ export default function PrivateTenders() {
     const paymentMutation = useMutation({
         mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
-            toast.success("Payment processed successfully!");
             setPaymentId(data.id);  // Store the payment ID from the response
             setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
             startEnquiry(data.id);  // Start the enquiry API calls

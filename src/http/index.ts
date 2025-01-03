@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { TOKEN_KEY } from "./constants";
 import toast from "react-hot-toast";
 import { authStore } from "../store/auth";
-import usePopup from "@/hooks/usePopup";
 
 const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => {
   const defaultConfig: Record<string, any> = {
@@ -41,18 +40,13 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
         const errorMessage = error.response.data?.message || error.response.data?.error;
 
         // Handle different HTTP status codes
-        if (status === "401") {
-          const { showMessage } = usePopup();
-          showMessage({
-            title: "Session Expired",
-            message: "Your session has expired. Please log in again.",
-            theme: "warning",
-          });
-
+        if ([401].includes(status)) {
+          toast.error("Your session has expired. Please log in again.!");
+          
           // Clear user session and redirect
           authStore.logout(); // Assuming authStore has a logout method
           return;
-        } else if (["400", "404"].includes(status)) {
+        } else if ([400, 404].includes(status)) {
           toast.error(errorMessage);
         } else {
           toast.error("An unexpected error occurred.");

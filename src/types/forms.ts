@@ -52,6 +52,7 @@ export interface IUserData {
     avatar: string;
     status: string;
     subscription: number;
+    account: string;
     role: string;
 }
 
