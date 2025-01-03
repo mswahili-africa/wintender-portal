@@ -39,6 +39,25 @@ const columns: IColumn[] = [
     label: "Reason",
     sortable: false,
     plainObject: false,
+    element: (value: string) => {
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+
+      switch (value) {
+        case "SUBSCRIPTION":
+          theme = "primary";
+          break;
+        case "DO_IT_FOR_ME":
+          theme = "success";
+          break;
+        case "PLAN":
+          theme = "secondary";
+          break;
+        default:
+          theme = "warning"; // Fallback for unknown statuses
+      }
+
+      return <Chip label={value} size="sm" theme={theme} variant="outline" />;
+    }
   },
   {
     name: "status",
@@ -56,13 +75,10 @@ const columns: IColumn[] = [
           theme = "secondary";
           break;
         case "FAILED":
-          theme = "warning";
-          break;
-        case "REJECTED":
           theme = "danger";
           break;
         default:
-          theme = "primary"; // Fallback for unknown statuses
+          theme = "warning"; // Fallback for unknown statuses
       }
 
       return <Chip label={value} size="sm" theme={theme} variant="outline" />;
