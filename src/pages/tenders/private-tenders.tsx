@@ -92,7 +92,7 @@ export default function PrivateTenders() {
                     toast.success("Payment confirmed.");
                     setIsLoadingEnquiry(false);  // Stop loader if payment is confirmed
                     clearInterval(intervalId);
-                    navigate("tenders"); 
+                    navigate("/"); 
                 }
             } catch (error) {
                 toast.error("Error checking payment status.");
