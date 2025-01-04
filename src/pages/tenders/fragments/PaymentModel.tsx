@@ -33,17 +33,13 @@ export default function PaymentModal({
             return; // Prevent submission if phone number is empty
         }
 
-        setIsLoading(true); // Start loading
-        setShowMessage(true); // Hide the success message
-        setIsPayButtonDisabled(true);
-        setWarningMessage("");
-
         try {
             // Trigger the payment submission (API call)
             onSubmit();
-            setIsLoading(false);  // Stop loading
-            setShowMessage(false);  // Show success message
-            setIsPayButtonDisabled(false);
+            setIsLoading(true); // Start loading
+            setShowMessage(true); // Hide the success message
+            setIsPayButtonDisabled(true);
+            setWarningMessage("");
         } catch (error) {
             setIsLoading(false);
             setShowMessage(false);
@@ -108,7 +104,7 @@ export default function PaymentModal({
                 </div>
 
                 {/* Success Message */}
-                {showMessage && !isLoading &&  (
+                {isLoading &&  (
                     <div className="mt-4 text-center text-green-600">
                         <span>Processing...</span>
                     </div>

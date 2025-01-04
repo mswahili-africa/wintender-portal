@@ -92,7 +92,7 @@ export default function PrivateTenders() {
                     toast.success("Payment confirmed.");
                     setIsLoadingEnquiry(false);  // Stop loader if payment is confirmed
                     clearInterval(intervalId);
-                    navigate("/"); 
+                    window.location.reload();
                 }
             } catch (error) {
                 toast.error("Error checking payment status.");
@@ -102,6 +102,7 @@ export default function PrivateTenders() {
             if (attemptCount >= 5) {
                 setIsLoadingEnquiry(false);  // Stop loader after 5 attempts
                 clearInterval(intervalId);  // Stop after 5 attempts
+                window.location.reload();
             }
         }, 5000);  // 5-second interval
     };
