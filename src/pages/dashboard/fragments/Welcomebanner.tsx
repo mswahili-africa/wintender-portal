@@ -31,8 +31,11 @@ export default function WelcomeBanner() {
                                 <br></br>
                                 Thank you for your support and understanding. Together, we’re building something amazing!
                                 <br></br>
-                                For any inquiries, feel free to contact us at 0736 228228
-
+                                For any inquiries, feel free to contact us at Call center Toll :
+                                <ul>
+                                    <li>0766 028 558</li>
+                                    <li>0736 228 228</li>
+                                </ul>
                             </p>
                         </div>
                     </div>

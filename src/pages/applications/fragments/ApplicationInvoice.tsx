@@ -20,7 +20,7 @@ export default function ApplicationInvoice() {
       .set({
         imageTimeout: 5000
       })
-      .save("Invoice-" + applicationData?.tender?.referenceNumber + ".pdf");
+      .save("Wintender-Invoice-" + applicationData?.tender?.referenceNumber + ".pdf");
   };
 
   return (
@@ -63,7 +63,7 @@ export default function ApplicationInvoice() {
           <p>Mbezi Beach, Along New Bagamoyo Rd, Samaki,<br></br>
             Wabichi House 1st Floor.</p>
           <p>finance@wintender.tz</p>
-          <p>0800 000 000</p>
+          <p>0747 098 558</p>
         </div>
 
         {/* Client Details */}
