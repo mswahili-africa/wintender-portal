@@ -14,6 +14,7 @@ import { IRole, IUser } from "@/types";
 import { IRegisterForm } from "@/types/forms";
 import useRoles from "@/hooks/useRoles";
 import TextInput from "@/components/widgets/forms/TextInput";
+import { useUserDataContext } from "@/providers/userDataProvider";
 interface IProps {
   onSuccess: () => void;
   initials?: IUser;
@@ -26,9 +27,6 @@ const schema = object().shape({
   phoneNumber: string().required("Phone number is required"),
   role: string().required("Role is required"),
   nationalId: string().required("National ID number is required"),
-  countryId: string(),
-  vendorId: string(),
-  resellerId: string(),
 });
 
 const updateSchema = object().shape({
@@ -39,6 +37,9 @@ export default function UserForm({ onSuccess, initials }: IProps) {
   const auth = useSnapshot(authStore);
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
+
+  const { userData } = useUserDataContext();  // Use the hook to get user data
+  const userRole = userData?.role || "BIDDER";
 
   const {
     register,
@@ -186,7 +187,6 @@ export default function UserForm({ onSuccess, initials }: IProps) {
                 <option value=""></option>
                 {roles?.content
                   .filter((item: IRole) => {
-                    const userRole = auth.user?.role;
 
                     // For any role which is not ADMINISTRATOR, don't show any options
                     if (!userRole?.includes("ADMINISTRATOR")) {

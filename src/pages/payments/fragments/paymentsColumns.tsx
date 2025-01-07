@@ -44,10 +44,10 @@ const columns: IColumn[] = [
 
       switch (value) {
         case "SUBSCRIPTION":
-          theme = "primary";
+          theme = "warning";
           break;
         case "DO_IT_FOR_ME":
-          theme = "success";
+          theme = "pending";
           break;
         case "PLAN":
           theme = "secondary";
@@ -68,7 +68,7 @@ const columns: IColumn[] = [
       let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
 
       switch (value) {
-        case "SUCCESS":
+        case "SUCCESSFUL":
           theme = "success";
           break;
         case "PENDING":

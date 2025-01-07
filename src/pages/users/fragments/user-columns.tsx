@@ -3,7 +3,6 @@ import Chip from "@/components/chip/Chip";
 import { IRole, IUser } from "@/types";
 
 const columns: IColumn[] = [
-
     {
         name: "firstName",
         label: "Full name",
@@ -12,7 +11,6 @@ const columns: IColumn[] = [
         element: (value: IUser) => `${value.name}`
     },
     {
-
         name: "account",
         label: "Account",
         sortable: false,
@@ -25,7 +23,6 @@ const columns: IColumn[] = [
         plainObject: false,
     },
     {
-
         name: "phoneNumber",
         label: "Phone",
         sortable: false,
@@ -34,9 +31,16 @@ const columns: IColumn[] = [
     {
         name: "role",
         label: "Role",
-        sortable: true,
-        plainObject: false,
-        element: (value: IRole) => `${value.role}`
+        sortable: false,
+        plainObject: true,
+        element: (value: IUser) => (
+            <Chip
+                label={value.roleDetails?.role || "N/A"}
+                size="sm"
+                theme="secondary"
+                variant="outline"
+            />
+        )
     },
     {
         name: "status",

@@ -130,6 +130,7 @@ export interface ICategory {
 }
 
 export interface IUser {
+  [x: string]: any;
   id: string;
   name: string;
   account: string;
