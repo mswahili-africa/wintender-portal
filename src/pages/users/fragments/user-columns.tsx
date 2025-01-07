@@ -8,13 +8,7 @@ const columns: IColumn[] = [
         label: "Full name",
         sortable: false,
         plainObject: true,
-        element: (value: IUser) => `${value.name}`
-    },
-    {
-        name: "account",
-        label: "Account",
-        sortable: false,
-        plainObject: false,
+        element: (value: IUser) => `${value.name.toUpperCase()}`
     },
     {
         name: "email",
@@ -37,7 +31,7 @@ const columns: IColumn[] = [
             <Chip
                 label={value.roleDetails?.role || "N/A"}
                 size="sm"
-                theme="secondary"
+                theme={value.roleDetails?.role === "MANAGER" ? "primary" : "secondary"}
                 variant="outline"
             />
         )
