@@ -41,16 +41,22 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
 
         // Handle different HTTP status codes
         if ([401].includes(status)) {
-          toast.error("Your session has expired. Please log in again.!");
-          
-          // Clear user session and redirect
-          authStore.logout(); // Assuming authStore has a logout method
+          toast.error("Unauthorized. You are not authorized, Please login again");
+
+          // Delay the logout action
+          setTimeout(() => {
+            // Clear user session and redirect after a delay
+            authStore.logout(); // Assuming authStore has a logout method
+          }, 5000); 
+
           return;
-        } else if ([400, 404].includes(status)) {
-          toast.error(errorMessage);
+          
+        } else if ([403].includes(status)) {
+          toast.error("Forbidden. Access has been denied");
         } else {
           toast.error("An unexpected error occurred.");
         }
+
       }
 
       return Promise.reject(error);

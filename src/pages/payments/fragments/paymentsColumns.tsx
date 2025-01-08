@@ -9,12 +9,6 @@ const columns: IColumn[] = [
     plainObject: false,
   },
   {
-    name: "controlNumber",
-    label: "Control Number",
-    sortable: false,
-    plainObject: false,
-  },
-  {
     name: "transactionReference",
     label: "Reference",
     sortable: false,

@@ -4,24 +4,23 @@ import { authStore } from "../store/auth";
 import usePopup from "./usePopup";
 
 
-
-export default function() {
+export default function () {
     const store = useSnapshot(authStore);
     const { showMessage, closePopup } = usePopup();
 
     const handleError = (error: AxiosError) => {
+
         const status = error.response?.status;
         switch (status) {
             case 401:
                 showMessage({
-                    title: "Session Expired",
-                    message: "Session has expired. You will be logged out shortly.",
+                    title: "Unauthorized",
+                    message: "You are not authorized.",
                     theme: "warning",
                 });
-                setTimeout(() => {closePopup(); store.logout()}, 2000)
+                setTimeout(() => { closePopup(); store.logout() }, 10000)
                 break;
             case 402:
-            case 403:
             case 404:
             case 500:
                 showMessage({
@@ -29,7 +28,15 @@ export default function() {
                     message: "Oops! Something went wrong on our end. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup(); store.logout() }, 3000)
+                setTimeout(() => { closePopup(); store.logout() }, 10000)
+                break;
+            case 403:
+                showMessage({
+                    title: "Forbidden",
+                    message: "Access has been denied",
+                    theme: "warning",
+                });
+                setTimeout(() => { closePopup(); store.logout() }, 10000)
                 break;
             case 502:
             case 504:
@@ -38,7 +45,7 @@ export default function() {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => {closePopup(); store.logout()}, 3000)
+                setTimeout(() => { closePopup(); store.logout() }, 10000)
                 break;
             case 503:
                 showMessage({
@@ -46,7 +53,7 @@ export default function() {
                     message: "We're sorry, but the service is currently unavailable. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => {closePopup(); store.logout()}, 3000)
+                setTimeout(() => { closePopup(); store.logout() }, 10000)
                 break;
             default:
                 showMessage({
@@ -54,7 +61,7 @@ export default function() {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup(); store.logout() }, 2000)
+                setTimeout(() => { closePopup(); store.logout() }, 10000)
                 break;
         }
     }
