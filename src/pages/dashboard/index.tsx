@@ -13,7 +13,9 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { getSummaryReport } from "@/services/reports";
 import { ISummaryReport } from "@/types";
-import WelcomeBanner from "./fragments/Welcomebanner";
+import WelcomeBanner1 from "./fragments/Welcomebanner1";
+import WelcomeBanner2 from "./fragments/Welcomebanner2";
+import { motion, AnimatePresence } from "framer-motion";
 
 type DashboardStats = ISummaryReport;
 
@@ -27,6 +29,7 @@ export default function Dashboard() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [showFirstBanner, setShowFirstBanner] = useState(true);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -45,6 +48,15 @@ export default function Dashboard() {
             fetchStats();
         }
     }, [userId]);
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setShowFirstBanner(prev => !prev);
+        }, 30000); // Change every 5 seconds
+
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, []);
 
     const SkeletonLoader = () => (
         <div className="grid grid-cols-4 gap-4">
@@ -151,7 +163,29 @@ export default function Dashboard() {
 
     return (
         <div className="p-1 min-h-screen">
-            <WelcomeBanner /> {/* Include the WelcomeBanner component */}
+            <AnimatePresence mode="wait">
+                {showFirstBanner ? (
+                    <motion.div
+                        key="banner1"
+                        initial={{ x: "100%", opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: "-100%", opacity: 0 }}
+                        transition={{ duration: 0.7, ease: "easeInOut" }}
+                    >
+                        <WelcomeBanner2 />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="banner2"
+                        initial={{ x: "100%", opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: "-100%", opacity: 0 }}
+                        transition={{ duration: 0.7, ease: "easeInOut" }}
+                    >
+                        <WelcomeBanner1 />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (
                 <div>

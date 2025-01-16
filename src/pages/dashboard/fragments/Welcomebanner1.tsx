@@ -14,7 +14,7 @@ export default function WelcomeBanner() {
                 <div className="flex justify-between">
                     <div className="flex flex-col p-5 lg:gap-1">
                         <div>
-                            <p className=" font-light text-sm lg:max-w-[600px] lg:pt-4">
+                            <p className=" font-light text-sm lg:max-w-[900px] lg:pt-4">
                                 <strong>Exciting Update:</strong> A Commitment to Better Service!
                                 <br></br><br></br>
                                 Dear Valued Customer,

@@ -6,7 +6,6 @@ import { useState } from "react";
 import { IconEye, IconEyeOff } from "@tabler/icons-react"; // Importing Tabler Icons
 import Logo from "@/assets/images/logo.png";
 import Button from "@/components/button/Button";
-import Modal from "@/components/widgets/Modal";
 import RegistrationModel from "./registrationModel";
 import { login } from "@/services/auth";
 import { authStore } from "@/store/auth";
