@@ -26,10 +26,10 @@ export default function UserProfile() {
     };
 
     const filteredCategories = categories
-    .filter(category =>
-        `${category.categoryGroup} ${category.name}`.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => a.categoryGroup.localeCompare(b.categoryGroup) || a.name.localeCompare(b.name));
+        .filter(category =>
+            `${category.categoryGroup} ${category.name}`.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => a.categoryGroup.localeCompare(b.categoryGroup) || a.name.localeCompare(b.name));
 
 
     useEffect(() => {
@@ -120,6 +120,9 @@ export default function UserProfile() {
             address: user.company.address || "",
             email: user.company.email || "",
             website: user.company.website || "",
+            vrn: user.company.vrn || "",
+            logoFilePath: user.company.logoFilePath || "",
+            tinFilePath: user.company.tinFilePath || "",
             categories: selectedCategories.filter(cat => cat !== null)
         };
 
@@ -306,33 +309,33 @@ export default function UserProfile() {
                             <p className="text-red-500">Company information not available</p>
                         )}
                     </div>
-                    
+
                     <div className="w-1/2 pl-4">
-            <h2 className="text-lg font-semibold mb-4">Select Categories</h2>
-            <input
-                type="text"
-                placeholder="Search categories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="mb-4 p-2 border border-gray-300 rounded w-full"
-            />
-            <div className="max-h-64 overflow-y-auto">
-                {filteredCategories.map(category => (
-                    <div key={category.id} className="flex items-center">
+                        <h2 className="text-lg font-semibold mb-4">Select Categories</h2>
                         <input
-                            type="checkbox"
-                            id={`category-${category.id}`}
-                            checked={selectedCategories.includes(category.id)}
-                            onChange={() => handleCategoryChange(category.id)}
-                            className="mr-2"
+                            type="text"
+                            placeholder="Search categories..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="mb-4 p-2 border border-gray-300 rounded w-full"
                         />
-                        <label htmlFor={`category-${category.id}`} className="text-sm">
-                            {category.categoryGroup} - {category.name}
-                        </label>
+                        <div className="max-h-64 overflow-y-auto">
+                            {filteredCategories.map(category => (
+                                <div key={category.id} className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        id={`category-${category.id}`}
+                                        checked={selectedCategories.includes(category.id)}
+                                        onChange={() => handleCategoryChange(category.id)}
+                                        className="mr-2"
+                                    />
+                                    <label htmlFor={`category-${category.id}`} className="text-sm">
+                                        {category.categoryGroup} - {category.name}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                ))}
-            </div>
-        </div>
 
                 </div>
 

@@ -142,7 +142,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
             <TextInput
               type="text"
               label="Last name"
-              placeholder="e.g., Trevor"
+              placeholder="e.g., Msanga"
               hasError={!!errors.lastName}
               error={errors.lastName?.message}
               register={register("lastName")}
@@ -159,7 +159,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
             <TextInput
               type="email"
               label="Email"
-              placeholder="e.g., info@mail.com"
+              placeholder="e.g., info@wintender.tz"
               hasError={!!errors.email}
               error={errors.email?.message}
               register={register("email")}

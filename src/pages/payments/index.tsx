@@ -3,7 +3,6 @@ import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/paymentsColumns";
-import usePayments from "@/hooks/usePayments";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { approvePayment, rejectPayment } from "@/services/payments";
@@ -12,6 +11,7 @@ import PaymentsForm from "./fragments/paymentsForm";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IPayment } from "@/types";
 import { update } from "lodash";
+import { getAllPayments } from "@/hooks/usePayments";
 
 export default function () {
   const [page, setPage] = useState<number>(0);
@@ -19,12 +19,14 @@ export default function () {
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [filter] = useState<any>();
   const { showConfirmation } = usePopup();
-  const { payments, isLoading, refetch } = usePayments({
+
+  const { payments, isLoading, refetch } = getAllPayments({
     page: page,
     search: search,
     sort: sort,
-    filter: filter,
+    filter: filter, // Pass the appropriate filter value
   });
+  
   const handleSorting = (field: string, direction: SortDirection) => {
     setSort(`${field},${direction.toLowerCase()}`);
   };

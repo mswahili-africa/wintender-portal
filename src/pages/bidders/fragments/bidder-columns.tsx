@@ -15,19 +15,6 @@ const columns: IColumn[] = [
         }
     },    
     {
-        name: "firstName",
-        label: "Contact Person",
-        sortable: false,
-        plainObject: true,
-        element: (value: IUser) => `${value.name}`
-    },
-    {
-        name: "email",
-        label: "Email",
-        sortable: false,
-        plainObject: false,
-    },
-    {
 
         name: "phoneNumber",
         label: "Phone",

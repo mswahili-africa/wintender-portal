@@ -7,7 +7,7 @@ import PrivateTenderRequest from "./fragments/privateRequestForm";
 import ApplicationsList from "./fragments/Applications";
 import { IApplicationGroup } from "@/types";
 import { IconEye } from "@tabler/icons-react";
-import useApplicationsGroup from "@/hooks/useApplicationsGroup";
+import { getAllApplicationsGroup } from "@/hooks/useApplicationsGroup";
 
 export default function ApplicationGroups() {
   const { userData } = useUserDataContext();
@@ -19,7 +19,7 @@ const userRole = userData?.role || "BIDDER";
   const [selectedGroupList, setSelectedGroupList] = useState<IApplicationGroup | null>(null); // Track selected group
 
   // Fetch data using custom hook
-  const { applicationGroupList, isLoading, refetch } = useApplicationsGroup({
+  const { applicationGroupList, isLoading, refetch } = getAllApplicationsGroup({
     page,
     search,
     sort,

@@ -6,7 +6,7 @@ import { getDoForMeApplication } from "@/services/tenders";
 import { IApplicationGroup } from "@/types";
 
 interface IProps {
-    applicationGroup: IApplicationGroup
+    applicationGroup: any
     groupId: string
     page: number
     search?: string

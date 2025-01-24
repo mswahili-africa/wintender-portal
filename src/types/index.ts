@@ -12,6 +12,15 @@ export interface IQueryParams {
   size: number;
   sort?: string;
   search?: string;
+  userId?: string;
+  filter?: Record<string, any>;
+}
+
+export interface IQueryParamsUserFilter {
+  page: number;
+  size: number;
+  sort?: string;
+  search?: string;
   filter?: Record<string, any>;
 }
 
@@ -175,6 +184,9 @@ export interface ICompany {
   tin: string;
   email: string;
   website: string;
+  vrn: string;
+  tinFilePath: string;
+  logoFilePath: string;
   categories: string[];
 }
 

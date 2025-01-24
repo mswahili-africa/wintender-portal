@@ -1,19 +1,18 @@
-import { IconDeviceMobileMessage, IconFile, IconMessage, IconStatusChange, IconUserOff } from "@tabler/icons-react";
-import { Fragment, useState } from "react";
+import { IconMessage, IconSearch } from "@tabler/icons-react";
+import {  useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
 import { IUser } from "@/types";
-import { useUserDataContext } from "@/providers/userDataProvider";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus } from "@/services/user";
+import { IMessage } from "@/types/forms";
 import SMSModal from "./fragments/sms-model";
 import { sendMessageSingle } from "@/services/commons";
-import usePopup from "@/hooks/usePopup";
-import { IMessage } from "@/types/forms";
 import { resetUser } from "@/services/auth";
+import BidderProfileModal from "./fragments/bidderProfileModal";
 
 export default function Bidders() {
     const [page, setPage] = useState<number>(0);
@@ -22,12 +21,9 @@ export default function Bidders() {
     const [filter, setFilter] = useState<any>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+    const [userInfo, setUserInfo] = useState<IUser | any>();
     const [message, setMessage] = useState<string>("");
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
-    const { showConfirmation } = usePopup();
-
-    const { userData } = useUserDataContext();
-const userRole = userData?.role || "BIDDER";
 
     const { bidders, isLoading, refetch } = useBidders({
         page: page,
@@ -76,37 +72,6 @@ const userRole = userData?.role || "BIDDER";
         },
     });
 
-    const changeStatus = (payload: IUser) => {
-        showConfirmation({
-            theme: "danger",
-            title: "Change bidder status?",
-            message: "Please verify that you want to change bidder status.",
-            onConfirm: () => {
-                changeMutation.mutate(payload.id);
-                refetch();
-            },
-            onCancel: () => { },
-        });
-    };
-
-    const handleResetUser = (payload: IUser) => {
-        showConfirmation({
-            theme: "danger",
-            title: "Reset user?",
-            message: "Please verify that you want to reset user account.",
-            onConfirm: () => {
-                resetMutation.mutate(payload.id);
-                refetch();
-            },
-            onCancel: () => { },
-        });
-    };
-
-    const SendSingleSMS = (user: IUser) => {
-        setSelectedUser(user); // Set the selected user for the modal
-        setIsModalOpen(true); // Open the modal
-    };
-
     const openBulkSendModal = () => {
         setSelectedUser(null); // Clear selected user
         setMessage(""); // Clear message
@@ -118,6 +83,10 @@ const userRole = userData?.role || "BIDDER";
         if (!phoneNumber) return;
         setIsSending(true); // Start loading state
         sendSMS.mutate({ phoneNumber, message });
+    };
+
+    const handleModalClose = () => {
+        setUserInfo(undefined);
     };
 
     return (
@@ -139,6 +108,14 @@ const userRole = userData?.role || "BIDDER";
 
             </div>
 
+            {userInfo && (
+                <BidderProfileModal
+                    user={userInfo}
+                    loading={isLoading}
+                    onClose={handleModalClose} // Pass the close handler
+                />
+            )}
+
             <Table
                 columns={columns}
                 data={bidders ? bidders.content : []}
@@ -149,52 +126,13 @@ const userRole = userData?.role || "BIDDER";
                 actionSlot={(content: any) => {
                     return (
                         <div className="flex justify-center space-x-3">
-                            {(userRole === "MANAGER" || userRole == "ADMINISTRATOR" || userRole == "ACCOUNTANT") &&
-                                (content.status != "NEEDPASSWORDCHANGE" && content.status != "INACTIVE") && (
-                                    <Fragment>
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                            onClick={() => SendSingleSMS(content)}
-                                        >
-                                            <IconDeviceMobileMessage size={20} />
-                                        </button>
-                                    </Fragment>
-                                )}
-                            {(userRole === "MANAGER" || userRole == "ADMINISTRATOR") &&
-                                content.status != "NEEDPASSWORDCHANGE" && (
-                                    <Fragment>
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                            onClick={() => changeStatus(content)}
-                                        >
-                                            <IconStatusChange size={20} />
-                                        </button>
-                                    </Fragment>
-                                )}
-
-                            {(userRole === "MANAGER" || userRole == "ADMINISTRATOR") &&
-                                content.status != "INACTIVE" && (
-                                    <Fragment>
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                            onClick={() => handleResetUser(content)}
-                                        >
-                                            <IconUserOff size={20} />
-                                        </button>
-                                    </Fragment>
-                                )}
-
-                                {(userRole === "LEGAL" || userRole == "ADMINISTRATOR") &&
-                                content.status != "INACTIVE" && (
-                                    <Fragment>
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                            onClick={() => handleResetUser(content)}
-                                        >
-                                            <IconFile size={20} />
-                                        </button>
-                                    </Fragment>
-                                )}
+                            <button
+                                onClick={() => setUserInfo(content)}
+                            >
+                                <IconSearch
+                                    className="h-5 w-5 text-green-500"
+                                />
+                            </button>
 
                         </div>
                     );
@@ -241,7 +179,7 @@ const userRole = userData?.role || "BIDDER";
                                 <input
                                     type="text"
                                     className="input-normal w-full mb-4"
-                                    value={selectedUser.company.name+' - '+selectedUser.phoneNumber}
+                                    value={selectedUser.company.name + ' - ' + selectedUser.phoneNumber}
                                     readOnly
                                 />
                             </div>

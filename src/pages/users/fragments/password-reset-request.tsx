@@ -4,7 +4,6 @@ import Button from "@/components/button/Button";
 import usePopup from "@/hooks/usePopup";
 import { forgotPassword } from "@/services/auth";
 
-
 interface IProps {
     email: string
 }
