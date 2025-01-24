@@ -104,22 +104,22 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
 
             <Modal size="sm" title="Create Company Plan" isOpen={open} onClose={(v) => setOpen(v)}>
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                <div className="mb-2">
-            <label htmlFor="com" className="block mb-2">
-                Bidder
-            </label>
-            <Select
-                options={entities}
-                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
-                onChange={(selectedOption) => setValue("bidder", selectedOption?.value)}
-                isLoading={loading}
-                className={errors.bidder ? "input-error" : "input-normal"}
-                placeholder="Search for a bidder"
-            />
-            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                {errors.bidder?.message?.toString()}
-            </p>
-        </div>
+                    <div className="mb-2">
+                        <label htmlFor="com" className="block mb-2">
+                            Bidder
+                        </label>
+                        <Select
+                            options={entities}
+                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                            onChange={(selectedOption) => setValue("bidder", selectedOption?.value)}
+                            isLoading={loading}
+                            className={errors.bidder ? "input-error" : "input-normal"}
+                            placeholder="Search for a bidder"
+                        />
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.bidder?.message?.toString()}
+                        </p>
+                    </div>
 
                     <div className="mb-2">
                         <label htmlFor="planType" className="block mb-2">

@@ -1,16 +1,18 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
-import { getEntities } from "@/services/entities";
 import { createTender, getCategories } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState,useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { mixed, number, object, string } from "yup";
 import Select from "react-select";
+import { getBidders } from "@/services/user";
+import { debounce } from "lodash";
+import { getEntities } from "@/services/entities";
 
 interface IProps {
     onSuccess: () => void;
@@ -36,6 +38,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const {
         register,
@@ -82,19 +85,33 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
         fetchCategories();
     }, []);
 
-    // Fetch entities
-    useEffect(() => {
-        async function fetchEntities() {
+     const fetchEntities = useCallback(async (search = "") => {
+            if (!search) {
+                setEntities([]);
+                return;
+            }
+    
+            setLoading(true);
             try {
-                const allEntities = await getEntities({ page: 0, size: 500 });
-                setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name }))); // Format for react-select
+                const allEntities = await getEntities({ page: 0, size: 5, search });
+                setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
             } catch (error) {
                 console.error("Failed to fetch entities", error);
+            } finally {
+                setLoading(false);
             }
-        }
-
-        fetchEntities();
-    }, []);
+        }, []);
+    
+        const debouncedFetchEntities = useCallback(
+            debounce((inputValue) => {
+                if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                    fetchEntities(inputValue);
+                } else {
+                    setEntities([]); // Clear entities if less than 5 characters
+                }
+            }, 5),
+            [fetchEntities]
+        );
 
     // Handle form submission
     const submit = (data: Record<string, any>) => {
@@ -195,18 +212,19 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
 
                     {/* Entity with search */}
                     <div className="mb-2">
-                        <label htmlFor="entity" className="block mb-2">
+                        <label htmlFor="com" className="block mb-2">
                             Entity
                         </label>
-
                         <Select
                             options={entities}
-                            onChange={(selectedOption) => setValue("entity", selectedOption?.value)} // Set the selected entity value
-                            className={errors.entity ? "input-error" : "input-normal"}
-                            placeholder="Search for an entity"
+                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                            onChange={(selectedOption) => setValue("entity", selectedOption?.value)}
+                            isLoading={loading}
+                            className={errors.bidder ? "input-error" : "input-normal"}
+                            placeholder="Search for a entity"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.entity?.message?.toString()}
+                            {errors.bidder?.message?.toString()}
                         </p>
                     </div>
 

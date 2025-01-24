@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconCalendarPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -153,6 +153,10 @@ export default function InternationalTenders() {
         setEditTender(undefined);
     };
 
+    const topUpSubscription = () => {
+        setIsPaymentModalOpen(true);
+    };
+    
     const handleDoItForMeClick = () => {
         if (selectedTender) {
             doItForMeMutation.mutate(selectedTender.id);
@@ -169,6 +173,11 @@ export default function InternationalTenders() {
                             refetch();
                         }}
                     />
+                )}
+                {(userRole === "BIDDER") && (
+                    <button onClick={() => topUpSubscription()}>
+                        <IconCalendarPlus size={30} className="text-green-600 blink-shadow" />
+                    </button>
                 )}
             </div>
 
