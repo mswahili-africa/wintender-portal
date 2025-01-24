@@ -23,6 +23,7 @@ import useApplicationsList from "@/hooks/useApplicationsList";
 import usePopup from "@/hooks/usePopup";
 import { resetUser } from "@/services/auth";
 import { changeUserStatus } from "@/services/user";
+import Chip from "@/components/chip/Chip";
 
 interface IProps {
     children?: React.ReactNode;
@@ -159,6 +160,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                     onClose();
                 }}
             >
+
                 <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
                     <section className="w-full space-y-6">
                         <div className="border-b border-zinc-200 pb-4">
@@ -174,12 +176,18 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     <span>
                                         <h4 className="lg:text-lg font-medium">{user?.company.name.toUpperCase()}</h4>
                                     </span>
+                                    <Chip
+                                        label={user.planExpiryDate && user.planExpiryDate > Date.now() ? "PLAN ACTIVE" : "PLAN EXPIRED"}
+                                        size="sm"
+                                        theme={user.planExpiryDate && user.planExpiryDate > Date.now() ? "success" : "danger"}
+                                        variant="outline"
+                                    />
                                 </div>
                                 <p className="flex items-center space-x-3">
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
                                     </button>
-                                    <button className="text-green-500" onClick={() => handleResetUser(user)}
+                                    {/* <button className="text-green-500" onClick={() => handleResetUser(user)}
                                     >
                                         <IconUserOff size={20} />
                                     </button>
@@ -188,7 +196,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                         onClick={() => changeStatus(user)}
                                     >
                                         <IconStatusChange size={20} />
-                                    </button>
+                                    </button> */}
                                 </p>
                             </div>
                         </div>
@@ -221,15 +229,17 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     <Loader />
                                 ) : (
                                     <ul>
-                                        {user.company.categories.map((categoryId) => {
-                                            const category = categories.find((c) => c.id === categoryId);
-                                            return (
-                                                <li key={categoryId} className="flex items-center gap-2">
-                                                    <input type="checkbox" checked={true} readOnly className="h-4 w-4 text-green-500" />
-                                                    <span>{category ? category.name : "Unknown Category"}</span>
-                                                </li>
-                                            );
-                                        })}
+                                        {(Array.isArray(user.company.categories) ? user.company.categories : [])
+                                            .filter(categoryId => categoryId) // Ensure no null/undefined values
+                                            .map((categoryId) => {
+                                                const category = categories.find((c) => c.id === categoryId);
+                                                return (
+                                                    <li key={categoryId || `unknown-${Math.random()}`} className="flex items-center gap-2">
+                                                        <input type="checkbox" checked={true} readOnly className="h-4 w-4 text-green-500" />
+                                                        <span>{category ? category.name : "Unknown Category"}</span>
+                                                    </li>
+                                                );
+                                            })}
                                     </ul>
                                 )}
                             </div>

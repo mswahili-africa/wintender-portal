@@ -155,6 +155,7 @@ export interface IUser {
   avatar: string;
   roleId: string;
   company: ICompany;
+  planExpiryDate: number;
   updatedBy: string;
   updatedAt: number;
   nationalId: string;
