@@ -4,13 +4,12 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 
 interface ModalProps {
     title: string;
+    tenderId: string;
     onClose: () => void;
     children: React.ReactNode;
     isLoading: boolean;
     onDoItForMeClick: () => void;
 }
-
-
 
 const TenderViewModal = ({ title, onClose, children, isLoading, onDoItForMeClick }: ModalProps) => {
     const { userData } = useUserDataContext();
@@ -23,17 +22,21 @@ const TenderViewModal = ({ title, onClose, children, isLoading, onDoItForMeClick
                     <h2 className="text-xl font-bold">{title}</h2>
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
+                        {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
+                            <Button
+                                label="Assign Bidder"
+                                size="sm"
+                                theme="secondary"
+                                onClick={onDoItForMeClick}
+                            />
+                        )}
                         {userRole === "BIDDER" && (
-                            isLoading ? (
-                                <Spinner size="sm" />
-                            ) : (
-                                <Button
-                                    label="Request 'Do it for me'"
-                                    size="sm"
-                                    theme="primary"
-                                    onClick={onDoItForMeClick}
-                                />
-                            )
+                            <Button
+                                label="Request 'Do it for me'"
+                                size="sm"
+                                theme="primary"
+                                onClick={onDoItForMeClick}
+                            />
                         )}
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
                             X

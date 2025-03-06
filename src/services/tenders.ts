@@ -13,7 +13,7 @@ export async function downloadTenderDocument(id: string) {
 }
 
 export async function getTendersPrivate(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list/private", {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC&region=PRIVATE", {
         params: params
     })
 
@@ -21,7 +21,7 @@ export async function getTendersPrivate(params: IQueryParams) {
 }
 
 export async function getTendersGovernment(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list/government", {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC&region=GOVERNMENT", {
         params: params
     })
 
@@ -29,7 +29,7 @@ export async function getTendersGovernment(params: IQueryParams) {
 }
 
 export async function getTendersInternational(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list/international", {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC&region=INTERNATIONAL", {
         params: params
     })
 

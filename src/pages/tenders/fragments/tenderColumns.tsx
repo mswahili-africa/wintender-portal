@@ -6,23 +6,7 @@ const columns: IColumn[] = [
         name: "entity",
         label: "Procurement Entity",
         sortable: true,
-        plainObject: true,
-        element: (row: { entity: any }) => (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                    src={row.entity.filePath}
-                    alt="Entity Logo"
-                    style={{
-                        width: '40px', // Adjust size as needed
-                        height: '40px',
-                        borderRadius: '50%', // Makes the image round
-                        objectFit: 'cover', // Ensures the image covers the area
-                        marginRight: '8px', // Space between logo and name
-                    }}
-                />
-                <span>{row.entity.name.toUpperCase()}</span>
-            </div>
-        ),
+        plainObject: false
     },
     {
         name: "title",
@@ -34,10 +18,7 @@ const columns: IColumn[] = [
         name: "category",
         label: "Category",
         sortable: false,
-        plainObject: true,
-        element: (row: any) => {
-            return `${row.category?.name}`
-        }
+        plainObject: false
     },
     {
         name: "status",
@@ -53,11 +34,11 @@ const columns: IColumn[] = [
             const displayStatus = remainingDays <= 2 ? 'CLOSING' : row.status;
 
             return (
-                <Chip 
-                    label={displayStatus} 
-                    size="sm" 
-                    theme={displayStatus === 'CLOSING' ? 'warning' : 'success'} 
-                    variant="outline" 
+                <Chip
+                    label={displayStatus}
+                    size="sm"
+                    theme={displayStatus === 'CLOSING' ? 'warning' : 'success'}
+                    variant="outline"
                 />
             );
         }

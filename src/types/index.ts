@@ -1,5 +1,4 @@
 import { List } from "lodash";
-import { IPlan } from "./forms";
 
 export interface IGenericResponse {
   statusCodeValue: number;
@@ -13,6 +12,8 @@ export interface IQueryParams {
   sort?: string;
   search?: string;
   userId?: string;
+  searchKey?: string
+  searchValue?: string
   filter?: Record<string, any>;
 }
 
@@ -233,12 +234,12 @@ export interface ITenders {
 }
 
 
-export interface ISummaryReport{
-  statistics:IStatisticSummary
+export interface ISummaryReport {
+  statistics: IStatisticSummary
 }
 
-export interface IStatisticSummary{
-  payments:number
+export interface IStatisticSummary {
+  payments: number
   requests: number
   tenders: number
   bidders: number

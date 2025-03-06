@@ -5,12 +5,11 @@ import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState,useCallback } from "react";
+import { Fragment, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { mixed, number, object, string } from "yup";
 import Select from "react-select";
-import { getBidders } from "@/services/user";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 
@@ -71,47 +70,63 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
         }
     });
 
-    // Fetch categories
-    useEffect(() => {
-        async function fetchCategories() {
-            try {
-                const allCategories = await getCategories({ page: 0, size: 500 });
-                setCategories(allCategories.content.map(c => ({ value: c.id, label: c.categoryGroup + ": " + c.name })));
-            } catch (error) {
-                console.error("Failed to fetch categories", error);
-            }
+    const fetchCategories = useCallback(async (search = "") => {
+        if (!search) {
+            setCategories([]);
+            return;
         }
 
-        fetchCategories();
+        setLoading(true);
+        try {
+            const allEntities = await getCategories({ page: 0, size: 5, search });
+            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch categories", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-     const fetchEntities = useCallback(async (search = "") => {
-            if (!search) {
-                setEntities([]);
-                return;
+    const debouncedFetchCategory = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchCategories(inputValue);
+            } else {
+                setCategories([]); // Clear entities if less than 5 characters
             }
-    
-            setLoading(true);
-            try {
-                const allEntities = await getEntities({ page: 0, size: 5, search });
-                setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-            } catch (error) {
-                console.error("Failed to fetch entities", error);
-            } finally {
-                setLoading(false);
+        }, 5),
+        [fetchCategories]
+    );
+
+
+
+    const fetchEntities = useCallback(async (search = "") => {
+        if (!search) {
+            setEntities([]);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const allEntities = await getEntities({ page: 0, size: 5, search });
+            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch entities", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const debouncedFetchEntities = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchEntities(inputValue);
+            } else {
+                setEntities([]); // Clear entities if less than 5 characters
             }
-        }, []);
-    
-        const debouncedFetchEntities = useCallback(
-            debounce((inputValue) => {
-                if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                    fetchEntities(inputValue);
-                } else {
-                    setEntities([]); // Clear entities if less than 5 characters
-                }
-            }, 5),
-            [fetchEntities]
-        );
+        }, 5),
+        [fetchEntities]
+    );
 
     // Handle form submission
     const submit = (data: Record<string, any>) => {
@@ -127,7 +142,7 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
         formData.append("tenderType", data.tenderType);
         formData.append("category", data.category);
         formData.append("entity", data.entity);
-        formData.append("consultationFee",data.consultationFee)
+        formData.append("consultationFee", data.consultationFee)
 
         uploadTenderMutation.mutate(formData);
     };
@@ -220,7 +235,6 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
                             onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
                             onChange={(selectedOption) => setValue("entity", selectedOption?.value)}
                             isLoading={loading}
-                            className={errors.bidder ? "input-error" : "input-normal"}
                             placeholder="Search for a entity"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
@@ -236,8 +250,9 @@ export default function TenderUpload({ onSuccess, initials }: IProps) {
 
                         <Select
                             options={categories}
-                            onChange={(selectedOption) => setValue("category", selectedOption?.value)} // Set the selected category value
-                            className={errors.category ? "input-error" : "input-normal"}
+                            onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
+                            onChange={(selectedOption) => setValue("category", selectedOption?.value)}
+                            isLoading={loading}
                             placeholder="Search for a category"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">

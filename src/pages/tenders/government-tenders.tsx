@@ -1,28 +1,30 @@
-import { IconTrash, IconEye, IconEdit, IconCalendarPlus } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useTenders from "@/hooks/useTendersGovernment";
 import usePopup from "@/hooks/usePopup";
-import { deleteTenders, requestDoForMe } from "@/services/tenders";
+import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import TenderCreateForm from "./fragments/tenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
-import TenderEdit from "./fragments/tenderEditForm";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
 import PaymentModal from "./fragments/PaymentModel";
 import { USSDPushEnquiry, USSDPushRequest } from "@/services/payments";
 import { Puff } from "react-loader-spinner";
+import { debounce } from "lodash";
+import { getEntities } from "@/services/entities";
+import Select from "react-select";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
-    const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
@@ -30,7 +32,16 @@ export default function GovernmentTenders() {
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [paymentId, setPaymentId] = useState<string | null>(null);
-    const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false); // Loading state for enquiry process
+    const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [entities, setEntities] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [tempKeyword, setTempKeyword] = useState("");
+    const [tempSearchType, setTempSearchType] = useState("title");
+    const [tempSelectedEntity, setTempSelectedEntity] = useState(null);
+    const [tempSelectedCategory, setTempSelectedCategory] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+
 
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
@@ -39,9 +50,28 @@ export default function GovernmentTenders() {
         paymentReason: "SUBSCRIPTION"
     });
 
+    const handleSearch = () => {
+        setSearchQuery(generateSearchQuery());
+    };
+
+    const generateSearchQuery = () => {
+        if (tempSearchType === "title") return `title-${tempKeyword}`;
+        if (tempSearchType === "entity") return `entity-${tempSelectedEntity}`;
+        if (tempSearchType === "category") return `category-${tempSelectedCategory}`;
+        return "";
+    };
+
+    const handleReset = () => {
+        setTempSearchType("title");
+        setTempKeyword("");
+        setTempSelectedEntity(null);
+        setTempSelectedCategory(null);
+        setSearchQuery("");
+    };
+
     const { getTenders, isLoading, refetch } = useTenders({
         page: page,
-        search: search,
+        search: searchQuery,
         sort: sort,
         filter: filter
     });
@@ -73,7 +103,6 @@ export default function GovernmentTenders() {
     const paymentMutation = useMutation({
         mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
-            toast.success("Payment processed successfully!");
             setPaymentId(data.id);  // Store the payment ID from the response
             setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
             startEnquiry(data.id);  // Start the enquiry API calls
@@ -92,7 +121,8 @@ export default function GovernmentTenders() {
                 if (response.code === "SUCCESS") {
                     toast.success("Payment confirmed.");
                     setIsLoadingEnquiry(false);  // Stop loader if payment is confirmed
-                    clearInterval(intervalId);  // Clear the interval if success
+                    clearInterval(intervalId);
+                    navigate("/");
                 }
             } catch (error) {
                 toast.error("Error checking payment status.");
@@ -102,15 +132,14 @@ export default function GovernmentTenders() {
             if (attemptCount >= 5) {
                 setIsLoadingEnquiry(false);  // Stop loader after 5 attempts
                 clearInterval(intervalId);  // Stop after 5 attempts
+                window.location.reload();
             }
         }, 5000);  // 5-second interval
     };
 
     const doItForMeMutation = useMutation({
         mutationFn: async (tenderId: string) => requestDoForMe(tenderId),
-        onSuccess: () => {
-            toast.success("Request processed successfully!");
-        },
+        onSuccess: () => { },
         onError: (error: any) => {
             toast.error(error.message ?? "Failed to process request");
         }
@@ -118,7 +147,7 @@ export default function GovernmentTenders() {
 
     const deleteMutation = useMutation({
         mutationFn: (data: ITenders) => deleteTenders(data.id),
-        onSuccess: (res) => {
+        onSuccess: () => {
             refetch();
             toast.success("Tender deleted successfully");
         },
@@ -141,6 +170,62 @@ export default function GovernmentTenders() {
         })
     }
 
+    const fetchCategories = useCallback(async (search = "") => {
+        if (!search) {
+            setCategories([]);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const allEntities = await getCategories({ page: 0, size: 5, search });
+            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch categories", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const debouncedFetchCategory = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchCategories(inputValue);
+            } else {
+                setCategories([]); // Clear entities if less than 5 characters
+            }
+        }, 5),
+        [fetchCategories]
+    );
+
+    const fetchEntities = useCallback(async (search = "") => {
+        if (!search) {
+            setEntities([]);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const allEntities = await getEntities({ page: 0, size: 5, search });
+            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch entities", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const debouncedFetchEntities = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchEntities(inputValue);
+            } else {
+                setEntities([]); // Clear entities if less than 5 characters
+            }
+        }, 5),
+        [fetchEntities]
+    );
+
     const handleView = (content: ITenders) => {
         setSelectedTender(content);
     }
@@ -153,20 +238,20 @@ export default function GovernmentTenders() {
         setEditTender(undefined);
     };
 
+    const topUpSubscription = () => {
+        setIsPaymentModalOpen(true);
+    };
+
     const handleDoItForMeClick = () => {
         if (selectedTender) {
             doItForMeMutation.mutate(selectedTender.id);
         }
     };
 
-    const topUpSubscription = () => {
-        setIsPaymentModalOpen(true);
-    };
-
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Tender</h2>
+                <h2 className="text-lg font-bold">International Tenders</h2>
                 {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
                     <TenderCreateForm
                         onSuccess={() => {
@@ -216,14 +301,80 @@ export default function GovernmentTenders() {
                 />
             ) : null}
 
-            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                <div className="flex justify-between items-center p-4 border-b border-slate-200">
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        className="input-normal py-2 w-1/2 lg:w-1/4"
-                        onChange={(e) => setSearch(e.target.value)} />
+            <div className="flex justify-between items-center border-b border-slate-200">
+                <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
+                    {/* Search Type Dropdown */}
+                    <div className="mb-2">
+                        <Select
+                            options={[
+                                { value: "title", label: "Title" },
+                                { value: "entity", label: "Entity" },
+                                { value: "category", label: "Category" },
+                            ]}
+                            onChange={(selectedOption) => setTempSearchType(selectedOption?.value || "title")}
+                            placeholder="Filter by"
+                        />
+                    </div>
+
+                    {/* Conditional Inputs */}
+                    {tempSearchType === "entity" && (
+                        <div className="mb-2">
+                            <Select
+                                options={entities}
+                                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                                onChange={(selectedOption) => setTempSelectedEntity(selectedOption?.value)}
+                                isLoading={loading}
+                                placeholder="Type..."
+                            />
+                        </div>
+                    )}
+
+                    {tempSearchType === "category" && (
+                        <div className="mb-2">
+                            <Select
+                                options={categories}
+                                onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
+                                onChange={(selectedOption) => setTempSelectedCategory(selectedOption?.value)}
+                                isLoading={loading}
+                                placeholder="Type..."
+                            />
+                        </div>
+                    )}
+
+                    {tempSearchType === "title" && (
+                        <div className="mb-2">
+                            <input
+                                type="text"
+                                onChange={(e) => setTempKeyword(e.target.value)}
+                                className="input-normal w-full px-3 border rounded-md"
+                                placeholder="Type..."
+                            />
+                        </div>
+                    )}
                 </div>
+
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                    <Button
+                        type="button"
+                        label="Filter"
+                        icon={<IconFilter size={18} />}
+                        theme="info"
+                        size="sm"
+                        onClick={handleSearch} // Triggers search
+                    />
+                    <Button
+                        type="button"
+                        label="Reset"
+                        icon={<IconRefresh size={18} />}
+                        theme="warning"
+                        size="sm"
+                        onClick={handleReset} // Resets filters
+                    />
+                </div>
+
+            </div>
+
+            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
 
                 <Table
                     columns={columns}
@@ -283,6 +434,7 @@ export default function GovernmentTenders() {
             {selectedTender && (
                 <TenderViewModal
                     title={selectedTender.tenderNumber}
+                    tenderId={selectedTender.id}
                     onClose={() => setSelectedTender(null)}
                     isLoading={doItForMeMutation.isLoading}
                     onDoItForMeClick={handleDoItForMeClick}
@@ -327,7 +479,6 @@ export default function GovernmentTenders() {
                                 <strong className="w-32 text-gray-600">Close Date:</strong>
                                 <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
                             </div>
-
                             <br></br>
                         </div>
 
