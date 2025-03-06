@@ -6,16 +6,17 @@ import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { mixed, number, object, string } from "yup";
+import { number, object, string } from "yup";
 import Select from "react-select";
+import { debounce } from "lodash";
 
 interface IProps {
     onSuccess: () => void;
     initials?: ITenders;
-    onClose: () => void; 
+    onClose: () => void;
 }
 
 const schema = object().shape({
@@ -31,7 +32,7 @@ const schema = object().shape({
     consultationFee: number().required("Consultation Fee is required"),
 });
 
-export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
+export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
 
     const [open, setOpen] = useState<boolean>(true);
     const [tenderFile, setTenderFile] = useState<string | any>();
@@ -39,7 +40,7 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
     const [entities, setEntities] = useState<any[]>([]);
     const [categoriesLoading, setCategoriesLoading] = useState<boolean>(false);
     const [entitiesLoading, setEntitiesLoading] = useState<boolean>(false);
-
+    const [loading, setLoading] = useState(false);
 
     const {
         register,
@@ -75,7 +76,7 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
             setValue("category", initials.category?.id);
             setValue("entity", initials.entity?.id);
             setValue("consultationFee", initials.consultationFee);
-            
+
             // Convert milliseconds to datetime-local format (yyyy-MM-ddThh:mm)
             const formatDateForInput = (date: number) => {
                 const d = new Date(date);
@@ -134,6 +135,34 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
         fetchEntities();
     }, []);
 
+    const fetchCategories = useCallback(async (search = "") => {
+        if (!search) {
+            setCategories([]);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const allEntities = await getCategories({ page: 0, size: 5, search });
+            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch categories", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const debouncedFetchCategory = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchCategories(inputValue);
+            } else {
+                setCategories([]); // Clear entities if less than 5 characters
+            }
+        }, 5),
+        [fetchCategories]
+    );
+
     // Handle form submission
     const submit = (data: Record<string, any>) => {
         const formData = new FormData();
@@ -150,7 +179,7 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
         formData.append("tenderType", data.tenderType);
         formData.append("category", data.category);
         formData.append("entity", data.entity);
-        formData.append("consultationFee",data.consultationFee)
+        formData.append("consultationFee", data.consultationFee)
 
         updateTenderMutation.mutate(formData);
     };
@@ -178,7 +207,7 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
             <Modal
                 size="sm"
                 title="Edit Tender"
-                isOpen={open} 
+                isOpen={open}
                 onClose={() => {
                     setOpen(false);
                     onClose(); // Call the parent handler when closing the modal
@@ -228,7 +257,7 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
                         </p>
                     </div>
 
-                     {/* Entity with search */}
+                    {/* Entity with search */}
                     <div className="mb-2">
                         <label htmlFor="entity" className="block mb-2">
                             Entity
@@ -256,17 +285,13 @@ export default function TenderEdit({ onSuccess, initials, onClose  }: IProps) {
                             Category
                         </label>
 
-                        {categoriesLoading ? (
-                            <div>Loading categories...</div>
-                        ) : (
-                            <Select
-                                options={categories}
-                                value={categories.find(category => category.value === watch("category"))} // Set selected value
-                                onChange={(selectedOption) => setValue("category", selectedOption?.value)} // Set the selected category value
-                                className={errors.category ? "input-error" : "input-normal"}
-                                placeholder="Search for a category"
-                            />
-                        )}
+                        <Select
+                            options={categories}
+                            onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
+                            onChange={(selectedOption) => setValue("category", selectedOption?.value)}
+                            isLoading={loading}
+                            placeholder="Search for a category"
+                        />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.category?.message?.toString()}
                         </p>
