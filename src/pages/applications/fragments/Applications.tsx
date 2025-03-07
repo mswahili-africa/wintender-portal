@@ -30,7 +30,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<string>("updatedAt,desc");
-    const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -122,7 +121,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     // Edit Principal Amount Handler
     const handleEdit = (content: IApplications) => {
         setIsTenderModalOpen(false);
-        setEditAmount(content.controlNumber.principleAmount);
+        setEditAmount(content.principleAmount);
         setSelectedApplication(content);
         setIsEditModalOpen(true);
     };
@@ -136,9 +135,10 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     };
 
     // View Tender Details
-    const handleView = (application: IApplications, tender: ITenders) => {
+    const handleView = (application: IApplications) => {
+        console.log("application--"+application);
+
         setIsEditModalOpen(false);
-        setSelectedTender(tender);
         setSelectedApplication(application);
         setIsTenderModalOpen(true);  // Open tender view modal
     };
@@ -227,7 +227,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             <div className="flex justify-center items-center space-x-3">
                                 <button
                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(applicationList, applicationList.tender)}
+                                    onClick={() => handleView(applicationList)}
                                 >
                                     <IconEye size={20} />
                                 </button>
@@ -334,26 +334,26 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     </div>
                 )}
 
-                {isTenderModalOpen && selectedTender && selectedApplication && (
+                {isTenderModalOpen && selectedApplication && (
                     <TenderViewModelDoItForMe
-                        tenderGroup={selectedTender.tenderGroup}
-                        onClose={() => setSelectedTender(null)}
+                        tenderGroup={selectedApplication.tenderGroup}
+                        onClose={() => setSelectedApplication(null)}
                     >
                         <div className="space-y-4">
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Bidder:</strong>
-                                <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{applicationGroup.user.account}</strong> : {applicationGroup.user.company.name}</h3>
+                                <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{applicationGroup.bidderAccount}</strong> : {applicationGroup.bidderAccount}</h3>
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Phone:</strong>
-                                <a href={`tel:${applicationGroup.user.company.primaryNumber}`} className="text-l font-semi-bold text-gray-800">
-                                    {applicationGroup.user.company.primaryNumber}
+                                <a href={`tel:${applicationGroup.bidderCompanyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicationGroup.bidderCompanyPrimaryNumber}
                                 </a>
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Email:</strong>
-                                <a href={`mailto:${applicationGroup.user.company.email}`} className="text-l font-semi-bold text-gray-800">
-                                    {applicationGroup.user.company.email}
+                                <a href={`mailto:${applicationGroup.bidderCompanyEmail}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicationGroup.bidderCompanyEmail}
                                 </a>
                             </div>
 
@@ -366,22 +366,22 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             {/* Tender Header */}
                             <div className="flex items-center justify-between mb-4">
                                 <strong className="w-32 text-gray-600">Title:</strong>
-                                <h3 className="flex-1 font-bold text-gray-800">{selectedTender.tenderNumber} : {selectedTender.title}</h3>
+                                <h3 className="flex-1 font-bold text-gray-800">{selectedApplication.tenderNumber} : {selectedApplication.title}</h3>
                             </div>
 
                             {/* Tender Details */}
                             <div className="space-y-2">
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">PE:</strong>
-                                    <p className="flex-1 font-bold text-gray-800">{selectedTender.entityName.toUpperCase()}</p>
+                                    <p className="flex-1 font-bold text-gray-800">{selectedApplication.entityName.toUpperCase()}</p>
                                 </div>
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">Category:</strong>
-                                    <p className="flex-1">{selectedTender.categoryName}</p>
+                                    <p className="flex-1">{selectedApplication.categoryName}</p>
                                 </div>
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">Summary:</strong>
-                                    <p className="flex-1">{selectedTender.summary}</p>
+                                    <p className="flex-1">{selectedApplication.summary}</p>
                                 </div>
 
                                 <div className="flex items-center">
@@ -389,7 +389,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     <Chip
                                         label={(() => {
                                             const currentDate = new Date().getTime();
-                                            const closeDate = selectedTender.closeDate;
+                                            const closeDate = selectedApplication.closeDate;
                                             const remainingTime = closeDate - currentDate;
                                             const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
@@ -399,7 +399,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                             } else if (remainingDays <= 2) {
                                                 return 'CLOSING';
                                             } else {
-                                                return selectedTender.status;
+                                                return selectedApplication.status;
                                             }
                                         })()}
                                         size="sm"
@@ -409,7 +409,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">Close Date:</strong>
-                                    <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
+                                    <p className="flex-1">{new Date(selectedApplication.closeDate).toLocaleString()}</p>
                                 </div>
 
                                 <br></br>
@@ -418,7 +418,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         <strong className="w-50 text-gray-600">Consultation Fee:</strong>
                                         <p className="flex-1">
                                             <strong className="w-40 text-gray-600">
-                                                TZS {new Intl.NumberFormat().format(selectedApplication.controlNumber.principleAmount)}
+                                                TZS {new Intl.NumberFormat().format(selectedApplication.principleAmount)}
                                             </strong>
                                         </p>
                                     </div></>
@@ -432,7 +432,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             {/* PDF Viewer */}
                             <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                 <iframe
-                                    src={selectedTender.filePath}
+                                    src={selectedApplication.filePath}
                                     width="100%"
                                     height="500px"
                                     frameBorder="0"
@@ -442,7 +442,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
                             {/* Modal Footer */}
                             <div className="flex justify-end space-x-2 mt-6">
-                                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
+                                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedApplication(null)} />
                             </div>
                         </div>
                     </TenderViewModelDoItForMe>

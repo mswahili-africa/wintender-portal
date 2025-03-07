@@ -310,8 +310,15 @@ export interface IControlNumber {
 
 export interface IApplicationGroup {
   id: string;
-  user: IUser;
-  application: List<string>;
+  bidderId: string;
+  applicationsCount: number;
+  companyId: string;
+  bidderCompanyName: string;
+  bidderAccount: string;
+  bidderCompanyPrimaryNumber: string;
+  bidderCompanyEmail: string;
+  readStatus: string;
+  bidderName: string;
   createdBy: string;
   updatedBy: string;
   createdAt: number;
@@ -320,10 +327,28 @@ export interface IApplicationGroup {
 
 export interface IApplications {
   id: string;
+  groupId: string;
   reference: string;
-  tender: ITenders;
+  tenderId: string;
+  tenderNumber: string;
+  title: string;
+  summary: string;
+  file: string;
+  openDate: number;
+  closeDate: number;
+  tenderType: string;
+  tenderGroup: string;
+  consultationFee: string;
+  categoryName: string;
+  filePath: string;
+  entityName: string;
+  region: string;
   comments: string;
-  controlNumber: IControlNumber;
+  controlNumber: string;
+  paymentReason: string;
+  principleAmount: number;
+  paidAmount: number;
+  paymentStatus: string;
   status: string;
   createdBy: string;
   updatedBy: string;
