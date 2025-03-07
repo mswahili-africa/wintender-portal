@@ -136,7 +136,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
     // View Tender Details
     const handleView = (application: IApplications) => {
-        console.log("application--"+application);
+        console.log("application--" + application);
 
         setIsEditModalOpen(false);
         setSelectedApplication(application);
@@ -225,18 +225,20 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         hasActions={true}
                         actionSlot={(applicationList: IApplications) => (
                             <div className="flex justify-center items-center space-x-3">
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(applicationList)}
-                                >
-                                    <IconEye size={20} />
-                                </button>
+                                {applicationList.tenderId != null && (
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                        onClick={() => handleView(applicationList)}
+                                    >
+                                        <IconEye size={20} />
+                                    </button>
+                                )}
                                 {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
                                     <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
                                         <IconSquareRoundedMinus size={20} />
                                     </button>
                                 )}
-                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && applicationList.status === "REQUESTED" && (
+                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR") && applicationList.status === "REQUESTED" && (
                                     <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
                                         <IconEdit size={20} />
                                     </button>
