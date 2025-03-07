@@ -38,8 +38,6 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
-    const [categoriesLoading, setCategoriesLoading] = useState<boolean>(false);
-    const [entitiesLoading, setEntitiesLoading] = useState<boolean>(false);
     const [loading, setLoading] = useState(false);
 
     const {
@@ -73,8 +71,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
             setValue("region", initials.region);
             setValue("summary", initials.summary);
             setValue("tenderType", initials.tenderType);
-            setValue("category", initials.category?.id);
-            setValue("entity", initials.entity?.id);
+            setValue("category", initials.categoryId);
+            setValue("entity", initials.entityId);
             setValue("consultationFee", initials.consultationFee);
 
             // Convert milliseconds to datetime-local format (yyyy-MM-ddThh:mm)
@@ -101,39 +99,34 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         }
     });
 
-    // Fetch categories
-    useEffect(() => {
-        async function fetchCategories() {
-            setCategoriesLoading(true); // Set loading to true
-            try {
-                const allCategories = await getCategories({ page: 0, size: 500 });
-                setCategories(allCategories.content.map(c => ({ value: c.id, label: c.categoryGroup + ": " + c.name })));
-            } catch (error) {
-                console.error("Failed to fetch categories", error);
-            } finally {
-                setCategoriesLoading(false); // Set loading to false
-            }
+    const fetchEntities = useCallback(async (search = "") => {
+        if (!search) {
+            setEntities([]);
+            return;
         }
 
-        fetchCategories();
-    }, []);
-
-    // Fetch entities
-    useEffect(() => {
-        async function fetchEntities() {
-            setEntitiesLoading(true); // Set loading to true
-            try {
-                const allEntities = await getEntities({ page: 0, size: 500 });
-                setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name })));
-            } catch (error) {
-                console.error("Failed to fetch entities", error);
-            } finally {
-                setEntitiesLoading(false); // Set loading to false
-            }
+        setLoading(true);
+        try {
+            const allEntities = await getEntities({ page: 0, size: 5, search });
+            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch entities", error);
+        } finally {
+            setLoading(false);
         }
-
-        fetchEntities();
     }, []);
+
+    const debouncedFetchEntities = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchEntities(inputValue);
+            } else {
+                setEntities([]); // Clear entities if less than 5 characters
+            }
+        }, 5),
+        [fetchEntities]
+    );
+
 
     const fetchCategories = useCallback(async (search = "") => {
         if (!search) {
@@ -257,25 +250,20 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                         </p>
                     </div>
 
-                    {/* Entity with search */}
-                    <div className="mb-2">
-                        <label htmlFor="entity" className="block mb-2">
+                     {/* Entity with search */}
+                     <div className="mb-2">
+                        <label htmlFor="com" className="block mb-2">
                             Entity
                         </label>
-
-                        {entitiesLoading ? (
-                            <div>Loading entities...</div>
-                        ) : (
-                            <Select
-                                options={entities}
-                                value={entities.find(entity => entity.value === watch("entity"))} // Set selected value
-                                onChange={(selectedOption) => setValue("entity", selectedOption?.value)} // Set the selected entity value
-                                className={errors.entity ? "input-error" : "input-normal"}
-                                placeholder="Search for an entity"
-                            />
-                        )}
+                        <Select
+                            options={entities}
+                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                            onChange={(selectedOption) => setValue("entity", selectedOption?.value)}
+                            isLoading={loading}
+                            placeholder="Search for a entity"
+                        />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.entity?.message?.toString()}
+                            {errors.bidder?.message?.toString()}
                         </p>
                     </div>
 

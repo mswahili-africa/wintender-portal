@@ -3,23 +3,20 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
   {
-    name: "bidder",
+    name: "bidderCompanyName",
     label: "Bidder",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row?.user?.company?.name;
+      return row?.bidderCompanyName ? row.bidderCompanyName.toUpperCase() : "NO COMPANY";
     },
   },
   {
-    name: "totalApplications",
+    name: "applicationsCount",
     label: "Applications",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row?.application?.length || 0;
-    },
-  },{
+    plainObject: false
+  }, {
     name: "readStatus",
     label: "Status",
     sortable: false,
@@ -34,7 +31,7 @@ const columns: IColumn[] = [
         default:
           theme = "danger"; // Fallback for unknown statuses
       }
-  
+
       return <Chip label={row.readStatus} size="sm" theme={theme} variant="outline" />;
     },
   },

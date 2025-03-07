@@ -373,11 +373,11 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             <div className="space-y-2">
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">PE:</strong>
-                                    <p className="flex-1 font-bold text-gray-800">{selectedTender.entity.name.toUpperCase()}</p>
+                                    <p className="flex-1 font-bold text-gray-800">{selectedTender.entityName.toUpperCase()}</p>
                                 </div>
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">Category:</strong>
-                                    <p className="flex-1">{selectedTender.category.name}</p>
+                                    <p className="flex-1">{selectedTender.categoryName}</p>
                                 </div>
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">Summary:</strong>

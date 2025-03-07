@@ -223,9 +223,11 @@ export interface ITenders {
   closeDate: number;
   tenderType: string;
   consultationFee: number;
-  category: ITenderCategory;
+  categoryName: string;
+  categoryId: string
   tenderGroup: string;
-  entity: IEntity;
+  entityName: string;
+  entityId: string
   status: string;
   createdBy: string;
   updatedBy: string;

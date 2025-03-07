@@ -3,7 +3,7 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
     {
-        name: "entity",
+        name: "entityName",
         label: "Procurement Entity",
         sortable: true,
         plainObject: false
@@ -15,7 +15,7 @@ const columns: IColumn[] = [
         plainObject: false,
     },
     {
-        name: "category",
+        name: "categoryName",
         label: "Category",
         sortable: false,
         plainObject: false

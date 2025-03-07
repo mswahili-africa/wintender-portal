@@ -448,11 +448,11 @@ export default function GovernmentTenders() {
                         {/* Tender Details */}
                         <div className="space-y-2">
                             <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.entity.name}</p>
+                                <p className="flex-1">{selectedTender.entityName}</p>
                             </div>
                             <div className="flex items-center">
                                 <strong className="w-32 text-gray-600">Category:</strong>
-                                <p className="flex-1">{selectedTender.category.name}</p>
+                                <p className="flex-1">{selectedTender.categoryName}</p>
                             </div>
                             <div className="flex items-center">
                                 <p className="flex-1">{selectedTender.summary}</p>
@@ -480,6 +480,15 @@ export default function GovernmentTenders() {
                                 <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
                             </div>
                             <br></br>
+                            {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
+                                <><div className="flex items-center">
+                                    <strong className="w-50 text-gray-600">Consultation Fee:</strong>
+                                    <p className="flex-1">
+                                            TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
+                                    </p>
+                                </div></>
+
+                            )}
                         </div>
 
                         <hr></hr>
