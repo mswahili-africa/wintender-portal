@@ -155,7 +155,7 @@ export interface IUser {
   lastLogin: number;
   avatar: string;
   roleId: string;
-  company: ICompany;
+  company: string;
   planExpiryDate: number;
   updatedBy: string;
   updatedAt: number;
@@ -181,15 +181,24 @@ export interface IEntity {
 export interface ICompany {
   id: string
   name: string;
-  primaryNumber: string;
-  address: string;
-  tin: string;
-  email: string;
-  website: string;
-  vrn: string;
-  tinFilePath: string;
-  logoFilePath: string;
-  categories: string[];
+  phoneNumber: string;
+  createdAt: number;
+  updatedAt: number;
+  createdBy: string;
+  updatedBy: string;
+  planExpiryDate: number;
+  currentPlanId: string;
+  companyName: string;
+  companyStatus: string;
+  companyPrimaryNumber: string;
+  companyAddress: string;
+  companyEmail: string;
+  companyWebsite: string;
+  companyTin: string;
+  companyVrn: string;
+  companyTinFilePath: string;
+  companyLogoFilePath: string;
+  companyCategories: string[];
 }
 
 export interface ICompanyDocuments {

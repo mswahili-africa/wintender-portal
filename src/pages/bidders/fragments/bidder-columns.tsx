@@ -5,37 +5,35 @@ import { IUser } from "@/types";
 const columns: IColumn[] = [
 
     {
-        name: "firstName",
-        label: "Company",
+        name: "companyName",
+        label: "name",
         sortable: false,
         plainObject: true,
-        element: (value: IUser) => {
-            const companyName = value.company?.name;
-            return companyName ? companyName.toUpperCase() : "";
-        }
-    },    
+        element: (row: any) => {
+            return row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase();
+        },
+    },
     {
-
-        name: "phoneNumber",
+        name: "companyPrimaryNumber",
         label: "Phone",
         sortable: false,
         plainObject: false,
     },
     {
-        name: "status",
+        name: "companyStatus",
         label: "Status",
         sortable: false,
         plainObject: false,
         element: (value: string) => {
             // Replace NEEDPASSWORDCHANGE with PENDING
             const displayValue = value === "NEEDPASSWORDCHANGE" ? "PENDING" : value;
-    
+
             // Set theme based on status value
-            const chipTheme = 
+            const chipTheme =
                 displayValue === "ACTIVE" ? "success" :
-                displayValue === "PENDING" ? "warning" : // Color for PENDING status
-                "danger"; // Default color for other statuses
-    
+                    displayValue === "PENDING" ? "warning" : // Color for PENDING status
+                        "danger"; // Default color for other statuses
+
             return (
                 <Chip
                     label={displayValue}
@@ -46,8 +44,8 @@ const columns: IColumn[] = [
             );
         },
     }
-    
-    
+
+
 ];
 
 export default columns;

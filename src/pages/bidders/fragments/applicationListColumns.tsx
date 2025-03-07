@@ -4,12 +4,12 @@ import { IColumn } from "@/components/widgets/table/Table";
 const columns: IColumn[] = [
 
   {
-    name: "group",
+    name: "tenderGroup",
     label: "type",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const tenderGroup = row.tender?.tenderGroup;
+      const tenderGroup = row?.tenderGroup;
       
       const theme: "primary" | "warning" =
         tenderGroup === "PRIVATE" ? "primary" : "warning";
@@ -32,7 +32,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.tender?.tenderNumber;
+      return row.tenderNumber;
     },
   },
   {
@@ -41,7 +41,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const amount = row.controlNumber?.principleAmount;
+      const amount = row.principleAmount;
       const formattedAmount = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'TZS',

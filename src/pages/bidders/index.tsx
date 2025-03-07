@@ -4,7 +4,7 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
-import { IUser } from "@/types";
+import { ICompany, IUser } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus } from "@/services/user";
@@ -20,8 +20,8 @@ export default function Bidders() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter, setFilter] = useState<any>();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-    const [userInfo, setUserInfo] = useState<IUser | any>();
+    const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
+    const [userInfo, setUserInfo] = useState<ICompany | any>();
     const [message, setMessage] = useState<string>("");
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
 
@@ -79,7 +79,7 @@ export default function Bidders() {
     };
 
     const handleSendSMS = () => {
-        const phoneNumber = selectedUser?.phoneNumber || "0100000000"; // Default number for bulk
+        const phoneNumber = selectedUser?.companyPrimaryNumber || "0100000000"; // Default number for bulk
         if (!phoneNumber) return;
         setIsSending(true); // Start loading state
         sendSMS.mutate({ phoneNumber, message });
@@ -154,7 +154,7 @@ export default function Bidders() {
                 <SMSModal
                     isOpen={isModalOpen}
                     onClose={() => !isSending && setIsModalOpen(false)} // Only close when not sending
-                    title={selectedUser ? `Send SMS to ${selectedUser.name}` : "Send Bulk SMS"}
+                    title={selectedUser ? `Send SMS to ${selectedUser.companyName}` : "Send Bulk SMS"}
                 >
                     {!selectedUser && (
                         <div>
@@ -179,7 +179,7 @@ export default function Bidders() {
                                 <input
                                     type="text"
                                     className="input-normal w-full mb-4"
-                                    value={selectedUser.company.name + ' - ' + selectedUser.phoneNumber}
+                                    value={selectedUser.companyName + ' - ' + selectedUser.companyPrimaryNumber}
                                     readOnly
                                 />
                             </div>

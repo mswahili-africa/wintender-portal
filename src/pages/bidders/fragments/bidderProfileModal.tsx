@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import { ICategory, IUser } from "@/types";
+import { ICategory, ICompany, IUser } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
 import { IconMessage, IconStatusChange, IconUserOff } from "@tabler/icons-react";
@@ -27,7 +27,7 @@ import Chip from "@/components/chip/Chip";
 
 interface IProps {
     children?: React.ReactNode;
-    user: IUser;
+    user: ICompany;
     loading: boolean;
     onClose: () => void; // Add this to handle closing the modal from parent
 }
@@ -38,7 +38,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [isOpen, setIsOpen] = useState<boolean>(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+    const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
@@ -63,7 +63,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         filter: undefined,
     });
 
-    const SendSingleSMS = (user: IUser) => {
+    const SendSingleSMS = (user: ICompany) => {
         setSelectedUser(user); // Set the selected user for the modal
         setIsModalOpen(true); // Open the modal
     };
@@ -168,13 +168,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                 <div className="flex items-center space-x-3">
                                     <div className="overflow-hidden p-0.5">
                                         <img
-                                            src={user.company.logoFilePath ? user.company.logoFilePath : dummyLogo}
-                                            alt={user.company.name}
+                                            src={user.companyLogoFilePath ? user.companyLogoFilePath : dummyLogo}
+                                            alt={user.companyName}
                                             className="w-16 h-16 object-cover rounded-full border border-gray-300"
                                         />
                                     </div>
                                     <span>
-                                        <h4 className="lg:text-lg font-medium">{user?.company.name.toUpperCase()}</h4>
+                                        <h4 className="lg:text-lg font-medium">{user?.companyName.toUpperCase()}</h4>
                                     </span>
                                     <Chip
                                         label={user.planExpiryDate && user.planExpiryDate > Date.now() ? "PLAN ACTIVE" : "PLAN EXPIRED"}
@@ -201,23 +201,26 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
+                        <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {/* Left Column - User, Shop, and Status Info */}
                                 <div className="space-y-4">
-                                    <strong>Contact</strong>
+                                    <strong>Contact Person</strong>
                                     <p><strong>Person:</strong> {user.name}</p>
-                                    <p><strong>Email:</strong> {user.email}</p>
-                                    <p><strong>Phone:</strong> {user.phoneNumber}</p>
+                                    <p><strong>Email:</strong> {user.companyEmail}</p>
+                                    <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
                                 </div>
 
                                 {/* Right Column - Location Info */}
                                 <div className="space-y-4">
                                     <strong>Company</strong>
-                                    <p><strong>TIN:</strong> {user.company.tin}</p>
-                                    <p><strong>Address:</strong> {user.company.address}</p>
-                                    <p><strong>Website:</strong> {user.company.website}</p>
+                                    {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
+                                    {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
+                                    {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
+                                    {user.companyEmail && <p><strong>Email:</strong> {user.companyEmail}</p>}
+                                    {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
                                 </div>
+
                             </div>
                         </div>
 
@@ -229,7 +232,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     <Loader />
                                 ) : (
                                     <ul>
-                                        {(Array.isArray(user.company.categories) ? user.company.categories : [])
+                                        {(Array.isArray(user.companyCategories) ? user.companyCategories : [])
                                             .filter(categoryId => categoryId) // Ensure no null/undefined values
                                             .map((categoryId) => {
                                                 const category = categories.find((c) => c.id === categoryId);
