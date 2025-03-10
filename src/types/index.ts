@@ -179,8 +179,11 @@ export interface IEntity {
 }
 
 export interface ICompany {
-  id: string
+  id: string;
+  account: string;
   name: string;
+  email: string;
+  avatar: string;
   phoneNumber: string;
   createdAt: number;
   updatedAt: number;

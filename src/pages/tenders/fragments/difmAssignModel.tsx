@@ -64,7 +64,7 @@ export default function DIFMAssignModel({ onSuccess, initials }: IProps) {
         setLoading(true);
         try {
             const allEntities = await getBidders({ page: 0, size: 5, search });
-            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.company.name })));
+            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.companyName })));
         } catch (error) {
             console.error("Failed to fetch entities", error);
         } finally {

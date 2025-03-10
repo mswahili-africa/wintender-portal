@@ -11,7 +11,7 @@ export async function getUsers(params: IQueryParams) {
 }
 
 export async function getBidders(params: IQueryParams) {
-    const response = await http.get<IlistResponse<IUser>>("/users/user/list-bidders", {
+    const response = await http.get<IlistResponse<ICompany>>("/users/user/list-bidders", {
         params: params
     })
 

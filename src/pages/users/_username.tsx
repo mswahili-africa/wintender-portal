@@ -6,7 +6,7 @@ import { authStore } from "@/store/auth";
 import ChangePasswordForm from "./fragments/change-password-form";
 import PasswordResetRequest from "./fragments/password-reset-request";
 import { getUserById, updateBidderCompany } from "@/services/user";
-import { ICategory, IUser } from "@/types";
+import { ICategory, ICompany, IUser } from "@/types";
 import { getCategories } from "@/services/tenders";
 import toast from "react-hot-toast";
 
@@ -14,7 +14,7 @@ export default function UserProfile() {
     const { userId } = useParams();
     const auth = useSnapshot(authStore);
 
-    const [user, setUser] = useState<IUser | null>(null);
+    const [user, setUser] = useState<ICompany | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -79,23 +79,10 @@ export default function UserProfile() {
 
         setUser(prevUser => {
             if (!prevUser) return prevUser;
-
-            if (name.startsWith("company.")) {
-                const companyField = name.split(".")[1];
-                return {
-                    ...prevUser,
-                    company: {
-                        ...prevUser.company,
-                        [companyField]: value
-                    }
-                };
-            } else {
-                // Update user-level fields
                 return {
                     ...prevUser,
                     [name]: value
                 };
-            }
         });
     };
 
@@ -110,26 +97,37 @@ export default function UserProfile() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!user || !user.company) return;
+        if (!user) return;
 
-        const payload = {
-            id: user.company.id || "",
-            name: user.company.name || "",
-            tin: user.company.tin || "",
-            primaryNumber: user.company.primaryNumber || "",
-            address: user.company.address || "",
-            email: user.company.email || "",
-            website: user.company.website || "",
-            vrn: user.company.vrn || "",
-            logoFilePath: user.company.logoFilePath || "",
-            tinFilePath: user.company.tinFilePath || "",
-            categories: selectedCategories.filter(cat => cat !== null)
+        const payload: ICompany = {
+            id: user.id || "",
+            account: user.account || "", // Add this line
+            name: user.name || "", // Add this line
+            email: user.email || "", // Add this line
+            avatar: user.avatar || "", // Add this line
+            phoneNumber: user.phoneNumber || "", // Add this line
+            createdAt: user.createdAt || Date.now(), // Add this line
+            updatedAt: user.updatedAt || Date.now(), // Add this line
+            createdBy: user.createdBy || "", // Add this line
+            updatedBy: user.updatedBy || "", // Add this line
+            planExpiryDate: user.planExpiryDate || Date.now(), // Add this line
+            currentPlanId: user.currentPlanId || "", // Add this line
+            companyName: user.companyName || "",
+            companyStatus: user.companyStatus || "", // Add this line
+            companyPrimaryNumber: user.companyPrimaryNumber || "",
+            companyAddress: user.companyAddress || "",
+            companyEmail: user.companyEmail || "",
+            companyWebsite: user.companyWebsite || "",
+            companyTin: user.companyTin || "",
+            companyVrn: user.companyVrn || "",
+            companyLogoFilePath: user.companyLogoFilePath || "",
+            companyTinFilePath: user.companyTinFilePath || "",
+            companyCategories: selectedCategories.filter(cat => cat !== null)
         };
 
         setIsUpdating(true); // Set loading state to true
         try {
             const response = await updateBidderCompany(payload, userId!);
-            console.log("Successfully updated:", response);
             toast.success("Successfully updated");
 
             const updatedUser = await getUserById(userId!);
@@ -226,14 +224,14 @@ export default function UserProfile() {
                         <h2 className="text-lg font-semibold mb-4">Company Information</h2>
                         {loading ? (
                             <p className="text-gray-500">Loading...</p>
-                        ) : user?.company ? (
+                        ) : user?.companyName ? (
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="flex flex-col">
                                     <label className="text-sm font-medium">Company Name</label>
                                     <input
                                         type="text"
                                         name="company.name"
-                                        value={user.company.name}
+                                        value={user.companyName}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
                                         required
@@ -245,7 +243,7 @@ export default function UserProfile() {
                                         type="text"
                                         name="company.tin"
                                         placeholder="123-322-233"
-                                        value={user.company.tin || ""}
+                                        value={user.companyTin || ""}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
                                     />
@@ -255,7 +253,7 @@ export default function UserProfile() {
                                     <input
                                         type="email"
                                         name="company.email"
-                                        value={user.company.email}
+                                        value={user.companyEmail}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
                                         required
@@ -266,7 +264,7 @@ export default function UserProfile() {
                                     <input
                                         type="tel"
                                         name="company.primaryNumber"
-                                        value={user.company.primaryNumber}
+                                        value={user.companyPrimaryNumber}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
                                     />
@@ -277,7 +275,7 @@ export default function UserProfile() {
                                         type="text"
                                         name="company.address"
                                         placeholder="eg. Mbezi Beach, Morogoro"
-                                        value={user.company.address}
+                                        value={user.companyAddress}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
                                         required
@@ -288,7 +286,7 @@ export default function UserProfile() {
                                     <input
                                         type="text"
                                         name="company.website"
-                                        value={user.company.website || ""}
+                                        value={user.companyWebsite || ""}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
                                     />
