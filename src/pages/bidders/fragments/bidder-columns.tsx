@@ -1,6 +1,6 @@
 import { IColumn } from "@/components/widgets/table/Table";
 import Chip from "@/components/chip/Chip";
-import { IUser } from "@/types";
+import dummyLogo from "@/assets/images/bidder-dummy-logo.png"
 
 const columns: IColumn[] = [
 
@@ -9,9 +9,22 @@ const columns: IColumn[] = [
         label: "name",
         sortable: false,
         plainObject: true,
-        element: (row: any) => {
-            return row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase();
-        },
+        element: (row: { name: string; companyName: string; companyLogoFilePath: string }) => (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                    src={row.companyLogoFilePath ? row.companyLogoFilePath : dummyLogo }
+                    alt="Entity Logo"
+                    style={{
+                        width: '40px', // Adjust size as needed
+                        height: '40px',
+                        borderRadius: '50%', // Makes the image round
+                        objectFit: 'cover', // Ensures the image covers the area
+                        marginRight: '8px', // Space between logo and name
+                    }}
+                />
+                <span>{ row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase()}</span> {/* Display the name next to the logo */}
+            </div>
+        ),
     },
     {
         name: "companyPrimaryNumber",

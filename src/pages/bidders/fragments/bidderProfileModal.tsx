@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, IUser } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconMessage, IconStatusChange, IconUserOff } from "@tabler/icons-react";
+import { IconMessage } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";

@@ -11,11 +11,26 @@ const columns: IColumn[] = [
     {
         name: "entityName",
         label: "Procurement entity",
-        sortable: true,
+        sortable: false,
         plainObject: true,
-        element: (row: any) => row.entityName.toUpperCase()
+        element: (row: { entityName: string; entityLogoFilePath: string }) => (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                    src={row.entityLogoFilePath}
+                    alt="Entity Logo"
+                    style={{
+                        width: '40px', // Adjust size as needed
+                        height: '40px',
+                        borderRadius: '50%', // Makes the image round
+                        objectFit: 'cover', // Ensures the image covers the area
+                        marginRight: '8px', // Space between logo and name
+                    }}
+                />
+                <span>{row.entityName.toUpperCase()}</span> {/* Display the name next to the logo */}
+            </div>
+        ),
     },
-    {
+    { 
         name: "title",
         label: "Title",
         sortable: false,

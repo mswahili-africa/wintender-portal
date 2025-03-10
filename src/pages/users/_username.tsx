@@ -79,10 +79,12 @@ export default function UserProfile() {
 
         setUser(prevUser => {
             if (!prevUser) return prevUser;
-                return {
-                    ...prevUser,
-                    [name]: value
-                };
+
+            // Update user-level fields
+            return {
+                ...prevUser,
+                [name]: value
+            };
         });
     };
 

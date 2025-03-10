@@ -239,6 +239,7 @@ export interface ITenders {
   categoryId: string
   tenderGroup: string;
   entityName: string;
+  entityLogoFilePath: string;
   entityId: string
   status: string;
   createdBy: string;
@@ -300,7 +301,6 @@ export interface IDoItForMe {
   tender: ITenders;
   comments: string;
   status: string;
-  company: ICompany;
   createdBy: string;
   updatedBy: string;
   createdAt: number;
