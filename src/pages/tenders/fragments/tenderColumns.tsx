@@ -1,24 +1,33 @@
 import Chip from "@/components/chip/Chip";
 import { IColumn } from "@/components/widgets/table/Table";
 
+// Helper function to convert text to sentence case
+const toSentenceCase = (text: string) => {
+    if (!text) return text;
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+};
+
 const columns: IColumn[] = [
     {
         name: "entityName",
-        label: "Procurement Entity",
+        label: "Procurement entity",
         sortable: true,
-        plainObject: false
+        plainObject: true,
+        element: (row: any) => row.entityName.toUpperCase()
     },
     {
         name: "title",
         label: "Title",
         sortable: false,
-        plainObject: false,
+        plainObject: true,
+        element: (row: any) => toSentenceCase(row.title) // Convert title to sentence case
     },
     {
         name: "categoryName",
         label: "Category",
         sortable: false,
-        plainObject: false
+        plainObject: true,
+        element: (row: any) => toSentenceCase(row.categoryName) // Convert category to sentence case
     },
     {
         name: "status",
