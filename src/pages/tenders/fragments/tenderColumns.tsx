@@ -26,7 +26,7 @@ const columns: IColumn[] = [
                         marginRight: '8px', // Space between logo and name
                     }}
                 />
-                <span>{row.entityName.toUpperCase()}</span> {/* Display the name next to the logo */}
+                <span>{row.entityName ? row.entityName.toUpperCase() : row.entityName}</span> {/* Display the name next to the logo */}
             </div>
         ),
     },
