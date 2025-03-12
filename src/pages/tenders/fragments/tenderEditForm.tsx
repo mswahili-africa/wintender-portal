@@ -25,8 +25,8 @@ const schema = object().shape({
     region: string().required("Region is required"),
     summary: string().required("Summary is required"),
     tenderType: string().required("Type is required"),
-    category: string().required("Category is required"),
-    entity: string().required("Entity is required"),
+    categoryId: string().required("Category is required"),
+    entityId: string().required("Entity is required"),
     openDate: string().required("Open Date is required"),
     closeDate: string().required("Close Date is required"),
     consultationFee: number().required("Consultation Fee is required"),
@@ -56,8 +56,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
             region: "",
             summary: "",
             tenderType: "",
-            category: "",
-            entity: "",
+            categoryId: "",
+            entityId: "",
             openDate: "",
             closeDate: "",
             consulatationFee: 0,
@@ -71,8 +71,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
             setValue("region", initials.region);
             setValue("summary", initials.summary);
             setValue("tenderType", initials.tenderType);
-            setValue("category", initials.categoryId);
-            setValue("entity", initials.entityId);
+            setValue("categoryId", initials.categoryId);
+            setValue("entityId", initials.entityId);
             setValue("consultationFee", initials.consultationFee);
 
             // Convert milliseconds to datetime-local format (yyyy-MM-ddThh:mm)
@@ -170,8 +170,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         formData.append("closeDate", data.closeDate);
         formData.append("tenderGroup", "PUBLIC");
         formData.append("tenderType", data.tenderType);
-        formData.append("category", data.category);
-        formData.append("entity", data.entity);
+        formData.append("categoryId", data.categoryId);
+        formData.append("entityId", data.entityId);
         formData.append("consultationFee", data.consultationFee)
 
         updateTenderMutation.mutate(formData);
@@ -258,7 +258,7 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                         <Select
                             options={entities}
                             onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
-                            onChange={(selectedOption) => setValue("entity", selectedOption?.value)}
+                            onChange={(selectedOption) => setValue("entityId", selectedOption?.value)}
                             isLoading={loading}
                             placeholder="Search for a entity"
                         />
@@ -276,7 +276,7 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                         <Select
                             options={categories}
                             onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
-                            onChange={(selectedOption) => setValue("category", selectedOption?.value)}
+                            onChange={(selectedOption) => setValue("categoryId", selectedOption?.value)}
                             isLoading={loading}
                             placeholder="Search for a category"
                         />
