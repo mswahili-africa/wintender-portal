@@ -3,11 +3,16 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
   {
-    name: "company",
-    label: "company",
+    name: "companyName",
+    label: "name",
     sortable: false,
-    plainObject: false,
-  },
+    plainObject: true,
+    element: (row: { company: string; userName: string; }) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span>{ row?.company ? row.company.toUpperCase() : row?.userName.toUpperCase()}</span> 
+        </div>
+    ),
+},
   {
     name: "transactionReference",
     label: "Reference",
