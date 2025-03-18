@@ -74,6 +74,7 @@ const columns: IColumn[] = [
           theme = "secondary";
           break;
         case "FAILED":
+        case "REJECTED":
           theme = "danger";
           break;
         default:
