@@ -47,7 +47,7 @@ export default function () {
       message:
         "This action cannot be undone. Please verify that you want to approve.",
       onConfirm: () => {
-        approveMutation.mutate(payload.id);
+        approveMutation.mutate(payload.transactionReference);
         refetch();
       },
       onCancel: () => {},
@@ -65,7 +65,7 @@ export default function () {
   });
 
   const reject = (payload: IPayment) => {
-    rejectMutation.mutate(payload.id);
+    rejectMutation.mutate(payload.transactionReference);
   };
 
   const { userData } = useUserDataContext();
