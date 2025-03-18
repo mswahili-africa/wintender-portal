@@ -2,7 +2,7 @@ import { IconX } from "@tabler/icons-react";
 import React, { Fragment } from "react";
 
 type ChipProps = {
-    theme?: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+    theme?: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
     variant?: "outline" | "lighter"
     size?: string;
     label: string;
@@ -54,6 +54,8 @@ const Chip: React.FC<ChipProps> = ({
                 return "amber-600";
             case "danger":
                 return "red-600";
+            case "approved":
+                    return "blue-600";
             default:
                 return "slate-200";
         }

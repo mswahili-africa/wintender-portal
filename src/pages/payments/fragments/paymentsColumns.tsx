@@ -8,11 +8,11 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: { company: string; userName: string; }) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span>{ row?.company ? row.company.toUpperCase() : row?.userName.toUpperCase()}</span> 
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span>{row?.company ? row.company.toUpperCase() : row?.userName.toUpperCase()}</span>
+      </div>
     ),
-},
+  },
   {
     name: "transactionReference",
     label: "Reference",
@@ -64,12 +64,14 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: false,
     element: (value: string) => {
-      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
 
       switch (value) {
         case "SUCCESSFUL":
-        case "APPROVED":
           theme = "success";
+          break;
+        case "APPROVED":
+          theme = "approved";
           break;
         case "PENDING":
           theme = "secondary";
