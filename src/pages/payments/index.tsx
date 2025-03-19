@@ -110,7 +110,7 @@ const userRole = userData?.role || "BIDDER";
           actionSlot={(content: IPayment) => {
             return (
               <div className="flex justify-center items-center space-x-3">
-                {(userRole === "ADMINISTRATOR" || userRole === "MANAGER") &&
+                {(userRole === "ADMINISTRATOR") &&
                   content.status == "PENDING" && (
                     <Fragment>
                       <button

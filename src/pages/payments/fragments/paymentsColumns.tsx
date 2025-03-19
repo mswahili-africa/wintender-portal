@@ -14,6 +14,18 @@ const columns: IColumn[] = [
     ),
   },
   {
+    name: "userName",
+    label: "payer",
+    sortable: false,
+    plainObject: false,
+  },
+  {
+    name: "phoneNumber",
+    label: "Number",
+    sortable: false,
+    plainObject: false,
+  },
+  {
     name: "transactionReference",
     label: "Reference",
     sortable: false,

@@ -4,7 +4,7 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
-import { ICompany, IUser } from "@/types";
+import { ICompany } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus } from "@/services/user";
