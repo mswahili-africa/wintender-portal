@@ -71,6 +71,12 @@ const columns: IColumn[] = [
     }
   },
   {
+    name: "comments",
+    label: "comments",
+    sortable: false,
+    plainObject: false,
+  },
+  {
     name: "status",
     label: "Status",
     sortable: false,

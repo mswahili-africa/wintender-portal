@@ -32,7 +32,7 @@ const schema = object().shape({
     consultationFee: number().required("Consultation Fee is required"),
 });
 
-export default function TenderUpload({ onSuccess, initials }: IProps) {
+export default function TenderUpload({ onSuccess }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
