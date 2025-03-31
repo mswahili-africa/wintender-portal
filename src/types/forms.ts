@@ -76,6 +76,11 @@ export interface IPlan {
     amount: number
 }
 
+export interface IAssignBidder {
+    bidderId:       string
+    tenderId: string
+}
+
 export interface IPublisherReport {
     id:       string
     email: string

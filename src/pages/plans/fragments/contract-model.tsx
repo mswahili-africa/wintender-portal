@@ -20,12 +20,13 @@ interface IProps {
 
 const schema = object().shape({
     numberOfMonths: string().required("Months is required"),
-    maxTenders: string().required("Max Tenders is required")
+    maxTenders: string().required("Max Tenders is required"),
+    bidder: string().required("Bidder is required")
 });
 
 export default function ContractModal({ onSuccess, initials }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const [entities, setEntities] = useState<any[]>([]);
+    const [bidders, setBidders] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [planType, setPlanType] = useState<string>("RETAINER");
 
@@ -57,33 +58,33 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
         createPlan.mutate(data);
     };
 
-    const fetchEntities = useCallback(async (search = "") => {
-        if (!search) {
-            setEntities([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const allEntities = await getBidders({ page: 0, size: 5, search });
-            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.companyName })));
-        } catch (error) {
-            console.error("Failed to fetch entities", error);
-        } finally { 
-            setLoading(false);
-        }
-    }, []);
-
-    const debouncedFetchEntities = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchEntities(inputValue);
-            } else {
-                setEntities([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchEntities]
-    );
+    const fetchBidders = useCallback(async (search = "") => {
+               if (!search) {
+                   setBidders([]);
+                   return;
+               }
+       
+               setLoading(true);
+               try {
+                   const allBidders = await getBidders({ page: 0, size: 5, search });
+                   setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
+               } catch (error) {
+                   console.error("Failed to fetch Bidders", error);
+               } finally {
+                   setLoading(false);
+               }
+           }, []);
+       
+           const debouncedFetchBidders = useCallback(
+               debounce((inputValue) => {
+                   if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                       fetchBidders(inputValue);
+                   } else {
+                       setBidders([]); // Clear entities if less than 5 characters
+                   }
+               }, 5),
+               [fetchBidders]
+           );
 
     const handlePlanTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedPlan = event.target.value;
@@ -109,12 +110,11 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
                             Bidder
                         </label>
                         <Select
-                            options={entities}
-                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                            options={bidders}
+                            onInputChange={(inputValue) => debouncedFetchBidders(inputValue)} // Debounced fetch
                             onChange={(selectedOption) => setValue("bidder", selectedOption?.value)}
                             isLoading={loading}
-                            className={errors.bidder ? "input-error" : "input-normal"}
-                            placeholder="Search for a bidder"
+                            placeholder="Search for a Bidder"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.bidder?.message?.toString()}

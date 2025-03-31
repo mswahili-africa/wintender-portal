@@ -22,6 +22,7 @@ import { Puff } from "react-loader-spinner";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
+import useApiMutation from "@/hooks/useApiMutation";
 
 export default function InternationalTenders() {
     const [page, setPage] = useState<number>(0);
@@ -41,7 +42,7 @@ export default function InternationalTenders() {
     const [tempSelectedEntity, setTempSelectedEntity] = useState(null);
     const [tempSelectedCategory, setTempSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-
+    const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
 
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
@@ -137,13 +138,7 @@ export default function InternationalTenders() {
         }, 5000);  // 5-second interval
     };
 
-    const doItForMeMutation = useMutation({
-        mutationFn: async (tenderId: string) => requestDoForMe(tenderId),
-        onSuccess: () => { },
-        onError: (error: any) => {
-            toast.error(error.message ?? "Failed to process request");
-        }
-    });
+    const doItForMeMutation = useApiMutation(async (tenderId: string) => requestDoForMe(tenderId));
 
     const deleteMutation = useMutation({
         mutationFn: (data: ITenders) => deleteTenders(data.id),
@@ -244,7 +239,12 @@ export default function InternationalTenders() {
 
     const handleDoItForMeClick = () => {
         if (selectedTender) {
-            doItForMeMutation.mutate(selectedTender.id);
+            setIsDoItForMeLoading(true);
+            doItForMeMutation.mutate(selectedTender.id, {
+                onSettled: () => {
+                    setIsDoItForMeLoading(false);
+                },
+            });
         }
     };
 
@@ -436,7 +436,7 @@ export default function InternationalTenders() {
                     title={selectedTender.tenderNumber}
                     tenderId={selectedTender.id}
                     onClose={() => setSelectedTender(null)}
-                    isLoading={doItForMeMutation.isLoading}
+                    isLoading={isDoItForMeLoading}
                     onDoItForMeClick={handleDoItForMeClick}
                 >
                     <div className="space-y-4">

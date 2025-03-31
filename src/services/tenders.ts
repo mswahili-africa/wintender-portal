@@ -1,5 +1,6 @@
 import http from "@/http";
 import { IQueryParams, ITenderCategory, IlistResponse } from "@/types";
+import { IAssignBidder } from "@/types/forms";
 
 
 export async function downloadTenderDocument(id: string) {
@@ -80,6 +81,12 @@ export async function requestDoForMe(id: string) {
     const response = await http.post<any>(`/applications/do-for-me/request/${id}`);
 
     return response.data
+}
+
+export async function assignBidder(payload: IAssignBidder) {
+    const response = await http.post<any>(`/applications/do-for-me/assign-bidder`, payload)
+
+    return response.data;
 }
 
 export async function updatePrincipleAmount(id: string, amount: number) {
