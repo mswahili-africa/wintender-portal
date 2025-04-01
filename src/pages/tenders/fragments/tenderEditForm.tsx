@@ -25,11 +25,10 @@ const schema = object().shape({
     region: string().required("Region is required"),
     summary: string().required("Summary is required"),
     tenderType: string().required("Type is required"),
-    categoryId: string().required("Category is required"),
-    entityId: string().required("Entity is required"),
+    // categoryId: string().required("Category is required"),
+    // entityId: string().required("Entity is required"),
     openDate: string().required("Open Date is required"),
     closeDate: string().required("Close Date is required"),
-    consultationFee: number().required("Consultation Fee is required"),
 });
 
 export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
@@ -51,16 +50,16 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         resolver: yupResolver(schema),
         defaultValues: {
             tenderFile: "",
-            title: "",
-            tenderNumber: "",
-            region: "",
-            summary: "",
-            tenderType: "",
-            categoryId: "",
-            entityId: "",
-            openDate: "",
-            closeDate: "",
-            consulatationFee: 0,
+            title: initials?.title,
+            tenderNumber: initials?.tenderNumber,
+            region: initials?.region,
+            summary: initials?.summary,
+            tenderType: initials?.tenderType,
+            categoryId: initials?.categoryId,
+            entityId: initials?.entityId,
+            openDate: initials?.openDate,
+            closeDate: initials?.closeDate,
+            consulatationFee: initials?.consultationFee,
         },
     });
 
@@ -89,6 +88,24 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
             // Set formatted dates for input (using datetime-local format)
             setValue("openDate", initials.openDate ? formatDateForInput(initials.openDate) : "");
             setValue("closeDate", initials.closeDate ? formatDateForInput(initials.closeDate) : "");
+
+            // Fetch and set selected category
+            getCategories({ page: 0, size: 1, search: initials.categoryId }).then((res) => {
+                const category = res.content.find(cat => cat.id === initials.categoryId);
+                if (category) {
+                    setCategories(prev => [...prev, { value: category.id, label: category.name.toUpperCase() }]);
+                    setValue("categoryId", { value: category.id, label: category.name.toUpperCase() });
+                }
+            });
+
+            // Fetch and set selected entity
+            getEntities({ page: 0, size: 1, search: initials.entityId }).then((res) => {
+                const entity = res.content.find(ent => ent.id === initials.entityId);
+                if (entity) {
+                    setEntities(prev => [...prev, { value: entity.id, label: entity.name.toUpperCase() }]);
+                    setValue("entityId", { value: entity.id, label: entity.name.toUpperCase() });
+                }
+            });
         }
     }, [initials, setValue]);
 
@@ -170,8 +187,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         formData.append("closeDate", data.closeDate);
         formData.append("tenderGroup", "PUBLIC");
         formData.append("tenderType", data.tenderType);
-        formData.append("categoryId", data.categoryId);
-        formData.append("entityId", data.entityId);
+        formData.append("categoryId", data.categoryId?.value || "");
+        formData.append("entityId", data.entityId?.value || "");
         formData.append("consultationFee", data.consultationFee)
 
         updateTenderMutation.mutate(formData);
@@ -250,17 +267,18 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                         </p>
                     </div>
 
-                     {/* Entity with search */}
-                     <div className="mb-2">
+                    {/* Entity with search */}
+                    <div className="mb-2">
                         <label htmlFor="com" className="block mb-2">
                             Entity
                         </label>
                         <Select
                             options={entities}
-                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                            value={entities.find(e => e.value === watch("entityId")?.value) || null}
+                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
                             onChange={(selectedOption) => setValue("entityId", selectedOption?.value)}
                             isLoading={loading}
-                            placeholder="Search for a entity"
+                            placeholder="Search for an entity"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.bidder?.message?.toString()}
@@ -275,11 +293,13 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
 
                         <Select
                             options={categories}
-                            onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
+                            value={categories.find(c => c.value === watch("categoryId")?.value) || null}
+                            onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
                             onChange={(selectedOption) => setValue("categoryId", selectedOption?.value)}
                             isLoading={loading}
                             placeholder="Search for a category"
                         />
+
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.category?.message?.toString()}
                         </p>
