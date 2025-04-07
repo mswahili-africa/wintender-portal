@@ -13,7 +13,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { getSummaryReport } from "@/services/reports";
 import { ISummaryReport } from "@/types";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { IBillboard } from "@/types/forms";
 import { getBillboards } from "@/services/commons";
 import bgImage from "@/assets/images/img-dropbox-bg.svg";
@@ -31,7 +31,6 @@ export default function Dashboard() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showFirstBanner, setShowFirstBanner] = useState(true);
     const [billboards, setBillboards] = useState<IBillboard[]>([]);
     const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
     const [showModal, setShowModal] = useState(false);
@@ -68,15 +67,6 @@ export default function Dashboard() {
         }
     }, [userId]);
 
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setShowFirstBanner(prev => !prev);
-        }, 30000); // Change every 5 seconds
-
-        return () => clearInterval(interval); // Cleanup on unmount
-    }, []);
-
     const SkeletonLoader = () => (
         <div className="grid grid-cols-4 gap-4">
             {Array(4).fill(0).map((_, i) => (
@@ -88,7 +78,6 @@ export default function Dashboard() {
             ))}
         </div>
     );
-
 
     const AdminStats = () => (
         <div className="grid grid-cols-4 gap-4">

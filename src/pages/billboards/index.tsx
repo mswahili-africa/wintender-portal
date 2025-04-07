@@ -1,16 +1,14 @@
 
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/columns";
 import CategoryCreate from "./fragments/createForm";
-import useBillboards from "@/hooks/useBillboards";
 import { IBillboard } from "@/types/forms";
 import { IconTrash } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
-import { deleteBillboard } from "@/services/commons";
+import { deleteBillboard, getBillboards } from "@/services/commons";
 
 export default function Billboards() {
     const [page, setPage] = useState<number>(0);
@@ -18,13 +16,23 @@ export default function Billboards() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<Record<string, any> | undefined>(undefined);
     const { showConfirmation } = usePopup();
+    const [billboards, setBillboards] = useState<IBillboard[]>([]);
+    const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
 
-    const { billboards, isLoading, refetch } = useBillboards({
-        page,
-        search,
-        sort,
-        filter
-    });
+    useEffect(() => {
+        fetchBillboards();
+    }, []);
+
+    const fetchBillboards = async () => {
+        try {
+            const data = await getBillboards();
+            setBillboards(data); // ✅ only set the array part
+        } catch (err) {
+            console.error("Failed to fetch billboards", err);
+        } finally {
+            setBillboardLoading(false);
+        }
+    };
 
     const handleDelete = (content: IBillboard) => {
         showConfirmation({
@@ -39,7 +47,7 @@ export default function Billboards() {
     const deleteMutation = useMutation({
         mutationFn: (data: IBillboard) => deleteBillboard(data.id),
         onSuccess: () => {
-            refetch();
+            fetchBillboards();
             toast.success("Billboard deleted successfully");
         },
         onError: (error: any) => {
@@ -51,7 +59,7 @@ export default function Billboards() {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Billboards</h2>
-                <CategoryCreate onSuccess={() => refetch()} />
+                <CategoryCreate onSuccess={() => fetchBillboards()} />
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -59,7 +67,7 @@ export default function Billboards() {
                 <Table
                     columns={columns}
                     data={billboards || []}
-                    isLoading={isLoading}
+                    isLoading={billboardLoading}
                     hasSelection={false}
                     hasActions={true}
                     actionSlot={(content: IBillboard) => {
@@ -79,7 +87,7 @@ export default function Billboards() {
             </div>
 
             {/* Handle empty state */}
-            {billboards?.content?.length === 0 && !isLoading && (
+            {billboards?.length === 0 && !billboardLoading && (
                 <div className="text-center p-4">
                     <p>No Billboards found.</p>
                 </div>
