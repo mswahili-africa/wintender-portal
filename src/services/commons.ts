@@ -27,10 +27,8 @@ export async function deleteBillboard(id: string) {
     return response.data
 }
 
-export async function getBillboards(params: {}) {
-    const response = await http.get<IlistResponse<any>>("/commons/billboard/list", {
-        params: params
-    })
+export async function getBillboards() {
+    const response = await http.get<IBillboard[]>("/commons/billboard/list")
 
     return response.data
 }
