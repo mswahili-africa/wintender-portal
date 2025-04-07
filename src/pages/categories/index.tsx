@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { debounce } from "lodash"; // Debouncing to reduce search input triggers
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useCategories from "@/hooks/useCategories";

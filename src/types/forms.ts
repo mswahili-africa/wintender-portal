@@ -61,6 +61,12 @@ export interface IMessage {
     message: string
 }
 
+export interface IBillboard {
+    id: string
+    title:       string
+    message: string
+}
+
 export interface IUSSDPushRequest {
     planId: string
     phoneNumber:       string

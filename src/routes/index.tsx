@@ -11,7 +11,8 @@ import {
     IconCategory,
     IconUsersGroup,
     IconFiles,
-    IconCalendarUser
+    IconCalendarUser,
+    IconSpeakerphone
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -56,7 +57,8 @@ const allMenus: IRoute[] = [
         icon: <IconReport size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/tenders", label: "Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> }
+            { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
+            { path: "/billboards", label: "Billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -128,14 +130,14 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
         }
         : menu
     ),
-    ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal" && menu.label !== "Compliance"),
-    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Do it for me"),
+    ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards"),
+    PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Do it for me" && menu.label !== "Billboards"),
     BIDDER: () => allMenus
         .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories"), // Exclude Categories sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards"), // Exclude Categories sub-menu
             }
             : menu.label === "Finance"
                 ? {
