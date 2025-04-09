@@ -194,9 +194,6 @@ export default function Dashboard() {
                                 </p>
                             </div>
                         </div>
-                        <div className="lg:block hidden">
-                            <img src={welcomeImage} alt="Welcome" />
-                        </div>
                     </div>
                 </div>
             ))}
