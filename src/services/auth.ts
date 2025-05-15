@@ -13,7 +13,7 @@ export async function getRoles(params: {}) {
 }
 
 export async function getLoginAttempts(params: {}) {
-    const response = await http.get<IlistResponse<ILoginAttempt>>("/users/auth/login-attempt", {
+    const response = await http.get<IlistResponse<ILoginAttempt>>("/users/auth/login/attempt", {
         params: params
     })
 
