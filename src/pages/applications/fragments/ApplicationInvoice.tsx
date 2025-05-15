@@ -15,12 +15,12 @@ export default function ApplicationInvoice() {
 
   const handleDownload = () => {
     const invoice = document.getElementById("invoice");
-    html2pdf()
+    html2pdf() 
       .from(invoice)
       .set({
         imageTimeout: 5000
       })
-      .save("Wintender-Invoice-" + applicationData?.tender?.referenceNumber + ".pdf");
+      .save("Wintender-Invoice-" + applicationData?.reference + ".pdf");
   };
 
   return (
@@ -30,21 +30,34 @@ export default function ApplicationInvoice() {
         <div className="logo-container">
           <div className="invoice-header py-3">
             <h1 className="text-4xl">INVOICE</h1>
-            <p># {applicationData?.tender?.referenceNumber}</p>
+            <p># {applicationData?.referenceNumber}</p>
             <br></br>
             <table className="invoice-table">
               <thead>
                 <tr>
                   <td style={{ border: 'none' }}>Date:</td>
                   <td style={{ border: 'none' }}>
-                    {applicationData?.tender?.createdAt ?
-                      new Date(applicationData?.tender.createdAt).toLocaleDateString() :
+                    {applicationData?.createdAt ?
+                      new Date(applicationData?.createdAt).toLocaleDateString() :
                       'N/A'}
                   </td>
                 </tr>
                 <tr>
                   <td style={{ border: 'none' }}>Control Number:</td>
-                  <td style={{ border: 'none' }}>{applicationData?.controlNumber?.controlNumber}</td>
+                  <td style={{ border: 'none' }}>{applicationData?.controlNumber}</td>
+                </tr>
+                 <tr>
+                  <td style={{ border: 'none' }}></td>
+                  <td style={{ border: 'none' }}>
+                  <span style={{ display: "inline-flex", alignItems: "center" }}>
+                    <Chip
+                      label={applicationData?.paymentStatus}
+                      size="sm"
+                      theme={applicationData?.paymentStatus === 'SUCCESS' ? 'success' : 'warning'}
+                      variant="outline"
+                    />
+                  </span>
+                  </td>
                 </tr>
               </thead>
             </table>
@@ -69,10 +82,11 @@ export default function ApplicationInvoice() {
         {/* Client Details */}
         <div className="client-details">
           <h3>Bill To:</h3>
-          <p><strong>{applicationGroupData?.user.name}</strong></p>
-          <p>{applicationGroupData?.user.address}</p>
-          <p>{applicationGroupData?.user.email}</p>
-          <p>{applicationGroupData?.user.phoneNumber}</p>
+          <p><strong>{applicationData?.bidderUserName}</strong></p>
+          <p><strong>{applicationData?.bidderCompanyName}</strong></p>
+          <p>{applicationData?.bidderCompanyEmail}</p>
+          <p>{applicationData?.bidderCompanyPhoneNumber}</p>
+          <p>{applicationData?.bidderCompanyTin}</p>
         </div>
 
         {/* Itemized List */}
@@ -88,8 +102,8 @@ export default function ApplicationInvoice() {
           <tbody style={{ border: 'none' }}>
             <tr style={{ border: 'none' }}>
               <td style={{ border: 'none' }}>
-                <strong>Preparation: {applicationData?.tender?.tenderNumber}</strong>
-                <p>{applicationData?.tender?.title}</p>
+                <strong>Preparation: {applicationData?.tenderNumber}</strong>
+                <p>{applicationData?.title}</p>
               </td>
               <td style={{ border: 'none' }}>1</td>
               <td style={{ border: 'none' }}>
@@ -97,21 +111,19 @@ export default function ApplicationInvoice() {
                   style: 'currency',
                   currency: 'TZS',
                   minimumFractionDigits: 0,
-                }).format(applicationData?.controlNumber.principleAmount ?? 0)}
+                }).format(applicationData?.principleAmount ?? 0)}
               </td>
               <td style={{ border: 'none' }}>
                 {new Intl.NumberFormat('en-TZ', {
                   style: 'currency',
                   currency: 'TZS',
                   minimumFractionDigits: 0,
-                }).format(applicationData?.controlNumber.principleAmount ?? 0)}
+                }).format(applicationData?.principleAmount ?? 0)}
               </td>
             </tr>
             <tr>
               <td colSpan={4} style={{ border: 'none' }}>
-                {applicationData?.tender?.entity.name},<br></br>
-                {applicationData?.tender?.entity.primaryNumber},<br></br>
-                {applicationData?.tender?.entity.address}, Tanzania<br></br>
+                {applicationData?.entityName},<br></br>
               </td>
             </tr>
             <tr>
@@ -121,7 +133,7 @@ export default function ApplicationInvoice() {
                 style: 'currency',
                 currency: 'TZS',
                 minimumFractionDigits: 0,
-              }).format(applicationData?.controlNumber.principleAmount ?? 0)}</td>
+              }).format(applicationData?.principleAmount ?? 0)}</td>
             </tr>
             <tr>
               <td colSpan={2} style={{ border: 'none' }}></td>
@@ -130,7 +142,7 @@ export default function ApplicationInvoice() {
                 style: 'currency',
                 currency: 'TZS',
                 minimumFractionDigits: 0,
-              }).format(applicationData?.controlNumber.principleAmount * 0.18)}</td>
+              }).format(applicationData?.principleAmount * 0.18)}</td>
             </tr>
             <tr>
               <td colSpan={2} style={{ border: 'none' }}></td>
@@ -139,7 +151,7 @@ export default function ApplicationInvoice() {
                 style: 'currency',
                 currency: 'TZS',
                 minimumFractionDigits: 0,
-              }).format(applicationData?.controlNumber.principleAmount + (applicationData?.controlNumber.principleAmount * 0.18))}</strong></td>
+              }).format(applicationData?.principleAmount + (applicationData?.principleAmount * 0.18))}</strong></td>
             </tr>
           </tbody>
         </table>
@@ -155,12 +167,6 @@ export default function ApplicationInvoice() {
 
                   <span style={{ display: "inline-flex", alignItems: "center" }}>
                     100% Pre-Paid 
-                    <Chip
-                      label={applicationData?.controlNumber?.status}
-                      size="sm"
-                      theme={applicationData?.controlNumber?.status === 'SUCCESS' ? 'success' : 'warning'}
-                      variant="outline"
-                    />
                   </span>
 
                   <p>Bank name: CRDB Bank PLC</p>

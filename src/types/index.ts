@@ -349,7 +349,7 @@ export interface IApplicationGroup {
 export interface IApplications {
   id: string;
   groupId: string;
-  reference: string;
+  referenceNumber: string;
   tenderId: string;
   tenderNumber: string;
   title: string;
@@ -375,4 +375,11 @@ export interface IApplications {
   updatedBy: string;
   createdAt: number;
   updatedAt: number;
+  bidderAccount: string;
+  bidderUserName: string;
+  bidderCompanyEmail: string;
+  bidderCompanyPhoneNumber: string;
+  bidderCompanyName: string;
+  bidderCompanyTin: string;
+  bidderCompanyVrn: string;
 }
