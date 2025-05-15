@@ -28,6 +28,7 @@ import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 import { UserDataProvider } from "./providers/userDataProvider";
 import Billboards from "./pages/billboards";
+import LoginAttempts from "./pages/login-attempts";
 
 export const queryClient = new QueryClient({});
 
@@ -70,6 +71,7 @@ function App() {
                                 <Route path="company-documents" element={<CompanyDocuments />} />
                                 <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
+                                <Route path="login-attempt" element={<LoginAttempts />} />
                             </Route>
 
                             <Route path="*" element={<NoMatch />} />

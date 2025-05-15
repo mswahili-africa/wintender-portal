@@ -28,7 +28,7 @@ export default function () {
                     message: "Oops! Something went wrong on our end. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup(); store.logout() }, 10000)
+                setTimeout(() => { closePopup(); }, 10000)
                 break;
             case 403:
                 showMessage({
@@ -45,7 +45,7 @@ export default function () {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup(); store.logout() }, 10000)
+                setTimeout(() => { closePopup(); }, 10000)
                 break;
             case 503:
                 showMessage({
@@ -53,7 +53,7 @@ export default function () {
                     message: "We're sorry, but the service is currently unavailable. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup(); store.logout() }, 10000)
+                setTimeout(() => { closePopup(); }, 10000)
                 break;
             default:
                 showMessage({
@@ -61,7 +61,7 @@ export default function () {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup(); store.logout() }, 10000)
+                setTimeout(() => { closePopup();  }, 10000)
                 break;
         }
     }

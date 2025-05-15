@@ -178,6 +178,15 @@ export interface IEntity {
   status: string;
 }
 
+export interface ILoginAttempt {
+  id: string;
+  username: string;
+  ip: string;
+  failureReason: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface ICompany {
   id: string;
   account: string;

@@ -1,11 +1,19 @@
 import { TOKEN_KEY } from "@/http/constants";
 import http from "../http";
-import { ILoginResponse, ICountry, IRole, IlistResponse, IToken } from "@/types";
+import { ILoginResponse, ICountry, IRole, IlistResponse, IToken, ILoginAttempt } from "@/types";
 import { IBidderRegisterForm, IConfirmPasswordResetForm, IRegisterForm } from "@/types/forms";
 
 
 export async function getRoles(params: {}) {
     const response = await http.get<IlistResponse<IRole>>("/users/auth/roles", {
+        params: params
+    })
+
+    return response.data
+}
+
+export async function getLoginAttempts(params: {}) {
+    const response = await http.get<IlistResponse<ILoginAttempt>>("/users/auth/login-attempt", {
         params: params
     })
 

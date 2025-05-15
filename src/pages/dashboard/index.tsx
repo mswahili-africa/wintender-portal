@@ -17,14 +17,12 @@ import { motion } from "framer-motion";
 import { IBillboard } from "@/types/forms";
 import { getBillboards } from "@/services/commons";
 import bgImage from "@/assets/images/img-dropbox-bg.svg";
-import welcomeImage from "@/assets/images/welcome-banner.png";
 
 type DashboardStats = ISummaryReport;
 
 export default function Dashboard() {
-
-    const { userData } = useUserDataContext();  // Use the hook to get user data
-    const userRole = userData?.role || "BIDDER"; // Extract role from userData, defaulting to "BIDDER" if not found
+    const { userData } = useUserDataContext();
+    const userRole = userData?.role || "BIDDER";
     const userId = userData?.userId || "";
     const account = userData?.account || "00000000";
 
@@ -53,7 +51,7 @@ export default function Dashboard() {
         const fetchBillboards = async () => {
             try {
                 const data = await getBillboards();
-                setBillboards(data); // ✅ only set the array part
+                setBillboards(data);
             } catch (err) {
                 console.error("Failed to fetch billboards", err);
             } finally {
@@ -68,138 +66,99 @@ export default function Dashboard() {
     }, [userId]);
 
     const SkeletonLoader = () => (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {Array(4).fill(0).map((_, i) => (
-                <div key={i} className="bg-white shadow-md p-6 rounded-lg">
+                <div key={i} className="bg-white shadow-md p-4 sm:p-6 rounded-lg">
                     <Skeleton width={32} height={32} circle />
-                    <h3 className="text-l font-bold mt-4"><Skeleton width={150} /></h3>
-                    <p className="text-gray-600"><Skeleton width={100} /></p>
+                    <h3 className="text-base font-bold mt-4"><Skeleton width={150} /></h3>
+                    <p className="text-gray-600 text-sm"><Skeleton width={100} /></p>
                 </div>
             ))}
         </div>
     );
 
+    const StatCard = ({ icon: Icon, title, description, to }: any) => (
+        <Link to={to}>
+            <div className="bg-white shadow-md p-4 sm:p-6 rounded-lg cursor-pointer hover:bg-gray-50">
+                <Icon className="w-6 h-6 mb-4 text-green-600" />
+                <h3 className="text-base font-bold">{title}</h3>
+                <p className="text-gray-600 text-sm">{description}</p>
+            </div>
+        </Link>
+    );
+
     const AdminStats = () => (
-        <div className="grid grid-cols-4 gap-4">
-            <Link to="/tenders">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconFileText className="text-green-600 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Tenders</h3>
-                    <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
-                </div>
-            </Link>
-            <Link to="/bidders">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconUsersGroup className="text-green-600 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Bidders</h3>
-                    <p className="text-gray-600">Active: {stats?.statistics.bidders}</p>
-                </div>
-            </Link>
-            <Link to="/do-it-for-me">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconGitPullRequest className="text-yellow-500 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Do it for me</h3>
-                    <p className="text-gray-600">Requests: {stats?.statistics.requests}</p>
-                </div>
-            </Link>
-            <Link to="/payments">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconReportMoney className="text-purple-500 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Payment</h3>
-                    <p className="text-gray-600">Total: {new Intl.NumberFormat('en-TZ', {
-                        style: 'decimal',
-                        currency: 'TZS',
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    }).format(stats?.statistics.payments ?? 0)}</p>
-                </div>
-            </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${stats?.statistics.bidders}`} to="/bidders" />
+            <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${stats?.statistics.requests}`} to="/do-it-for-me" />
+            <StatCard
+                icon={IconReportMoney}
+                title="Payment"
+                description={`Total: ${new Intl.NumberFormat('en-TZ', {
+                    style: 'decimal',
+                    currency: 'TZS',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }).format(stats?.statistics.payments ?? 0)}`}
+                to="/payments"
+            />
         </div>
     );
 
     const PublisherStats = () => (
-        <div className="grid grid-cols-2 gap-4">
-            <Link to="/tenders">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconFileText className="text-green-600 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Tenders</h3>
-                    <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
-                </div>
-            </Link>
-            <Link to="/publisher-reports">
-                <div className="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconPigMoney className="text-purple-500 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Commission</h3>
-                    <p className="text-gray-600">
-                        Total Earned: TZS {new Intl.NumberFormat('en-TZ', {
-                            style: 'decimal',
-                            currency: 'TZS',
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        }).format(stats?.statistics.payments ?? 0)}
-                    </p>
-                </div>
-            </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
+            <StatCard
+                icon={IconPigMoney}
+                title="Commission"
+                description={`Total Earned: TZS ${new Intl.NumberFormat('en-TZ', {
+                    style: 'decimal',
+                    currency: 'TZS',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }).format(stats?.statistics.payments ?? 0)}`}
+                to="/publisher-reports"
+            />
         </div>
     );
 
     const BidderStats = () => (
-        <div className="grid grid-cols-3 gap-4">
-            <Link to={`/users/${userId}`}>
-                <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconUser className="text-yellow-500 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">{account}</h3>
-                    <p className="text-gray-600">Account</p>
-                </div>
-            </Link>
-            <Link to="/tenders">
-                <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconFileText className="text-green-600 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Tenders</h3>
-                    <p className="text-gray-600">Open: {stats?.statistics.tenders}</p>
-                </div>
-            </Link>
-
-            <Link to="/do-it-for-me">
-                <div className="bg-white shadow-md p-4 rounded-lg cursor-pointer hover:bg-gray-50">
-                    <IconGitPullRequest className="text-yellow-500 w-6 h-6 mb-4" />
-                    <h3 className="text-l font-bold">Requests</h3>
-                    <p className="text-gray-600">Requested: {stats?.statistics.requests}</p>
-                </div>
-            </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${stats?.statistics.requests}`} to="/do-it-for-me" />
         </div>
     );
 
     const Billboards = () => (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {billboards.map((board) => (
                 <div
                     key={board.id}
-                    className="bg-green-600 lg:w-full bg-gradient-to-r from-indigo-500 rounded-xl text-white bg-cover cursor-pointer"
+                    className="bg-green-600 w-full bg-gradient-to-r from-indigo-500 rounded-xl text-white bg-cover cursor-pointer"
                     style={{
-                        backgroundImage: `url(${bgImage})`, // Use dynamic background image if available
+                        backgroundImage: `url(${bgImage})`,
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "100%"
                     }}
                     onClick={() => {
-                        setSelectedBillboard(board); // Set selected billboard in state
-                        setShowModal(true);           // Open modal
+                        setSelectedBillboard(board);
+                        setShowModal(true);
                     }}
                 >
                     <div className="flex justify-between">
-                        <div className="flex flex-col p-5 lg:gap-1">
-                            <div>
-                                <p className="font-light text-sm lg:max-w-[900px] lg:pt-4">
-                                    <strong>{board.title}</strong>
-                                </p>
-                            </div>
+                        <div className="flex flex-col p-4 sm:p-5 gap-1">
+                            <p className="font-light text-sm sm:text-base">
+                                <strong>{board.title}</strong>
+                            </p>
                         </div>
                     </div>
                 </div>
             ))}
         </div>
     );
-    
+
     const Modal = ({ isOpen, closeModal }: { isOpen: boolean, closeModal: () => void }) => {
         const formatMessage = (message: string) => {
             return message.split("\n").map((line, index) => (
@@ -209,7 +168,7 @@ export default function Dashboard() {
                 </span>
             ));
         };
-    
+
         return (
             <motion.div
                 className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ${isOpen ? "block" : "hidden"}`}
@@ -218,9 +177,9 @@ export default function Dashboard() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
             >
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl"> {/* Increased width to max-w-2xl */}
-                    <h2 className="text-2xl font-bold mb-4">{selectedBillboard?.title}</h2>
-                    <div className="text-gray-600 mb-4 overflow-y-auto max-h-96"> {/* Added scrollable functionality */}
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-[90%] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <h2 className="text-xl sm:text-2xl font-bold mb-4">{selectedBillboard?.title}</h2>
+                    <div className="text-gray-600 mb-4">
                         {selectedBillboard ? formatMessage(selectedBillboard.message) : null}
                     </div>
                     <div className="flex justify-end">
@@ -234,39 +193,31 @@ export default function Dashboard() {
                 </div>
             </motion.div>
         );
-    };    
-    
+    };
 
     return (
-        <div className="p-1 min-h-screen">
-            <div>
-                <h2 className="text-xl font-bold mb-4">Billboards</h2>
-                <Billboards />
-                <Modal isOpen={showModal} closeModal={closeModal} />
-            </div>
+        <div className="p-2 min-h-screen">
+            <h2 className="text-xl font-bold mb-4">Billboards</h2>
+            <Billboards />
+            <Modal isOpen={showModal} closeModal={closeModal} />
 
             {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (
-                <div>
-                    <br></br>
+                <div className="mt-6">
                     {loading ? <SkeletonLoader /> : <BidderStats />}
                 </div>
             )}
 
-            {
-                userRole.includes("PUBLISHER") && (
-                    <div>
-                        <br></br>
-                        {loading ? <SkeletonLoader /> : <PublisherStats />}
-                    </div>
-                )}
+            {userRole.includes("PUBLISHER") && (
+                <div className="mt-6">
+                    {loading ? <SkeletonLoader /> : <PublisherStats />}
+                </div>
+            )}
 
-            {
-                userRole.includes("ADMINISTRATOR") && (
-                    <div>
-                        <br></br>
-                        {loading ? <SkeletonLoader /> : <AdminStats />}
-                    </div>
-                )}
+            {userRole.includes("ADMINISTRATOR") && (
+                <div className="mt-6">
+                    {loading ? <SkeletonLoader /> : <AdminStats />}
+                </div>
+            )}
 
             {error && <div className="text-red-500 mt-4">{error}</div>}
         </div>

@@ -12,7 +12,8 @@ import {
     IconUsersGroup,
     IconFiles,
     IconCalendarUser,
-    IconSpeakerphone
+    IconSpeakerphone,
+    IconLockAccessOff
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -104,11 +105,12 @@ const allMenus: IRoute[] = [
         ],
     },
     {
-        path: "/reports",
+        path: "/reports/login-attempt",
         label: "Reports",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> }
+            { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/login-attempt", label: "Login Attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> }
         ],
     },
     {

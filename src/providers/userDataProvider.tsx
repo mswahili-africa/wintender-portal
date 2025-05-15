@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { isAuthenticated, tokenInfo } from "@/services/auth";
 import { IUserData } from "@/types/forms";
+import { authStore } from "@/store/auth";
+import toast from "react-hot-toast";
 
 interface UserDataContextType {
     userData: IUserData | null;
@@ -27,12 +29,12 @@ export const UserDataProvider: React.FC<UserDataProviderProps> = ({ children }) 
     });
 
     useEffect(() => {
-         if (!isAuthenticated()) {
-                    setUserData(null);
-                    setLoading(false);
-                    setError("User is not logged in");
-                    return;
-                }
+        if (!isAuthenticated()) {
+            setUserData(null);
+            setLoading(false);
+            setError("User is not logged in");
+            return;
+        }
 
         // If data is already fetched from cache, update state without making an API call
         if (userDataCache.current.fetched) {
@@ -45,12 +47,16 @@ export const UserDataProvider: React.FC<UserDataProviderProps> = ({ children }) 
             try {
                 setLoading(true);
                 const data = await tokenInfo(); // Fetch data from API
+
                 userDataCache.current.data = data; // Store in cache
                 userDataCache.current.fetched = true;
                 setUserData(data); // Update state with the fetched data
             } catch (err) {
-                console.error("Error fetching user data:", err);
-                setError("Failed to fetch user data");
+
+                toast.error("Unauthorized. Please log in.");
+
+                authStore.logout();
+
             } finally {
                 setLoading(false);
             }

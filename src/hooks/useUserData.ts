@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { isAuthenticated, tokenInfo } from "@/services/auth";
 import { IUserData } from "@/types/forms";
+import { authStore } from "@/store/auth";
+import toast from "react-hot-toast";
 
 const userDataCache: { data: IUserData | null; fetched: boolean } = {
     data: null,
@@ -38,9 +40,10 @@ export function useUserData() {
                 setUserData(data);
             } catch (err) {
 
-        console.error("isAuthenticated--"+isAuthenticated());
-                console.error("Error fetching user data:", err);
-                setError("Failed to fetch user data");
+                toast.error("Unauthorized. Please log in.");
+
+                authStore.logout();
+
             } finally {
                 setLoading(false);
             }
