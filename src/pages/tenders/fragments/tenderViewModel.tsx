@@ -31,7 +31,7 @@ const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoIt
                     <h2 className="text-xl font-bold">{title}</h2>
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
-                        {(userRole === "ADMINISTRATOR" || userRole === "MANAGER") && (
+                        {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
                             <Button
                                 label="Assign Bidder"
                                 size="sm"

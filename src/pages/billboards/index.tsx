@@ -11,10 +11,6 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteBillboard, getBillboards } from "@/services/commons";
 
 export default function Billboards() {
-    const [page, setPage] = useState<number>(0);
-    const [search, setSearch] = useState<string | undefined>(undefined);
-    const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter] = useState<Record<string, any> | undefined>(undefined);
     const { showConfirmation } = usePopup();
     const [billboards, setBillboards] = useState<IBillboard[]>([]);
     const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
