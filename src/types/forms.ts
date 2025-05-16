@@ -61,10 +61,26 @@ export interface IMessage {
     message: string
 }
 
-export interface IBillboard {
+export interface IConsultation {
     id: string
     title:       string
     message: string
+}
+
+export interface IConsultationApplication {
+    id: string
+    reference:       string
+    consultationId: string
+    controlNumber: string
+    paymentStatus: string
+    comment: string
+    status: string
+    title: string
+    bidderName: string
+    bidderCompanyName: string
+    bidderAccount: string
+    bidderCompanyPrimaryNumber: string
+    bidderCompanyEmail: string
 }
 
 export interface IUSSDPushRequest {

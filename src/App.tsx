@@ -27,8 +27,10 @@ import ApplicationGroups from "./pages/applications";
 import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 import { UserDataProvider } from "./providers/userDataProvider";
-import Billboards from "./pages/billboards";
+import Billboards from "./pages/consultation";
 import LoginAttempts from "./pages/login-attempts";
+import Consultation from "./pages/consultation";
+import ConsultationApplication from "./pages/consultation/application";
 
 export const queryClient = new QueryClient({});
 
@@ -62,7 +64,8 @@ function App() {
                                 <Route path="tenders" element={<TenderList />} />
                                 <Route path="payments" element={<Payments />} />
                                 <Route path="categories" element={<Categories />} />
-                                <Route path="billboards" element={<Billboards />} />
+                                <Route path="consultation" element={<Consultation />} />
+                                <Route path="consultation-application" element={<ConsultationApplication />} />
                                 <Route path="users" element={<Users />} />
                                 <Route path="bidders" element={<Bidders />} />
                                 <Route path="users/:userId" element={<UserDetail />} />

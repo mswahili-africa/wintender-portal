@@ -4,15 +4,15 @@ import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/columns";
 import CategoryCreate from "./fragments/createForm";
-import { IBillboard } from "@/types/forms";
+import { IConsultation } from "@/types/forms";
 import { IconTrash } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
-import { deleteBillboard, getBillboards } from "@/services/commons";
+import { deleteBillboard, getBillboards } from "@/services/tenders";
 
-export default function Billboards() {
+export default function ConsultationApplication() {
     const { showConfirmation } = usePopup();
-    const [billboards, setBillboards] = useState<IBillboard[]>([]);
+    const [billboards, setBillboards] = useState<IConsultation[]>([]);
     const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export default function Billboards() {
         }
     };
 
-    const handleDelete = (content: IBillboard) => {
+    const handleDelete = (content: IConsultation) => {
         showConfirmation({
             theme: "danger",
             title: "Delete Billboard",
@@ -41,7 +41,7 @@ export default function Billboards() {
     }
 
     const deleteMutation = useMutation({
-        mutationFn: (data: IBillboard) => deleteBillboard(data.id),
+        mutationFn: (data: IConsultation) => deleteBillboard(data.id),
         onSuccess: () => {
             fetchBillboards();
             toast.success("Billboard deleted successfully");
@@ -54,7 +54,7 @@ export default function Billboards() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Billboards</h2>
+                <h2 className="text-lg font-bold">Consultation Billboards</h2>
                 <CategoryCreate onSuccess={() => fetchBillboards()} />
             </div>
 
@@ -66,7 +66,7 @@ export default function Billboards() {
                     isLoading={billboardLoading}
                     hasSelection={false}
                     hasActions={true}
-                    actionSlot={(content: IBillboard) => {
+                    actionSlot={(content: IConsultation) => {
                         return (
                             <div className="flex justify-center space-x-2">
                                 <button

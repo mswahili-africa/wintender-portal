@@ -1,6 +1,6 @@
 import http from "@/http";
 import { IQueryParams, ITenderCategory, IlistResponse } from "@/types";
-import { IAssignBidder } from "@/types/forms";
+import { IAssignBidder, IConsultation, IConsultationApplication } from "@/types/forms";
 
 
 export async function downloadTenderDocument(id: string) {
@@ -122,4 +122,45 @@ export async function deleteDoForMe(id: string) {
     const response = await http.delete<any>(`/applications/do-for-me/delete/${id}`);
 
     return response.data
+}
+
+export async function createBillboard(payload: IConsultation) {
+    const response = await http.post<any>("/applications/consultation/billboard/create", payload)
+    return response.data
+}
+
+export async function deleteBillboard(id: string) {
+    const response = await http.delete<any>(`/applications/consultation/billboard/delete/${id}`);
+
+    return response.data
+}
+
+export async function getBillboards() {
+    const response = await http.get<IConsultation[]>("/applications/consultation/billboard/list")
+
+    return response.data
+}
+
+export async function createConsultMe(payload: IConsultationApplication) {
+    const response = await http.post<any>("/applications/consultation/billboard/create", payload)
+    return response.data
+}
+
+export async function deleteConsultMe(id: string) {
+    const response = await http.delete<any>(`/applications/consultation/billboard/delete/${id}`);
+
+    return response.data
+}
+
+export async function getConsultMe(params: IQueryParams) {
+    const response = await http.get<IlistResponse<any>>("/applications/consultation/billboard/list", {
+        params: params
+    })
+    return response.data
+}
+
+export async function updateConsultMe(id: string, comment: string, status: string) {
+    const response = await http.put<any>(`/applications/consultation/billboard/delete/${id}`, { status: status, comments: comment });
+
+    return response.data;
 }

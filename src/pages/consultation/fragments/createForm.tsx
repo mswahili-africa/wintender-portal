@@ -1,10 +1,8 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import useEntities from "@/hooks/useEntities";
-import { createBillboard } from "@/services/commons";
-import { createCategory } from "@/services/tenders";
-import { IBillboard } from "@/types/forms";
-import { ITenderCategory } from "@/types/index";
+import { createBillboard } from "@/services/tenders";
+import { IConsultation } from "@/types/forms";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +13,7 @@ import { object, string } from "yup";
 
 interface IProps {
     onSuccess: () => void;
-    initials?: IBillboard;
+    initials?: IConsultation;
 }
 
 const schema = object().shape({
@@ -37,7 +35,7 @@ export default function BillboardCreate({ onSuccess, initials }: IProps) {
     });
 
     const createBillboardMutation = useMutation({
-        mutationFn: (data: IBillboard) => createBillboard(data),
+        mutationFn: (data: IConsultation) => createBillboard(data),
         onSuccess: (res) => {
             reset();
             setOpen(false);
@@ -63,7 +61,7 @@ export default function BillboardCreate({ onSuccess, initials }: IProps) {
         }
     }, [initials, setValue]);
 
-    const submit = (data: IBillboard) => {
+    const submit = (data: IConsultation) => {
         createBillboardMutation.mutate(data);
     }
 

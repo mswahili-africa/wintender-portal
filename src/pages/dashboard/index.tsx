@@ -14,9 +14,11 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { getSummaryReport } from "@/services/reports";
 import { ISummaryReport } from "@/types";
 import { motion } from "framer-motion";
-import { IBillboard } from "@/types/forms";
-import { getBillboards } from "@/services/commons";
 import bgImage from "@/assets/images/img-dropbox-bg.svg";
+import { getBillboards } from "@/services/tenders";
+import { IConsultation } from "@/types/forms";
+import Spinner from "@/components/spinners/Spinner";
+import Button from "@/components/button/Button";
 
 type DashboardStats = ISummaryReport;
 
@@ -29,10 +31,10 @@ export default function Dashboard() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [billboards, setBillboards] = useState<IBillboard[]>([]);
+    const [billboards, setBillboards] = useState<IConsultation[]>([]);
     const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
     const [showModal, setShowModal] = useState(false);
-    const [selectedBillboard, setSelectedBillboard] = useState<IBillboard | null>(null);
+    const [selectedBillboard, setSelectedBillboard] = useState<IConsultation | null>(null);
     const closeModal = () => setShowModal(false);
 
     useEffect(() => {
@@ -152,6 +154,16 @@ export default function Dashboard() {
                             <p className="font-light text-sm sm:text-base">
                                 <strong>{board.title}</strong>
                             </p>
+                            <div className="flex space-x-4">
+                                {/* {userRole === "BIDDER" && (
+                                    <Button
+                                        label="Request 'Do it for me'"
+                                        size="sm"
+                                        theme="primary"
+                                        onClick={onDoItForMeClick}
+                                    />
+                                )} */}
+                            </div>
                         </div>
                     </div>
                 </div>

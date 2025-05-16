@@ -13,7 +13,10 @@ import {
     IconFiles,
     IconCalendarUser,
     IconSpeakerphone,
-    IconLockAccessOff
+    IconLockAccessOff,
+    IconHelp,
+    IconHelpCircle,
+    IconUserUp
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -59,15 +62,16 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/tenders", label: "Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
             { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
-            { path: "/billboards", label: "Billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> }
+            { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/applications",
-        label: "Do it for me",
+        label: "Consultation",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/do-it-for-me", label: "Do it for me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+            { path: "/consultation", label: "Consultation", icon: <IconUserUp size={20} strokeWidth={1.5} /> },
+            { path: "/consultation-application", label: "Consult Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
         ],
     },
     {
