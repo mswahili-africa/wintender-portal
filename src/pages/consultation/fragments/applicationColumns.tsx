@@ -15,7 +15,7 @@ const columns: IColumn[] = [
         plainObject: false,
     },
     {
-        name: "bidderUserName",
+        name: "bidderName",
         label: "Person",
         sortable: false,
         plainObject: false,
@@ -27,7 +27,7 @@ const columns: IColumn[] = [
         plainObject: false,
     },
     {
-        name: "bidderCompanyPhoneNumber",
+        name: "bidderCompanyPrimaryNumber",
         label: "Number",
         sortable: false,
         plainObject: false,

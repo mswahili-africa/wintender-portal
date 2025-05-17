@@ -58,7 +58,7 @@ export default function ConsultationApplication() {
 
                 <Table
                     columns={columns}
-                    data={application || []}
+                    data={application?.content || []}
                     isLoading={isLoading}
                     hasSelection={false}
                     hasActions={true}
