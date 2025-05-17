@@ -162,7 +162,7 @@ export async function getConsultMe(params: IQueryParams) {
 }
 
 export async function updateConsultMe(id: string, comment: string, status: string) {
-    const response = await http.put<any>(`/applications/consultation/application/update/${id}`, { status: status, comments: comment });
+    const response = await http.put<any>(`/applications/consultation/application/update/${id}`, { status: status, comment: comment });
 
     return response.data;
 }

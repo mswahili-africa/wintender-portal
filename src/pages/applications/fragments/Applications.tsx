@@ -5,7 +5,7 @@ import applicationListColumns from "./applicationListColumns";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { IApplicationGroup, IApplications, ITenders } from "@/types";
+import { IApplicationGroup, IApplications } from "@/types";
 import { deleteDoForMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -32,9 +32,9 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
-    const [editAmount, setEditAmount] = useState<number | null>(null);
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
 
@@ -266,7 +266,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                 {isStatusModalOpen && selectedApplication && (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
-                            <h3 className="font-bold text-lg mb-4">Manager Request</h3>
+                            <h3 className="font-bold text-lg mb-4">Change Status</h3>
                             <div className="mb-2">
                                 <label htmlFor="status" className="block mb-2">
                                     Status

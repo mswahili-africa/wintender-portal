@@ -73,7 +73,7 @@ export interface IConsultationApplication {
     reference:       string
     consultationId: string
     controlNumber: string
-    principleAmount: string
+    principleAmount: number
     paymentStatus: string
     comment: string
     status: string
