@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationColumns";
@@ -13,6 +14,8 @@ import Pagination from "@/components/widgets/table/Pagination";
 
 export default function ConsultationApplication() {
 
+    const { userData } = useUserDataContext();
+    const userRole = userData?.role || "BIDDER";
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
@@ -65,12 +68,15 @@ export default function ConsultationApplication() {
                     actionSlot={(content: IConsultationApplication) => {
                         return (
                             <div className="flex justify-center space-x-2">
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                    onClick={() => handleDelete(content)}
-                                >
-                                    <IconTrash size={20} />
-                                </button>
+
+                                {userRole === "BIDDER" && (
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                        onClick={() => handleDelete(content)}
+                                    >
+                                        <IconTrash size={20} />
+                                    </button>
+                                )}
                             </div>
                         );
                     }}
