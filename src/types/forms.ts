@@ -65,6 +65,7 @@ export interface IConsultation {
     id: string
     title:       string
     message: string
+    reference: string
 }
 
 export interface IConsultationApplication {
@@ -72,14 +73,15 @@ export interface IConsultationApplication {
     reference:       string
     consultationId: string
     controlNumber: string
+    principleAmount: string
     paymentStatus: string
     comment: string
     status: string
     title: string
-    bidderName: string
+    bidderUserName: string
     bidderCompanyName: string
     bidderAccount: string
-    bidderCompanyPrimaryNumber: string
+    bidderCompanyPhoneNumber: string
     bidderCompanyEmail: string
 }
 

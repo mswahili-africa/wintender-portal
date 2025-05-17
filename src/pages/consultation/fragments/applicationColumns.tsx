@@ -9,34 +9,69 @@ const columns: IColumn[] = [
         plainObject: false,
     },
     {
-        name: "bidderName",
-        label: "Bider",
-        sortable: false,
-        plainObject: false,
-    },
-    {
         name: "title",
         label: "consultation",
         sortable: false,
         plainObject: false,
     },
     {
-        name: "bidderCompanyName",
-        label: "company",
+        name: "bidderUserName",
+        label: "Person",
         sortable: false,
         plainObject: false,
     },
     {
-        name: "bidderCompanyPrimaryNumber",
+        name: "bidderCompanyName",
+        label: "Company",
+        sortable: false,
+        plainObject: false,
+    },
+    {
+        name: "bidderCompanyPhoneNumber",
         label: "Number",
         sortable: false,
         plainObject: false,
     },
     {
-        name: "bidderCompanyEmail",
-        label: "email",
+        name: "controlNumber",
+        label: "control Number",
         sortable: false,
         plainObject: false,
+    },
+    {
+        name: "principleAmount",
+        label: "Consultation Fee",
+        sortable: false,
+        plainObject: false,
+    },
+    {
+        name: "paymentStatus",
+        label: "Payment",
+        sortable: false,
+        plainObject: false,
+        element: (value: string) => {
+            let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
+
+            switch (value) {
+                case "SUCCESSFUL":
+                    theme = "success";
+                    break;
+                case "APPROVED":
+                    theme = "approved";
+                    break;
+                case "PENDING":
+                    theme = "secondary";
+                    break;
+                case "FAILED":
+                case "REJECTED":
+                    theme = "danger";
+                    break;
+                default:
+                    theme = "warning"; // Fallback for unknown statuses
+            }
+
+            return <Chip label={value} size="sm" theme={theme} variant="outline" />;
+        }
     },
     {
         name: "status",

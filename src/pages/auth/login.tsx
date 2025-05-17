@@ -10,6 +10,7 @@ import RegistrationModel from "./registrationModel";
 import { login } from "@/services/auth";
 import { authStore } from "@/store/auth";
 import { ILoginForm } from "@/types/forms";
+import toast from "react-hot-toast";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -37,6 +38,9 @@ export default function Login() {
             navigate("/");
             window.location.reload();
         },
+         onError: (error: any) => {
+            toast.error(error.response?.data?.message ?? "");
+        }
     });
 
     const signIn = async (input: { username: string, password: string }) => {

@@ -141,26 +141,28 @@ export async function getBillboards() {
     return response.data
 }
 
-export async function createConsultMe(payload: IConsultationApplication) {
-    const response = await http.post<any>("/applications/consultation/billboard/create", payload)
+export async function createConsultMe(id: string) {
+    const response = await http.post<any>(`/applications/consultation/application/create/${id}`)
+    
     return response.data
 }
 
+
 export async function deleteConsultMe(id: string) {
-    const response = await http.delete<any>(`/applications/consultation/billboard/delete/${id}`);
+    const response = await http.delete<any>(`/applications/consultation/application/delete/${id}`);
 
     return response.data
 }
 
 export async function getConsultMe(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/applications/consultation/billboard/list", {
+    const response = await http.get<IlistResponse<any>>("/applications/consultation/application/list", {
         params: params
     })
     return response.data
 }
 
 export async function updateConsultMe(id: string, comment: string, status: string) {
-    const response = await http.put<any>(`/applications/consultation/billboard/delete/${id}`, { status: status, comments: comment });
+    const response = await http.put<any>(`/applications/consultation/application/update/${id}`, { status: status, comments: comment });
 
     return response.data;
 }

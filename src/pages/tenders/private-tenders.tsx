@@ -147,7 +147,7 @@ export default function PrivateTenders() {
             toast.success("Tender deleted successfully");
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.errors ?? "");
+            toast.error(error.response?.data?.message ?? "");
         }
     });
 

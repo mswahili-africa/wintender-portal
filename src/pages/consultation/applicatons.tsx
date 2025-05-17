@@ -1,39 +1,36 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
-import columns from "./fragments/columns";
-import CategoryCreate from "./fragments/createForm";
-import { IConsultation } from "@/types/forms";
+import columns from "./fragments/applicationColumns";
+import { IConsultationApplication } from "@/types/forms";
 import { IconTrash } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
-import { deleteBillboard, getBillboards } from "@/services/tenders";
+import { deleteConsultMe } from "@/services/tenders";
+import useConsultMeApplication from "@/hooks/useConsultMeApplication";
+import Pagination from "@/components/widgets/table/Pagination";
 
 export default function ConsultationApplication() {
+
+    const [page, setPage] = useState<number>(0);
+    const [search, setSearch] = useState<string>();
+    const [sort, setSort] = useState<string>("createdAt,desc");
+    const [filter] = useState<any>();
     const { showConfirmation } = usePopup();
-    const [billboards, setBillboards] = useState<IConsultation[]>([]);
-    const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        fetchBillboards();
-    }, []);
+    const { application, isLoading, refetch } = useConsultMeApplication({
+        page: page,
+        search: search,
+        sort: sort,
+        filter: filter, // Pass the appropriate filter value
+    });
 
-    const fetchBillboards = async () => {
-        try {
-            const data = await getBillboards();
-            setBillboards(data); // ✅ only set the array part
-        } catch (err) {
-            console.error("Failed to fetch billboards", err);
-        } finally {
-            setBillboardLoading(false);
-        }
-    };
 
-    const handleDelete = (content: IConsultation) => {
+    const handleDelete = (content: IConsultationApplication) => {
         showConfirmation({
             theme: "danger",
-            title: "Delete Billboard",
+            title: "Applicato Billboard",
             message: "This action cannot be undone. Please verify that you want to delete.",
             onConfirm: () => deleteMutation.mutate(content),
             onCancel: () => { }
@@ -41,32 +38,31 @@ export default function ConsultationApplication() {
     }
 
     const deleteMutation = useMutation({
-        mutationFn: (data: IConsultation) => deleteBillboard(data.id),
+        mutationFn: (data: IConsultationApplication) => deleteConsultMe(data.id),
         onSuccess: () => {
-            fetchBillboards();
-            toast.success("Billboard deleted successfully");
+            toast.success("Application deleted successfully");
+            refetch();
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.errors ?? "");
+            toast.error(error.response?.data?.message ?? "");
         }
     });
 
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Consultation Billboards</h2>
-                <CategoryCreate onSuccess={() => fetchBillboards()} />
+                <h2 className="text-lg font-bold">Consultation Application</h2>
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
 
                 <Table
                     columns={columns}
-                    data={billboards || []}
-                    isLoading={billboardLoading}
+                    data={application || []}
+                    isLoading={isLoading}
                     hasSelection={false}
                     hasActions={true}
-                    actionSlot={(content: IConsultation) => {
+                    actionSlot={(content: IConsultationApplication) => {
                         return (
                             <div className="flex justify-center space-x-2">
                                 <button
@@ -83,10 +79,12 @@ export default function ConsultationApplication() {
             </div>
 
             {/* Handle empty state */}
-            {billboards?.length === 0 && !billboardLoading && (
-                <div className="text-center p-4">
-                    <p>No Billboards found.</p>
-                </div>
+            {application?.pageable && (
+                <Pagination
+                    currentPage={page}
+                    setCurrentPage={setPage}
+                    pageCount={application.totalPages}
+                />
             )}
         </div>
     );

@@ -19,6 +19,10 @@ import { getBillboards } from "@/services/tenders";
 import { IConsultation } from "@/types/forms";
 import Spinner from "@/components/spinners/Spinner";
 import Button from "@/components/button/Button";
+import { createConsultMe } from "@/services/tenders";
+import toast from "react-hot-toast";
+import usePopup from "@/hooks/usePopup";
+import { useMutation } from "@tanstack/react-query";
 
 type DashboardStats = ISummaryReport;
 
@@ -28,14 +32,38 @@ export default function Dashboard() {
     const userId = userData?.userId || "";
     const account = userData?.account || "00000000";
 
+    const { showConfirmation } = usePopup();
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [billboards, setBillboards] = useState<IConsultation[]>([]);
-    const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedBillboard, setSelectedBillboard] = useState<IConsultation | null>(null);
+    const [isConsultMeLoading, setIsConsultMeLoading] = useState(false);
     const closeModal = () => setShowModal(false);
+
+     const handleConsultMeClick = () => {
+        if(selectedBillboard)
+            showConfirmation({
+                theme: "success",
+                title: "Request Consultation",
+                message: "Request will be send to our team for processing",
+                onConfirm: () => requestMutation.mutate(selectedBillboard.id),
+                onCancel: () => { }
+            })
+        }
+
+    const requestMutation = useMutation({
+            mutationFn: (id:string) => createConsultMe(id),
+            onSuccess: () => {
+                toast.success("Request send successfully");
+            },
+            onError: (error: any) => {
+                toast.error(error.response?.data?.message ?? "");
+            }
+        });
+
+        
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -56,9 +84,7 @@ export default function Dashboard() {
                 setBillboards(data);
             } catch (err) {
                 console.error("Failed to fetch billboards", err);
-            } finally {
-                setBillboardLoading(false);
-            }
+            } 
         };
 
         if (userId !== "") {
@@ -154,16 +180,6 @@ export default function Dashboard() {
                             <p className="font-light text-sm sm:text-base">
                                 <strong>{board.title}</strong>
                             </p>
-                            <div className="flex space-x-4">
-                                {/* {userRole === "BIDDER" && (
-                                    <Button
-                                        label="Request 'Do it for me'"
-                                        size="sm"
-                                        theme="primary"
-                                        onClick={onDoItForMeClick}
-                                    />
-                                )} */}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -190,7 +206,27 @@ export default function Dashboard() {
                 transition={{ duration: 0.3 }}
             >
                 <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-[90%] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <h2 className="text-xl sm:text-2xl font-bold mb-4">{selectedBillboard?.title}</h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl sm:text-2xl font-bold">{selectedBillboard?.title}</h2>
+
+                        <Button
+                            size="sm"
+                            label="Request 'Consultation'"
+                            theme="primary"
+                            onClick={handleConsultMeClick}
+                        >
+                            {isConsultMeLoading ? (
+                                <div className="flex items-center gap-2">
+                                    <Spinner size="sm" />
+                                    Requesting...
+                                </div>
+                            ) : (
+                                "Request Consultation"
+                            )}
+                        </Button>
+                    </div>
+
+
                     <div className="text-gray-600 mb-4">
                         {selectedBillboard ? formatMessage(selectedBillboard.message) : null}
                     </div>

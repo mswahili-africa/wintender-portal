@@ -16,7 +16,8 @@ import {
     IconLockAccessOff,
     IconHelp,
     IconHelpCircle,
-    IconUserUp
+    IconUserUp,
+    IconAd
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -70,8 +71,8 @@ const allMenus: IRoute[] = [
         label: "Consultation",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/consultation", label: "Consultation", icon: <IconUserUp size={20} strokeWidth={1.5} /> },
-            { path: "/consultation-application", label: "Consult Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+            { path: "/consultation", label: "Billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> },
+            { path: "/consultation-application", label: "Consult Me", icon: <IconUserUp size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -139,7 +140,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards"),
     PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards"),
     BIDDER: () => allMenus
-        .filter(menu => ["Tender", "Finance", "Do it for me", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
+        .filter(menu => ["Tender", "Finance", "Consultation", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -149,6 +150,11 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 ? {
                     ...menu,
                     subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans"), // Exclude Payment Plans sub-menu
+                }
+                : menu.label === "Consultation"
+                ? {
+                    ...menu,
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
                 }
                 : menu
         ),

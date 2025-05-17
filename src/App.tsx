@@ -27,10 +27,9 @@ import ApplicationGroups from "./pages/applications";
 import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 import { UserDataProvider } from "./providers/userDataProvider";
-import Billboards from "./pages/consultation";
 import LoginAttempts from "./pages/login-attempts";
 import Consultation from "./pages/consultation";
-import ConsultationApplication from "./pages/consultation/application";
+import ConsultationApplication from "./pages/consultation/applicatons";
 
 export const queryClient = new QueryClient({});
 

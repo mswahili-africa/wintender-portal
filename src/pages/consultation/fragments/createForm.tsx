@@ -39,7 +39,7 @@ export default function BillboardCreate({ onSuccess, initials }: IProps) {
         onSuccess: (res) => {
             reset();
             setOpen(false);
-            toast.success("Billboard successfully");
+            toast.success("Consultation Billboard successfully");
             onSuccess();
         },
         onError: (error: any) => {
