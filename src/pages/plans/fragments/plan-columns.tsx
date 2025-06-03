@@ -47,24 +47,33 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-        const currentDate = new Date().getTime();
-        const expiryDate = row.expiryDate;
-        const remainingTime = expiryDate - currentDate;
-        const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+      const currentDate = Date.now();
+      const expiryDate = row.expiryDate;
+      const remainingDays = (expiryDate - currentDate) / (1000 * 60 * 60 * 24);
 
-        const displayStatus = remainingDays <= 0 ? 'EXPIRED' : row.status;
+      let displayStatus = row.status;
+      let theme: "success" | "warning" | "secondary" | "danger" = "danger";
 
-        return (
-            <Chip 
-                label={displayStatus} 
-                size="sm" 
-                theme={displayStatus === 'SUCCESS' ? 'success' : 'danger'} 
-                variant="outline" 
-            />
-        );
+      if (remainingDays <= 0) {
+        displayStatus = "EXPIRED";
+      } else if (remainingDays <= 3) {
+        theme = "warning";
+      } else if (row.status === "ACTIVE") {
+        theme = "success";
+      }else{
+        theme = "secondary";
+      }
+
+      return (
+        <Chip
+          label={displayStatus}
+          size="sm"
+          theme={theme}
+          variant="outline"
+        />
+      );
     }
-},
-
+  },
   {
     name: "createdAt",
     label: "createdAt",

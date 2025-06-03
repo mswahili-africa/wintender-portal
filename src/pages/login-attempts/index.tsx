@@ -25,7 +25,7 @@ export default function() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Login Failed Attempts</h2>
+                <h2 className="text-lg font-bold">Failed Login Attempts</h2>
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
