@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationColumns";
 import { IConsultationApplication } from "@/types/forms";
-import { IconCheckbox, IconEdit, IconFile, IconTrash } from "@tabler/icons-react";
+import { IconCheckbox, IconPlus, IconTrash } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { deleteConsultMe, updateConsultMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
@@ -16,6 +16,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
 import Button from "@/components/button/Button";
+import WalletPaymentModal from "../tenders/fragments/WalletPaymentModel";
+import { USSDPushWalletRequest } from "@/services/payments";
 
 export default function ConsultationApplication() {
     const [selectedApplication, setSelectedApplication] = useState<IConsultationApplication | null>(null);
@@ -29,6 +31,28 @@ export default function ConsultationApplication() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+
+    // JCM wallet payment
+    const [paymentDetails, setPaymentDetails] = useState({
+        amount: 0,
+        phoneNumber: "",
+        paymentReason: "WALLET_IN"
+    });
+    const [open, setOpen] = useState(false);
+
+    // handle payment submission
+    const paymentMutation = useMutation({
+        mutationFn: (paymentData: { amount: number, phoneNumber: string, paymentReason: string }) => USSDPushWalletRequest(paymentData),
+        onSuccess: (data) => {
+             // Start the enquiry API calls
+        },
+        onError: (error) => {
+            toast.error("Payment failed: " + error);
+        }
+    });
+
+    const handleClose = () => setOpen(false);
+
     const navigate = useNavigate();
 
     const { application, isLoading, refetch } = useConsultMeApplication({
@@ -170,8 +194,16 @@ export default function ConsultationApplication() {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-10">
+            <div className="flex flex-row justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Consultation Application</h2>
+                <Button
+                    type="button"
+                    label="Top Up"
+                    icon={<IconPlus size={18} />}
+                    theme="primary"
+                    size="md"
+                    onClick={() => setOpen(true)}
+                />
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -230,77 +262,81 @@ export default function ConsultationApplication() {
             )}
 
             {/* Staus Modal */}
-                            {isStatusModalOpen && selectedApplication && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
-                                        <h3 className="font-bold text-lg mb-4">Changa Status</h3>
-                                        <div className="mb-2">
-                                            <label htmlFor="status" className="block mb-2">
-                                                Status
-                                            </label>
-            
-                                            <select
-                                                className={`${errors.status?.type === "required"
-                                                    ? "input-error"
-                                                    : "input-normal"
-                                                    }`}
-                                                {...register("status", { required: true })}
-                                            >
-                                                <option value="ON_PROGRESS">ON PROGRESS</option>
-                                                <option value="COMPLETED">COMPLETED</option>
-                                                <option value="CANCELED">CANCELED</option>
-                                            </select>
-                                            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                                {errors.status?.message?.toString()}
-                                            </p>
-                                        </div>
-                                        <div className="mb-2">
-                                            <label htmlFor="comments" className="block mb-2">
-                                                Comments
-                                            </label>
-            
-                                            <textarea
-                                                rows={3}
-                                                className={`${errors.comment?.type === "required"
-                                                    ? "input-error"
-                                                    : "input-normal"
-                                                    }`}
-                                                {...register("comment", { required: true })}
-                                            ></textarea>
-                                            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                                {errors.comment?.message?.toString()}
-                                            </p>
-                                        </div>
-            
-                                        <div className="flex justify-end space-x-2">
-                                            <Button label="Cancel" theme="danger" onClick={() => setIsStatusModalOpen(false)} />
-                                            <Button label="Save" theme="primary" onClick={handlStatusUpdate} />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-            
-                            {/* Edit Modal */}
-                            {isEditModalOpen && selectedApplication && (
-                                <div className="fixed inset-0 flex items-center justify-center z-70">  {/* Add overlay for better visibility */}
-                                    <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
-                                        <h3 className="font-bold text-lg mb-4">Edit Consultation Fee</h3>
-                                        <div className="mb-4">
-                                            <label className="block mb-2 text-sm text-gray-600">Principal Amount</label>
-                                            <input
-                                                type="number"
-                                                value={editAmount ?? ""}
-                                                onChange={(e) => setEditAmount(Number(e.target.value))}
-                                                className="input-normal w-full"
-                                            />
-                                        </div>
-                                        <div className="flex justify-end space-x-2">
-                                            <Button label="Cancel" theme="danger" onClick={() => setIsEditModalOpen(false)} />
-                                            <Button label="Save" theme="primary" onClick={handleUpdate} />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+            {isStatusModalOpen && selectedApplication && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
+                        <h3 className="font-bold text-lg mb-4">Changa Status</h3>
+                        <div className="mb-2">
+                            <label htmlFor="status" className="block mb-2">
+                                Status
+                            </label>
+
+                            <select
+                                className={`${errors.status?.type === "required"
+                                    ? "input-error"
+                                    : "input-normal"
+                                    }`}
+                                {...register("status", { required: true })}
+                            >
+                                <option value="ON_PROGRESS">ON PROGRESS</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="CANCELED">CANCELED</option>
+                            </select>
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.status?.message?.toString()}
+                            </p>
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor="comments" className="block mb-2">
+                                Comments
+                            </label>
+
+                            <textarea
+                                rows={3}
+                                className={`${errors.comment?.type === "required"
+                                    ? "input-error"
+                                    : "input-normal"
+                                    }`}
+                                {...register("comment", { required: true })}
+                            ></textarea>
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.comment?.message?.toString()}
+                            </p>
+                        </div>
+
+                        <div className="flex justify-end space-x-2">
+                            <Button label="Cancel" theme="danger" onClick={() => setIsStatusModalOpen(false)} />
+                            <Button label="Save" theme="primary" onClick={handlStatusUpdate} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Modal */}
+            {isEditModalOpen && selectedApplication && (
+                <div className="fixed inset-0 flex items-center justify-center z-70">  {/* Add overlay for better visibility */}
+                    <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
+                        <h3 className="font-bold text-lg mb-4">Edit Consultation Fee</h3>
+                        <div className="mb-4">
+                            <label className="block mb-2 text-sm text-gray-600">Principal Amount</label>
+                            <input
+                                type="number"
+                                value={editAmount ?? ""}
+                                onChange={(e) => setEditAmount(Number(e.target.value))}
+                                className="input-normal w-full"
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                            <Button label="Cancel" theme="danger" onClick={() => setIsEditModalOpen(false)} />
+                            <Button label="Save" theme="primary" onClick={handleUpdate} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+            {/* JCM wallet top up modal */}
+            <WalletPaymentModal isOpen={open} paymentDetails={paymentDetails} setPaymentDetails={setPaymentDetails} onClose={handleClose} onSubmit={() => paymentMutation.mutate(paymentDetails)} children={undefined} />
         </div>
     );
 }

@@ -2,18 +2,26 @@ import { Menu } from "@headlessui/react";
 import {
     IconBellFilled,
     IconMenu2,
+    IconWallet,
     IconPower,
     IconUserCircle
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
+import { useQuery } from "@tanstack/react-query";
+import { tokenInfo } from "@/services/auth";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
-    
+    const user = useUserDataContext();
+
+    const walletBalance = user?.userData?.walletAmount;
+
     return (
         <div className="lg:flex lg:justify-between lg:-mt-10 lg:mb-20 lg:items-center hidden">
+
             <div>
                 <div className="lg:flex lg:gap-5">
                     <div>
@@ -23,8 +31,17 @@ const Header = () => {
                     </div>
                 </div>
             </div>
-            <div>
-                <div className="lg:flex items-center gap-4">
+            <div className="flex items-center gap-4 min-w-32">
+                <div className="lg:flex items-center gap-4 w-full">
+                    {
+                        auth.user &&
+                        <div className="flex justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
+                            <div className="flex justify-center items-center w-11 h-11 rounded-md">
+                                <IconWallet className="text-slate-500" />
+                            </div>
+                            <p className="text-center text-lg uppercase w-10 text-slate-500 font-medium">{walletBalance ? walletBalance : 0}</p>TZS
+                        </div>
+                    }
                     <div className="p-1.5 hover:bg-slate-100 rounded-md">
                         <IconBellFilled className="h-6 w-6 text-slate-600" />
                     </div>
@@ -34,7 +51,7 @@ const Header = () => {
                             auth.user &&
                             <Menu.Button className="flex justify-center items-center h-10 w-10 bg-green-50 rounded-full focus:outline-none ring-2 ring-green-600">
                                 <div className="text-center text-lg uppercase text-slate-500 font-medium">
-                                {auth.user.displayName[0]}
+                                    {auth.user.displayName?.charAt(0)}
                                 </div>
                             </Menu.Button>
                         }
@@ -58,16 +75,16 @@ const Header = () => {
 
                                 <div className="p-2 text-xs md:text-sm text-slate-600">
                                     <Menu.Item>
-                                        <Link 
-                                            to={`/users/${auth.user.id}`} 
+                                        <Link
+                                            to={`/users/${auth.user.id}`}
                                             className="flex items-center border border-transparent hover:border-slate-200 hover:bg-slate-50 rounded-md font-medium py-2 px-3">
                                             <IconUserCircle className="h-5 w-5 text-slate-600 mr-3" />
                                             <span>Profile</span>
                                         </Link>
                                     </Menu.Item>
                                     <Menu.Item>
-                                        <Link 
-                                            to="/" 
+                                        <Link
+                                            to="/"
                                             className="flex items-center border border-transparent hover:border-slate-200 hover:bg-slate-50 rounded-md font-medium py-2 px-3"
                                             onClick={() => auth.logout()}>
                                             <IconPower className="h-5 w-5 text-slate-600 mr-3" />

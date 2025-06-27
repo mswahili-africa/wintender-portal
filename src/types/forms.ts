@@ -53,6 +53,7 @@ export interface IUserData {
     avatar: string;
     status: string;
     subscription: number;
+    walletAmount:number;
     account: string;
     role: string;
 }
@@ -90,6 +91,12 @@ export interface IUSSDPushRequest {
     planId: string
     phoneNumber:       string
     period: number
+    paymentReason: string
+}
+
+export interface IUSSDPushWalletRequest {
+    amount: number
+    phoneNumber: string
     paymentReason: string
 }
 
