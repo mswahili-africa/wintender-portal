@@ -93,6 +93,12 @@ export interface IUSSDPushRequest {
     paymentReason: string
 }
 
+export interface IUSSDPushWalletRequest {
+    amount: number
+    phoneNumber: string
+    paymentReason: string
+}
+
 export interface IPlan {
     companyId:       string
     plan: string

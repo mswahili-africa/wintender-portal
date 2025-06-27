@@ -51,7 +51,7 @@ const Header = () => {
                             auth.user &&
                             <Menu.Button className="flex justify-center items-center h-10 w-10 bg-green-50 rounded-full focus:outline-none ring-2 ring-green-600">
                                 <div className="text-center text-lg uppercase text-slate-500 font-medium">
-                                    {walletBalance ? walletBalance : 0}
+                                    {auth.user.displayName?.charAt(0)}
                                 </div>
                             </Menu.Button>
                         }

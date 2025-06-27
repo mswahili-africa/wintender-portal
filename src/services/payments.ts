@@ -1,4 +1,4 @@
-import {  IPaymentForm, IUSSDPushRequest } from "@/types/forms";
+import {  IPaymentForm, IUSSDPushRequest, IUSSDPushWalletRequest } from "@/types/forms";
 import http from "../http";
 import { IQueryParams, IlistResponse } from "@/types";
 
@@ -25,6 +25,13 @@ export async function createPayment(payload: IPaymentForm) {
 }
 
 export async function USSDPushRequest(payload: IUSSDPushRequest) {
+    const response = await http.post<any>("/finance/payment/ussd/request", payload)
+
+    return response.data
+}
+
+// JCM wallet top up request
+export async function USSDPushWalletRequest(payload: IUSSDPushWalletRequest) {
     const response = await http.post<any>("/finance/payment/ussd/request", payload)
 
     return response.data
