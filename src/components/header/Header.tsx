@@ -31,15 +31,15 @@ const Header = () => {
                     </div>
                 </div>
             </div>
-            <div>
-                <div className="lg:flex items-center gap-4">
+            <div className="flex items-center gap-4 min-w-32">
+                <div className="lg:flex items-center gap-4 w-full">
                     {
                         auth.user &&
-                        <div className="flex justify-center items-center h-10 w-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
-                            <div className="flex justify-center items-center bg-slate-50 hover:bg-slate-100 w-11 h-11 rounded-md">
+                        <div className="flex justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
+                            <div className="flex justify-center items-center w-11 h-11 rounded-md">
                                 <IconWallet className="text-slate-500" />
                             </div>
-                            <p className="text-center text-lg uppercase text-slate-500 font-medium">{walletBalance ? walletBalance : 0}</p>TZS
+                            <p className="text-center text-lg uppercase w-10 text-slate-500 font-medium">{walletBalance ? walletBalance : 0}</p>TZS
                         </div>
                     }
                     <div className="p-1.5 hover:bg-slate-100 rounded-md">
