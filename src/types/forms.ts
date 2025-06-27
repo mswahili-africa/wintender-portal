@@ -24,6 +24,7 @@ export interface IRegisterForm {
     phoneNumber:    string;
     role:   string;
     nationalId:   string;
+    procurementEntityId: string;
 }
 
 export interface IBidderRegisterForm {

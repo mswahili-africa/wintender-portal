@@ -30,7 +30,7 @@ export default function CategoryList() {
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b border-slate-200">
+                <div className="flex justify-between items-center p-4 border-b border-slate-200">
                     <input
                         type="text"
                         placeholder="Search"

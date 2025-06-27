@@ -1,6 +1,5 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
-import useEntities from "@/hooks/useEntities";
 import { createCategory } from "@/services/tenders";
 import { ITenderCategory } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -45,12 +44,6 @@ export default function CategoryCreate({ onSuccess, initials }: IProps) {
         onError: (error: any) => {
             toast.error("Failed to upload Category");
         },
-    });
-
-    useEntities({
-        page: 0,
-        search: "",
-        filter: {},
     });
 
     useEffect(() => {

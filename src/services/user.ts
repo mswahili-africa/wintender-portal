@@ -18,6 +18,14 @@ export async function getBidders(params: IQueryParams) {
     return response.data
 }
 
+export async function getPEUsers(params: IQueryParams) {
+    const response = await http.get<IlistResponse<ICompany>>("/users/user/list-procurement-entities", {
+        params: params
+    })
+
+    return response.data
+}
+
 export async function getUserById(id: string) {
     const response = await http.get<any>(`/users/user/view/${id}`)
 

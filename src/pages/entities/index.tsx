@@ -1,11 +1,11 @@
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useEntity from "@/hooks/useEntities";
 import { IEntity } from "@/types";
 import { IconBallpen } from "@tabler/icons-react";
 import { useState } from "react";
 import columns from "./fragments/entityColumns";
 import VendorForm from "./fragments/entityForm";
+import { useEntities } from "@/hooks/useEntities";
 
 export default function () {
     const [page, setPage] = useState<number>(0);
@@ -13,7 +13,7 @@ export default function () {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>();
     const [update, setUpdate] = useState<IEntity>();
-    const { entities, isLoading, refetch } = useEntity({
+    const { entities, isLoading, refetch } = useEntities({
         page: page,
         search: search,
         sort: sort,

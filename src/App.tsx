@@ -30,6 +30,7 @@ import { UserDataProvider } from "./providers/userDataProvider";
 import LoginAttempts from "./pages/login-attempts";
 import Consultation from "./pages/consultation";
 import ConsultationApplication from "./pages/consultation/applicatons";
+import ProcurementEntities from "./pages/entities/peUsers";
 
 export const queryClient = new QueryClient({});
 
@@ -67,6 +68,7 @@ function App() {
                                 <Route path="consultation-application" element={<ConsultationApplication />} />
                                 <Route path="users" element={<Users />} />
                                 <Route path="bidders" element={<Bidders />} />
+                                <Route path="entities-users" element={<ProcurementEntities />} />
                                 <Route path="users/:userId" element={<UserDetail />} />
                                 <Route path="roles" element={<Roles />} />
                                 <Route path="publisher-perfomance" element={<PublisherPerformance />} />

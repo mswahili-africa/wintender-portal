@@ -1,6 +1,6 @@
 import { authStore } from "@/store/auth";
 import { useSnapshot } from "valtio";
-import ChangePasswordForm from "./fragments/change-password-form";
+import ChangePasswordForm from "./fragments/changePasswordForm";
 import AuthLayout from "@/layouts/auth_layout";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";

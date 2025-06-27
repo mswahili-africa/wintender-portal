@@ -2,19 +2,20 @@ import { IconMessage, IconSearch } from "@tabler/icons-react";
 import { useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useBidders from "@/hooks/useBidders";
-import columns from "./fragments/bidder-columns";
-import { ICompany } from "@/types";
+import columns from "./fragments/columns";
+import { ICompany, IUser } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus } from "@/services/user";
 import { IMessage } from "@/types/forms";
-import SMSModal from "./fragments/sms-model";
+import SMSModal from "./fragments/smsModel";
 import { sendMessageSingle } from "@/services/commons";
 import { resetUser } from "@/services/auth";
-import BidderProfileModal from "./fragments/bidderProfileModal";
+import BidderProfileModal from "./fragments/peModal";
+import { usePEUsers } from "@/hooks/useEntities";
+import UserForm from "./fragments/userForm";
 
-export default function Bidders() {
+export default function ProcurementEntities() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
@@ -23,9 +24,10 @@ export default function Bidders() {
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [userInfo, setUserInfo] = useState<ICompany | any>();
     const [message, setMessage] = useState<string>("");
-    const [isSending, setIsSending] = useState<boolean>(false); // Loading state
+    const [isSending, setIsSending] = useState<boolean>(false);
+    const [update, setUpdate] = useState<IUser>();
 
-    const { bidders, isLoading, refetch } = useBidders({
+    const { pes, isLoading, refetch } = usePEUsers({
         page: page,
         search: search,
         sort: sort,
@@ -50,7 +52,7 @@ export default function Bidders() {
     const resetMutation = useMutation({
         mutationFn: (userId: string) => resetUser(userId),
         onSuccess: () => {
-            toast.success("Resetted successfully");
+            toast.success("Reset successfully");
             refetch();
         },
         onError: () => {
@@ -90,17 +92,18 @@ export default function Bidders() {
     };
 
     return (
+
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Bidders</h2>
+                <h2 className="text-lg font-bold">PE Users</h2>
 
-                <button
-                    className="bg-green-600 text-white py-2 px-3 rounded hover:bg-blue-500 flex items-center"
-                    onClick={openBulkSendModal}
-                >
-                    <IconMessage size={20} className="mr-2" /> {/* Adjust the size as needed */}
-                    Send Bulk
-                </button>
+                <UserForm
+                    onSuccess={() => {
+                        setUpdate(undefined);
+                        refetch();
+                    }}
+                    initials={update}
+                />
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -110,7 +113,15 @@ export default function Bidders() {
                         placeholder="Search"
                         className="input-normal py-2 w-1/2 lg:w-1/4"
                         onChange={(e) => setSearch(e.target.value)} />
+                    <button
+                        className="bg-green-600 text-white py-2 px-3 rounded hover:bg-blue-500 flex items-center"
+                        onClick={openBulkSendModal}
+                    >
+                        <IconMessage size={20} className="mr-2" /> {/* Adjust the size as needed */}
+                        Send Bulk
+                    </button>
                 </div>
+
 
                 {userInfo && (
                     <BidderProfileModal
@@ -122,7 +133,7 @@ export default function Bidders() {
 
                 <Table
                     columns={columns}
-                    data={bidders ? bidders.content : []}
+                    data={pes ? pes.content : []}
                     isLoading={isLoading}
                     hasSelection={false}
                     hasActions={true}
@@ -145,11 +156,11 @@ export default function Bidders() {
 
                 <div className="flex justify-between items-center p-4 lg:px-8">
                     <div></div>
-                    {bidders?.pageable && (
+                    {pes?.pageable && (
                         <Pagination
                             currentPage={page}
                             setCurrentPage={setPage}
-                            pageCount={bidders.totalPages}
+                            pageCount={pes.totalPages}
                         />
                     )}
                 </div>

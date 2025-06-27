@@ -17,7 +17,8 @@ import {
     IconHelp,
     IconHelpCircle,
     IconUserUp,
-    IconAd
+    IconAd,
+    IconMan
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -76,14 +77,6 @@ const allMenus: IRoute[] = [
         ],
     },
     {
-        path: "/entities",
-        label: "Entities",
-        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
-        subMenu: [
-            { path: "/entities", label: "Procurement Entities", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
-        ],
-    },
-    {
         path: "/finance",
         label: "Finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
@@ -93,11 +86,13 @@ const allMenus: IRoute[] = [
         ],
     },
     {
-        path: "/bidders",
-        label: "Bidders",
-        icon: <IconGlobe size={20} strokeWidth={1.5} />,
+        path: "/entities",
+        label: "Entities",
+        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+            { path: "/entities", label: "Procurement Entities", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
+            { path: "/entities-users", label: "PE's", icon: <IconMan size={20} strokeWidth={1.5} /> },
+            { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -110,20 +105,20 @@ const allMenus: IRoute[] = [
         ],
     },
     {
+        path: "/compliance",
+        label: "Compliance",
+        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
+        subMenu: [
+            { path: "/company-documents", label: "Documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+        ],
+    },
+    {
         path: "/reports/login-attempt",
         label: "Reports",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
             { path: "/login-attempt", label: "Login Attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> }
-        ],
-    },
-    {
-        path: "/compliance",
-        label: "Compliance",
-        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
-        subMenu: [
-            { path: "/company-documents", label: "Documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     }
 ];
