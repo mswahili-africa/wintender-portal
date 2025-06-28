@@ -5,6 +5,8 @@ export default function WalletPaymentModal({
     paymentDetails,
     setPaymentDetails,
     isOpen,
+    isLoading,
+    setIsLoading,
     onClose,
     onSubmit,
     children, // Accept children here to allow passing loader or success message
@@ -12,11 +14,12 @@ export default function WalletPaymentModal({
     paymentDetails: { phoneNumber: string; amount: number };
     setPaymentDetails: React.Dispatch<React.SetStateAction<{  amount: number; phoneNumber: string; paymentReason: string }>>;
     isOpen: boolean;
+    isLoading: boolean;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     onClose: () => void;
     onSubmit: () => void;
     children: React.ReactNode; // Accept children for dynamic content like loader or success message
 }) {
-    const [isLoading, setIsLoading] = useState(false);  // To track loading state
     const [showMessage, setShowMessage] = useState(false); // To show the success message
     const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
     const [warningMessage, setWarningMessage] = useState(""); // To display warning message
@@ -36,7 +39,7 @@ export default function WalletPaymentModal({
         }
         if (!paymentDetails.amount) {
             setWarningMessage("Amount is required!"); // Show warning message
-            return; // Prevent submission if phone number is empty
+            return; // Prevent submission if AMOUNT is empty
         }
 
         try {
@@ -79,8 +82,8 @@ export default function WalletPaymentModal({
                     <label className="block text-sm text-gray-600" htmlFor="period">Amount</label>
                     <input
                         type="number"
-                        id="period"
-                        name="period"
+                        id="amount"
+                        name="amount"
                         pattern="[0-9]*"
                         value={paymentDetails.amount}
                         onChange={handleChange}

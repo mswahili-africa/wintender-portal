@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationColumns";
 import { IConsultationApplication } from "@/types/forms";
-import { IconCheckbox, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconCheckbox, IconTrash, IconCloudDollar  } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { deleteConsultMe, updateConsultMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
@@ -39,18 +39,23 @@ export default function ConsultationApplication() {
         paymentReason: "WALLET_IN"
     });
     const [open, setOpen] = useState(false);
+    const [isWalletLoading, setIsWalletLoading] = useState(false);
 
-    // handle payment submission
+    // JCM handle payment submission
     const paymentMutation = useMutation({
-        mutationFn: (paymentData: { amount: number, phoneNumber: string, paymentReason: string }) => USSDPushWalletRequest(paymentData),
+        mutationFn: (paymentData: { amount: number, phoneNumber: string, paymentReason: string }) => (
+            setIsWalletLoading(true),
+            USSDPushWalletRequest(paymentData)
+        ),
         onSuccess: (data) => {
-             // Start the enquiry API calls
+            toast.success(data.message);
+            setIsWalletLoading(false);
         },
         onError: (error) => {
             toast.error("Payment failed: " + error);
+            throw error;
         }
     });
-
     const handleClose = () => setOpen(false);
 
     const navigate = useNavigate();
@@ -199,7 +204,7 @@ export default function ConsultationApplication() {
                 <Button
                     type="button"
                     label="Top Up"
-                    icon={<IconPlus size={18} />}
+                    icon={<IconCloudDollar  size={18} />}
                     theme="primary"
                     size="md"
                     onClick={() => setOpen(true)}
@@ -336,7 +341,7 @@ export default function ConsultationApplication() {
 
 
             {/* JCM wallet top up modal */}
-            <WalletPaymentModal isOpen={open} paymentDetails={paymentDetails} setPaymentDetails={setPaymentDetails} onClose={handleClose} onSubmit={() => paymentMutation.mutate(paymentDetails)} children={undefined} />
+            <WalletPaymentModal isLoading={isWalletLoading}  setIsLoading={setIsWalletLoading} isOpen={open} paymentDetails={paymentDetails} setPaymentDetails={setPaymentDetails} onClose={handleClose} onSubmit={() => paymentMutation.mutate(paymentDetails)} children={undefined} />
         </div>
     );
 }
