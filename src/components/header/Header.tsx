@@ -34,7 +34,7 @@ const Header = () => {
             <div className="flex items-center gap-4 min-w-32">
                 <div className="lg:flex items-center gap-4 w-full">
                     {
-                        auth.user &&
+                        user.userData?.role === "BIDDER" &&
                         <div className="flex justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
                             <div className="flex justify-center items-center w-11 h-11 rounded-md">
                                 <IconWallet className="text-slate-500" />
