@@ -10,6 +10,9 @@ import { toast } from "react-hot-toast";
 import { mixed, object, string } from "yup";
 import { uploadDocument } from "@/services/entities";
 
+// JCM import document from documents json
+import documents from "../data/documents.json";
+
 interface IProps {
     onSuccess: () => void;
     initials?: ICompanyDocuments;
@@ -93,7 +96,16 @@ export default function DocumentUpload({ onSuccess }: IProps) {
                             {...register("documentType", { required: true })}
                         >
                              <option value="">Select Document Type</option>
-                            <option value="BANK_STATEMENT">BANK STATEMENT</option>
+
+                                {/* JCM pull documents from json */}
+                             {
+                                documents
+                                .sort((a: any, b: any) => a.label.localeCompare(b.label))
+                                .map((document: any, index: number) => (
+                                    <option key={index} value={document.value}>{document.label}</option>
+                                ))
+                             }
+                            {/* <option value="BANK_STATEMENT">BANK STATEMENT</option>
                             <option value="BRELA_ANNUAL_RETURNS">BRELA ANNUAL RETURNS</option>
                             <option value="BRELA_SEARCH">BRELA SEARCH</option>
                             <option value="CATALOG">CATALOG</option>
@@ -120,7 +132,7 @@ export default function DocumentUpload({ onSuccess }: IProps) {
                             <option value="TFDA">TFDA</option>
                             <option value="TIN">TIN</option>
                             <option value="VAT">VAT</option>
-                            <option value="WCF">WCF</option>
+                            <option value="WCF">WCF</option> */}
                         </select>
 
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
