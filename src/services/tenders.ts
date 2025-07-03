@@ -3,6 +3,7 @@ import { IQueryParams, ITenderCategory, IlistResponse } from "@/types";
 import { IAssignBidder, IConsultation, IConsultationApplication } from "@/types/forms";
 
 
+// JCM TENDER
 export async function downloadTenderDocument(id: string) {
     const response = await http.get<any>(`/tenders/tender/download/${id}`, {
         headers: {
@@ -65,7 +66,7 @@ export async function deleteTenders(id: string) {
 
 export async function createCategory(payload: ITenderCategory) {
     const response = await http.post<any>("/tenders/category/register", payload)
-
+    
     return response.data
 }
 
@@ -73,15 +74,10 @@ export async function getCategories(params: {}) {
     const response = await http.get<IlistResponse<any>>("/tenders/category/list", {
         params: params
     })
-
+    
     return response.data
 }
-
-export async function requestDoForMe(id: string) {
-    const response = await http.post<any>(`/applications/do-for-me/request/${id}`);
-
-    return response.data
-}
+// JCM TENDER
 
 export async function assignBidder(payload: IAssignBidder) {
     const response = await http.post<any>(`/applications/do-for-me/assign-bidder`, payload)
@@ -101,6 +97,13 @@ export async function updateStatus(id: string, comment: string, status: string) 
     return response.data;
 }
 
+
+// JCM DO FOR ME
+export async function requestDoForMe(id: string) {
+    const response = await http.post<any>(`/applications/do-for-me/request/${id}`);
+
+    return response.data
+}
 
 export async function getDoForMeGroup(params: {}) {
     const response = await http.get<IlistResponse<any>>("/applications/do-for-me/list/group", {
@@ -123,7 +126,9 @@ export async function deleteDoForMe(id: string) {
 
     return response.data
 }
+// JCM DO FOR ME
 
+// JCM BILLBOARD
 export async function createBillboard(payload: IConsultation) {
     const response = await http.post<any>("/applications/consultation/billboard/create", payload)
     return response.data
@@ -140,7 +145,9 @@ export async function getBillboards() {
 
     return response.data
 }
+// JCM BILLBOARD
 
+// JCM CONSULT ME
 export async function createConsultMe(id: string) {
     const response = await http.post<any>(`/applications/consultation/application/create/${id}`)
     
@@ -166,3 +173,5 @@ export async function updateConsultMe(id: string, comment: string, status: strin
 
     return response.data;
 }
+
+// JCM CONSULT ME

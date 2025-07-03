@@ -123,6 +123,7 @@ const allMenus: IRoute[] = [
     }
 ];
 
+// JCM Assign routes based on user role
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
     MANAGER: () => allMenus.map(menu => menu.label === "Entities"
@@ -159,6 +160,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
 };
 
 
+// JCM Function to get routes based on user role
 export const getRoutesByRole = (role: UserRole): IRoute[] => {
     const getRoutes = visibilityRules[role];
     if (typeof getRoutes === "function") {

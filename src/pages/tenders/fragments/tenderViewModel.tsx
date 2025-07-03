@@ -1,8 +1,9 @@
 import Button from "@/components/button/Button";
 import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
+const BidderTenderApplicationFormModel = lazy(() => import("./bidderTenderApplicationForm"));
 
 interface ModalProps {
     title: string;
@@ -14,15 +15,28 @@ interface ModalProps {
 }
 
 const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoItForMeClick }: ModalProps) => {
+    const user = useUserDataContext();
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
     const [assignBidderModalOpen, setAssignBidderModalOpen] = useState(false);
+
+    // JCM Tender Apply Modal State
+    const [isTenderApplyModalOpen, setIsTenderApplyModalOpen] = useState(false);
+
+    // JCM handle Tender Apply Modal open/Close
+    const handleTenderApplyModal = async () => {
+        setAssignBidderModalOpen(false);
+        new Promise((resolve) => setTimeout(resolve, 500));
+        setIsTenderApplyModalOpen(true);
+    };
+
 
     const handleSuccess = () => {
         console.log("Bidder assignment was successful!");
         // You can handle any additional logic you want when the assignment is successful
         setAssignBidderModalOpen(false); // Close the modal, for example
     };
+
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
@@ -32,17 +46,26 @@ const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoIt
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
                         {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
-                            <Button
-                                label="Assign Bidder"
-                                size="sm"
-                                theme="secondary"
-                                onClick={() => setAssignBidderModalOpen(true)}
-                            />
+                            <div className="flex space-x-4">
+                                <Button
+                                    label="Apply"
+                                    size="sm"
+                                    theme="primary"
+                                    onClick={handleTenderApplyModal}
+                                />
+                                <Button
+                                    label="Assign Bidder"
+                                    size="sm"
+                                    theme="secondary"
+                                    onClick={() => setAssignBidderModalOpen(true)}
+                                />
+                            </div>
                         )}
                         {userRole === "BIDDER" && (
                             isLoading ? (
                                 <Spinner size="sm" />
                             ) : (
+
                                 <Button
                                     label="Request 'Do it for me'"
                                     size="sm"
@@ -70,6 +93,17 @@ const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoIt
                         tenderId={tenderId}
                         onSuccess={handleSuccess}
                     />
+                )}
+
+                {isTenderApplyModalOpen && (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <BidderTenderApplicationFormModel
+                            isOpen={isTenderApplyModalOpen}
+                            onClose={() => setIsTenderApplyModalOpen(false)}
+                            tenderId={tenderId}
+                            onSuccess={handleSuccess}
+                        />
+                    </Suspense>
                 )}
             </div>
         </div>
