@@ -33,18 +33,20 @@ const Header = () => {
             </div>
             <div className="flex items-center gap-4 min-w-32">
                 <div className="lg:flex items-center gap-4 w-full">
-                    {
-                        user.userData?.role === "BIDDER" &&
-                        <div className="flex justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
-                            <div className="flex justify-center items-center w-11 h-11 rounded-md">
-                                <IconWallet className="text-slate-500" />
-                            </div>
-                            <p className="text-center text-lg uppercase w-10 text-slate-500 font-medium">{walletBalance ? walletBalance : 0}</p>TZS
-                        </div>
-                    }
                     <div className="p-1.5 hover:bg-slate-100 rounded-md">
                         <IconBellFilled className="h-6 w-6 text-slate-600" />
                     </div>
+                    {
+                        auth.user &&
+                        <div className="flex justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
+                            <div className="flex justify-center items-center w-9 h-9 rounded-md">
+                                <IconWallet className="text-slate-500" />
+                            </div>
+                            <p className="ml-2 text-center text-md uppercase text-slate-500 font-medium whitespace-nowrap">
+                                {new Intl.NumberFormat().format(walletBalance ?? 0)} TZS
+                            </p>
+                        </div>
+                    }
 
                     <Menu as="div" className="relative inline-block text-left">
                         {
