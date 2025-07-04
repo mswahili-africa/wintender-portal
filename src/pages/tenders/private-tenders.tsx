@@ -10,6 +10,7 @@ import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import TenderCreateForm from "./fragments/tenderCreateForm";
+import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
@@ -252,8 +253,15 @@ export default function PrivateTenders() {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Private Tenders</h2>
-                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
+                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
                     <TenderCreateForm
+                        onSuccess={() => {
+                            refetch();
+                        }}
+                    />
+                )}
+                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
+                    <PETenderCreateForm
                         onSuccess={() => {
                             refetch();
                         }}

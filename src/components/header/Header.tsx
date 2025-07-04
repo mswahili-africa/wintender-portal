@@ -9,8 +9,6 @@ import {
 import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
-import { useQuery } from "@tanstack/react-query";
-import { tokenInfo } from "@/services/auth";
 import { useUserDataContext } from "@/providers/userDataProvider";
 
 const Header = () => {

@@ -56,6 +56,7 @@ export interface IUserData {
     walletAmount:number;
     account: string;
     role: string;
+    company: string;
 }
 
 export interface IMessage {
