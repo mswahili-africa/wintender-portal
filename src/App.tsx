@@ -31,6 +31,7 @@ import LoginAttempts from "./pages/login-attempts";
 import Consultation from "./pages/consultation";
 import ConsultationApplication from "./pages/consultation/applicatons";
 import ProcurementEntities from "./pages/entities/peUsers";
+import { ApplicantsList } from "./pages/tenders/fragments/ApplicantsList";
 
 export const queryClient = new QueryClient({});
 
@@ -62,6 +63,9 @@ function App() {
                                 <Route path="entities" element={<Entities />} />
                                 <Route path="do-it-for-me" element={<ApplicationGroups />} />
                                 <Route path="tenders" element={<TenderList />} />
+
+                                {/* JCM applicants list */}
+                                <Route path="/tenders/:tenderId/applicants" element={<ApplicantsList />} />
                                 <Route path="payments" element={<Payments />} />
                                 <Route path="categories" element={<Categories />} />
                                 <Route path="consultation" element={<Consultation />} />

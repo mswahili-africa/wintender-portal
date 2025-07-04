@@ -232,7 +232,7 @@ export default function PrivateTenders() {
 
     // JCM Applicants List
     const handleApplicantList = (content: ITenders) => {
-        setEditTender(content);
+        navigate(`/tenders/${content.id}/applicants`);
     }
 
     const handleEditModalClose = () => {

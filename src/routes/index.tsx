@@ -64,7 +64,10 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/tenders", label: "Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
             { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
-            { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+            { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
+
+            // JCM added applicants list route
+            { path: "/tenders/:tenderId/applicants", label: "Applicants", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
         ],
     },
     {
