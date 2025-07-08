@@ -200,7 +200,7 @@ export const Table: React.FC<any> = ({actionSlot, expandableSlot, columns, data=
                                 <tr className="bg-white border-b border-slate-200 animate-pulse" key={uuidv4()}>
                                     {
                                         [...Array(columns.length + 2)].map(() =>
-                                            <td className="p-4">
+                                            <td key={uuidv4()} className="p-4">
                                                 <div className="w-full h-5 bg-slate-100 rounded"></div>
                                             </td>
                                         )
@@ -216,7 +216,7 @@ export const Table: React.FC<any> = ({actionSlot, expandableSlot, columns, data=
                         <tbody className="text-nile-green">
                             {
                                 data.map((content: Record<string, any>, rowIndex) =>
-                                    <Fragment>
+                                    <Fragment key={uuidv4()}>
                                         <tr 
                                             className="bg-white border-b border-slate-200" 
                                             key={uuidv4()}>
