@@ -42,7 +42,7 @@ const ApplicantsColumns: IColumn[] = [
           theme = "danger"; // Fallback for unknown statuses
       }
 
-      return <Chip label={row.readStatus} size="sm" theme={theme} variant="outline" />;
+      return <Chip label={row.status} size="sm" theme={theme} variant="outline" />;
     },
   },
   {

@@ -1,28 +1,31 @@
 import { useState } from "react";
 import Button from "@/components/button/Button"; // Custom Button Component
+import { USSDPushWalletRequest } from "@/services/payments";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import Loader from "@/components/spinners/Loader";
 
 export default function WalletPaymentModal({
-    paymentDetails,
-    setPaymentDetails,
+    // paymentDetails,
+    // setPaymentDetails,
     isOpen,
     isLoading,
-    setIsLoading,
     onClose,
-    onSubmit,
     children, // Accept children here to allow passing loader or success message
 }: {
-    paymentDetails: { phoneNumber: string; amount: number };
-    setPaymentDetails: React.Dispatch<React.SetStateAction<{  amount: number; phoneNumber: string; paymentReason: string }>>;
+    // paymentDetails: { phoneNumber: string; amount: number };
+    // setPaymentDetails: React.Dispatch<React.SetStateAction<{  amount: number; phoneNumber: string; paymentReason: string }>>;
     isOpen: boolean;
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     onClose: () => void;
-    onSubmit: () => void;
     children: React.ReactNode; // Accept children for dynamic content like loader or success message
 }) {
     const [showMessage, setShowMessage] = useState(false); // To show the success message
     const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
     const [warningMessage, setWarningMessage] = useState(""); // To display warning message
+    const [paymentDetails, setPaymentDetails] = useState({ phoneNumber: "", amount: 0 });
+    const [isWalletLoading, setIsWalletLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -45,17 +48,40 @@ export default function WalletPaymentModal({
         try {
             // Trigger the payment submission (API call)
             onSubmit();
-            setIsLoading(true); // Start loading
             setShowMessage(true); // Hide the success message
             setIsPayButtonDisabled(true);
             setWarningMessage("");
         } catch (error) {
-            setIsLoading(false);
             setShowMessage(false);
             setIsPayButtonDisabled(false);
             console.error("Error during payment submission:", error);
         }
     };
+
+    // jcm payment
+    const paymentMutation = useMutation({
+            mutationFn: (paymentData: { amount: number, phoneNumber: string, paymentReason: string }) => (
+                setIsWalletLoading(true),
+                USSDPushWalletRequest(paymentData)
+            ),
+            onSuccess: (data) => {
+                toast.success(data.message);
+                setIsWalletLoading(false);
+            },
+            onError: (error) => {
+                toast.error("Payment failed: " + error);
+                throw error;
+            }
+        });
+        const payload = {
+            amount: paymentDetails.amount,
+            phoneNumber: paymentDetails.phoneNumber,
+            paymentReason: "WALLET_IN"
+        }
+
+        const onSubmit=() => {
+            paymentMutation.mutate(payload)
+        }
 
     return (
         <div className={`${isOpen ? "block" : "hidden"} fixed inset-0 bg-black bg-opacity-50 flex justify-center h-full items-center z-50`}>
@@ -98,14 +124,14 @@ export default function WalletPaymentModal({
                 </div>
 
                 {/* Success Message */}
-                {isLoading &&  (
+                {isWalletLoading &&  (
                     <div className="mt-4 text-center text-green-600">
-                        <span>Processing...</span>
+                        <Loader />
                     </div>
                 )}
 
                 {/* Submit and Cancel buttons */}
-                {!isLoading && (
+                {!isWalletLoading && (
                     <div className="mt-10 flex justify-end space-x-2">
                         <Button label="Cancel" theme="danger" onClick={onClose} />
                         <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={isPayButtonDisabled} />

@@ -10,10 +10,13 @@ import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import WalletPaymentModal from "@/pages/tenders/fragments/WalletPaymentModel";
+import { SetStateAction, useState } from "react";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
     const user = useUserDataContext();
+    const [isOpen,setIsOpen]=useState(false);
 
     const walletBalance = user?.userData?.walletAmount;
 
@@ -36,7 +39,7 @@ const Header = () => {
                     </div>
                     {
                         auth.user &&
-                        <div className="flex justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
+                        <div onClick={()=>setIsOpen(true)}  className="flex cursor-pointer justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
                             <div className="flex justify-center items-center w-9 h-9 rounded-md">
                                 <IconWallet className="text-slate-500" />
                             </div>
@@ -97,6 +100,10 @@ const Header = () => {
                     </Menu>
                 </div>
             </div>
+            <WalletPaymentModal  children={undefined} isOpen={isOpen}
+            onClose={() => setIsOpen(false)} isLoading={false} setIsLoading={function (value: SetStateAction<boolean>): void {
+                throw new Error("Function not implemented.");
+            } }/>
         </div>
     );
 };

@@ -341,7 +341,7 @@ export default function ConsultationApplication() {
 
 
             {/* JCM wallet top up modal */}
-            <WalletPaymentModal isLoading={isWalletLoading}  setIsLoading={setIsWalletLoading} isOpen={open} paymentDetails={paymentDetails} setPaymentDetails={setPaymentDetails} onClose={handleClose} onSubmit={() => paymentMutation.mutate(paymentDetails)} children={undefined} />
+            <WalletPaymentModal isLoading={isWalletLoading}  setIsLoading={setIsWalletLoading} isOpen={open} onClose={handleClose}  children={undefined} />
         </div>
     );
 }
