@@ -21,6 +21,7 @@ export enum RequirementStage {
     TECHNICAL = "TECHNICAL",
     COMMERCIAL = "COMMERCIAL",
     CONSENT = "CONSENT",
+    FINANCIAL = "FINANCIAL",
 }
 
 export interface RequirementItem {
@@ -50,6 +51,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         [RequirementStage.PRELIMINARY]: [],
         [RequirementStage.TECHNICAL]: [],
         [RequirementStage.COMMERCIAL]: [],
+        [RequirementStage.FINANCIAL]: [],
         [RequirementStage.CONSENT]: [],
     });
 
@@ -58,6 +60,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         RequirementStage.PRELIMINARY,
         RequirementStage.TECHNICAL,
         RequirementStage.COMMERCIAL,
+        RequirementStage.FINANCIAL,
         RequirementStage.CONSENT,
     ];
 
@@ -204,6 +207,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 [RequirementStage.PRELIMINARY]: [],
                 [RequirementStage.TECHNICAL]: [],
                 [RequirementStage.COMMERCIAL]: [],
+                [RequirementStage.FINANCIAL]: [],
                 [RequirementStage.CONSENT]: [],
             });
         },

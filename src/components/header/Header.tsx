@@ -16,9 +16,10 @@ import { SetStateAction, useState } from "react";
 const Header = () => {
     const auth = useSnapshot(authStore);
     const user = useUserDataContext();
-    const [isOpen,setIsOpen]=useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const walletBalance = user?.userData?.walletAmount;
+    const subscription = user?.userData?.subscription;
 
     return (
         <div className="lg:flex lg:justify-between lg:-mt-10 lg:mb-20 lg:items-center hidden">
@@ -34,12 +35,35 @@ const Header = () => {
             </div>
             <div className="flex items-center gap-4 min-w-32">
                 <div className="lg:flex items-center gap-4 w-full">
+                    {typeof subscription === 'number' && subscription > 0 && (() => {
+                        const today = new Date();
+                        const expiryDate = new Date(today);
+                        expiryDate.setDate(today.getDate() + subscription);
+
+                        const formattedDate = expiryDate.toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                        });
+
+                        return (
+                            <div title={`Your Subscription will Expires on: ${formattedDate}`} className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
+                                    {subscription} {subscription === 1 ? 'day' : 'days'}
+                                </span>
+                            </div>
+                        );
+                    })()}
                     <div className="p-1.5 hover:bg-slate-100 rounded-md">
                         <IconBellFilled className="h-6 w-6 text-slate-600" />
                     </div>
+
                     {
                         auth.user &&
-                        <div onClick={()=>setIsOpen(true)}  className="flex cursor-pointer justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
+                        <div onClick={() => setIsOpen(true)} className="flex cursor-pointer justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
                             <div className="flex justify-center items-center w-9 h-9 rounded-md">
                                 <IconWallet className="text-slate-500" />
                             </div>
@@ -100,10 +124,10 @@ const Header = () => {
                     </Menu>
                 </div>
             </div>
-            <WalletPaymentModal  children={undefined} isOpen={isOpen}
-            onClose={() => setIsOpen(false)} isLoading={false} setIsLoading={function (value: SetStateAction<boolean>): void {
-                throw new Error("Function not implemented.");
-            } }/>
+            <WalletPaymentModal children={undefined} isOpen={isOpen}
+                onClose={() => setIsOpen(false)} isLoading={false} setIsLoading={function (value: SetStateAction<boolean>): void {
+                    throw new Error("Function not implemented.");
+                }} />
         </div>
     );
 };
