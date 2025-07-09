@@ -441,7 +441,9 @@ export default function PrivateTenders() {
             </div>
 
             {selectedTender && (
+
                 <TenderViewModal
+                    selfApply={selectedTender.selfApply}
                     title={selectedTender.tenderNumber}
                     tenderId={selectedTender.id}
                     onClose={() => setSelectedTender(null)}
@@ -492,7 +494,7 @@ export default function PrivateTenders() {
                                 <><div className="flex items-center">
                                     <strong className="w-50 text-gray-600">Consultation Fee:</strong>
                                     <p className="flex-1">
-                                            TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
+                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
                                     </p>
                                 </div></>
 

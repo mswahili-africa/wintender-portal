@@ -1,11 +1,12 @@
 import Button from "@/components/button/Button";
 import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { lazy, Suspense, useState } from "react";
+import { Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
-const BidderTenderApplicationFormModel = lazy(() => import("./bidderTenderApplicationForm"));
+import PETenderApplicationWizardModal from "./PETenderApplicationWizardModal";
 
 interface ModalProps {
+    selfApply: boolean;
     title: string;
     tenderId: string;
     onClose: () => void;
@@ -14,11 +15,12 @@ interface ModalProps {
     onDoItForMeClick: () => void;
 }
 
-const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoItForMeClick }: ModalProps) => {
+const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, isLoading, onDoItForMeClick }: ModalProps) => {
     const user = useUserDataContext();
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
     const [assignBidderModalOpen, setAssignBidderModalOpen] = useState(false);
+
 
     // JCM Tender Apply Modal State
     const [isTenderApplyModalOpen, setIsTenderApplyModalOpen] = useState(false);
@@ -48,12 +50,6 @@ const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoIt
                         {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
                             <div className="flex space-x-4">
                                 <Button
-                                    label="Apply"
-                                    size="sm"
-                                    theme="primary"
-                                    onClick={handleTenderApplyModal}
-                                />
-                                <Button
                                     label="Assign Bidder"
                                     size="sm"
                                     theme="secondary"
@@ -65,13 +61,23 @@ const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoIt
                             isLoading ? (
                                 <Spinner size="sm" />
                             ) : (
+                                <div className="flex space-x-4">
+                                    {selfApply && (
+                                        <Button
+                                            label="Apply"
+                                            size="sm"
+                                            theme="primary"
+                                            onClick={handleTenderApplyModal}
+                                        />
+                                    )}
 
-                                <Button
-                                    label="Request 'Do it for me'"
-                                    size="sm"
-                                    theme="primary"
-                                    onClick={onDoItForMeClick}
-                                />
+                                    <Button
+                                        label="Request 'Do it for me'"
+                                        size="sm"
+                                        theme="primary"
+                                        onClick={onDoItForMeClick}
+                                    />
+                                </div>
                             )
                         )}
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
@@ -97,7 +103,7 @@ const TenderViewModal = ({ title, onClose, tenderId, children, isLoading, onDoIt
 
                 {isTenderApplyModalOpen && (
                     <Suspense fallback={<div>Loading...</div>}>
-                        <BidderTenderApplicationFormModel
+                        <PETenderApplicationWizardModal
                             isOpen={isTenderApplyModalOpen}
                             onClose={() => setIsTenderApplyModalOpen(false)}
                             tenderId={tenderId}

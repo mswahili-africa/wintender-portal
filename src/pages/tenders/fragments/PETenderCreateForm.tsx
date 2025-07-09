@@ -5,9 +5,9 @@ import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import { mixed, number, object, string } from "yup";
 import requirementOptions from "@/pages/complience/data/documents.json";
 import Select from "react-select";
@@ -563,6 +563,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         <div className="mt-6 flex justify-between">
                             {currentStep > 0 && (
                                 <Button
+                                    size="md"
                                     type="button"
                                     label="Back"
                                     theme="secondary"
@@ -571,6 +572,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                             )}
                             {currentStep < steps.length - 1 ? (
                                 <Button
+                                    size="md"
                                     type="button"
                                     label="Next"
                                     theme="primary"
@@ -578,6 +580,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                 />
                             ) : (
                                 <Button
+                                    size="md"
                                     type="submit"
                                     label="Upload"
                                     theme="primary"
