@@ -29,14 +29,13 @@
   { "stage":"TECHNICAL", "label": "EFD RECEIPT", "value": "EFD_RECEIPT" },
   { "stage":"TECHNICAL", "label": "STAFFS CVS", "value": "STAFFS_CVS" },
   { "stage":"TECHNICAL", "label": "BID GUARANTEE", "value": "BID GUARANTEE" },
-  { "stage":"TECHNICAL", "label": "BID GUARANTEE", "value": "BID GUARANTEE" },
   { "stage":"TECHNICAL", "label": "FINANCIAL STATEMENT", "value": "FINANCIAL_STATEMENT" },
   { "stage":"TECHNICAL", "label": "HSE POLICY", "value": "HSE_POLICY" },
   { "stage":"TECHNICAL", "label": "INDEMNITY COVER", "value": "INDEMNITY_COVER" },
   { "stage":"TECHNICAL", "label": "MANUFACTURER AUTHORIZATION", "value": "MANUFACTURER_AUTHORIZATION" },
   { "stage":"TECHNICAL", "label": "PROFESSIONAL BOARD CERTIFICATE", "value": "PROFESSIONAL_BOARD_CERTIFICATE" },
   { "stage":"COMMERCIAL", "label": "BANK STATEMENT", "value": "BANK_STATEMENT" },
-  { "stage":"COMMERCIAL", "label": "PRICE SCHEDULE", "value": "PRICE_SCHEDULE" },
-  { "stage":"COMMERCIAL", "label": "COMMERCIAL PROPOSAL", "value": "COMMERCIAL_PROPOSAL" },
+  { "stage":"FINANCIAL", "label": "PRICE SCHEDULE", "value": "PRICE_SCHEDULE" },
+  { "stage":"FINANCIAL", "label": "COMMERCIAL PROPOSAL", "value": "COMMERCIAL_PROPOSAL" },
   { "stage":"CONSENT", "label": "OSHA", "value": "OSHA" }
 ]
