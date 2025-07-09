@@ -71,7 +71,10 @@ export default function WalletPaymentModal({
             onError: (error) => {
                 toast.error("Payment failed: " + error);
                 throw error;
-            }
+            },
+            retry: 3,
+            retryDelay: 5000
+
         });
         const payload = {
             amount: paymentDetails.amount,
