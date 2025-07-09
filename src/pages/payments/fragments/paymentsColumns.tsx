@@ -51,7 +51,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: false,
     element: (value: string) => {
-      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
 
       switch (value) {
         case "SUBSCRIPTION":
@@ -62,6 +62,12 @@ const columns: IColumn[] = [
           break;
         case "PLAN":
           theme = "secondary";
+          break;
+          case "WALLET_OUT":
+          theme = "secondary";
+          break;
+          case "WALLET_IN":
+          theme = "approved";
           break;
         default:
           theme = "warning"; // Fallback for unknown statuses

@@ -144,7 +144,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
     <div className="max-w-max">
       <Button
         type="button"
-        label="Add User"
+        label="PE Admin"
         icon={<IconPlus size={18} />}
         theme="primary"
         size="md"
@@ -153,7 +153,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
 
       <Modal
         size="md"
-        title="Create PE User"
+        title="Create PE Admin"
         isOpen={create}
         onClose={() => {
           setCreate(false);

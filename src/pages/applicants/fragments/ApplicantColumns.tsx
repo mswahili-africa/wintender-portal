@@ -3,8 +3,8 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 // Helper function to convert text to sentence case
 const toSentenceCase = (text: string) => {
-    if (!text) return text;
-    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  if (!text) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
 
 const ApplicantsColumns: IColumn[] = [
@@ -22,7 +22,7 @@ const ApplicantsColumns: IColumn[] = [
     label: "Reference No",
     sortable: false,
     plainObject: false
-  }, 
+  },
   {
     name: "status",
     label: "Status",
@@ -33,16 +33,17 @@ const ApplicantsColumns: IColumn[] = [
 
       switch (row.readStatus) {
         case "IN_REVIEW":
+        case "SUBMITTED":
           theme = "primary";
           break;
         case "COMPLETED":
           theme = "primary";
           break;
         default:
-          theme = "danger"; // Fallback for unknown statuses
+          theme = "danger";
       }
 
-      return <Chip label={row.readStatus} size="sm" theme={theme} variant="outline" />;
+      return <Chip label={row.status} size="sm" theme={theme} variant="outline" />;
     },
   },
   {
