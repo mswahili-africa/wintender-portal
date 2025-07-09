@@ -1,24 +1,34 @@
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import { IApplicationGroup } from "@/types";
 import { IconEye } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import columns from "./fragments/ApplicantColumns";
-import ApplicationViewModal from "./fragments/ApplicationViewModel";
 import Chip from "@/components/chip/Chip";
 import getApplications from "@/hooks/useApplicantsList";
+import ApplicantViewModal from "./fragments/ApplicantViewModel";
 
 export const ApplicantsList = () => {
     const tenderId = useParams().tenderId;
     const location = useLocation();
+    const [tenderDetails, setTenderDetails] = useState<any>(null);
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+    const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
 
     // JCM getting tender details
-    const tenderDetails = location.state?.tender;
+    // Reset state when navigation state changes
+    useEffect(() => {
+        setTenderDetails(null);
+    }, [location.state.tender]);
+
+    useEffect(() => {
+        if (location.state?.tender) {
+            setTenderDetails(location.state.tender);
+        }
+    }, [location.state.tender]);
 
     // Fetch data using custom hook
     const { applicantList } = getApplications({
@@ -35,8 +45,8 @@ export const ApplicantsList = () => {
     };
 
     // Handle opening the ApplicationsList modal
-    const handleViewDetails = (group: IApplicationGroup) => {
-        // setSelectedGroupList(group);
+    const handleViewDetails = (content: any) => {
+        setSelectedApplicant(content);
         setIsApplicationModalOpen(true);
     };
 
@@ -88,9 +98,9 @@ export const ApplicantsList = () => {
                     hasSelection={false}
                     hasActions={true}
                     onSorting={handleSorting}
-                    actionSlot={(applicationGroup: IApplicationGroup) => (
+                    actionSlot={(selectedApplicant: any) => (
                         <div className="flex space-x-2">
-                            <button onClick={() => handleViewDetails(applicationGroup)}>
+                            <button onClick={() => handleViewDetails(selectedApplicant)}>
                                 <IconEye size={20} />
                             </button>
                         </div>
@@ -113,17 +123,58 @@ export const ApplicantsList = () => {
 
             {/* JCM  Modal to display Applicants details */}
             {isApplicationModalOpen && (
-                <ApplicationViewModal
+                <ApplicantViewModal
                     onClose={() => setIsApplicationModalOpen(false)}
-                    tenderId={tenderId ?? ""}
-                    title="Applicant application details"
+                    applicant={selectedApplicant}
+                    title="Applicant details"
                     isLoading={false}
-                    onDoItForMeClick={function (): void {
-                        throw new Error("Function not implemented.");
-                    }}
                 >
-                    <>Applicants details</>
-                </ApplicationViewModal>
+                    <>
+                        <hr /><hr /><br /><br />
+                        <div className="space-y-4">
+                            <div className="flex items-center  mb-4">
+                                <strong className="w-32 text-gray-600">Bidder:</strong>
+                                <h3 className="text-l font-semi-bold text-gray-800">{selectedApplicant?.companyName}</h3>
+                            </div>
+                            <div className="flex items-center mb-4">
+                                <strong className="w-32 text-gray-600">Phone:</strong>
+                                <a href={`tel:${selectedApplicant.companyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
+                                    {selectedApplicant.companyPrimaryNumber}
+                                </a>
+                            </div>
+                            <div className="flex items-center mb-4">
+                                <strong className="w-32 text-gray-600">Email:</strong>
+                                <a href={`mailto:${selectedApplicant.companyEmail}`} className="text-l font-semi-bold text-gray-800">
+                                    {selectedApplicant.companyEmail}
+                                </a>
+                            </div>
+
+                        </div>
+                        <div className="space-y-2 w-full">
+                            <div className="flex items-center w-full">
+                                <strong className=" text-gray-600">Company website:</strong>
+                                <p className="flex-1 font-bold text-gray-800">{selectedApplicant.companyWebsite}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Category:</strong>
+                                <p className="flex-1">{selectedApplicant.categoryName}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Application Date:</strong>
+                                <p className="flex-1">{new Date(selectedApplicant.createdAt).toLocaleString()}</p>
+                            </div>
+                        </div>
+                        {/* PDF Viewer */}
+                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <iframe
+                                src={selectedApplicant.tenderFilePath}
+                                width="100%"
+                                height="500px"
+                                title="Tender Document"
+                            ></iframe>
+                        </div>
+                    </>
+                </ApplicantViewModal>
             )}
         </div>
     )

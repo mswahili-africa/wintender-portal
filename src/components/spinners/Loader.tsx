@@ -8,7 +8,7 @@ const Loader = () => {
                 height={50}
                 width={50}
             />
-            <div className="text-gray-600">Loading...</div>
+            {/* <div className="text-gray-600">Loading...</div> */}
         </div>
     );
 };
