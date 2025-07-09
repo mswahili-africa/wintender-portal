@@ -24,6 +24,7 @@ import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
+import { ApplicantsList } from "../applicants";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -231,8 +232,8 @@ export default function PrivateTenders() {
     }
 
     // JCM Applicants List
-    const handleApplicantList = (content: ITenders) => {
-        navigate(`/tenders/${content.id}/applicants`);
+    const openApplicantList = (content: ITenders) => {
+        navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
     }
 
     const handleEditModalClose = () => {
@@ -406,37 +407,45 @@ export default function PrivateTenders() {
                                 >
                                     <IconEye size={20} />
                                 </button>
-                                {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
-                                    <><Fragment>
-
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => handleEdit(content)}
-                                        >
-                                            <IconEdit size={20} />
-                                        </button>
-                                    </Fragment>
-                                        <Fragment>
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                        <><Fragment>
 
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => handleDelete(content)}
+                                                onClick={() => handleEdit(content)}
                                             >
-                                                <IconTrash size={20} />
+                                                <IconEdit size={20} />
                                             </button>
                                         </Fragment>
+                                            <Fragment>
 
-                                        {/* JCM tender applicant list button */}
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => handleDelete(content)}
+                                                >
+                                                    <IconTrash size={20} />
+                                                </button>
+                                            </Fragment>
+
+                                        </>
+
+                                    )
+                                }
+
+                                {/* JCM tender applicant list button */}
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER"].includes(userRole) || (userData?.role === "PROCUREMENT_ENTITY" && content.selfApply === true) ?
                                         <Fragment>
 
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                                onClick={() => { handleApplicantList(content) }}
+                                                onClick={() => { openApplicantList(content) }}
                                             >
                                                 <IconListDetails size={20} />
                                             </button>
-                                        </Fragment></>
-                                )}
+                                        </Fragment> : null
+                                }
                             </div>
                         );
                     }}
@@ -472,26 +481,26 @@ export default function PrivateTenders() {
                             <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
                         </div>
 
-                            {/* Tender Details */}
-                            <div className="space-y-2">
-                                <div className="flex items-center">
-                                    <p className="flex-1">{selectedTender.entityName}</p>
-                                </div>
-                                <div className="flex items-center">
-                                    <strong className="w-32 text-gray-600">Category:</strong>
-                                    <p className="flex-1">{selectedTender.categoryName}</p>
-                                </div>
-                                <div className="flex items-center">
-                                    <p className="flex-1">{selectedTender.summary}</p>
-                                </div>
+                        {/* Tender Details */}
+                        <div className="space-y-2">
+                            <div className="flex items-center">
+                                <p className="flex-1">{selectedTender.entityName}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Category:</strong>
+                                <p className="flex-1">{selectedTender.categoryName}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <p className="flex-1">{selectedTender.summary}</p>
+                            </div>
 
-                                <div className="flex items-center">
-                                    <strong className="w-32 text-gray-600">Status:</strong>
-                                    <Chip label={(() => {
-                                        const currentDate = new Date().getTime();
-                                        const closeDate = selectedTender.closeDate;
-                                        const remainingTime = closeDate - currentDate;
-                                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Status:</strong>
+                                <Chip label={(() => {
+                                    const currentDate = new Date().getTime();
+                                    const closeDate = selectedTender.closeDate;
+                                    const remainingTime = closeDate - currentDate;
+                                    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
                                     if (remainingDays < 0) {
                                         return 'CLOSED';
@@ -514,29 +523,29 @@ export default function PrivateTenders() {
                                     </p>
                                 </div></>
 
-                                )}
-                            </div>
-
-                            <hr></hr>
-
-                            {/* PDF Viewer */}
-                            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                                <iframe
-                                    src={selectedTender.filePath}
-                                    width="100%"
-                                    height="500px"
-                                    frameBorder="0"
-                                    title="Tender Document"
-                                ></iframe>
-                            </div>
-
-                            {/* Modal Footer */}
-                            <div className="flex justify-end space-x-2 mt-6">
-                                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
-                            </div>
+                            )}
                         </div>
-                    </TenderViewModal>
-                )
+
+                        <hr></hr>
+
+                        {/* PDF Viewer */}
+                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <iframe
+                                src={selectedTender.filePath}
+                                width="100%"
+                                height="500px"
+                                frameBorder="0"
+                                title="Tender Document"
+                            ></iframe>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex justify-end space-x-2 mt-6">
+                            <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
+                        </div>
+                    </div>
+                </TenderViewModal>
+            )
             }
 
         </div >

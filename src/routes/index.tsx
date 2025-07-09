@@ -67,7 +67,7 @@ const allMenus: IRoute[] = [
             { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
 
             // JCM added applicants list route
-            { path: "/tenders/:tenderId/applicants", label: "Applicants", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+            // { path: "/tenders/:tenderId/applicants", label: "Applicants", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
         ],
     },
     {
