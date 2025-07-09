@@ -259,13 +259,6 @@ export default function PrivateTenders() {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Private Tenders</h2>
-                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
-                    <TenderCreateForm
-                        onSuccess={() => {
-                            refetch();
-                        }}
-                    />
-                )}
                 {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
                     <PETenderCreateForm
                         onSuccess={() => {
