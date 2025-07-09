@@ -236,6 +236,7 @@ export interface ITenderCategory {
 export interface ITenders {
   id: string;
   referenceNumber: string;
+  selfApply: boolean;
   tenderNumber: string;
   region: string;
   title: string;
@@ -251,6 +252,7 @@ export interface ITenders {
   entityName: string;
   entityLogoFilePath: string;
   entityId: string
+  requirements: IRequirement[];
   status: string;
   createdBy: string;
   updatedBy: string;
@@ -383,4 +385,43 @@ export interface IApplications {
   bidderCompanyName: string;
   bidderCompanyTin: string;
   bidderCompanyVrn: string;
+}
+
+export interface IBidderApplication {
+  id: string;
+  userId: string;
+  tenderId: string;
+  currentStage: string;
+  consentGiven: boolean;
+  submitted: boolean;
+  uploadedDocuments: List<IBidderUploadedDocument>;
+}
+
+export interface IBidderUploadedDocument {
+  id: string;
+  stage: string;
+  fieldName: string;
+  filePath: string;
+}
+
+export interface ITenderDetails{
+  applicationStatus: string;
+  tenderId: string;
+  title: string;
+  tenderNumber: string;
+  region: string;
+  summary: string;
+  filePath: string;
+  openDate: string;
+  closeDate: number;
+  status: string;
+  consultationFee: number;
+  entityName: string;
+  requirements: IRequirement[];
+}
+
+export interface IRequirement{
+  stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "CONSENT";
+  fieldName: string;
+  required: boolean;
 }

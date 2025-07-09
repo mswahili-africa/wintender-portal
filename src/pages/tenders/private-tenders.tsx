@@ -456,20 +456,21 @@ export default function PrivateTenders() {
                 </div>
             </div>
 
-            {
-                selectedTender && (
-                    <TenderViewModal
-                        title={selectedTender.tenderNumber}
-                        tenderId={selectedTender.id}
-                        onClose={() => setSelectedTender(null)}
-                        isLoading={isDoItForMeLoading}
-                        onDoItForMeClick={handleDoItForMeClick}
-                    >
-                        <div className="space-y-4">
-                            {/* Tender Header */}
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
-                            </div>
+            {selectedTender && (
+
+                <TenderViewModal
+                    selfApply={selectedTender.selfApply}
+                    title={selectedTender.tenderNumber}
+                    tenderId={selectedTender.id}
+                    onClose={() => setSelectedTender(null)}
+                    isLoading={isDoItForMeLoading}
+                    onDoItForMeClick={handleDoItForMeClick}
+                >
+                    <div className="space-y-4">
+                        {/* Tender Header */}
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
+                        </div>
 
                             {/* Tender Details */}
                             <div className="space-y-2">
@@ -492,26 +493,26 @@ export default function PrivateTenders() {
                                         const remainingTime = closeDate - currentDate;
                                         const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-                                        if (remainingDays < 0) {
-                                            return 'CLOSED';
-                                        } else if (remainingDays <= 2) {
-                                            return 'CLOSING';
-                                        } else {
-                                            return selectedTender.status;
-                                        }
-                                    })()} size="sm" theme="success" />
-                                </div>
-                                <div className="flex items-center">
-                                    <strong className="w-32 text-gray-600">Close Date:</strong>
-                                    <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
-                                </div>
-                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
-                                    <><div className="flex items-center">
-                                        <strong className="w-50 text-gray-600">Consultation Fee:</strong>
-                                        <p className="flex-1">
-                                            TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
-                                        </p>
-                                    </div></>
+                                    if (remainingDays < 0) {
+                                        return 'CLOSED';
+                                    } else if (remainingDays <= 2) {
+                                        return 'CLOSING';
+                                    } else {
+                                        return selectedTender.status;
+                                    }
+                                })()} size="sm" theme="success" />
+                            </div>
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Close Date:</strong>
+                                <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
+                            </div>
+                            {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
+                                <><div className="flex items-center">
+                                    <strong className="w-50 text-gray-600">Consultation Fee:</strong>
+                                    <p className="flex-1">
+                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
+                                    </p>
+                                </div></>
 
                                 )}
                             </div>

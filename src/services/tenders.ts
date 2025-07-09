@@ -48,7 +48,7 @@ export async function createTender(payload: FormData) {
     return response.data
 }
 
-export async function updateTender(id: string,payload: FormData) {
+export async function updateTender(id: string, payload: FormData) {
     const response = await http.post<any>(`/tenders/tender/update/${id}`, payload, {
         headers: {
             "Content-Type": "multipart/form-data"
@@ -66,7 +66,7 @@ export async function deleteTenders(id: string) {
 
 export async function createCategory(payload: ITenderCategory) {
     const response = await http.post<any>("/tenders/category/register", payload)
-    
+
     return response.data
 }
 
@@ -74,7 +74,7 @@ export async function getCategories(params: {}) {
     const response = await http.get<IlistResponse<any>>("/tenders/category/list", {
         params: params
     })
-    
+
     return response.data
 }
 // JCM TENDER
@@ -113,7 +113,7 @@ export async function getDoForMeGroup(params: {}) {
     return response.data
 }
 
-export async function getDoForMeApplication(groupId: string,params: {}) {
+export async function getDoForMeApplication(groupId: string, params: {}) {
     const response = await http.get<IlistResponse<any>>(`/applications/do-for-me/list/application/${groupId}`, {
         params: params
     })
@@ -150,7 +150,7 @@ export async function getBillboards() {
 // JCM CONSULT ME
 export async function createConsultMe(id: string) {
     const response = await http.post<any>(`/applications/consultation/application/create/${id}`)
-    
+
     return response.data
 }
 
@@ -175,3 +175,43 @@ export async function updateConsultMe(id: string, comment: string, status: strin
 }
 
 // JCM CONSULT ME
+
+
+export async function getTenderDetails(id: string) {
+    const response = await http.get<any>(`/tenders/tender/view/${id}`);
+
+    return response.data
+}
+
+export async function uploadApplicationDocument(formData: FormData) {
+    const response = await http.post("/applications/application/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+}
+
+export async function viewApplication(id: string) {
+    const response = await http.get<any>(`/applications/application/${id}/view`);
+
+    return response.data
+}
+
+export async function listApplication(tenderId: string, params: {}) {
+    const response = await http.get<IlistResponse<any>>(`/applications/application/list?tenderId=${tenderId}`, {
+        params: params
+    })
+
+    return response.data
+}
+
+export async function reviewApplication(id: string, status: string) {
+    const response = await http.put<any>(`/applications/application/${id}/review`, { status: status});
+
+    return response.data;
+}
+
+export async function deleteApplication(id: string) {
+    const response = await http.delete<any>(`/applications/application/${id}/delete`);
+
+    return response.data
+}
