@@ -301,7 +301,7 @@ export default function InternationalTenders() {
                 />
             ) : null}
 
-<div className="flex justify-between items-center border-b border-slate-200">
+            <div className="flex justify-between items-center border-b border-slate-200">
                 <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
                     {/* Search Type Dropdown */}
                     <div className="mb-2">
@@ -433,6 +433,7 @@ export default function InternationalTenders() {
 
             {selectedTender && (
                 <TenderViewModal
+                    selfApply={selectedTender.selfApply}
                     title={selectedTender.tenderNumber}
                     tenderId={selectedTender.id}
                     onClose={() => setSelectedTender(null)}
@@ -483,7 +484,7 @@ export default function InternationalTenders() {
                                 <><div className="flex items-center">
                                     <strong className="w-50 text-gray-600">Consultation Fee:</strong>
                                     <p className="flex-1">
-                                            TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
+                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
                                     </p>
                                 </div></>
 

@@ -196,7 +196,7 @@ export async function viewApplication(id: string) {
     return response.data
 }
 
-export async function getSelfTenderApplication(tenderId: string, params: {}) {
+export async function listApplication(tenderId: string, params: {}) {
     const response = await http.get<IlistResponse<any>>(`/applications/application/list?tenderId=${tenderId}`, {
         params: params
     })
