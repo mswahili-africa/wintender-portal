@@ -428,7 +428,7 @@ export default function PrivateTenders() {
 
                                 {/* JCM tender applicant list button */}
                                 {
-                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER"].includes(userRole) || (userData?.role === "PROCUREMENT_ENTITY" && content.selfApply === true) ?
+                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER", "PROCUREMENT_ENTITY"].includes(userRole)  && content.selfApply === true ?
                                         <Fragment>
 
                                             <button

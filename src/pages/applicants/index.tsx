@@ -151,14 +151,6 @@ export const ApplicantsList = () => {
 
                         </div>
                         <div className="space-y-2 w-full">
-                            <div className="flex items-center w-full">
-                                <strong className=" text-gray-600">Company website:</strong>
-                                <p className="flex-1 font-bold text-gray-800">{selectedApplicant.companyWebsite}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Category:</strong>
-                                <p className="flex-1">{selectedApplicant.categoryName}</p>
-                            </div>
                             <div className="flex items-center">
                                 <strong className="w-32 text-gray-600">Application Date:</strong>
                                 <p className="flex-1">{new Date(selectedApplicant.createdAt).toLocaleString()}</p>
