@@ -204,6 +204,14 @@ export async function listApplication(tenderId: string, params: {}) {
     return response.data
 }
 
+export async function listAllSubmittedApplication(params: {}) {
+    const response = await http.get<IlistResponse<any>>(`/applications/application/list`, {
+        params: params
+    })
+
+    return response.data
+}
+
 export async function reviewApplication(id: string, status: string) {
     const response = await http.put<any>(`/applications/application/${id}/review`, { status: status});
 

@@ -424,3 +424,33 @@ export interface IRequirement{
   fieldName: string;
   required: boolean;
 }
+
+
+/**
+ * Represents a submitted application by a bidder for a tender.
+ */
+export interface ISubmittedApplication {
+  id: string;
+  createdBy: string;
+  updatedBy?: string | null;
+  createdAt: number;
+  updatedAt: number;
+  reference: string;
+  tenderId: string;
+  bidderId: string;
+  stage: string;
+  filePath: string;
+  status: string;
+  tenderIdTitle: string;
+  tenderSummary: string;
+  tenderFilePath: string;
+  tenderOpenDate: number;
+  tenderCloseDate: number;
+  tenderNumber: string;
+  companyName: string;
+  companyAddress?: string;
+  companyEmail: string;
+  companyWebsite?: string | null;
+  companyPrimaryNumber: string;
+}
+

@@ -23,7 +23,7 @@ import PublisherPerformance from "./pages/publisher-reports";
 import TenderList from "./pages/tenders/fragments";
 import { useSession } from "./store/auth";
 import SessionTimeoutModal from "./components/cards/SessionLogger";
-import ApplicationGroups from "./pages/applications";
+import ApplicationGroups from "./pages/applications/doItForMe";
 import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 import { UserDataProvider } from "./providers/userDataProvider";
@@ -31,6 +31,7 @@ import LoginAttempts from "./pages/login-attempts";
 import Consultation from "./pages/consultation";
 import ConsultationApplication from "./pages/consultation/applicatons";
 import ProcurementEntities from "./pages/entities/peUsers";
+import SubmittedApplication from "./pages/applications/SelfSubmited";
 
 export const queryClient = new QueryClient({});
 
@@ -61,6 +62,7 @@ function App() {
                                 <Route index element={<Dashboard />} />
                                 <Route path="entities" element={<Entities />} />
                                 <Route path="do-it-for-me" element={<ApplicationGroups />} />
+                                <Route path="submitted-application" element={<SubmittedApplication />} />
                                 <Route path="tenders" element={<TenderList />} />
                                 <Route path="payments" element={<Payments />} />
                                 <Route path="categories" element={<Categories />} />
