@@ -3,7 +3,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { createTender, getCategories } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconFileText } from "@tabler/icons-react";
+import { IconFileText, IconNewSection } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { useCallback, useState } from "react";
@@ -513,15 +513,15 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         <>
             <Button
                 type="button"
-                label="PE Tender"
-                icon={<IconFileText size={18} />}
+                label="New Tender"
+                icon={<IconNewSection size={18} />}
                 theme="secondary"
                 size="md"
                 onClick={() => setOpen(true)}
             />
 
             {open && (
-                <Modal size="lg" isOpen={open} onClose={() => setOpen(false)} title="Upload PE Tender">
+                <Modal size="lg" isOpen={open} onClose={() => setOpen(false)} title="Upload New Tender">
                     <form onSubmit={handleSubmit(submit)} className="max-w-7xl mx-auto h-auto flex flex-col">
                         <div className="text-sm mb-2 font-medium">Creating Progress</div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mb-4">

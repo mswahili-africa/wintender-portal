@@ -40,7 +40,7 @@ const userRole = userData?.role || "BIDDER";
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-bold">Application</h2>
+        <h2 className="text-lg font-bold">Application: Do it For Me</h2>
         {userRole === "BIDDER" && (
           <PrivateTenderRequest onSuccess={refetch} />
         )}

@@ -23,7 +23,7 @@ import PublisherPerformance from "./pages/publisher-reports";
 import TenderList from "./pages/tenders/fragments";
 import { useSession } from "./store/auth";
 import SessionTimeoutModal from "./components/cards/SessionLogger";
-import ApplicationGroups from "./pages/applications";
+import ApplicationGroups from "./pages/applications/doItForMe";
 import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 import { UserDataProvider } from "./providers/userDataProvider";
@@ -31,7 +31,7 @@ import LoginAttempts from "./pages/login-attempts";
 import Consultation from "./pages/consultation";
 import ConsultationApplication from "./pages/consultation/applicatons";
 import ProcurementEntities from "./pages/entities/peUsers";
-import { ApplicantsList } from "./pages/applicants";
+import SubmittedApplication from "./pages/applications/selfSubmited";
 
 export const queryClient = new QueryClient({});
 
@@ -62,13 +62,9 @@ function App() {
                                 <Route index element={<Dashboard />} />
                                 <Route path="entities" element={<Entities />} />
                                 <Route path="do-it-for-me" element={<ApplicationGroups />} />
-
-                                {/* JCM applicants list */}
-                                <Route path="tenders">
-                                    <Route index element={<TenderList />} />
-                                    <Route path=":tenderId/applicants" element={<ApplicantsList />} />
-                                </Route>
-                                
+                                <Route path="submitted-application" element={<SubmittedApplication />} />
+                                <Route path="tenders" element={<TenderList />} />
+                            
                                 <Route path="payments" element={<Payments />} />
                                 <Route path="categories" element={<Categories />} />
                                 <Route path="consultation" element={<Consultation />} />

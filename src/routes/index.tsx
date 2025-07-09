@@ -65,9 +65,7 @@ const allMenus: IRoute[] = [
             { path: "/tenders", label: "Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
             { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
             { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
-
-            // JCM added applicants list route
-            // { path: "/tenders/:tenderId/applicants", label: "Applicants", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> }
+            { path: "/submitted-application", label: "Applications", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -93,9 +91,17 @@ const allMenus: IRoute[] = [
         label: "Entities",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/entities", label: "Procurement Entities", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
-            { path: "/entities-users", label: "PE's", icon: <IconMan size={20} strokeWidth={1.5} /> },
-            { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> }
+            { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+            { path: "/entities", label: "PE", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
+            { path: "/entities-users", label: "PE Admins", icon: <IconMan size={20} strokeWidth={1.5} /> }
+        ],
+    },
+    {
+        path: "/compliance",
+        label: "Compliance",
+        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
+        subMenu: [
+            { path: "/company-documents", label: "Documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -105,14 +111,6 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/users", label: "Staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
             { path: "/roles", label: "Roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
-        ],
-    },
-    {
-        path: "/compliance",
-        label: "Compliance",
-        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
-        subMenu: [
-            { path: "/company-documents", label: "Documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -151,11 +149,11 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                     subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans"), // Exclude Payment Plans sub-menu
                 }
                 : menu.label === "Consultation"
-                ? {
-                    ...menu,
-                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
-                }
-                : menu
+                    ? {
+                        ...menu,
+                        subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
+                    }
+                    : menu
         ),
     LEGAL: function (): IRoute[] {
         throw new Error("Function not implemented.");
