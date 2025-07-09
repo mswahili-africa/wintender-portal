@@ -1,5 +1,5 @@
 import { IconMessage, IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
@@ -13,6 +13,8 @@ import SMSModal from "./fragments/sms-model";
 import { sendMessageSingle } from "@/services/commons";
 import { resetUser } from "@/services/auth";
 import BidderProfileModal from "./fragments/bidderProfileModal";
+import useCategories from "@/hooks/useCategories";
+import React from "react";
 
 export default function Bidders() {
     const [page, setPage] = useState<number>(0);
@@ -25,9 +27,27 @@ export default function Bidders() {
     const [message, setMessage] = useState<string>("");
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
 
+    // JCM categories
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [bidderCategories, setBidderCategories] = useState([]);
+    const [showCheckboxes, setShowCheckboxes] = useState(false);
+    const checkboxRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (checkboxRef.current && !checkboxRef.current.contains(event.target)) {
+                setShowCheckboxes(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+
+
     const { bidders, isLoading, refetch } = useBidders({
         page: page,
         search: search,
+        categories: bidderCategories,
         sort: sort,
         filter: filter,
     });
@@ -89,6 +109,25 @@ export default function Bidders() {
         setUserInfo(undefined);
     };
 
+    // JCM category filter
+    const { categories: allCategories} = useCategories({
+        page: page,
+        search: search,
+        categories: selectedCategories,
+        sort: sort,
+        filter: filter,
+    });
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = e.target;
+
+        if (checked) {
+            setSelectedCategories(prev => [...prev, value]);
+        } else {
+            setSelectedCategories(prev => prev.filter(item => item !== value));
+        }
+    };
+
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
@@ -104,12 +143,50 @@ export default function Bidders() {
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                <div className="flex justify-between items-center p-4 border-b border-slate-200">
+                <div className="flex justify-start items-center p-4 border-b gap-x-3 border-slate-200">
                     <input
                         type="text"
                         placeholder="Search"
                         className="input-normal py-2 w-1/2 lg:w-1/4"
-                        onChange={(e) => setSearch(e.target.value)} />
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+
+                    {/* JCM category filter */}
+                    <div className="relative">
+                        {/* trigger */}
+                        <button
+                            onClick={() => setShowCheckboxes(!showCheckboxes)}
+                            className="px-3 py-2 ms-auto text-sm bg-gray-100 hover:bg-green-200 rounded shadow border border-green-300"
+                        >
+                            Select Categories
+                        </button>
+
+                        {/* floating panel */}
+                        {showCheckboxes && (
+                            <div
+                                ref={checkboxRef}
+                                className="absolute z-20 mt-2 p-4 bg-white rounded-md shadow-lg border border-gray-200 w-80 max-h-64 overflow-y-auto"
+                            >
+                                <p className="text-sm font-medium text-gray-600 mb-2">Filter by Category</p>
+                                {allCategories?.content?.map((category: any) => (
+                                    <label key={category.id} className="flex items-center space-x-2 mb-2">
+                                        <input
+                                            type="checkbox"
+                                            value={category.name}
+                                            checked={selectedCategories.includes(category.name)}
+                                            onChange={handleCategoryChange}
+                                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-gray-700">{category.name}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+
+
+
                 </div>
 
                 {userInfo && (
@@ -213,6 +290,6 @@ export default function Bidders() {
                     </SMSModal>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
