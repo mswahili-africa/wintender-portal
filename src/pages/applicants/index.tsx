@@ -159,7 +159,7 @@ export const ApplicantsList = () => {
                         {/* PDF Viewer */}
                         <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                             <iframe
-                                src={selectedApplicant.tenderFilePath}
+                                src={selectedApplicant.filePath}
                                 width="100%"
                                 height="500px"
                                 title="Tender Document"
