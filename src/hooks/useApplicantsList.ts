@@ -1,25 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { getCategories } from "@/services/tenders";
 import useErrorHandler from "./useErrorHandler";
+import { AxiosError } from "axios";
+import { listApplication } from "@/services/tenders";
 
 interface IProps {
+    tenderId: string
     page: number
     search?: string
-    categories?: string[]
     sort?: string
     filter?: Record<string, any>
 }
 
-export default function({...props}: IProps) {
+export default function getApplications({tenderId,...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getCategories", props.page, props.sort, props?.search ,props?.categories, props?.filter],
-        queryFn: () => getCategories({page: props.page, size: 10, sort: props.sort, search: props.search, categories: props.categories, filter: props.filter}), // Added categories as an array
+        queryKey: ["getApplications", props.page, props.sort, props?.search, props?.filter],
+        queryFn: () => listApplication(tenderId,{
+            page: props.page,
+            size: 10,
+            sort: props.sort,
+            search: props.search
+        }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000
-    });
+        refetchInterval: 100000
+    }); 
 
     useEffect(() => {
         refetch();
@@ -28,8 +33,8 @@ export default function({...props}: IProps) {
     return {
         isLoading,
         isError,
-        categories: data,
+        applicantList: data,
         error,
         refetch
     }
-}
+} 

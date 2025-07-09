@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -229,6 +229,11 @@ export default function InternationalTenders() {
         setEditTender(content);
     }
 
+    // JCM Applicants List
+    const openApplicantList = (content: ITenders) => {
+        navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
+    }
+
     const handleEditModalClose = () => {
         setEditTender(undefined);
     };
@@ -412,6 +417,20 @@ export default function InternationalTenders() {
                                             </button>
                                         </Fragment></>
                                 )}
+
+                                {/* JCM tender applicant list button */}
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER"].includes(userRole) || (userData?.role === "PROCUREMENT_ENTITY" && content.selfApply === true) ?
+                                        <Fragment>
+
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                                onClick={() => { openApplicantList(content) }}
+                                            >
+                                                <IconListDetails size={20} />
+                                            </button>
+                                        </Fragment> : null
+                                }
                             </div>
                         );
                     }}

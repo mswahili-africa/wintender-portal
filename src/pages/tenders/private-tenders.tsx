@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -24,6 +24,7 @@ import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
+import { ApplicantsList } from "../applicants";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -230,6 +231,11 @@ export default function PrivateTenders() {
         setEditTender(content);
     }
 
+    // JCM Applicants List
+    const openApplicantList = (content: ITenders) => {
+        navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
+    }
+
     const handleEditModalClose = () => {
         setEditTender(undefined);
     };
@@ -401,26 +407,45 @@ export default function PrivateTenders() {
                                 >
                                     <IconEye size={20} />
                                 </button>
-                                {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
-                                    <><Fragment>
-
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => handleEdit(content)}
-                                        >
-                                            <IconEdit size={20} />
-                                        </button>
-                                    </Fragment>
-                                        <Fragment>
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                        <><Fragment>
 
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => handleDelete(content)}
+                                                onClick={() => handleEdit(content)}
                                             >
-                                                <IconTrash size={20} />
+                                                <IconEdit size={20} />
                                             </button>
-                                        </Fragment></>
-                                )}
+                                        </Fragment>
+                                            <Fragment>
+
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => handleDelete(content)}
+                                                >
+                                                    <IconTrash size={20} />
+                                                </button>
+                                            </Fragment>
+
+                                        </>
+
+                                    )
+                                }
+
+                                {/* JCM tender applicant list button */}
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER"].includes(userRole) || (userData?.role === "PROCUREMENT_ENTITY" && content.selfApply === true) ?
+                                        <Fragment>
+
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                                onClick={() => { openApplicantList(content) }}
+                                            >
+                                                <IconListDetails size={20} />
+                                            </button>
+                                        </Fragment> : null
+                                }
                             </div>
                         );
                     }}
@@ -520,8 +545,9 @@ export default function PrivateTenders() {
                         </div>
                     </div>
                 </TenderViewModal>
-            )}
+            )
+            }
 
-        </div>
+        </div >
     )
 }

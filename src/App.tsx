@@ -31,7 +31,7 @@ import LoginAttempts from "./pages/login-attempts";
 import Consultation from "./pages/consultation";
 import ConsultationApplication from "./pages/consultation/applicatons";
 import ProcurementEntities from "./pages/entities/peUsers";
-import SubmittedApplication from "./pages/applications/SelfSubmited";
+import SubmittedApplication from "./pages/applications/selfSubmited";
 
 export const queryClient = new QueryClient({});
 
@@ -64,6 +64,7 @@ function App() {
                                 <Route path="do-it-for-me" element={<ApplicationGroups />} />
                                 <Route path="submitted-application" element={<SubmittedApplication />} />
                                 <Route path="tenders" element={<TenderList />} />
+                            
                                 <Route path="payments" element={<Payments />} />
                                 <Route path="categories" element={<Categories />} />
                                 <Route path="consultation" element={<Consultation />} />
