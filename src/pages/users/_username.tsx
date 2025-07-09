@@ -223,7 +223,7 @@ export default function UserProfile() {
                 {/* Company Information Tab */}
                 <div className="bg-white shadow-md rounded-lg p-6 mt-8 flex">
                     <div className="w-1/2 pr-4">
-                        <h2 className="text-lg font-semibold mb-4">Company Information</h2>
+                        <h2 className="text-lg font-semibold mb-4">Company information</h2>
                         {loading ? (
                             <p className="text-gray-500">Loading...</p>
                         ) : user?.companyName ? (
@@ -232,7 +232,7 @@ export default function UserProfile() {
                                     <label className="text-sm font-medium">Company Name</label>
                                     <input
                                         type="text"
-                                        name="company.name"
+                                        name="companyName"
                                         value={user.companyName}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
@@ -243,7 +243,7 @@ export default function UserProfile() {
                                     <label className="text-sm font-medium">TIN</label>
                                     <input
                                         type="text"
-                                        name="company.tin"
+                                        name="companyTin"
                                         placeholder="123-322-233"
                                         value={user.companyTin || ""}
                                         onChange={handleInputChange}
@@ -254,7 +254,7 @@ export default function UserProfile() {
                                     <label className="text-sm font-medium">Company Email</label>
                                     <input
                                         type="email"
-                                        name="company.email"
+                                        name="companyEmail"
                                         value={user.companyEmail}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
@@ -265,7 +265,7 @@ export default function UserProfile() {
                                     <label className="text-sm font-medium">Primary Number</label>
                                     <input
                                         type="tel"
-                                        name="company.primaryNumber"
+                                        name="companyPrimaryNumber"
                                         value={user.companyPrimaryNumber}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
@@ -275,7 +275,7 @@ export default function UserProfile() {
                                     <label className="text-sm font-medium">Address</label>
                                     <input
                                         type="text"
-                                        name="company.address"
+                                        name="companyAddress"
                                         placeholder="eg. Mbezi Beach, Morogoro"
                                         value={user.companyAddress}
                                         onChange={handleInputChange}
@@ -287,7 +287,7 @@ export default function UserProfile() {
                                     <label className="text-sm font-medium">Website</label>
                                     <input
                                         type="text"
-                                        name="company.website"
+                                        name="companyWebsite"
                                         value={user.companyWebsite || ""}
                                         onChange={handleInputChange}
                                         className="border border-gray-300 rounded-md p-2"
