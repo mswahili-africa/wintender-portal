@@ -128,45 +128,7 @@ export const ApplicantsList = () => {
                     applicant={selectedApplicant}
                     title="Applicant details"
                     isLoading={false}
-                >
-                    <>
-                        <hr /><hr /><br /><br />
-                        <div className="space-y-4">
-                            <div className="flex items-center  mb-4">
-                                <strong className="w-32 text-gray-600">Bidder:</strong>
-                                <h3 className="text-l font-semi-bold text-gray-800">{selectedApplicant?.companyName}</h3>
-                            </div>
-                            <div className="flex items-center mb-4">
-                                <strong className="w-32 text-gray-600">Phone:</strong>
-                                <a href={`tel:${selectedApplicant.companyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
-                                    {selectedApplicant.companyPrimaryNumber}
-                                </a>
-                            </div>
-                            <div className="flex items-center mb-4">
-                                <strong className="w-32 text-gray-600">Email:</strong>
-                                <a href={`mailto:${selectedApplicant.companyEmail}`} className="text-l font-semi-bold text-gray-800">
-                                    {selectedApplicant.companyEmail}
-                                </a>
-                            </div>
-
-                        </div>
-                        <div className="space-y-2 w-full">
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Application Date:</strong>
-                                <p className="flex-1">{new Date(selectedApplicant.createdAt).toLocaleString()}</p>
-                            </div>
-                        </div>
-                        {/* PDF Viewer */}
-                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                            <iframe
-                                src={selectedApplicant.filePath}
-                                width="100%"
-                                height="500px"
-                                title="Tender Document"
-                            ></iframe>
-                        </div>
-                    </>
-                </ApplicantViewModal>
+                />
             )}
         </div>
     )

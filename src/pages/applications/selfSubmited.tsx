@@ -10,12 +10,15 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { deleteApplication } from "@/services/tenders";
 import usePopup from "@/hooks/usePopup";
 import toast from "react-hot-toast";
+import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
 
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
   const [sort, setSort] = useState<string>("createdAt,desc");
+  const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [filter] = useState<any>();
+  const [selectedApplication, setSelectedApplication] = useState<ISubmittedApplication | null>(null);
   const { userData } = useUserDataContext();  // Use the hook to get user data
   const userRole = userData?.role || "BIDDER";
   const { showConfirmation } = usePopup();
@@ -53,6 +56,12 @@ export default function SubmittedApplication() {
     })
   }
 
+  // JCM handle view
+  const handleView = (content: ISubmittedApplication) => {
+    setViewOpen(true);
+    setSelectedApplication(content);
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
@@ -82,7 +91,7 @@ export default function SubmittedApplication() {
               <div className="flex justify-center space-x-2">
                 <button
                   className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                  onClick={() => ""}
+                  onClick={() => handleView(application)}
                 >
                   <IconEye size={20} />
                 </button>
@@ -121,6 +130,16 @@ export default function SubmittedApplication() {
             />
           )}
         </div>
+
+        {/* View modal */}
+        {viewOpen && selectedApplication && (
+          <ApplicantViewModal
+            applicant={selectedApplication}
+            title="View Application"
+            onClose={() => setViewOpen(false)} 
+            isLoading={false}
+          />
+        )}
       </div>
     </div>
   );

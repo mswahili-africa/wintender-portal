@@ -1,19 +1,15 @@
 import Button from "@/components/button/Button";
-import Spinner from "@/components/spinners/Spinner";
-import BidderTenderApplicationFormModel from "@/pages/tenders/fragments/bidderTenderApplicationForm";
-import DIFMAssignModel from "@/pages/tenders/fragments/difmAssignModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { lazy, Suspense, useState } from "react";
 
 interface ModalProps {
-    applicant:any
+    applicant: any
     title: string;
     onClose: () => void;
-    children: React.ReactNode;
     isLoading: boolean;
 }
 
-const ApplicantViewModal = ({ applicant,title, onClose, children, isLoading, }: ModalProps) => {
+const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProps) => {
+    const { userData } = useUserDataContext();
 
     // JCM Tender Apply Modal State
 
@@ -27,20 +23,27 @@ const ApplicantViewModal = ({ applicant,title, onClose, children, isLoading, }: 
                     <h2 className="text-xl font-bold">{applicant.tenderIdTitle}</h2>
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
-                            <div className="flex space-x-4">
-                                <Button
-                                    label="Accept"
-                                    size="sm"
-                                    theme="primary"
-                                    onClick={()=>{}}
-                                />
-                                <Button
-                                    label="Reject"
-                                    size="sm"
-                                    theme="danger"
-                                    onClick={()=>{}}
-                                />
-                            </div>
+                        <div className="flex space-x-4">
+                            {
+                                ["ADMINISTRATOR","MANAGER","PUBLISHER","PROCUREMENT_ENTITY"].includes(userData?.role || "") && (
+                                    <>
+                                        <Button
+                                            label="Accept"
+                                            size="sm"
+                                            theme="primary"
+                                            onClick={() => { }}
+                                        />
+                                        <Button
+                                            label="Reject"
+                                            size="sm"
+                                            theme="danger"
+                                            onClick={() => { }}
+                                        />
+                                    </>
+                                )
+                            }
+
+                        </div>
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
                             X
                         </button>
@@ -48,7 +51,43 @@ const ApplicantViewModal = ({ applicant,title, onClose, children, isLoading, }: 
                 </div>
 
                 <div className="mt-4 overflow-y-auto" style={{ maxHeight: '70vh' }}>
-                    {children}
+                    <>
+                        <hr /><hr /><br /><br />
+                        <div className="space-y-4">
+                            <div className="flex items-center  mb-4">
+                                <strong className="w-32 text-gray-600">Bidder:</strong>
+                                <h3 className="text-l font-semi-bold text-gray-800">{applicant?.companyName}</h3>
+                            </div>
+                            <div className="flex items-center mb-4">
+                                <strong className="w-32 text-gray-600">Phone:</strong>
+                                <a href={`tel:${applicant.companyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicant.companyPrimaryNumber}
+                                </a>
+                            </div>
+                            <div className="flex items-center mb-4">
+                                <strong className="w-32 text-gray-600">Email:</strong>
+                                <a href={`mailto:${applicant.companyEmail}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicant.companyEmail}
+                                </a>
+                            </div>
+
+                        </div>
+                        <div className="space-y-2 w-full">
+                            <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Application Date:</strong>
+                                <p className="flex-1">{new Date(applicant.createdAt).toLocaleString()}</p>
+                            </div>
+                        </div>
+                        {/* PDF Viewer */}
+                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <iframe
+                                src={applicant.filePath}
+                                width="100%"
+                                height="500px"
+                                title="Tender Document"
+                            ></iframe>
+                        </div>
+                    </>
                 </div>
             </div>
         </div>
