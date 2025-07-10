@@ -1,20 +1,19 @@
 import { useState } from "react";
 import Button from "@/components/button/Button"; // Custom Button Component
-import { USSDPushWalletRequest } from "@/services/payments";
+import { USSDPushEnquiry, USSDPushWalletRequest } from "@/services/payments";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Loader from "@/components/spinners/Loader";
+import { IWalletTopUp } from "@/types";
+
+
 
 export default function WalletPaymentModal({
-    // paymentDetails,
-    // setPaymentDetails,
     isOpen,
     isLoading,
     onClose,
     children, // Accept children here to allow passing loader or success message
 }: {
-    // paymentDetails: { phoneNumber: string; amount: number };
-    // setPaymentDetails: React.Dispatch<React.SetStateAction<{  amount: number; phoneNumber: string; paymentReason: string }>>;
     isOpen: boolean;
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,8 +23,9 @@ export default function WalletPaymentModal({
     const [showMessage, setShowMessage] = useState(false); // To show the success message
     const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
     const [warningMessage, setWarningMessage] = useState(""); // To display warning message
-    const [paymentDetails, setPaymentDetails] = useState({ phoneNumber: "", amount: 0 });
+    const [paymentDetails, setPaymentDetails] = useState({ phoneNumber: "", amount: 1000 });
     const [isWalletLoading, setIsWalletLoading] = useState(false);
+    const [messages, setMessages] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -60,31 +60,69 @@ export default function WalletPaymentModal({
 
     // jcm payment
     const paymentMutation = useMutation({
-            mutationFn: (paymentData: { amount: number, phoneNumber: string, paymentReason: string }) => (
-                setIsWalletLoading(true),
-                USSDPushWalletRequest(paymentData)
-            ),
-            onSuccess: (data) => {
-                toast.success(data.message);
-                setIsWalletLoading(false);
-            },
-            onError: (error) => {
-                toast.error("Payment failed: " + error);
-                throw error;
-            },
-            retry: 3,
-            retryDelay: 5000
+        mutationFn: async (paymentData: IWalletTopUp) => {
+            setIsWalletLoading(true);
 
-        });
-        const payload = {
-            amount: paymentDetails.amount,
-            phoneNumber: paymentDetails.phoneNumber,
-            paymentReason: "WALLET_IN"
-        }
+            // Step 1: Send initial payment request
+            if(paymentData.amount < 1000) {
+                throw new Error("Amount should be greater than 1000");
+            }
+            const response = await USSDPushWalletRequest(paymentData);
 
-        const onSubmit=() => {
-            paymentMutation.mutate(payload)
-        }
+            if (response.code !== "SUCCESS") {
+                throw new Error(response.message);
+            }
+
+            // Step 2: Poll the enquiry endpoint until it's not pending
+            const maxTries = 7;
+            const interval = 5000; 
+            let attempts = 0;
+            let finalStatus;
+
+            while (attempts < maxTries) {
+                await new Promise((resolve) => setTimeout(resolve, interval));
+                finalStatus = await USSDPushEnquiry(response.id);
+                setMessages(finalStatus.message);
+
+                if (finalStatus.code !== "PENDING") {
+                    break;
+                }
+
+                attempts++;
+            }
+
+            if (finalStatus.code === "SUCCESS") {
+                return finalStatus; 
+            } else {
+                throw new Error(finalStatus.message || "Payment failed or timed out");
+            }
+        },
+
+        onSuccess: (data: any) => {
+            toast.success(data.message || "Payment successful");
+            setMessages('');
+            setIsWalletLoading(false);
+        },
+
+        onError: (error: any) => {
+            setMessages('');
+            toast.error("Payment failed");
+            setIsWalletLoading(false);
+        },
+
+        retry: 0,
+    });
+
+
+    const payload: IWalletTopUp = {
+        amount: paymentDetails.amount,
+        phoneNumber: paymentDetails.phoneNumber,
+        paymentReason: "WALLET_IN"
+    }
+
+    const onSubmit = () => {
+        paymentMutation.mutate(payload)
+    }
 
     return (
         <div className={`${isOpen ? "block" : "hidden"} fixed inset-0 bg-black bg-opacity-50 flex justify-center h-full items-center z-50`}>
@@ -127,7 +165,10 @@ export default function WalletPaymentModal({
                 </div>
 
                 {/* Success Message */}
-                {isWalletLoading &&  (
+                {messages !== "" && (
+                    <div className="text-green-600 w-full text-center text-xs">{messages}</div>
+                )}
+                {isWalletLoading && (
                     <div className="mt-4 text-center text-green-600">
                         <Loader />
                     </div>

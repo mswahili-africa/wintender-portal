@@ -306,6 +306,13 @@ export interface IPayment {
   updatedAt: number;
 }
 
+// JCM WALLET TOPUP
+export interface IWalletTopUp {
+  amount: number;
+  phoneNumber: string;
+  paymentReason: string;
+}
+
 export interface IDoItForMe {
   id: string;
   user: IUser;
@@ -404,7 +411,7 @@ export interface IBidderUploadedDocument {
   filePath: string;
 }
 
-export interface ITenderDetails{
+export interface ITenderDetails {
   applicationStatus: string;
   tenderId: string;
   title: string;
@@ -420,7 +427,7 @@ export interface ITenderDetails{
   requirements: IRequirement[];
 }
 
-export interface IRequirement{
+export interface IRequirement {
   stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "CONSENT";
   fieldName: string;
   required: boolean;
