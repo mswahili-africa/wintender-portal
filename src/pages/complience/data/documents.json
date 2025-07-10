@@ -38,6 +38,6 @@
   { "stage":"COMMERCIAL", "label": "SOURCE OF FUNDS", "value": "SOURCE_OF_FUNDS" },
   { "stage":"COMMERCIAL", "label": "AUDITED FINANCIAL STATEMENT", "value": "AUDITED_FINANCIAL_STATEMENT" },
   { "stage":"FINANCIAL", "label": "PRICE SCHEDULE", "value": "PRICE_SCHEDULE" },
-  { "stage":"FINANCIAL", "label": "COMMERCIAL PROPOSAL", "value": "COMMERCIAL_PROPOSAL" },
+  { "stage":"FINANCIAL", "label": "FINANCIAL STATEMENT", "value": "FINANCIAL_PROPOSAL" },
   { "stage":"CONSENT", "label": "OSHA", "value": "OSHA" }
 ]
