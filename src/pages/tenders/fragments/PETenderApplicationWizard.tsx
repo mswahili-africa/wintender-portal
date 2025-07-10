@@ -325,7 +325,7 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
         <div className="text-sm text-gray-600 mb-1">Step {currentStep + 1} of {stages.length}: <strong>{stages[currentStep]}</strong></div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className="bg-blue-500 h-2 rounded-full"
+            className="bg-green-500 h-2 rounded-full"
             style={{ width: `${progressPercentage}%`, transition: "width 0.3s ease" }}
           />
         </div>
