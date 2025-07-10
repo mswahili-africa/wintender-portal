@@ -24,6 +24,8 @@ import usePopup from "@/hooks/usePopup";
 import { resetUser } from "@/services/auth";
 import { changeUserStatus } from "@/services/user";
 import Chip from "@/components/chip/Chip";
+import Button from "@/components/button/Button";
+import Select from "react-select";
 
 interface IProps {
     children?: React.ReactNode;
@@ -44,6 +46,72 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
     const { showConfirmation } = usePopup();
+
+    // JCM category
+    const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
+    const [isChanged, setIsChanged] = useState(false);
+
+
+    const addCategory = (category: ICategory) => {
+        if (!selectedCategories.find((c) => c.id === category.id)) {
+            setSelectedCategories([...selectedCategories, category]);
+            setIsChanged(true);
+        }
+    };
+
+    const removeCategory = (category: ICategory) => {
+        setSelectedCategories(
+            selectedCategories.filter((c) => c.id !== category.id)
+        );
+        setIsChanged(true);
+    };
+
+    const availableOptions = categories
+        .filter((cat) => !selectedCategories.find((sc) => sc.id === cat.id))
+        .map((cat) => ({ value: cat.id, label: cat.name }));
+
+
+    useEffect(() => {
+        if (user?.companyCategories && categories.length > 0) {
+            const initialSelected = categories.filter((cat) =>
+                user.companyCategories.includes(cat.id)
+            );
+            setSelectedCategories(initialSelected);
+        }
+    }, [user, categories]);
+
+    // JCM input style
+    const customStyles = {
+        control: (provided: any, state: any) => ({
+            ...provided,
+            borderColor: state.isFocused ? 'green' : 'green',      
+            boxShadow: state.isFocused ? '0 0 0 1px green' : 'none', 
+            '&:hover': {
+                borderColor: 'green',
+            },
+        }),
+        option: (provided: any, state: any) => ({
+            ...provided,
+            backgroundColor: state.isSelected
+                ? '#d1fae5' 
+                : state.isFocused
+                    ? '#f0fdf4' 
+                    : 'white',
+            color: 'black',
+        }),
+        singleValue: (provided: any) => ({
+            ...provided,
+            color: 'black',
+        }),
+        menu: (provided: any) => ({
+            ...provided,
+            zIndex: 9999,
+        }),
+    };
+
+    // JCM END
+
+
 
     const [searchParams, _] = useSearchParams();
 
@@ -174,7 +242,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                         />
                                     </div>
                                     <span>
-                                        <h4 className="lg:text-lg font-medium">{user?.companyName.toUpperCase()}</h4>
+                                        <h4 className="lg:text-lg font-medium">{user?.companyName?.toUpperCase()}</h4>
                                     </span>
                                     <Chip
                                         label={user.planExpiryDate && user.planExpiryDate > Date.now() ? "PLAN ACTIVE" : "PLAN EXPIRED"}
@@ -226,9 +294,73 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
                         <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
                             <div className="space-y-4">
-                                <strong>Categories</strong>
+                                <div className="flex flex-row items-center justify-between">
+                                    <strong className="uppercase w-1/2">Categories</strong>
+
+                                    {/* JCM Dropdown to Add Categories */}
+                                    <Select
+                                        options={availableOptions}
+                                        onChange={(selectedOption) => {
+                                            const selected = categories.find((c) => c.id === selectedOption?.value);
+                                            if (selected) addCategory(selected);
+                                        }}
+                                        placeholder="Search or select category"
+                                        className="w-1/2 border-0 border-green-700 focus:ring-0"
+                                        styles={customStyles}
+                                    />
+
+                                </div>
+
+
+
+                                <div>
+                                    {/*JCM Selected Categories */}
+                                    <div className="flex flex-col gap-2 mb-4">
+                                        {selectedCategories.length === 0 ? (
+                                            <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                                No categories
+                                            </span>
+                                        ) : (
+                                            selectedCategories.map((category) => (
+                                                <span
+                                                    key={category.id}
+                                                    className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
+                                                >
+                                                    {category.name}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeCategory(category)}
+                                                        className="text-red-500 hover:text-red-700 ml-2 text-xs"
+                                                    >
+                                                        remove
+                                                    </button>
+                                                </span>
+                                            ))
+                                        )}
+                                    </div>
+
+
+                                </div>
+
+                                {
+                                    // JCM save button
+                                    isChanged && selectedCategories.length > 0 &&
+                                    <div className="w-full flex justify-center">
+                                        <Button
+                                            type="button"
+                                            label="Save"
+                                            size="md"
+                                            theme="primary"
+                                            onClick={() => { }}
+                                        />
+                                    </div>
+                                }
+
+
+
+
                                 {/* Show loader while categories are loading */}
-                                {categories.length === 0 ? (
+                                {/* {categories.length === 0 ? (
                                     <Loader />
                                 ) : (
                                     <ul>
@@ -244,7 +376,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                                 );
                                             })}
                                     </ul>
-                                )}
+                                )} */}
                             </div>
                         </div>
 
