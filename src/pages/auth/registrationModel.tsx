@@ -92,7 +92,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
         handleSubmit,
         reset,
         setValue,
-        watch,
         formState: { errors },
     } = useForm<IBidderRegisterForm>({
         resolver: yupResolver(schema),
