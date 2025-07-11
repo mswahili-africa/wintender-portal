@@ -2,7 +2,7 @@ import Button from "@/components/button/Button";
 import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
-import { IconX } from "@tabler/icons-react";
+import { IconFileDownload, IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -40,7 +40,7 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-green-100 rounded-lg shadow-lg max-w-4xl w-full p-5">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">{applicant.tenderIdTitle}</h2>
+                    <h2 className="text-xl font-bold">{applicant.reference}</h2>
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
                         <div className="flex space-x-4">
@@ -89,29 +89,55 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                 <div className="mt-4 overflow-y-auto" style={{ maxHeight: '75vh' }}>
                     <>
                         <hr /><hr /><br /><br />
-                        <div className="space-y-4">
-                            <div className="flex items-center  mb-4">
-                                <strong className="w-32 text-gray-600">Bidder:</strong>
-                                <h3 className="text-l font-semi-bold text-gray-800">{applicant?.companyName}</h3>
-                            </div>
-                            <div className="flex items-center mb-4">
-                                <strong className="w-32 text-gray-600">Phone:</strong>
-                                <a href={`tel:${applicant.companyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
-                                    {applicant.companyPrimaryNumber}
-                                </a>
-                            </div>
-                            <div className="flex items-center mb-4">
-                                <strong className="w-32 text-gray-600">Email:</strong>
-                                <a href={`mailto:${applicant.companyEmail}`} className="text-l font-semi-bold text-gray-800">
-                                    {applicant.companyEmail}
-                                </a>
-                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2">
+                            <div className="order-2 md:order-1">
+                                <div className="space-y-4">
+                                    <div className="flex items-center  mb-4">
+                                        <strong className="w-32 text-gray-600">Bidder:</strong>
+                                        <h3 className="text-l font-semi-bold text-gray-800">{applicant?.companyName}</h3>
+                                    </div>
+                                    <div className="flex items-center mb-4">
+                                        <strong className="w-32 text-gray-600">Phone:</strong>
+                                        <a href={`tel:${applicant.companyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
+                                            {applicant.companyPrimaryNumber}
+                                        </a>
+                                    </div>
+                                    <div className="flex items-center mb-4">
+                                        <strong className="w-32 text-gray-600">Email:</strong>
+                                        <a href={`mailto:${applicant.companyEmail}`} className="text-l font-semi-bold text-gray-800">
+                                            {applicant.companyEmail}
+                                        </a>
+                                    </div>
 
-                        </div>
-                        <div className="space-y-2 w-full">
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Application Date:</strong>
-                                <p className="flex-1">{new Date(applicant.createdAt).toLocaleString()}</p>
+                                </div>
+                                <div className="space-y-2 w-full">
+                                    <div className="flex items-center">
+                                        <strong className="w-32 text-gray-600">Application Date:</strong>
+                                        <p className="flex-1">{new Date(applicant.createdAt).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="order-1 md:order-2">
+                                <div className="space-y-4">
+                                    <div className="flex items-center  mb-4">
+                                        <strong className="w-32 text-gray-600">Tender:</strong>
+                                        <h3 className="text-l font-semi-bold text-gray-800">{applicant?.tenderIdTitle}</h3>
+                                    </div>
+                                    <div className="space-y-2 w-full">
+                                        <div className="flex items-center">
+                                            <strong className="w-32 text-gray-600">Closing Date:</strong>
+                                            <p className="flex-1">{new Date(Number(applicant.tenderCloseDate)).toLocaleString()}</p>
+                                        </div>
+                                    </div>
+                                    {/* LInk to download document */}
+                                    <div className="flex flex-col  mb-4">
+                                        {/* <strong className=" text-gray-600">Tender document:</strong> */}
+                                        <a target="_blank" href={`${applicant.tenderFilePath}`} className="text-l rounded-lg border-4 border-green-400 p-2 bg-green-200 md:p-4 gap-2 flex items-center flex-col gap-x-2 my-3 font-semi-bold text-gray-800">
+                                            <IconFileDownload size={40} />
+                                            <div className="text-xs">View tender document here</div>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

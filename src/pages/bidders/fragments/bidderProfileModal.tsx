@@ -24,6 +24,7 @@ import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
 import Select from "react-select";
 import { updateBidderCategories } from "@/services/user";
+import { IconX } from "@tabler/icons-react";
 
 interface IProps {
     children?: React.ReactNode;
@@ -282,7 +283,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                                         onClick={() => removeCategory(category)}
                                                         className="text-red-500 hover:text-red-700 ml-2 text-xs"
                                                     >
-                                                        X
+                                                        <IconX size={16} />
                                                     </button>
                                                 </span>
                                             ))
