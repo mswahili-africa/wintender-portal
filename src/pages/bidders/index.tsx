@@ -20,7 +20,6 @@ export default function Bidders() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter, setFilter] = useState<any>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [userInfo, setUserInfo] = useState<ICompany | any>();
@@ -43,13 +42,11 @@ export default function Bidders() {
     }, []);
 
 
-
     const { bidders, isLoading, refetch } = useBidders({
         page: page,
         search: search,
         categories: bidderCategories,
         sort: sort,
-        filter: filter,
     });
 
     const handleSorting = (field: string, direction: SortDirection) => {
@@ -110,12 +107,11 @@ export default function Bidders() {
     };
 
     // JCM category filter
-    const { categories: allCategories} = useCategories({
+    const { categories: allCategories } = useCategories({
         page: page,
         search: search,
         categories: selectedCategories,
         sort: sort,
-        filter: filter,
     });
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,9 +179,6 @@ export default function Bidders() {
                             </div>
                         )}
                     </div>
-
-
-
 
                 </div>
 

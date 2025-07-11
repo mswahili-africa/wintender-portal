@@ -18,30 +18,33 @@ export interface ILoginForm {
 }
 
 export interface IRegisterForm {
-    firstName:  string;
-    lastName:   string;
-    email:  string;
-    phoneNumber:    string;
-    role:   string;
-    nationalId:   string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    role: string;
+    nationalId: string;
     procurementEntityId: string;
 }
 
 export interface IBidderRegisterForm {
-    firstName:  string;
-    lastName:   string;
-    email:  string;
-    phoneNumber:    string;
-    confirmPhoneNumber:    string;
-    companyName:    string;
-    tin:    string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    confirmPhoneNumber: string;
+    companyName: string;
+    companyPhoneNumber: string;
+    companyAddress: string;
+    tin: string;
+    categoryIds: string[];
 }
 
 export interface IConfirmPasswordResetForm {
-    email:           string
-    password:           string
-    confirmPassword:    string
-    confirmationCode:   string
+    email: string
+    password: string
+    confirmPassword: string
+    confirmationCode: string
 }
 
 export interface IUserData {
@@ -53,27 +56,27 @@ export interface IUserData {
     avatar: string;
     status: string;
     subscription: number;
-    walletAmount:number;
+    walletAmount: number;
     account: string;
     role: string;
     company: string;
 }
 
 export interface IMessage {
-    phoneNumber:       string
+    phoneNumber: string
     message: string
 }
 
 export interface IConsultation {
     id: string
-    title:       string
+    title: string
     message: string
     reference: string
 }
 
 export interface IConsultationApplication {
     id: string
-    reference:       string
+    reference: string
     consultationId: string
     controlNumber: string
     principleAmount: number
@@ -90,7 +93,7 @@ export interface IConsultationApplication {
 
 export interface IUSSDPushRequest {
     planId: string
-    phoneNumber:       string
+    phoneNumber: string
     period: number
     paymentReason: string
 }
@@ -102,7 +105,7 @@ export interface IUSSDPushWalletRequest {
 }
 
 export interface IPlan {
-    companyId:       string
+    companyId: string
     plan: string
     maxTenders: number
     numberOfMonths: number
@@ -110,29 +113,29 @@ export interface IPlan {
 }
 
 export interface IAssignBidder {
-    bidderId:       string
+    bidderId: string
     tenderId: string
 }
 
 export interface IPublisherReport {
-    id:       string
+    id: string
     email: string
-    name:       string
+    name: string
     phoneNumber: string
     numberOfTenders: number
 }
 
 export interface IPaymentForm {
-    controlNumber:        string
+    controlNumber: string
     account: string
-    phoneNumber:         string
-    amount:       number
-    mno:     string
+    phoneNumber: string
+    amount: number
+    mno: string
     description: string
 }
 
 export interface ICreditForm {
-    account:        string
-    amount:       number
+    account: string
+    amount: number
     description: string
 }

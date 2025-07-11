@@ -72,8 +72,8 @@ const Header = () => {
     };
 
     return (
-        <div onClick={() => setIsPaymentModalOpen(true)} className="lg:flex lg:justify-between lg:-mt-10 lg:mb-20 lg:items-center hidden">
-            <div className="lg:flex lg:gap-5">
+        <div className="lg:flex lg:justify-between lg:-mt-10 lg:mb-20 lg:items-center hidden">
+            <div onClick={() => setIsPaymentModalOpen(true)} className="lg:flex lg:gap-5">
                 {typeof subscription === 'number' && (() => {
                     if (subscription === 0) {
                         return (

@@ -7,14 +7,15 @@ import { twMerge } from "tailwind-merge";
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string,
     hasError?: boolean
-    error? : string,
+    error?: string,
     register: UseFormRegisterReturn;
-    prefix?: string 
-    min?:string
+    prefix?: string
+    min?: string
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 
-export default function({...props}: IProps) {
+export default function ({ ...props }: IProps) {
     const [show, setShow] = useState<boolean>(false);
 
     return (
@@ -22,8 +23,8 @@ export default function({...props}: IProps) {
             {
                 props.label &&
 
-                <label 
-                    htmlFor={props.name} 
+                <label
+                    htmlFor={props.name}
                     className="block mb-2">
                     {props.label}
                 </label>
@@ -35,13 +36,14 @@ export default function({...props}: IProps) {
                     className={twMerge(
                         `${props.hasError ? 'input-error' : 'input-normal'}`,
                         props.prefix ? 'pl-12' : ''
-                    )} 
+                    )}
                     placeholder={props.placeholder}
                     disabled={props.disabled}
                     {...props.register}
                     min={props.min}
+                    onChange={props.onChange}
                 />
-                
+
                 {
                     props.prefix &&
                     <div className="absolute inset-y-0 left-0 px-3 flex justify-center items-center cursor-pointer">
@@ -53,7 +55,7 @@ export default function({...props}: IProps) {
 
                 {
                     props.type == "password" &&
-                    <IconEye 
+                    <IconEye
                         className="absolute top-3 right-3 z-10 h-5 w-5 text-slate-400 cursor-pointer"
                         onClick={() => setShow(!show)} />
                 }
@@ -63,13 +65,13 @@ export default function({...props}: IProps) {
                     <div className="text-xs text-red-800 font-medium px-1 pt-1">
                         {
                             props.error ?
-                            props.error :
-                            "field is required"
+                                props.error :
+                                "field is required"
                         }
                     </div>
                 }
             </div>
-            
+
         </div>
     )
 }

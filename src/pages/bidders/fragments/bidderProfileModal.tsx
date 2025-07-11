@@ -18,7 +18,6 @@ import dummyLogo from "@/assets/images/bidder-dummy-logo.png"
 import { getCategories } from "@/services/tenders";
 import { getUserPayments } from "@/hooks/usePayments";
 import applicationColumns from "./applicationListColumns";
-import Loader from "@/components/spinners/Loader";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import usePopup from "@/hooks/usePopup";
 import { resetUser } from "@/services/auth";
@@ -50,7 +49,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const [isChanged, setIsChanged] = useState(false);
-
 
     const addCategory = (category: ICategory) => {
         if (!selectedCategories.find((c) => c.id === category.id)) {
@@ -109,9 +107,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         }),
     };
 
-    // JCM END
-
-
 
     const [searchParams, _] = useSearchParams();
 
@@ -161,26 +156,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         fetchCategories();
     }, []);
 
-    const changeMutation = useMutation({
-        mutationFn: (userId: string) => changeUserStatus(userId),
-        onSuccess: () => {
-            toast.success("Changed successfully");
-        },
-        onError: () => {
-            toast.error("Change failed");
-        },
-    });
-
-    const resetMutation = useMutation({
-        mutationFn: (userId: string) => resetUser(userId),
-        onSuccess: () => {
-            toast.success("Resetted successfully");
-        },
-        onError: () => {
-            toast.error("Change failed");
-        },
-    });
-
     const sendSMS = useMutation({
         mutationFn: (data: IMessage) => sendMessageSingle(data),
         onSuccess: () => {
@@ -193,30 +168,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
             setIsSending(false); // Reset loading state on error
         },
     });
-
-    const changeStatus = (payload: IUser) => {
-        showConfirmation({
-            theme: "danger",
-            title: "Change bidder status?",
-            message: "Please verify that you want to change bidder status.",
-            onConfirm: () => {
-                changeMutation.mutate(payload.id);
-            },
-            onCancel: () => { },
-        });
-    };
-
-    const handleResetUser = (payload: IUser) => {
-        showConfirmation({
-            theme: "danger",
-            title: "Reset user?",
-            message: "Please verify that you want to reset user account.",
-            onConfirm: () => {
-                resetMutation.mutate(payload.id);
-            },
-            onCancel: () => { },
-        });
-    };
 
     return (
         <>
@@ -255,16 +206,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
                                     </button>
-                                    {/* <button className="text-green-500" onClick={() => handleResetUser(user)}
-                                    >
-                                        <IconUserOff size={20} />
-                                    </button>
-                                    <button
-                                        className="text-green-500"
-                                        onClick={() => changeStatus(user)}
-                                    >
-                                        <IconStatusChange size={20} />
-                                    </button> */}
                                 </p>
                             </div>
                         </div>
@@ -311,8 +252,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
                                 </div>
 
-
-
                                 <div>
                                     {/*JCM Selected Categories */}
                                     <div className="flex flex-col gap-2 mb-4">
@@ -338,8 +277,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                             ))
                                         )}
                                     </div>
-
-
                                 </div>
 
                                 {
@@ -355,9 +292,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                         />
                                     </div>
                                 }
-
-
-
 
                                 {/* Show loader while categories are loading */}
                                 {/* {categories.length === 0 ? (
