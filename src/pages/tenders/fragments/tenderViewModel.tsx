@@ -4,6 +4,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
 import PETenderApplicationWizardModal from "./PETenderApplicationWizardModal";
+import { IconX } from "@tabler/icons-react";
 
 interface ModalProps {
     selfApply: boolean;
@@ -81,7 +82,7 @@ const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, isLoad
                             )
                         )}
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
-                            X
+                            <IconX size={26} />
                         </button>
                     </div>
                 </div>
