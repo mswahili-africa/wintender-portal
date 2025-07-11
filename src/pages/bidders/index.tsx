@@ -112,7 +112,7 @@ export default function Bidders() {
         const params = new URLSearchParams();
 
         if (tempSelectedCategories.length > 0) {
-            params.set("category", `[${tempSelectedCategories.join(",")}]`);
+            params.set("category", tempSelectedCategories.join(","));
         }
         if (tempSelectedRegion?.value) {
             params.set("address", tempSelectedRegion.value);

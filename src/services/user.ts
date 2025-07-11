@@ -13,7 +13,7 @@ export async function getUsers(params: IQueryParams) {
 export async function getBidders(params: IQueryParams) {
     const queryParams = {
         ...params,
-        ...(params.categories && { category: `[${params.categories.join(",")}]` })
+        ...(params.categories && { category: params.categories.join(",") })
     };
 
     delete queryParams.categories;
