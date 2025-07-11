@@ -15,6 +15,7 @@ import { getEntities } from "@/services/entities";
 import { debounce } from "lodash";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
+import Spinner from "@/components/spinners/Spinner";
 
 export enum RequirementStage {
     PRELIMINARY = "PRELIMINARY",
@@ -415,11 +416,38 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         </div>
                     )}
 
-                     <div className="mb-2">
-                        <label className="block mb-2">Application Fee</label>
-                        <input className="input-normal" {...register("consultationFee")} />
-                        <p className="text-xs text-red-500">
-                            {typeof errors.consultationFee?.message === "string" ? errors.consultationFee.message : ""}
+                    <div className="mb-2">
+                        <label htmlFor="consultationFee" className="block mb-2">
+                            Application Fee
+                        </label>
+
+                        <input
+  type="text"
+  inputMode="decimal"
+  className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+  {...register("consultationFee", {
+    required: true,
+    pattern: {
+      value: /^\d+(\.\d{1,2})?$/,
+      message: "Enter a valid number",
+    },
+  })}
+  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+  }}
+/>
+
+
+
+
+                        {/* <select
+                            className={`${errors.consultationFee?.type === "required" ? "input-error" : "input-normal"}`}
+                            {...register("consultationFee", { required: true })}
+                        >
+                            <option value="100000">100,000</option>
+                        </select> */}
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.consultationFee?.message?.toString()}
                         </p>
                     </div>
                 </>
@@ -576,13 +604,18 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                     onClick={() => handleCompleteStep(currentStep)}
                                 />
                             ) : (
-                                <Button
-                                    size="md"
-                                    type="submit"
-                                    label="Upload"
-                                    theme="primary"
-                                    loading={uploadTenderMutation.isLoading}
-                                />
+                                // 
+                                uploadTenderMutation.isLoading ? (
+                                    <Spinner size="md" />
+                                ) : (
+                                    <Button
+                                        size="md"
+                                        type="submit"
+                                        label="Upload"
+                                        theme="primary"
+                                        loading={uploadTenderMutation.isLoading}
+                                    />
+                                )
                             )}
                         </div>
                     </form>
