@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -264,7 +264,7 @@ export default function PrivateTenders() {
                 )}
                 {(userRole === "BIDDER") && (
                     <button onClick={() => topUpSubscription()}>
-                        <IconCalendarPlus size={30} className="text-green-600 blink-shadow" />
+                        <IconClockPlus size={30} className="text-green-600" />
                     </button>
                 )}
             </div>

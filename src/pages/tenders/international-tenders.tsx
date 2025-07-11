@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconCalendarPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -32,7 +32,6 @@ export default function InternationalTenders() {
     const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-    const [paymentId, setPaymentId] = useState<string | null>(null);
     const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
@@ -104,7 +103,6 @@ export default function InternationalTenders() {
     const paymentMutation = useMutation({
         mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
-            setPaymentId(data.id);  // Store the payment ID from the response
             setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
             startEnquiry(data.id);  // Start the enquiry API calls
         },
@@ -266,7 +264,7 @@ export default function InternationalTenders() {
                 )}
                 {(userRole === "BIDDER") && (
                     <button onClick={() => topUpSubscription()}>
-                        <IconCalendarPlus size={30} className="text-green-600 blink-shadow" />
+                        <IconClockPlus size={30} className="text-green-600" />
                     </button>
                 )}
             </div>
