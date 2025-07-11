@@ -189,7 +189,7 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
             <p className="flex-1">{new Date(tender.closeDate).toLocaleString()}</p>
           </div>
           <div className="flex items-center py-2">
-            <strong className="w-50 text-gray-600">Application Fee:</strong>
+            <strong className="w-50 text-gray-600">PE Application Fee:</strong>
             <p className="flex-1">TZS {new Intl.NumberFormat().format(tender.consultationFee)}</p>
           </div>
 

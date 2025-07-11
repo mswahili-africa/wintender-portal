@@ -302,6 +302,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                             {...register("region", { required: true })}
                         >
                             <option value="PRIVATE">PRIVATE</option>
+                            <option value="GOVERNMENT">GOVERNMENT</option>
                             <option value="INTERNATIONAL">INTERNATIONAL</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
@@ -414,19 +415,11 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         </div>
                     )}
 
-                    <div className="mb-2">
-                        <label htmlFor="consultationFee" className="block mb-2">
-                            Application Fee
-                        </label>
-
-                        <select
-                            className={`${errors.consultationFee?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("consultationFee", { required: true })}
-                        >
-                            <option value="100000">100,000</option>
-                        </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.consultationFee?.message?.toString()}
+                     <div className="mb-2">
+                        <label className="block mb-2">Application Fee</label>
+                        <input className="input-normal" {...register("consultationFee")} />
+                        <p className="text-xs text-red-500">
+                            {typeof errors.consultationFee?.message === "string" ? errors.consultationFee.message : ""}
                         </p>
                     </div>
                 </>

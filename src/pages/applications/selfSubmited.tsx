@@ -96,7 +96,7 @@ export default function SubmittedApplication() {
                 >
                   <IconEye size={20} />
                 </button>
-                {userRole === "BIDDER" && application.tenderCloseDate < Date.now() && (
+                {userRole === "BIDDER" && application.tenderCloseDate > Date.now() && (
                   <Fragment>
                     <button
                      title={application.status === "SUBMITTED" ? "Recover Application" : "Delete Application"}

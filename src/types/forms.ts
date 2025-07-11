@@ -132,6 +132,8 @@ export interface IPaymentForm {
     amount: number
     mno: string
     description: string
+    paymentReason: string
+    referenceId: string
 }
 
 export interface ICreditForm {
