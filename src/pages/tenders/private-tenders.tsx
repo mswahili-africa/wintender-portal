@@ -9,7 +9,6 @@ import usePopup from "@/hooks/usePopup";
 import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
-import TenderCreateForm from "./fragments/tenderCreateForm";
 import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
@@ -24,7 +23,6 @@ import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
-import { ApplicantsList } from "../applicants";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -34,7 +32,6 @@ export default function PrivateTenders() {
     const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-    const [paymentId, setPaymentId] = useState<string | null>(null);
     const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
@@ -106,7 +103,6 @@ export default function PrivateTenders() {
     const paymentMutation = useMutation({
         mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
-            setPaymentId(data.id);  // Store the payment ID from the response
             setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
             startEnquiry(data.id);  // Start the enquiry API calls
         },
