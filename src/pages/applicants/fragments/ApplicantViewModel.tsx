@@ -1,5 +1,11 @@
 import Button from "@/components/button/Button";
+import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import { reviewApplication } from "@/services/tenders";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { string } from "yup";
 
 interface ModalProps {
     applicant: any
@@ -10,8 +16,25 @@ interface ModalProps {
 
 const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProps) => {
     const { userData } = useUserDataContext();
+    const [loading, setLoading] = useState(false);
 
-    // JCM Tender Apply Modal State
+    // JCM accept or reject tender
+    const applicationReviewMutation = useMutation({
+        mutationFn: async (data: { id: string, status: string }) => {
+            setLoading(true);
+            await reviewApplication(data.id, data.status)
+        },
+        onSuccess: (response: any) => {
+            setLoading(false);
+            toast.success(response.message || "Request send successfully");
+        },
+        onError: (error: any) => {
+            setLoading(false);
+            const serverMessage = error?.response?.data?.message || "Failed to submit request.";
+            toast.error(serverMessage);
+        },
+    })
+
 
 
 
@@ -25,24 +48,41 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                         {/* Conditionally render button or spinner */}
                         <div className="flex space-x-4">
                             {
-                                ["ADMINISTRATOR","MANAGER","PUBLISHER","PROCUREMENT_ENTITY"].includes(userData?.role || "") && (
-                                    <>
-                                        <Button
-                                            label="Accept"
-                                            size="sm"
-                                            theme="primary"
-                                            onClick={() => { }}
-                                        />
-                                        <Button
-                                            label="Reject"
-                                            size="sm"
-                                            theme="danger"
-                                            onClick={() => { }}
-                                        />
-                                    </>
+                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") && applicant.status === "SUBMITTED" && applicant.comment === null && (
+                                    !loading ? (
+                                        <>
+                                            <Button
+                                                label="ACCEPT"
+                                                size="sm"
+                                                theme="primary"
+                                                onClick={() => { applicationReviewMutation.mutate({ id: applicant.id, status: "ACCEPTED" }) }}
+                                            />
+                                            <Button
+                                                label="REJECT"
+                                                size="sm"
+                                                theme="danger"
+                                                onClick={() => { applicationReviewMutation.mutate({ id: applicant.id, status: "REJECTED" }) }}
+                                            />
+                                        </>
+
+                                    ) : (
+                                        <div className=".w-full.flex.items-center.justify-center" >
+                                            <Spinner />
+                                        </div>
+                                    )
+                                )
+
+                            }
+                            {
+                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") &&["ACCEPTED", "REJECTED"].includes(applicant.comment) && (
+                                    <Button
+                                        label={`${applicant.comment}`}
+                                        size="sm"
+                                        theme="primary"
+                                        onClick={() => { }}
+                                    />
                                 )
                             }
-
                         </div>
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
                             X
@@ -90,7 +130,7 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                     </>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
