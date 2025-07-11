@@ -213,6 +213,7 @@ export interface ICompany {
   companyTinFilePath: string;
   companyLogoFilePath: string;
   companyCategories: string[];
+  categoryIds: string[];
 }
 
 export interface ICompanyDocuments {

@@ -13,6 +13,7 @@ export default function CategoryList() {
 
     const { categories, isLoading, refetch } = useCategories({
         page,
+        size: 10,
         search,
         sort,
         filter

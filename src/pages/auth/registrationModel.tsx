@@ -102,7 +102,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
             try {
                 const data = await getCategories({
                     page: 0,
-                    size: 300,
+                    size: 1000,
                     search: "",
                     filter: {},
                 });

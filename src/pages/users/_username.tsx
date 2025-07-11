@@ -124,7 +124,8 @@ export default function UserProfile() {
             companyVrn: user.companyVrn || "",
             companyLogoFilePath: user.companyLogoFilePath || "",
             companyTinFilePath: user.companyTinFilePath || "",
-            companyCategories: selectedCategories.filter(cat => cat !== null)
+            categoryIds: selectedCategories.filter(cat => cat !== null),
+            companyCategories: []
         };
 
         setIsUpdating(true); // Set loading state to true

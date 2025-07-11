@@ -57,8 +57,6 @@ const columns: IColumn[] = [
             );
         },
     }
-
-
 ];
 
 export default columns;
