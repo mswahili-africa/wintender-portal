@@ -6,8 +6,6 @@ import toast from "react-hot-toast";
 import Loader from "@/components/spinners/Loader";
 import { IWalletTopUp } from "@/types";
 
-
-
 export default function WalletPaymentModal({
     isOpen,
     isLoading,
@@ -20,7 +18,6 @@ export default function WalletPaymentModal({
     onClose: () => void;
     children: React.ReactNode; // Accept children for dynamic content like loader or success message
 }) {
-    const [showMessage, setShowMessage] = useState(false); // To show the success message
     const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
     const [warningMessage, setWarningMessage] = useState(""); // To display warning message
     const [paymentDetails, setPaymentDetails] = useState({ phoneNumber: "", amount: 1000 });
@@ -48,11 +45,9 @@ export default function WalletPaymentModal({
         try {
             // Trigger the payment submission (API call)
             onSubmit();
-            setShowMessage(true); // Hide the success message
             setIsPayButtonDisabled(true);
             setWarningMessage("");
         } catch (error) {
-            setShowMessage(false);
             setIsPayButtonDisabled(false);
             console.error("Error during payment submission:", error);
         }

@@ -4,13 +4,14 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/submittedColumsColumns";
 import { ISubmittedApplication } from "@/types";
-import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconRecycle, IconTrash } from "@tabler/icons-react";
 import { useSubmittedApplication } from "@/hooks/useSubmittedApplications";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { deleteApplication } from "@/services/tenders";
 import usePopup from "@/hooks/usePopup";
 import toast from "react-hot-toast";
 import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
+import { now } from "lodash";
 
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
@@ -95,25 +96,20 @@ export default function SubmittedApplication() {
                 >
                   <IconEye size={20} />
                 </button>
-                {userRole === "BIDDER" && application.status === "PENDING" && (
-                  <><Fragment>
-
+                {userRole === "BIDDER" && application.tenderCloseDate < Date.now() && (
+                  <Fragment>
                     <button
+                     title={application.status === "SUBMITTED" ? "Recover Application" : "Delete Application"}
                       className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                      onClick={() => ""}
+                      onClick={() => handleDelete(application)}
                     >
-                      <IconEdit size={20} />
+                      {application.status === "SUBMITTED" ? (
+                        <IconRecycle size={20} />
+                      ) : (
+                        <IconTrash size={20} />
+                      )}
                     </button>
                   </Fragment>
-                    <Fragment>
-
-                      <button
-                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                        onClick={() => handleDelete(application)}
-                      >
-                        <IconTrash size={20} />
-                      </button>
-                    </Fragment></>
                 )}
               </div>
             );
@@ -136,7 +132,7 @@ export default function SubmittedApplication() {
           <ApplicantViewModal
             applicant={selectedApplication}
             title="View Application"
-            onClose={() => setViewOpen(false)} 
+            onClose={() => setViewOpen(false)}
             isLoading={false}
           />
         )}

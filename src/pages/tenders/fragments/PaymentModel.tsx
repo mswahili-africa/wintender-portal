@@ -1,12 +1,11 @@
 import { useState } from "react";
-import Button from "@/components/button/Button"; // Custom Button Component
-
+import Button from "@/components/button/Button";
 export default function PaymentModal({
     paymentDetails,
     setPaymentDetails,
     onClose,
     onSubmit,
-    children, // Accept children here to allow passing loader or success message
+    children,
 }: {
     paymentDetails: { phoneNumber: string; period: number };
     setPaymentDetails: React.Dispatch<React.SetStateAction<{ planId: string; period: number; phoneNumber: string; paymentReason: string }>>;
@@ -15,7 +14,6 @@ export default function PaymentModal({
     children: React.ReactNode; // Accept children for dynamic content like loader or success message
 }) {
     const [isLoading, setIsLoading] = useState(false);  // To track loading state
-    const [showMessage, setShowMessage] = useState(false); // To show the success message
     const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
     const [warningMessage, setWarningMessage] = useState(""); // To display warning message
 
@@ -36,13 +34,11 @@ export default function PaymentModal({
         try {
             // Trigger the payment submission (API call)
             onSubmit();
-            setIsLoading(true); // Start loading
-            setShowMessage(true); // Hide the success message
+            setIsLoading(true);
             setIsPayButtonDisabled(true);
             setWarningMessage("");
         } catch (error) {
             setIsLoading(false);
-            setShowMessage(false);
             setIsPayButtonDisabled(false);
             console.error("Error during payment submission:", error);
         }

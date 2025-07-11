@@ -1,41 +1,94 @@
 import { Menu } from "@headlessui/react";
 import {
     IconBellFilled,
-    IconMenu2,
     IconWallet,
     IconPower,
     IconUserCircle
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import WalletPaymentModal from "@/pages/tenders/fragments/WalletPaymentModel";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
+import PaymentModal from "@/pages/tenders/fragments/PaymentModel";
+import { Puff } from "react-loader-spinner";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { USSDPushEnquiry, USSDPushRequest } from "@/services/payments";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
     const user = useUserDataContext();
     const [isOpen, setIsOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false);
+    const navigate = useNavigate();
 
     const walletBalance = user?.userData?.walletAmount;
     const subscription = user?.userData?.subscription;
 
-    return (
-        <div className="lg:flex lg:justify-between lg:-mt-10 lg:mb-20 lg:items-center hidden">
+    const [paymentDetails, setPaymentDetails] = useState({
+        planId: "66698e3f39cbe2504dd54c57",
+        period: 1,
+        phoneNumber: "",
+        paymentReason: "SUBSCRIPTION"
+    });
 
-            <div>
-                <div className="lg:flex lg:gap-5">
-                    <div>
-                        <button className="flex justify-center items-center bg-slate-50 hover:bg-slate-100 w-11 h-11 rounded-md">
-                            <IconMenu2 className="text-slate-500" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div className="flex items-center gap-4 min-w-32">
-                <div className="lg:flex items-center gap-4 w-full">
-                    {typeof subscription === 'number' && subscription > 0 && (() => {
+    const paymentMutation = useMutation({
+        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
+        onSuccess: (data) => {
+            setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
+            startEnquiry(data.id);  // Start the enquiry API calls
+        },
+        onError: (error) => {
+            toast.error("Payment failed: " + error);
+        }
+    });
+
+    const startEnquiry = (id: string) => {
+        let attemptCount = 0;
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await USSDPushEnquiry(id);
+                // Check if response is successful
+                if (response.code === "SUCCESS") {
+                    toast.success("Payment confirmed.");
+                    setIsLoadingEnquiry(false);  // Stop loader if payment is confirmed
+                    clearInterval(intervalId);
+                    navigate("/");
+                }
+            } catch (error) {
+                toast.error("Error checking payment status.");
+            }
+
+            attemptCount += 1;
+            if (attemptCount >= 5) {
+                setIsLoadingEnquiry(false);  // Stop loader after 5 attempts
+                clearInterval(intervalId);  // Stop after 5 attempts
+                window.location.reload();
+            }
+        }, 5000);  // 5-second interval
+    };
+
+    return (
+        <div onClick={() => setIsPaymentModalOpen(true)} className="lg:flex lg:justify-between lg:-mt-10 lg:mb-20 lg:items-center hidden">
+            <div className="lg:flex lg:gap-5">
+                {typeof subscription === 'number' && (() => {
+                    if (subscription === 0) {
+                        return (
+                            <div className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="text-xs font-medium text-red-500">
+                                    Subscription Expired
+                                </span>
+                            </div>
+                        );
+                    }
+
+                    if (subscription > 0) {
                         const today = new Date();
                         const expiryDate = new Date(today);
                         expiryDate.setDate(today.getDate() + subscription);
@@ -47,16 +100,21 @@ const Header = () => {
                         });
 
                         return (
-                            <div title={`Your Subscription will Expires on: ${formattedDate}`} className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div title={`Your Subscription will expire on: ${formattedDate}`} className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
-                                    {subscription} {subscription === 1 ? 'day' : 'days'}
+                                    Subscription: {subscription} {subscription === 1 ? 'day' : 'days'}
                                 </span>
                             </div>
                         );
-                    })()}
+                    }
+                    return null;
+                })()}
+            </div>
+            <div className="flex items-center gap-4 min-w-32">
+                <div className="lg:flex items-center gap-4 w-full">
                     <div className="p-1.5 hover:bg-slate-100 rounded-md">
                         <IconBellFilled className="h-6 w-6 text-slate-600" />
                     </div>
@@ -125,9 +183,33 @@ const Header = () => {
                 </div>
             </div>
             <WalletPaymentModal children={undefined} isOpen={isOpen}
-                onClose={() => setIsOpen(false)} isLoading={false} setIsLoading={function (value: SetStateAction<boolean>): void {
+                onClose={() => setIsOpen(false)} isLoading={false} setIsLoading={function (): void {
                     throw new Error("Function not implemented.");
                 }} />
+
+            {isPaymentModalOpen && (
+                <PaymentModal
+                    paymentDetails={paymentDetails}
+                    setPaymentDetails={setPaymentDetails}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                    onSubmit={() => paymentMutation.mutate(paymentDetails)}
+                >
+                    {/* Show loader and message when enquiry is in progress */}
+                    {isLoadingEnquiry && (
+                        <div className="flex justify-center items-center mt-4">
+                            <Puff
+                                height="60"
+                                width="60"
+                                radius="1"
+                                color="green"
+                                ariaLabel="loading"
+                                visible={isLoadingEnquiry}
+                            />
+                            <p className="mt-4">Please check your phone and accept payment by entering your password.</p>
+                        </div>
+                    )}
+                </PaymentModal>
+            )}
         </div>
     );
 };
