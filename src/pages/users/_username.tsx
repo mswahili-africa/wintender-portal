@@ -9,6 +9,8 @@ import { getUserById, updateBidderCompany } from "@/services/user";
 import { ICategory, ICompany, IUser } from "@/types";
 import { getCategories } from "@/services/tenders";
 import toast from "react-hot-toast";
+import Select from "react-select";
+import { IconX } from "@tabler/icons-react";
 
 export default function UserProfile() {
     const { userId } = useParams();
@@ -18,7 +20,8 @@ export default function UserProfile() {
     const [loading, setLoading] = useState<boolean>(true);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
+    const [selectedCategories1, setSelectedCategories1] = useState<string[]>([]);
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
     const accountOwner = (): boolean => {
@@ -89,8 +92,8 @@ export default function UserProfile() {
     };
 
     const handleCategoryChange = (categoryId: string) => {
-        setSelectedCategories(prevSelected =>
-            prevSelected.includes(categoryId)
+        setSelectedCategories1(prevSelected =>
+            selectedCategories1.includes(categoryId)
                 ? prevSelected.filter(id => id !== categoryId)
                 : [...prevSelected, categoryId]
         );
@@ -124,7 +127,7 @@ export default function UserProfile() {
             companyVrn: user.companyVrn || "",
             companyLogoFilePath: user.companyLogoFilePath || "",
             companyTinFilePath: user.companyTinFilePath || "",
-            categoryIds: selectedCategories.filter(cat => cat !== null),
+            categoryIds: selectedCategories1.filter(cat => cat !== null),
             companyCategories: []
         };
 
@@ -136,7 +139,7 @@ export default function UserProfile() {
             const updatedUser = await getUserById(userId!);
             setUser(updatedUser);
             if (updatedUser.company && updatedUser.company.categories) {
-                setSelectedCategories(updatedUser.company.categories);
+                setSelectedCategories1(updatedUser.company.categories);
             }
 
         } catch (error) {
@@ -146,6 +149,69 @@ export default function UserProfile() {
             setIsUpdating(false); // Reset loading state
         }
     };
+
+    // JCM input style
+    const customStyles = {
+        control: (provided: any, state: any) => ({
+            ...provided,
+            borderColor: state.isFocused ? 'green' : 'green',
+            boxShadow: state.isFocused ? '0 0 0 1px green' : 'none',
+            '&:hover': {
+                borderColor: 'green',
+            },
+        }),
+        option: (provided: any, state: any) => ({
+            ...provided,
+            backgroundColor: state.isSelected
+                ? '#d1fae5'
+                : state.isFocused
+                    ? '#f0fdf4'
+                    : 'white',
+            color: 'black',
+        }),
+        singleValue: (provided: any) => ({
+            ...provided,
+            color: 'black',
+        }),
+        menu: (provided: any) => ({
+            ...provided,
+            zIndex: 9999,
+        }),
+    };
+
+    const [isChanged, setIsChanged] = useState(false);
+    const addCategory = (category: any) => {
+        if (!selectedCategories.find((c: any) => c.id === category.id)) {
+            setSelectedCategories([...selectedCategories, category]);
+            handleCategoryChange(category.id);
+            console.log(selectedCategories1);
+            setIsChanged(true); // ← Mark as changed
+        }
+    };
+
+    const removeCategory = (category: ICategory) => {
+        setSelectedCategories(prev =>
+            prev.filter((c: any) => c.id !== category.id)
+        );
+        handleCategoryChange(category.id);
+        setIsChanged(true);
+        console.log(selectedCategories1);
+    };
+
+    const availableOptions = categories
+        .filter((cat) => !selectedCategories.find((sc: any) => sc.id === cat.id))
+        .map((cat) => ({ value: cat.id, label: cat.name }));
+
+
+    // useEffect(() => {
+    //     if (user?.companyCategories && categories.length > 0 && isOpen) {
+    //         const initialSelected = categories.filter((cat:any) =>
+    //             user.companyCategories.includes(cat.id)
+    //         );
+    //         setSelectedCategories(initialSelected);
+    //         setIsChanged(false);
+    //     }
+    // }, [user, categories, isOpen]);
 
 
     return (
@@ -311,7 +377,7 @@ export default function UserProfile() {
                         )}
                     </div>
 
-                    <div className="w-1/2 pl-4">
+                    {/* <div className="w-1/2 pl-4">
                         <h2 className="text-lg font-semibold mb-4">Select Categories</h2>
                         <input
                             type="text"
@@ -335,6 +401,45 @@ export default function UserProfile() {
                                     </label>
                                 </div>
                             ))}
+                        </div>
+                    </div> */}
+
+                    {/* JCM new categories */}
+                    <div className="flex flex-col md:w-1/2">
+                        <Select
+                            options={availableOptions}
+                            onChange={(selectedOption) => {
+                                const selected = categories.find((c: any) => c.id === selectedOption?.value);
+                                if (selected) addCategory(selected);
+                            }}
+                            placeholder="Search or select category"
+                            className="w-full border-0 border-green-700 focus:ring-0"
+                            styles={customStyles}
+                        />
+
+                        {/*JCM Selected Categories */}
+                        <div className="flex flex-col gap-2 mt-5 mb-4">
+                            {selectedCategories.length === 0 ? (
+                                <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                    No categories
+                                </span>
+                            ) : (
+                                selectedCategories.map((category: any) => (
+                                    <span
+                                        key={category.id}
+                                        className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
+                                    >
+                                        {category.name}
+                                        <button
+                                            type="button"
+                                            onClick={() => removeCategory(category)}
+                                            className="text-red-500 hover:text-red-700 ml-2 text-xs"
+                                        >
+                                            <IconX size={16} />
+                                        </button>
+                                    </span>
+                                ))
+                            )}
                         </div>
                     </div>
 
