@@ -2,6 +2,7 @@ import Button from "@/components/button/Button";
 import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
+import { IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -36,13 +37,10 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
     })
 
 
-
-
-
     return (
         <div className="fixed inset-0 flex items-center justify-center">
-            <div className="bg-green-100 rounded-lg shadow-lg max-w-3xl w-full p-4">
-                <div className="flex justify-between items-center mb-4">
+            <div className="bg-green-100 rounded-lg shadow-lg max-w-4xl w-full p-5">
+                <div className="flex justify-between items-center  border-b border-slate-200 pb-4">
                     <h2 className="text-xl font-bold">{applicant.tenderIdTitle}</h2>
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
@@ -74,7 +72,7 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
 
                             }
                             {
-                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") &&["ACCEPTED", "REJECTED"].includes(applicant.comment) && (
+                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") && ["ACCEPTED", "REJECTED"].includes(applicant.comment) && (
                                     <Button
                                         label={`${applicant.comment}`}
                                         size="sm"
@@ -85,14 +83,14 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                             }
                         </div>
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
-                            X
+                            <IconX size={26}/>
                         </button>
                     </div>
                 </div>
 
-                <div className="mt-4 overflow-y-auto" style={{ maxHeight: '70vh' }}>
+                <div className="mt-4 overflow-y-auto" style={{ maxHeight: '75vh' }}>
                     <>
-                        <hr /><hr /><br /><br />
+                        {/* <hr /><hr /><br /><br /> */}
                         <div className="space-y-4">
                             <div className="flex items-center  mb-4">
                                 <strong className="w-32 text-gray-600">Bidder:</strong>
@@ -118,15 +116,25 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                                 <p className="flex-1">{new Date(applicant.createdAt).toLocaleString()}</p>
                             </div>
                         </div>
+
+
                         {/* PDF Viewer */}
-                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                            <iframe
-                                src={applicant.filePath}
-                                width="100%"
-                                height="500px"
-                                title="Tender Document"
-                            ></iframe>
-                        </div>
+                        <div className="font-bold text-lg my-4 uppercase">Application requirements ({applicant.files?.length ?? 0})</div>
+                        {
+                            applicant.files?.map((file: any, index: number) => (
+                                <div key={index} className="mt-4">
+                                    <h2 className="text-base font-bold mb-2">{file.stage}</h2>
+                                    <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                        <iframe
+                                            src={file.filePath}
+                                            width="100%"
+                                            height="500px"
+                                            title="Tender Document"
+                                        ></iframe>
+                                    </div>
+                                </div>
+                            ))
+                        }
                     </>
                 </div>
             </div>
