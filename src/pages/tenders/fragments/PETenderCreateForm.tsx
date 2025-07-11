@@ -422,30 +422,22 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         </label>
 
                         <input
-  type="text"
-  inputMode="decimal"
-  className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
-  {...register("consultationFee", {
-    required: true,
-    pattern: {
-      value: /^\d+(\.\d{1,2})?$/,
-      message: "Enter a valid number",
-    },
-  })}
-  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value.replace(/[^0-9.]/g, "");
-  }}
-/>
+                            type="text"
+                            inputMode="decimal"
+                            className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                            {...register("consultationFee", {
+                                required: true,
+                                pattern: {
+                                    value: /^\d+(\.\d{1,2})?$/,
+                                    message: "Enter a valid number",
+                                },
+                            })}
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+                            }}
+                        />
 
 
-
-
-                        {/* <select
-                            className={`${errors.consultationFee?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("consultationFee", { required: true })}
-                        >
-                            <option value="100000">100,000</option>
-                        </select> */}
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.consultationFee?.message?.toString()}
                         </p>

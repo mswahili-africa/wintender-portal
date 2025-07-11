@@ -63,7 +63,7 @@ export default function UserProfile() {
             try {
                 const data = await getCategories({
                     page: 0,
-                    size: 300,
+                    size: 1000,
                     search: "",
                     filter: {},
                 });
