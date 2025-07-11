@@ -43,6 +43,7 @@ export default function Bidders() {
     const [tempSearch, setTempSearch] = useState<string>("");
     const [tempSelectedRegion, setTempSelectedRegion] = useState<{ label: string, value: string } | null>(null);
     const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
+    const [categorySearchTerm, setCategorySearchTerm] = useState("");
 
     useEffect(() => {
         const addressParam = searchParams.get("address");
@@ -70,7 +71,7 @@ export default function Bidders() {
         const searchParam = searchParams.get("search");
 
         const parsedCategories = categoriesParam
-            ? categoriesParam.replace(/^\[|\]$/g, "").split(",").filter(id => id) // Also filter out empty strings
+            ? categoriesParam.replace(/^\[|\]$/g, "").split(",").filter(id => id)
             : [];
 
         if (parsedCategories.length > 0) {
@@ -97,6 +98,7 @@ export default function Bidders() {
 
     const { categories: allCategories } = useCategories({
         page: 0,
+        size: 1000,
         sort: "name,asc",
     });
 
@@ -108,7 +110,7 @@ export default function Bidders() {
     };
 
     const handleApplyFilters = () => {
-        console.log("Filter button clicked"); 
+        console.log("Filter button clicked");
         const params = new URLSearchParams();
 
         if (tempSelectedCategories.length > 0) {
@@ -243,23 +245,37 @@ export default function Bidders() {
                         {showCheckboxes && (
                             <div
                                 ref={checkboxRef}
-                                className="absolute z-20 mt-2 p-4 bg-white rounded-md shadow-lg border border-gray-200 w-80 max-h-64 overflow-y-auto"
+                                className="absolute z-20 mt-2 p-4 bg-white rounded-md shadow-lg border border-gray-200 w-80 max-h-80 overflow-y-auto"
                             >
                                 <p className="text-sm font-medium text-gray-600 mb-2">Filter by Category</p>
-                                {allCategories?.content?.map((category: any) => (
-                                    <label key={category.id} className="flex items-center space-x-2 mb-2">
-                                        <input
-                                            type="checkbox"
-                                            value={category.id}
-                                            checked={tempSelectedCategories.includes(category.id)}
-                                            onChange={handleCategoryChange}
-                                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
-                                        />
-                                        <span className="text-sm text-gray-700">{category.name}</span>
-                                    </label>
-                                ))}
+
+                                <input
+                                    type="text"
+                                    placeholder="Search category..."
+                                    className="input-normal mb-3 w-full px-2 py-1 border border-gray-300 rounded"
+                                    value={categorySearchTerm}
+                                    onChange={(e) => setCategorySearchTerm(e.target.value)}
+                                />
+
+                                {allCategories?.content
+                                    ?.filter((cat: any) =>
+                                        cat.name.toLowerCase().includes(categorySearchTerm.toLowerCase())
+                                    )
+                                    .map((category: any) => (
+                                        <label key={category.id} className="flex items-center space-x-2 mb-2">
+                                            <input
+                                                type="checkbox"
+                                                value={category.id}
+                                                checked={tempSelectedCategories.includes(category.id)}
+                                                onChange={handleCategoryChange}
+                                                className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
+                                            />
+                                            <span className="text-sm text-gray-700">{category.name}</span>
+                                        </label>
+                                    ))}
                             </div>
                         )}
+
                     </div>
                 </div>
 

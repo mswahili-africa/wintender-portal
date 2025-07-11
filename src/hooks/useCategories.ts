@@ -6,6 +6,7 @@ import useErrorHandler from "./useErrorHandler";
 
 interface IProps {
     page: number
+    size: number
     search?: string
     categories?: string[]
     sort?: string
@@ -16,7 +17,7 @@ export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["getCategories", props.page, props.sort, props?.search ,props?.categories, props?.filter],
-        queryFn: () => getCategories({page: props.page, size: 10, sort: props.sort, search: props.search, categories: props.categories, filter: props.filter}), // Added categories as an array
+        queryFn: () => getCategories({page: props.page, size: props.size, sort: props.sort, search: props.search, categories: props.categories, filter: props.filter}), // Added categories as an array
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 20000
     });
