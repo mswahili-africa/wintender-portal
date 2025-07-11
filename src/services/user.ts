@@ -11,12 +11,20 @@ export async function getUsers(params: IQueryParams) {
 }
 
 export async function getBidders(params: IQueryParams) {
-    const response = await http.get<IlistResponse<ICompany>>("/users/user/list-bidders", {
-        params: params
-    })
+    const queryParams = {
+        ...params,
+        ...(params.categories && { category: `[${params.categories.join(",")}]` })
+    };
 
-    return response.data
+    delete queryParams.categories;
+
+    const response = await http.get<IlistResponse<ICompany>>("/users/user/list-bidders", {
+        params: queryParams
+    });
+
+    return response.data;
 }
+
 
 export async function getPEUsers(params: IQueryParams) {
     const response = await http.get<IlistResponse<ICompany>>("/users/user/list-procurement-entities", {
@@ -42,6 +50,11 @@ export async function updateBidder(payload: IUser, userId: string) {
     const response = await http.post<any>(`/users/bidder/update/${userId}`, payload)
 
     return response.data
+}
+
+export async function updateBidderCategories(payload: { categoryIds: string[] }, id: string) {
+    const response = await http.put(`/users/bidder/category/${id}`, payload);
+    return response.data;
 }
 
 export async function updateBidderCompany(payload: ICompany, userId: string) {

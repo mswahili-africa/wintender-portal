@@ -12,6 +12,7 @@ export interface IQueryParams {
   sort?: string;
   search?: string;
   categories?: string[];
+  address?: string;
   userId?: string;
   searchKey?: string
   searchValue?: string

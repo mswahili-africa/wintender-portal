@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import { ICategory, ICompany, IUser } from "@/types";
+import { ICategory, ICompany } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
 import { IconMessage } from "@tabler/icons-react";
@@ -20,11 +20,10 @@ import { getUserPayments } from "@/hooks/usePayments";
 import applicationColumns from "./applicationListColumns";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import usePopup from "@/hooks/usePopup";
-import { resetUser } from "@/services/auth";
-import { changeUserStatus } from "@/services/user";
 import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
 import Select from "react-select";
+import { updateBidderCategories } from "@/services/user";
 
 interface IProps {
     children?: React.ReactNode;
@@ -44,7 +43,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
-    const { showConfirmation } = usePopup();
 
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
@@ -53,13 +51,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const addCategory = (category: ICategory) => {
         if (!selectedCategories.find((c) => c.id === category.id)) {
             setSelectedCategories([...selectedCategories, category]);
-            setIsChanged(true);
+            setIsChanged(true); // ← Mark as changed
         }
     };
 
     const removeCategory = (category: ICategory) => {
-        setSelectedCategories(
-            selectedCategories.filter((c) => c.id !== category.id)
+        setSelectedCategories(prev =>
+            prev.filter((c) => c.id !== category.id)
         );
         setIsChanged(true);
     };
@@ -70,20 +68,22 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
 
     useEffect(() => {
-        if (user?.companyCategories && categories.length > 0) {
+        if (user?.companyCategories && categories.length > 0 && isOpen) {
             const initialSelected = categories.filter((cat) =>
                 user.companyCategories.includes(cat.id)
             );
             setSelectedCategories(initialSelected);
+            setIsChanged(false);
         }
-    }, [user, categories]);
+    }, [user, categories, isOpen]);
+
 
     // JCM input style
     const customStyles = {
         control: (provided: any, state: any) => ({
             ...provided,
-            borderColor: state.isFocused ? 'green' : 'green',      
-            boxShadow: state.isFocused ? '0 0 0 1px green' : 'none', 
+            borderColor: state.isFocused ? 'green' : 'green',
+            boxShadow: state.isFocused ? '0 0 0 1px green' : 'none',
             '&:hover': {
                 borderColor: 'green',
             },
@@ -91,9 +91,9 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         option: (provided: any, state: any) => ({
             ...provided,
             backgroundColor: state.isSelected
-                ? '#d1fae5' 
+                ? '#d1fae5'
                 : state.isFocused
-                    ? '#f0fdf4' 
+                    ? '#f0fdf4'
                     : 'white',
             color: 'black',
         }),
@@ -106,7 +106,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
             zIndex: 9999,
         }),
     };
-
 
     const [searchParams, _] = useSearchParams();
 
@@ -166,6 +165,18 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         onError: () => {
             toast.error("Send failed");
             setIsSending(false); // Reset loading state on error
+        },
+    });
+
+    const updateCategoriesMutation = useMutation({
+        mutationFn: (data: { id: string; categoryIds: string[] }) =>
+            updateBidderCategories({ categoryIds: data.categoryIds }, data.id),
+        onSuccess: () => {
+            toast.success("Categories updated successfully");
+            setIsChanged(false);
+        },
+        onError: () => {
+            toast.error("Failed to update categories");
         },
     });
 
@@ -271,7 +282,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                                         onClick={() => removeCategory(category)}
                                                         className="text-red-500 hover:text-red-700 ml-2 text-xs"
                                                     >
-                                                        remove
+                                                        X
                                                     </button>
                                                 </span>
                                             ))
@@ -285,32 +296,23 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     <div className="w-full flex justify-center">
                                         <Button
                                             type="button"
-                                            label="Save"
+                                            label={updateCategoriesMutation.isLoading ? "Updating..." : "Save"}
                                             size="md"
                                             theme="primary"
-                                            onClick={() => { }}
+                                            loading={updateCategoriesMutation.isLoading}
+                                            disabled={updateCategoriesMutation.isLoading}
+                                            onClick={() => {
+                                                const categoryIds = selectedCategories.map((cat) => cat.id);
+                                                if (categoryIds.length > 0) {
+                                                    updateCategoriesMutation.mutate({
+                                                        id: user.id,
+                                                        categoryIds,
+                                                    });
+                                                }
+                                            }}
                                         />
                                     </div>
                                 }
-
-                                {/* Show loader while categories are loading */}
-                                {/* {categories.length === 0 ? (
-                                    <Loader />
-                                ) : (
-                                    <ul>
-                                        {(Array.isArray(user.companyCategories) ? user.companyCategories : [])
-                                            .filter(categoryId => categoryId) // Ensure no null/undefined values
-                                            .map((categoryId) => {
-                                                const category = categories.find((c) => c.id === categoryId);
-                                                return (
-                                                    <li key={categoryId || `unknown-${Math.random()}`} className="flex items-center gap-2">
-                                                        <input type="checkbox" checked={true} readOnly className="h-4 w-4 text-green-500" />
-                                                        <span>{category ? category.name : "Unknown Category"}</span>
-                                                    </li>
-                                                );
-                                            })}
-                                    </ul>
-                                )} */}
                             </div>
                         </div>
 
@@ -445,12 +447,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                     </SMSModal>
                 )}
             </Modal>
-
-
         </>
     );
 };
-
-
 
 export default BidderProfileModal;

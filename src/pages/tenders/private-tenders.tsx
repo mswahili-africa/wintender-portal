@@ -42,6 +42,7 @@ export default function PrivateTenders() {
     const [tempSelectedCategory, setTempSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
+    const navigate = useNavigate();
 
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
@@ -79,8 +80,6 @@ export default function PrivateTenders() {
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER"; // Extract role from userData, defaulting to "BIDDER" if not found
     const subscriptionDays = userData?.subscription;
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (subscriptionDays !== undefined && subscriptionDays < 1) {
@@ -424,7 +423,7 @@ export default function PrivateTenders() {
 
                                 {/* JCM tender applicant list button */}
                                 {
-                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER", "PROCUREMENT_ENTITY"].includes(userRole)  && content.selfApply === true ?
+                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER", "PROCUREMENT_ENTITY"].includes(userRole) && content.selfApply === true ?
                                         <Fragment>
 
                                             <button
