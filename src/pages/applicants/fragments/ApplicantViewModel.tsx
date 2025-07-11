@@ -23,16 +23,15 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
     const applicationReviewMutation = useMutation({
         mutationFn: async (data: { id: string, status: string }) => {
             setLoading(true);
-            await reviewApplication(data.id, data.status)
+            return await reviewApplication(data.id, data.status)
         },
         onSuccess: (response: any) => {
             setLoading(false);
-            toast.success(response.message || "Request send successfully");
+            toast.success(response?.message || "Request send successfully");
         },
         onError: (error: any) => {
             setLoading(false);
-            const serverMessage = error?.response?.data?.message || "Failed to submit request.";
-            toast.error(serverMessage);
+            toast.error("Failed to submit request.");
         },
     })
 
@@ -40,7 +39,7 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
     return (
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-green-100 rounded-lg shadow-lg max-w-4xl w-full p-5">
-                <div className="flex justify-between items-center  border-b border-slate-200 pb-4">
+                <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">{applicant.tenderIdTitle}</h2>
                     <div className="flex space-x-4">
                         {/* Conditionally render button or spinner */}
@@ -72,25 +71,24 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
 
                             }
                             {
-                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") && ["ACCEPTED", "REJECTED"].includes(applicant.comment) && (
-                                    <Button
-                                        label={`${applicant.comment}`}
-                                        size="sm"
-                                        theme="primary"
-                                        onClick={() => { }}
-                                    />
+                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") && applicant.status === "CLOSED" && (
+                                    applicant.comment === "ACCEPTED" ? (
+                                        <div className="rounded-lg p-2 text-sm border bg-green-500 border-green-500 text-white">{applicant.comment}</div>
+                                    ) : (
+                                        <div className="rounded-lg p-2 text-sm border bg-red-500 border-red-500 text-white">{applicant.comment}</div>
+                                    )
                                 )
                             }
                         </div>
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
-                            <IconX size={26}/>
+                            <IconX size={26} />
                         </button>
                     </div>
                 </div>
 
                 <div className="mt-4 overflow-y-auto" style={{ maxHeight: '75vh' }}>
                     <>
-                        {/* <hr /><hr /><br /><br /> */}
+                        <hr /><hr /><br /><br />
                         <div className="space-y-4">
                             <div className="flex items-center  mb-4">
                                 <strong className="w-32 text-gray-600">Bidder:</strong>
@@ -119,10 +117,23 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
 
 
                         {/* PDF Viewer */}
-                        <div className="font-bold text-lg my-4 uppercase">Application requirements ({applicant.files?.length ?? 0})</div>
+                        <div className="font-bold text-lg my-4 uppercase" id={applicant.companyName}>Application package ({applicant.files?.length ?? 0})</div>
+                        <ul className="flex flex-col text-red-600 italic text-sm list-inside ">
+                            {
+                                applicant.files?.map((file: any, index: number) => (
+                                    <li key={index}>
+                                        - <a href={`#${file.stage}`}>
+                                            {file.stage}
+                                        </a>
+                                    </li>
+                                )
+                                )
+
+                            }
+                        </ul>
                         {
                             applicant.files?.map((file: any, index: number) => (
-                                <div key={index} className="mt-4">
+                                <div key={index} className="mt-4" id={file.stage}>
                                     <h2 className="text-base font-bold mb-2">{file.stage}</h2>
                                     <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                         <iframe

@@ -7,7 +7,7 @@ const Spinner = ({ size = "md" }) => {
       <div className="flex justify-center items-center">
           <div
               className={`${spinnerSize} border-4 border-t-4 border-green-200 rounded-full animate-spin`}
-              style={{ borderTopColor: 'blue' }}
+              style={{ borderTopColor: 'green' }}
           ></div>
       </div>
   );
