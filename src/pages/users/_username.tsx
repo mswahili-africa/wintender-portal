@@ -21,7 +21,7 @@ export default function UserProfile() {
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-    const [selectedCategories1, setSelectedCategories1] = useState<string[]>([]);
+    const [selectedCategoriesIds, setSelectedCategoriesIds] = useState<string[]>([]);
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
     const accountOwner = (): boolean => {
@@ -91,14 +91,6 @@ export default function UserProfile() {
         });
     };
 
-    const handleCategoryChange = (categoryId: string) => {
-        setSelectedCategories1(prevSelected =>
-            selectedCategories1.includes(categoryId)
-                ? prevSelected.filter(id => id !== categoryId)
-                : [...prevSelected, categoryId]
-        );
-    };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -127,7 +119,7 @@ export default function UserProfile() {
             companyVrn: user.companyVrn || "",
             companyLogoFilePath: user.companyLogoFilePath || "",
             companyTinFilePath: user.companyTinFilePath || "",
-            categoryIds: selectedCategories1.filter(cat => cat !== null),
+            categoryIds: selectedCategoriesIds.filter(cat => cat !== null),
             companyCategories: []
         };
 
@@ -139,7 +131,7 @@ export default function UserProfile() {
             const updatedUser = await getUserById(userId!);
             setUser(updatedUser);
             if (updatedUser.company && updatedUser.company.categories) {
-                setSelectedCategories1(updatedUser.company.categories);
+                setSelectedCategoriesIds(updatedUser.company.categories);
             }
 
         } catch (error) {
@@ -179,39 +171,32 @@ export default function UserProfile() {
         }),
     };
 
-    const [isChanged, setIsChanged] = useState(false);
-    const addCategory = (category: any) => {
+    const manageCategoriesSelection = (category: any) => {
         if (!selectedCategories.find((c: any) => c.id === category.id)) {
             setSelectedCategories([...selectedCategories, category]);
-            handleCategoryChange(category.id);
-            console.log(selectedCategories1);
-            setIsChanged(true); // ← Mark as changed
+            setSelectedCategoriesIds([...selectedCategoriesIds, category.id]);
+        } else {
+            setSelectedCategories(prev =>
+                prev.filter((c: any) => c.id !== category.id)
+            );
+            setSelectedCategoriesIds(prevSelected => prevSelected.filter(id => id !== category.id));
         }
-    };
+    }
 
-    const removeCategory = (category: ICategory) => {
-        setSelectedCategories(prev =>
-            prev.filter((c: any) => c.id !== category.id)
-        );
-        handleCategoryChange(category.id);
-        setIsChanged(true);
-        console.log(selectedCategories1);
-    };
 
     const availableOptions = categories
         .filter((cat) => !selectedCategories.find((sc: any) => sc.id === cat.id))
         .map((cat) => ({ value: cat.id, label: cat.name }));
 
 
-    // useEffect(() => {
-    //     if (user?.companyCategories && categories.length > 0 && isOpen) {
-    //         const initialSelected = categories.filter((cat:any) =>
-    //             user.companyCategories.includes(cat.id)
-    //         );
-    //         setSelectedCategories(initialSelected);
-    //         setIsChanged(false);
-    //     }
-    // }, [user, categories, isOpen]);
+    useEffect(() => {
+        if (user?.companyCategories && categories.length > 0) {
+            const initialSelected = categories.filter((cat: any) =>
+                user.companyCategories.includes(cat.id)
+            );
+            setSelectedCategories(initialSelected);
+        }
+    }, [user, categories]);
 
 
     return (
@@ -377,40 +362,13 @@ export default function UserProfile() {
                         )}
                     </div>
 
-                    {/* <div className="w-1/2 pl-4">
-                        <h2 className="text-lg font-semibold mb-4">Select Categories</h2>
-                        <input
-                            type="text"
-                            placeholder="Search categories..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="mb-4 p-2 border border-gray-300 rounded w-full"
-                        />
-                        <div className="max-h-64 overflow-y-auto">
-                            {filteredCategories.map(category => (
-                                <div key={category.id} className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        id={`category-${category.id}`}
-                                        checked={selectedCategories.includes(category.id)}
-                                        onChange={() => handleCategoryChange(category.id)}
-                                        className="mr-2"
-                                    />
-                                    <label htmlFor={`category-${category.id}`} className="text-sm">
-                                        {category.categoryGroup} - {category.name}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                    </div> */}
-
                     {/* JCM new categories */}
                     <div className="flex flex-col md:w-1/2">
                         <Select
                             options={availableOptions}
                             onChange={(selectedOption) => {
                                 const selected = categories.find((c: any) => c.id === selectedOption?.value);
-                                if (selected) addCategory(selected);
+                                if (selected) manageCategoriesSelection(selected);
                             }}
                             placeholder="Search or select category"
                             className="w-full border-0 border-green-700 focus:ring-0"
@@ -432,7 +390,7 @@ export default function UserProfile() {
                                         {category.name}
                                         <button
                                             type="button"
-                                            onClick={() => removeCategory(category)}
+                                            onClick={() => manageCategoriesSelection(category)}
                                             className="text-red-500 hover:text-red-700 ml-2 text-xs"
                                         >
                                             <IconX size={16} />
