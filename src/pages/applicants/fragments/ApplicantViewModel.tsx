@@ -1,8 +1,9 @@
 import Button from "@/components/button/Button";
+import Modal from "@/components/Modal";
 import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
-import { IconFileDownload, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconFileDownload, IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -17,23 +18,28 @@ interface ModalProps {
 
 const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProps) => {
     const { userData } = useUserDataContext();
-    const [loading, setLoading] = useState(false);
+
 
     // JCM accept or reject tender
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const [data, setData] = useState({ id: "123", status: "" });
     const applicationReviewMutation = useMutation({
         mutationFn: async (data: { id: string, status: string }) => {
-            setLoading(true);
             return await reviewApplication(data.id, data.status)
         },
         onSuccess: (response: any) => {
-            setLoading(false);
             toast.success(response?.message || "Request send successfully");
         },
         onError: (error: any) => {
-            setLoading(false);
             toast.error("Failed to submit request.");
         },
-    })
+    });
+
+    // Handle confirmation modal
+    const handleConfirmation = (status: string, id: string) => {
+        setData({ id, status });
+        setIsConfirmationModalOpen(true);
+    };
 
 
     return (
@@ -45,28 +51,24 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                         {/* Conditionally render button or spinner */}
                         <div className="flex space-x-4">
                             {
-                                ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") && applicant.status === "SUBMITTED" && applicant.comment === null && (
-                                    !loading ? (
-                                        <>
-                                            <Button
-                                                label="ACCEPT"
-                                                size="sm"
-                                                theme="primary"
-                                                onClick={() => { applicationReviewMutation.mutate({ id: applicant.id, status: "ACCEPTED" }) }}
-                                            />
-                                            <Button
-                                                label="REJECT"
-                                                size="sm"
-                                                theme="danger"
-                                                onClick={() => { applicationReviewMutation.mutate({ id: applicant.id, status: "REJECTED" }) }}
-                                            />
-                                        </>
+                                ["PROCUREMENT_ENTITY"].includes(userData?.role || "") && applicant.status === "SUBMITTED" && applicant.comment === null && (
+                                    <>
+                                        <Button
+                                            label="ACCEPT"
+                                            size="sm"
+                                            theme="primary"
+                                            disabled={applicationReviewMutation.isLoading}
+                                            onClick={() => handleConfirmation("ACCEPTED", applicant.id)}
+                                        />
+                                        <Button
+                                            label="REJECT"
+                                            size="sm"
+                                            theme="danger"
+                                            disabled={applicationReviewMutation.isLoading}
+                                            onClick={() => handleConfirmation("REJECTED", applicant.id)}
+                                        />
+                                    </>
 
-                                    ) : (
-                                        <div className=".w-full.flex.items-center.justify-center" >
-                                            <Spinner />
-                                        </div>
-                                    )
                                 )
 
                             }
@@ -83,6 +85,73 @@ const ApplicantViewModal = ({ applicant, title, onClose, isLoading, }: ModalProp
                         <button onClick={onClose} className="text-red-500 text-xl font-bold">
                             <IconX size={26} />
                         </button>
+
+                        {/* JCM confirmation modal */}
+                        <Modal
+                            isOpen={isConfirmationModalOpen}
+                            onClose={() => {
+                                setData({ id: "", status: "" });
+                                setIsConfirmationModalOpen(false);
+                            }}
+                            size="sm"
+                        >
+                            <div className="p-6 text-center">
+                                <div className="flex justify-center items-center mb-4">
+                                    <IconAlertTriangle
+                                        size={40}
+                                        className={`${data.status === "ACCEPTED" ? "text-green-500" : "text-red-500"
+                                            }`}
+                                    />
+                                </div>
+
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Confirm {data.status === "ACCEPTED" ? "Acceptance" : "Rejection"}
+                                </h3>
+
+                                <p className="text-sm text-gray-600">
+                                    Are you sure you want to{" "}
+                                    <span
+                                        className={`font-semibold ${data.status === "ACCEPTED" ? "text-green-600" : "text-red-600"
+                                            }`}
+                                    >
+                                        {data.status === "ACCEPTED" ? "accept" : "reject"}
+                                    </span>{" "}
+                                    this application?. This action cannot be undone.
+                                </p>
+
+                                <div className="mt-6 flex justify-end gap-3">
+                                    {
+                                        !applicationReviewMutation.isLoading && (
+                                            <Button
+                                                label="Cancel"
+                                                size="sm"
+                                                theme="secondary"
+                                                onClick={() => {
+                                                    setData({ id: "", status: "" });
+                                                    setIsConfirmationModalOpen(false);
+                                                }}
+                                            />
+                                        )
+                                    }
+                                    <Button
+                                        label={`I confirm ${data.status === "ACCEPTED" ? "acceptance" : "rejection"}`}
+                                        size="sm"
+                                        disabled={applicationReviewMutation.isLoading}
+                                        loading={applicationReviewMutation.isLoading}
+                                        theme={data.status === "ACCEPTED" ? "primary" : "danger"}
+                                        onClick={() => {
+                                            applicationReviewMutation.mutate({
+                                                id: data.id,
+                                                status: data.status,
+                                            });
+                                            setIsConfirmationModalOpen(false);
+                                            onClose();
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </Modal>
+
                     </div>
                 </div>
 
