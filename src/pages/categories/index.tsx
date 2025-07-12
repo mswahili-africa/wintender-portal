@@ -4,6 +4,7 @@ import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useCategories from "@/hooks/useCategories";
 import columns from "./fragments/categoryColumns";
 import CategoryCreate from "./fragments/categoryCreateForm";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 export default function CategoryList() {
     const [page, setPage] = useState<number>(0);
@@ -44,8 +45,23 @@ export default function CategoryList() {
                     data={categories?.content || []}
                     isLoading={isLoading}
                     hasSelection={false}
-                    hasActions={false}
                     onSorting={handleSorting}
+                    hasActions={true}
+                    actionSlot={
+                        (content: any) => {
+                            return (
+                                <div className="flex items-center gap-2">
+                                    {/* Add any action buttons here */}
+                                    <button
+                                        className={`${true ? "text-green-500 hover:text-green-700" : "text-red-500 hover:text-red-700"}`}
+                                        onClick={() => console.log("Action for", content.name)}
+                                    >
+                                        {true ? <IconEye  size={24} />: <IconEyeOff size={24} />}
+                                    </button>
+                                </div>
+                            );
+                        }
+                    }
                 />
 
                 <div className="flex justify-between items-center p-4 lg:px-8">
