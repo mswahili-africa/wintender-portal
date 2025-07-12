@@ -1,4 +1,4 @@
-import { IconFilter, IconMessage, IconRefresh, IconSearch } from "@tabler/icons-react";
+import { IconChevronDown, IconFilter, IconMessage, IconRefresh, IconSearch } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
@@ -213,89 +213,122 @@ export default function Bidders() {
                     Send Bulk
                 </button>
             </div>
-
-            <div className="flex justify-between py-3 items-center border-b border-slate-200">
-                <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
-                    <div className="mb-2">
-                        <input
-                            type="text"
-                            placeholder="Search by Name"
-                            className="input-normal py-2 w-60"
-                            value={tempSearch}
-                            onChange={(e) => setTempSearch(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <Select
-                            options={regionOptions}
-                            value={tempSelectedRegion}
-                            onChange={setTempSelectedRegion}
-                            placeholder="Select Region"
-                            className="w-60"
-                            isClearable
-                        />
-                    </div>
-                    <div className="mb-2 relative">
-                        <button
-                            onClick={() => setShowCheckboxes(!showCheckboxes)}
-                            className="px-3 py-2 text-sm bg-gray-100 hover:bg-green-200 rounded shadow border border-green-300"
-                        >
-                            Select Categories
-                        </button>
-                        {showCheckboxes && (
+            <div className="flex flex-col border-b py-3 gap-y-1 mb-1 border-slate-200">
+                <div className="flex justify-between items-center flex-col md:flex-row">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3" >
+                        <div className="mb-2">
+                            <input
+                                type="text"
+                                placeholder="Search by Name"
+                                className="input-normal py-2 w-60"
+                                value={tempSearch}
+                                onChange={(e) => setTempSearch(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <Select
+                                options={regionOptions}
+                                value={tempSelectedRegion}
+                                onChange={setTempSelectedRegion}
+                                placeholder="Select Region"
+                                className="w-60"
+                                isClearable
+                            />
+                        </div>
+                        <div className="mb-2 relative">
                             <div
-                                ref={checkboxRef}
-                                className="absolute z-20 mt-2 p-4 bg-white rounded-md shadow-lg border border-gray-200 w-80 max-h-80 overflow-y-auto"
+                                onClick={() => setShowCheckboxes(!showCheckboxes)}
+                                className="px-3 py-2 text-sm  hover:bg-green-200 rounded shadow border border-green-300 justify-between flex flex-row items-center cursor-pointer"
                             >
-                                <p className="text-sm font-medium text-gray-600 mb-2">Filter by Category</p>
-
-                                <input
-                                    type="text"
-                                    placeholder="Search category..."
-                                    className="input-normal mb-3 w-full px-2 py-1 border border-gray-300 rounded"
-                                    value={categorySearchTerm}
-                                    onChange={(e) => setCategorySearchTerm(e.target.value)}
-                                />
-
-                                {allCategories?.content
-                                    ?.filter((cat: any) =>
-                                        cat.name.toLowerCase().includes(categorySearchTerm.toLowerCase())
-                                    )
-                                    .map((category: any) => (
-                                        <label key={category.id} className="flex items-center space-x-2 mb-2">
-                                            <input
-                                                type="checkbox"
-                                                value={category.id}
-                                                checked={tempSelectedCategories.includes(category.id)}
-                                                onChange={handleCategoryChange}
-                                                className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
-                                            />
-                                            <span className="text-sm text-gray-700">{category.name}</span>
-                                        </label>
-                                    ))}
+                                <div>Select Categories</div>
+                                <div className="border-l border-gray-300">
+                                    <IconChevronDown size={18} className="inline ml-2 text-slate-400" />
+                                </div>
                             </div>
-                        )}
+                            {showCheckboxes && (
+                                <div
+                                    ref={checkboxRef}
+                                    className="absolute z-20 mt-2 p-4 bg-white rounded-md shadow-lg border border-gray-200 w-80 max-h-80 overflow-y-auto"
+                                >
+                                    <p className="text-sm font-medium text-gray-600 mb-2">Filter by Category</p>
 
+                                    <input
+                                        type="text"
+                                        placeholder="Search category..."
+                                        className="input-normal mb-3 w-full px-2 py-1 border border-gray-300 rounded"
+                                        value={categorySearchTerm}
+                                        onChange={(e) => setCategorySearchTerm(e.target.value)}
+                                    />
+
+                                    {allCategories?.content
+                                        ?.filter((cat: any) =>
+                                            cat.name.toLowerCase().includes(categorySearchTerm.toLowerCase())
+                                        )
+                                        .map((category: any) => (
+                                            <label key={category.id} className="flex items-center space-x-2 mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    value={category.id}
+                                                    checked={tempSelectedCategories.includes(category.id)}
+                                                    onChange={handleCategoryChange}
+                                                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
+                                                />
+                                                <span className="text-sm text-gray-700">{category.name}</span>
+                                            </label>
+                                        ))}
+                                </div>
+                            )}
+
+                        </div>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                        <Button
+                            type="button"
+                            label="Filter"
+                            icon={<IconFilter size={18} />}
+                            theme="info"
+                            size="sm"
+                            onClick={handleApplyFilters}
+                        />
+                        <Button
+                            type="button"
+                            label="Reset"
+                            icon={<IconRefresh size={18} />}
+                            theme="warning"
+                            size="sm"
+                            onClick={handleResetFilters}
+                        />
                     </div>
                 </div>
-
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                    <Button
-                        type="button"
-                        label="Filter"
-                        icon={<IconFilter size={18} />}
-                        theme="info"
-                        size="sm"
-                        onClick={handleApplyFilters}
-                    />
-                    <Button
-                        type="button"
-                        label="Reset"
-                        icon={<IconRefresh size={18} />}
-                        theme="warning"
-                        size="sm"
-                        onClick={handleResetFilters}
-                    />
+                <div className="overflow-x-auto w-full flex flex-row">
+                    {
+                        tempSelectedCategories.length > 0 && (
+                            <div className="flex flex-nowrap gap-2">
+                                {tempSelectedCategories.map((categoryId) => {
+                                    const category = allCategories?.content?.find((cat: any) => cat.id === categoryId);
+                                    return (
+                                        <div
+                                            key={categoryId}
+                                            className="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm whitespace-nowrap flex items-center gap-2"
+                                        >
+                                            {category ? category.name : "Unknown Category"}
+                                            <button
+                                                className="text-red-500 hover:text-red-700 text-xs"
+                                                onClick={() => {
+                                                    setTempSelectedCategories(prev => prev.filter(id => id !== categoryId))
+                                                    setTimeout(() => {}, 300); // Delay to ensure state update before re-render
+                                                    handleApplyFilters();
+                                                }}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )
+                    }
                 </div>
             </div>
 
