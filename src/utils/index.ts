@@ -13,6 +13,7 @@ export type UserRole =
     | "PUBLISHER"
     | "ACCOUNTANT"
     | "MANAGER"
+    | "PROCUREMENT_ENTITY"
     | "LEGAL";
 
 export const getUserRole = (): UserRole => {

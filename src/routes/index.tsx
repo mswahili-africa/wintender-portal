@@ -14,10 +14,7 @@ import {
     IconCalendarUser,
     IconSpeakerphone,
     IconLockAccessOff,
-    IconHelp,
-    IconHelpCircle,
     IconUserUp,
-    IconAd,
     IconMan
 } from "@tabler/icons-react";
 import React from "react";
@@ -137,12 +134,17 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ),
     ACCOUNTANT: () => allMenus.filter(menu => menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards"),
     PROCUREMENT_ENTITY: () => allMenus
-        .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
+        .filter(menu => ["Tender", "Dashboard","Reports"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "Application"), // Exclude Categories sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "Applications"), // Exclude Categories sub-menu
             }
+            : menu.label === "Reports"
+                ? {
+                    ...menu,
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Login Attempts"), // Exclude Payment Plans sub-menu
+                }
             : menu
         ),
     PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards"),

@@ -11,7 +11,7 @@ export default function SidebarLinks() {
     
      // Add a type guard to ensure the role is valid or fallback to "BIDDER"
      const isValidUserRole = (role: any): role is UserRole => {
-        return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL"].includes(role);
+        return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY"].includes(role);
     };
 
     const role: UserRole = isValidUserRole(userData?.role) ? userData?.role : "BIDDER";  // Default to BIDDER
