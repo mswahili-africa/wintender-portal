@@ -5,12 +5,14 @@ import useCategories from "@/hooks/useCategories";
 import columns from "./fragments/categoryColumns";
 import CategoryCreate from "./fragments/categoryCreateForm";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import toast from "react-hot-toast";
 
 export default function CategoryList() {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string | undefined>(undefined);
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<Record<string, any> | undefined>(undefined);
+    const [isVisible, setIsVisible] = useState<boolean>(true);
 
     const { categories, isLoading, refetch } = useCategories({
         page,
@@ -22,6 +24,12 @@ export default function CategoryList() {
 
     const handleSorting = (field: string, direction: SortDirection) => {
         setSort(`${field},${direction.toLowerCase()}`);
+    };
+
+    // JCM handle category action (visibility toggle)
+    const handleCategoryAction = (category: any) => {
+        setIsVisible(true);
+        toast.success(`Category ${isVisible ? "hidden" : "visible"} successfully.`);
     };
 
     return (
@@ -53,10 +61,10 @@ export default function CategoryList() {
                                 <div className="flex items-center gap-2">
                                     {/* Add any action buttons here */}
                                     <button
-                                        className={`${true ? "text-green-500 hover:text-green-700" : "text-red-500 hover:text-red-700"}`}
-                                        onClick={() => console.log("Action for", content.name)}
+                                        className={`${isVisible ? "text-green-500 hover:text-green-700" : "text-red-500 hover:text-red-700"} cursor-pointer`}
+                                        onClick={() => handleCategoryAction(content)}
                                     >
-                                        {true ? <IconEye  size={24} />: <IconEyeOff size={24} />}
+                                        {isVisible ? <IconEye  size={24} />: <IconEyeOff size={24} />}
                                     </button>
                                 </div>
                             );

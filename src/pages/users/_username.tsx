@@ -171,6 +171,7 @@ export default function UserProfile() {
         }),
     };
 
+    // JCM manage categories selection
     const manageCategoriesSelection = (category: any) => {
         if (!selectedCategories.find((c: any) => c.id === category.id)) {
             setSelectedCategories([...selectedCategories, category]);
@@ -184,11 +185,13 @@ export default function UserProfile() {
     }
 
 
+    // JCM available options for select
     const availableOptions = categories
         .filter((cat) => !selectedCategories.find((sc: any) => sc.id === cat.id))
         .map((cat) => ({ value: cat.id, label: cat.name }));
 
 
+    // JCM useEffect to set initial selected categories
     useEffect(() => {
         if (user?.companyCategories && categories.length > 0) {
             const initialSelected = categories.filter((cat: any) =>
