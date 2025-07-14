@@ -29,6 +29,7 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const [previewURLs, setPreviewURLs] = useState<Record<string, string>>({});
   const [consentGiven, setConsentGiven] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [applicationId, setApplicationId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
   const {
     handleSubmit,
     formState: { errors },
+
   } = useForm();
 
   const uploadDocument = async (stage: string, fieldName: string, file: File) => {
@@ -297,12 +299,15 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
   };
 
   const onSubmit = async () => {
+    setIsLoading(true);
     if (!consentGiven) {
+      setIsLoading(false);
       toast.error("You must agree to the terms and conditions.");
       return;
     }
 
-    if (!applicationId) {
+    if (!applicationId || applicationId === null) {
+      setIsLoading(false);
       toast.error("Application ID not found. Please upload documents first.");
       return;
     }
@@ -310,8 +315,10 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
     try {
       await reviewApplication(applicationId, "SUBMITTED");
       toast.success("Application submitted successfully!");
+      setIsLoading(false);
       onClose();
     } catch (error: any) {
+      setIsLoading(false);
       const serverMessage = error?.response?.data?.message || "Failed to submit application.";
       toast.error(serverMessage);
     }
@@ -340,7 +347,7 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
         {currentStep < stages.length - 1 ? (
           <Button label="Next" type="button" onClick={handleNext} disabled={!canProceed()} />
         ) : (
-          <Button label="Submit Application" type="submit" />
+          <Button loading={uploadTenderMutation.isLoading || isLoading} label="Submit Application" type="submit" />
         )}
       </div>
     </form>
