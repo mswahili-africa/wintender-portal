@@ -12,7 +12,16 @@ import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
 
-export default function UserProfile() {
+interface UserProfileProps {
+  selectedUser: ICompany;
+  selectedLoading: boolean;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading }) => {
+  // component code here
+// };
+
+// export default function UserProfile() {
     const { userId } = useParams();
     const auth = useSnapshot(authStore);
 
@@ -36,8 +45,18 @@ export default function UserProfile() {
 
 
     useEffect(() => {
+        // JCM if user passed as prop, use it directly
+        selectedUser && setUser(selectedUser);
+        selectedLoading && setLoading(selectedLoading);
+        
         async function fetchUser() {
             try {
+                if(selectedUser){
+                    setUser(selectedUser);
+                    setLoading(selectedLoading);
+                    setSelectedCategoriesIds(selectedUser.companyCategories || []);
+                    return;
+                }
                 const data = await getUserById(userId!);
                 setUser(data);
 
@@ -204,7 +223,7 @@ export default function UserProfile() {
 
     return (
         <div className="container mx-auto p-4">
-            <Tabs panels={["User Info", "Company Info", "Password"]}>
+            <Tabs panels={!accountOwner() ? ["User Info", "Company Info"] : ["User Info", "Company Info", "Password"]}>
                 {/* User Information Tab */}
                 <div className="bg-white shadow-md rounded-lg p-6 mt-8">
                     <h2 className="text-lg font-semibold mb-4">User Information</h2>
@@ -426,3 +445,5 @@ export default function UserProfile() {
         </div>
     );
 }
+
+export default UserProfile;

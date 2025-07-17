@@ -1,4 +1,4 @@
-import { IconChevronDown, IconFilter, IconMessage, IconRefresh, IconSearch } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronDown, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
@@ -18,6 +18,8 @@ import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import Button from "@/components/button/Button";
+import { useUserData } from "@/hooks/useUserData";
+import Modal from "@/components/Modal";
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -44,6 +46,21 @@ export default function Bidders() {
     const [tempSelectedRegion, setTempSelectedRegion] = useState<{ label: string, value: string } | null>(null);
     const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
     const [categorySearchTerm, setCategorySearchTerm] = useState("");
+
+    // JCM DELETE MODAL
+    const [isDeleting, setIsDeleting] = useState(false);
+    const { userData } = useUserData();
+
+    const handleDeleteModalClose = () => {
+        setIsDeleting(false);
+    };
+
+    const handleDeleteBidder = () => {
+        alert("Bidder deleted"); // Placeholder for delete logic
+    };
+    // JCM DELETE END
+
+
 
     useEffect(() => {
         const addressParam = searchParams.get("address");
@@ -317,7 +334,7 @@ export default function Bidders() {
                                                 className="text-red-500 hover:text-red-700 text-xs"
                                                 onClick={() => {
                                                     setTempSelectedCategories(prev => prev.filter(id => id !== categoryId))
-                                                    setTimeout(() => {}, 300); // Delay to ensure state update before re-render
+                                                    setTimeout(() => { }, 300); // Delay to ensure state update before re-render
                                                     handleApplyFilters();
                                                 }}
                                             >
@@ -342,6 +359,47 @@ export default function Bidders() {
                     />
                 )}
 
+
+                {/* JCM BIDDER DELETE MODAL */}
+                {
+                    isDeleting &&
+                    <Modal isOpen={isDeleting} onClose={handleDeleteModalClose} size={"md"} >
+                        <h1 className="text-lg font-bold"><strong>Delete Bidder?</strong></h1>
+                        <div className="flex items-center justify-center mb-4">
+                            <IconAlertTriangle size={80} className=" text-red-500 mr-2" />
+                        </div>
+                        <p className="text-sm px-5 text-gray-700">
+                            <span className="text-sm">Are you sure you want to delete bidder with the following details, this action cannot be undone</span> <br /><br />
+                            Company name: <span className="font-bold text-gray-900">{selectedUser?.companyName}</span> <br />
+                            Company email: <span className="font-bold text-gray-900">{selectedUser?.companyEmail}</span> <br />
+                            Company phone: <span className="font-bold text-gray-900">{selectedUser?.companyPrimaryNumber}</span> <br />
+                            Admin name: <span className="font-bold text-gray-900">{selectedUser?.name}</span> <br />
+                            Admin email: <span className="font-bold text-gray-900">{selectedUser?.email}</span> <br />
+                            phone number: <span className="font-bold text-gray-900">{selectedUser?.phoneNumber}</span>
+                        </p>
+                        <div className="mt-4 flex justify-end space-x-2">
+                            {true &&
+                                <Button
+                                    label="Cancel"
+                                    icon={<IconX size={18} />}
+                                    onClick={handleDeleteModalClose}
+                                    theme="secondary"
+                                    size="sm"
+                                />
+                            }
+                            <Button
+                                label="DELETE BIDDER"
+                                icon={<IconTrash size={18} />}
+                                loading={false}
+                                onClick={handleDeleteBidder}
+                                theme="danger"
+                                size="sm"
+                            />
+                        </div>
+                    </Modal>
+
+                }
+
                 <Table
                     columns={columns}
                     data={bidders ? bidders.content : []}
@@ -353,6 +411,12 @@ export default function Bidders() {
                             <button onClick={() => setUserInfo(content)}>
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
+                            {
+                                ["ADMINISTRATOR", "SUPERVISOR"].includes(userData?.role as string) &&
+                                <button onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
+                                    <IconTrash className="h-5 w-5 text-red-500" />
+                                </button>
+                            }
                         </div>
                     )}
                 />

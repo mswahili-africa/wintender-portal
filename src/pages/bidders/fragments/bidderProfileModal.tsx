@@ -25,12 +25,21 @@ import Button from "@/components/button/Button";
 import Select from "react-select";
 import { updateBidderCategories } from "@/services/user";
 import { IconX } from "@tabler/icons-react";
+import { useUserData } from "@/hooks/useUserData";
+import { IconEdit } from "@tabler/icons-react";
+import UserProfile from "@/pages/users/_username";
 
 interface IProps {
     children?: React.ReactNode;
     user: ICompany;
     loading: boolean;
     onClose: () => void; // Add this to handle closing the modal from parent
+}
+
+// JCM user edit props
+interface UserProfileProps {
+    user: ICompany;
+    loading: boolean;
 }
 
 const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
@@ -44,6 +53,10 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
+
+    // JCM  edit details
+    const { userData } = useUserData();
+    const [editDetails, setEditDetails] = useState<boolean>(false);
 
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
@@ -194,6 +207,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
                 <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
                     <section className="w-full space-y-6">
+
+
                         <div className="border-b border-zinc-200 pb-4">
                             <div className="my-2 flex gap-4 justify-between">
                                 <div className="flex items-center space-x-3">
@@ -215,6 +230,24 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     />
                                 </div>
                                 <p className="flex items-center space-x-3">
+                                    {/* JCM edit button */}
+                                    <div className="flex justify-end w-full">
+                                        {
+                                            userData?.role !== "SUPERVISOR" && // Show edit button only for supervisors
+                                            <Button
+                                                label={editDetails ? "Cancel Edit" : "Edit Details"}
+                                                size="sm"
+                                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                                theme="primary"
+                                                onClick={() => setEditDetails(!editDetails)}
+                                            />
+                                        }
+                                    </div>
+                                    {/* <button onClick={() => setEditDetails(!editDetails)}>
+                                        <IconEdit size={24} className="text-green-500" />
+                                    </button> */}
+
+
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
                                     </button>
@@ -222,101 +255,120 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                {/* Left Column - User, Shop, and Status Info */}
-                                <div className="space-y-4">
-                                    <strong>Contact Person</strong>
-                                    <p><strong>Person:</strong> {user.name}</p>
-                                    <p><strong>Email:</strong> {user.companyEmail}</p>
-                                    <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
-                                </div>
+                        {
+                            // JCM Show user details only if not editing
+                            !editDetails &&
+                            <>
+                                <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        {/* Left Column - User, Shop, and Status Info */}
+                                        <div className="space-y-4">
+                                            <strong>Contact Person</strong>
+                                            <p><strong>Person:</strong> {user.name}</p>
+                                            <p><strong>Email:</strong> {user.companyEmail}</p>
+                                            <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
+                                        </div>
 
-                                {/* Right Column - Location Info */}
-                                <div className="space-y-4">
-                                    <strong>Company</strong>
-                                    {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
-                                    {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
-                                    {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
-                                    {user.companyEmail && <p><strong>Email:</strong> {user.companyEmail}</p>}
-                                    {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
-                                </div>
+                                        {/* Right Column - Location Info */}
+                                        <div className="space-y-4">
+                                            <strong>Company</strong>
+                                            {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
+                                            {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
+                                            {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
+                                            {user.companyEmail && <p><strong>Email:</strong> {user.companyEmail}</p>}
+                                            {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
+                                            {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
+                                        </div>
 
-                            </div>
-                        </div>
-
-                        <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
-                            <div className="space-y-4">
-                                <div className="flex flex-row items-center justify-between">
-                                    <strong className="uppercase w-1/2">Categories</strong>
-
-                                    {/* JCM Dropdown to Add Categories */}
-                                    <Select
-                                        options={availableOptions}
-                                        onChange={(selectedOption) => {
-                                            const selected = categories.find((c) => c.id === selectedOption?.value);
-                                            if (selected) addCategory(selected);
-                                        }}
-                                        placeholder="Search or select category"
-                                        className="w-1/2 border-0 border-green-700 focus:ring-0"
-                                        styles={customStyles}
-                                    />
-
-                                </div>
-
-                                <div>
-                                    {/*JCM Selected Categories */}
-                                    <div className="flex flex-col gap-2 mb-4">
-                                        {selectedCategories.length === 0 ? (
-                                            <span className="text-sm text-gray-400 my-10 w-full text-center">
-                                                No categories
-                                            </span>
-                                        ) : (
-                                            selectedCategories.map((category) => (
-                                                <span
-                                                    key={category.id}
-                                                    className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
-                                                >
-                                                    {category.name}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removeCategory(category)}
-                                                        className="text-red-500 hover:text-red-700 ml-2 text-xs"
-                                                    >
-                                                        <IconX size={16} />
-                                                    </button>
-                                                </span>
-                                            ))
-                                        )}
                                     </div>
                                 </div>
 
-                                {
-                                    // JCM save button
-                                    isChanged && selectedCategories.length > 0 &&
-                                    <div className="w-full flex justify-center">
-                                        <Button
-                                            type="button"
-                                            label={updateCategoriesMutation.isLoading ? "Updating..." : "Save"}
-                                            size="md"
-                                            theme="primary"
-                                            loading={updateCategoriesMutation.isLoading}
-                                            disabled={updateCategoriesMutation.isLoading}
-                                            onClick={() => {
-                                                const categoryIds = selectedCategories.map((cat) => cat.id);
-                                                if (categoryIds.length > 0) {
-                                                    updateCategoriesMutation.mutate({
-                                                        id: user.id,
-                                                        categoryIds,
-                                                    });
-                                                }
+
+
+                                <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
+                                    <div className="space-y-4">
+                                        {/* JCM Edit categories only for supervisors */}
+                                        <div className="flex flex-row items-center justify-between">
+                                            <strong className="uppercase w-1/2">Categories</strong>
+
+                                            {/* JCM Dropdown to Add Categories */}
+                                            {/* <Select
+                                            options={availableOptions}
+                                            onChange={(selectedOption) => {
+                                                const selected = categories.find((c) => c.id === selectedOption?.value);
+                                                if (selected) addCategory(selected);
                                             }}
-                                        />
-                                    </div>
-                                }
-                            </div>
-                        </div>
+                                            placeholder="Search or select category"
+                                            className="w-1/2 border-0 border-green-700 focus:ring-0"
+                                            styles={customStyles}
+                                        /> */}
 
+                                        </div>
+
+                                        <div>
+                                            {/*JCM Selected Categories */}
+                                            <div className="flex flex-col gap-2 mb-4">
+                                                {selectedCategories.length === 0 ? (
+                                                    <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                                        No categories
+                                                    </span>
+                                                ) : (
+                                                    selectedCategories.map((category) => (
+                                                        <span
+                                                            key={category.id}
+                                                            className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
+                                                        >
+                                                            {category.name}
+                                                            {/* <button
+                                                            type="button"
+                                                            onClick={() => removeCategory(category)}
+                                                            className="text-red-500 hover:text-red-700 ml-2 text-xs"
+                                                        >
+                                                            <IconX size={16} />
+                                                        </button> */}
+                                                        </span>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {
+                                            // JCM save button
+                                            // isChanged && selectedCategories.length > 0 &&
+                                            // <div className="w-full flex justify-center">
+                                            //     <Button
+                                            //         type="button"
+                                            //         label={updateCategoriesMutation.isLoading ? "Updating..." : "Save"}
+                                            //         size="md"
+                                            //         theme="primary"
+                                            //         loading={updateCategoriesMutation.isLoading}
+                                            //         disabled={updateCategoriesMutation.isLoading}
+                                            //         onClick={() => {
+                                            //             const categoryIds = selectedCategories.map((cat) => cat.id);
+                                            //             if (categoryIds.length > 0) {
+                                            //                 updateCategoriesMutation.mutate({
+                                            //                     id: user.id,
+                                            //                     categoryIds,
+                                            //                 });
+                                            //             }
+                                            //         }}
+                                            //     />
+                                            // </div>
+                                        }
+
+
+
+                                    </div>
+                                </div>
+
+                            </>
+                        }
+                        {/* JCM edit BIDDER profile*/}
+                        <div className="w-full">
+                            {
+                                editDetails && <UserProfile selectedUser={user} selectedLoading={false} />
+                            }
+                        </div>
                     </section>
                 </div>
 

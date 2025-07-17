@@ -35,11 +35,12 @@ type UserRole =
     | "PUBLISHER"
     | "ACCOUNTANT"
     | "MANAGER"
+    | "SUPERVISOR"
     | "PROCUREMENT_ENTITY"
     | "LEGAL";
 
 const isValidUserRole = (role: any): role is UserRole => {
-    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY"].includes(role);
+    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY","SUPERVISOR"].includes(role);
 };
 
 const useUserRole = (): UserRole => {
@@ -63,7 +64,7 @@ const allMenus: IRoute[] = [
             { path: "/tenders", label: "Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
             { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
             { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
-            { path: "/submitted-application", label: "Applications", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/submitted-application", label: "Tender Box", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -138,7 +139,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "Applications"), // Exclude Categories sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me"), // Exclude Categories sub-menu
             }
             : menu.label === "Reports"
                 ? {
@@ -148,6 +149,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             : menu
         ),
     PUBLISHER: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards"),
+    SUPERVISOR: () => allMenus.filter(menu => menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance"),
     BIDDER: () => allMenus
         .filter(menu => ["Tender", "Finance", "Consultation", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"

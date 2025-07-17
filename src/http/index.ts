@@ -75,11 +75,13 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
           }, 5000);
 
         } else if (status === 403) {
-          toast.error("Forbidden. Access has been denied.");
+          // toast.error("Forbidden. Access has been denied.");
+          return
         } else if (status === 404) {
           toast.error("Resource not found.");
         } else if (status >= 500) {
-          toast.error("Server error. Please try again later.");
+          // toast.error("Server error. Please try again later.");
+          return
         } else {
           toast.error(errorMessage || "Something went wrong.");
         }

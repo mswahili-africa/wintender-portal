@@ -44,6 +44,7 @@ const schema = object().shape({
     tenderType: string().required("Type is required"),
     openDate: string().required("Open Date is required"),
     closeDate: string().required("Close Date is required"),
+    applicationFee: number().required("Application Fee is required"),
     consultationFee: number().required("Consultation Fee is required"),
 });
 
@@ -97,7 +98,8 @@ export default function PETenderUpload({ onSuccess }: IProps) {
             entityId: entityId,
             categoryId: "",
             closeDate: "",
-            consultationFee: 30000,
+            applicationFee: 0,
+            consultationFee: 0,
         },
     });
 
@@ -416,16 +418,18 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         </div>
                     )}
 
+                    {/* JCM Application fee input */}
                     <div className="mb-2">
-                        <label htmlFor="consultationFee" className="block mb-2">
+                        <label htmlFor="applicationFee" className="block mb-2">
                             Application Fee
                         </label>
 
                         <input
                             type="text"
+                            id="applicationFee"
                             inputMode="decimal"
                             className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
-                            {...register("consultationFee", {
+                            {...register("applicationFee", {
                                 required: true,
                                 pattern: {
                                     value: /^\d+(\.\d{1,2})?$/,
@@ -437,11 +441,44 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                             }}
                         />
 
-
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.consultationFee?.message?.toString()}
+                            {errors.applicationFee?.message?.toString()}
                         </p>
                     </div>
+
+
+                    {/* JCM Consultation fee input */}
+                    {
+                        userRole !== "PROCUREMENT_ENTITY" && 
+                        <div className="mb-2">
+                            <label htmlFor="consultationFee" className="block mb-2">
+                                Consultation Fee
+                            </label>
+
+                            <input
+                                type="text"
+                                inputMode="decimal"
+                                className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                                {...register("consultationFee", {
+                                    required: true,
+                                    pattern: {
+                                        value: /^\d+(\.\d{1,2})?$/,
+                                        message: "Enter a valid number",
+                                    },
+                                })}
+                                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+                                }}
+                            />
+
+
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.consultationFee?.message?.toString()}
+                            </p>
+                        </div>
+                    }
+
+
                 </>
             );
         }
