@@ -12,16 +12,13 @@ import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
 
+// JCM props interface
 interface UserProfileProps {
   selectedUser: ICompany;
   selectedLoading: boolean;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading }) => {
-  // component code here
-// };
-
-// export default function UserProfile() {
     const { userId } = useParams();
     const auth = useSnapshot(authStore);
 
