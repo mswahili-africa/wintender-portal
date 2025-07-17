@@ -128,10 +128,10 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
     const debouncedFetchEntities = useCallback(
         debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+            if (inputValue.length >= 3) { // Only fetch if 3 or more characters
                 fetchEntities(inputValue);
             } else {
-                setEntities([]); // Clear entities if less than 5 characters
+                setEntities([]); // Clear entities if less than 3 characters
             }
         }, 5),
         [fetchEntities]
@@ -251,8 +251,9 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 required: item.required,
             }))
         );
-        formData.append("requirements", JSON.stringify(requirementList));
-
+        if (requirementList.length > 0) {
+            formData.append("requirements", JSON.stringify(requirementList));
+        }
         uploadTenderMutation.mutate(formData);
     };
 
