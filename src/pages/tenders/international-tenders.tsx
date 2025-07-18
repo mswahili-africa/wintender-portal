@@ -419,9 +419,8 @@ export default function InternationalTenders() {
 
                                 {/* JCM tender applicant list button */}
                                 {
-                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER"].includes(userRole) || (userData?.role === "PROCUREMENT_ENTITY" && content.selfApply === true) ?
+                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER","PROCUREMENT_ENTITY"].includes(userRole)  && content.selfApply === true ?
                                         <Fragment>
-
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                                                 onClick={() => { openApplicantList(content) }}
