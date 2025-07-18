@@ -370,12 +370,12 @@ export default function Bidders() {
                         </div>
                         <p className="text-sm px-5 text-gray-700">
                             <span className="text-sm">Are you sure you want to delete bidder with the following details, this action cannot be undone</span> <br /><br />
-                            Company name: <span className="font-bold text-gray-900">{selectedUser?.companyName}</span> <br />
-                            Company email: <span className="font-bold text-gray-900">{selectedUser?.companyEmail}</span> <br />
-                            Company phone: <span className="font-bold text-gray-900">{selectedUser?.companyPrimaryNumber}</span> <br />
-                            Admin name: <span className="font-bold text-gray-900">{selectedUser?.name}</span> <br />
-                            Admin email: <span className="font-bold text-gray-900">{selectedUser?.email}</span> <br />
-                            phone number: <span className="font-bold text-gray-900">{selectedUser?.phoneNumber}</span>
+                            Company name: <span className="font-bold text-gray-900">{selectedUser?.companyName || "N/A"}</span> <br />
+                            Company email: <span className="font-bold text-gray-900">{selectedUser?.companyEmail || "N/A"}</span> <br />
+                            Company phone: <span className="font-bold text-gray-900">{selectedUser?.companyPrimaryNumber || "N/A"}</span> <br />
+                            Admin name: <span className="font-bold text-gray-900">{selectedUser?.name || "N/A"}</span> <br />
+                            Admin email: <span className="font-bold text-gray-900">{selectedUser?.email || "N/A"}</span> <br />
+                            phone number: <span className="font-bold text-gray-900">{selectedUser?.phoneNumber || "N/A"}</span>
                         </p>
                         <div className="mt-4 flex justify-end space-x-2">
                             {true &&
