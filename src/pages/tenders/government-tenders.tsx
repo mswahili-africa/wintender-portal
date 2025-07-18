@@ -9,7 +9,6 @@ import usePopup from "@/hooks/usePopup";
 import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
-import TenderCreateForm from "./fragments/tenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
@@ -417,19 +416,7 @@ export default function GovernmentTenders() {
                                         </Fragment></>
                                 )}
 
-                                {/* JCM tender applicant list button */}
-                                {
-                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER"].includes(userRole) || (userData?.role === "PROCUREMENT_ENTITY" && content.selfApply === true) ?
-                                        <Fragment>
-
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                                onClick={() => { openApplicantList(content) }}
-                                            >
-                                                <IconListDetails size={20} />
-                                            </button>
-                                        </Fragment> : null
-                                }
+                                
                             </div>
                         );
                     }}
