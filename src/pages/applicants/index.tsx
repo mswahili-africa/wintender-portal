@@ -53,8 +53,13 @@ export const ApplicantsList = () => {
     console.log("applicantList", applicantList?.content);
     return (
         <div>
-            <div className="flex flex-col justify-between mb-10">
-                <h2 className="text-lg font-bold">{tenderDetails?.title}</h2>
+            <div className="flex flex-col justify-between mb-10 gap-3">
+                <h2 className="text-lg font-bold">Tender Box</h2>
+                <div className="flex">
+                    <strong className="w-32 text-gray-600">Tender:</strong>
+
+                <h2 className="font-bold">{tenderDetails?.title}</h2>
+                </div>
                 <div className="flex items-center">
                     <strong className="w-32 text-gray-600">Status:</strong>
                     <Chip label={(() => {
@@ -73,7 +78,7 @@ export const ApplicantsList = () => {
                     })()} size="sm" theme="success" />
                 </div>
                 <div className="flex items-center">
-                    <strong className="w-32 text-gray-600">Close Date:</strong>
+                    <strong className="w-32 text-gray-600">Closing Date:</strong>
                     <p className="flex-1">{new Date(tenderDetails?.closeDate).toLocaleString()}</p>
                 </div>
                 {/* {["PROCUREMENT_ENTITY", "PUBLISHER","ADMINISTRATOR"].includes(userRole) && (
