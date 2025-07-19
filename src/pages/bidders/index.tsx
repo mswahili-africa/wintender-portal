@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconChevronDown, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronDown, IconFileTypeXls, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
@@ -20,6 +20,7 @@ import Select from "react-select";
 import Button from "@/components/button/Button";
 import { useUserData } from "@/hooks/useUserData";
 import Modal from "@/components/Modal";
+import * as XLSX from 'xlsx';
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -218,17 +219,49 @@ export default function Bidders() {
         setUserInfo(undefined);
     };
 
+    // JCM export XLSX
+    const handleExportXLSX = () => {
+        console.log(bidders?.content)
+        const data = bidders?.content.map((bidder: any) => ({
+            "BidderName": bidder.name,
+            "BidderPhone": bidder.companyPrimaryNumber,
+            "BidderStatus": bidder.companyStatus,
+            "BidderAddress": bidder.companyAddress,
+            "BidderEmail": bidder.email,
+            "CompanyName": bidder.companyName,
+            "CompanyEmail": bidder.companyEmail,
+            "CompanyTin": bidder.companyTin,
+        })) ?? [];
+        console.log("Exporting data:", data);
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        XLSX.writeFile(workbook, "bidders.xlsx");
+    }
+
+
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Bidders</h2>
-                <button
-                    className="bg-green-600 text-white py-2 px-3 rounded hover:bg-blue-500 flex items-center"
-                    onClick={openBulkSendModal}
-                >
-                    <IconMessage size={20} className="mr-2" />
-                    Send Bulk
-                </button>
+
+                <div className="flex gap-x-2">
+                    <button
+                        type="button"
+                        className="bg-gray-600 text-sm text-white hover:bg-gray-500 py-2 px-3 rounded flex items-center"
+                        onClick={() => { handleExportXLSX() }}
+                    >
+                        <IconFileTypeXls size={20} className="mr-2" />
+                        Export XLSX
+                    </button>
+                    <button
+                        className="bg-green-600 text-white py-2 px-3 rounded hover:bg-blue-500 flex items-center"
+                        onClick={openBulkSendModal}
+                    >
+                        <IconMessage size={20} className="mr-2" />
+                        Send Bulk
+                    </button>
+                </div>
             </div>
             <div className="flex flex-col border-b py-3 gap-y-1 mb-1 border-slate-200">
                 <div className="flex justify-between items-center flex-col md:flex-row">

@@ -37,6 +37,7 @@
     "tailwind-merge": "^1.14.0",
     "uuid": "^9.0.0",
     "valtio": "^1.10.6",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "yup": "^1.2.0"
   },
   "devDependencies": {
