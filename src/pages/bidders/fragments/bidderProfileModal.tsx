@@ -256,7 +256,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                         </div>
 
                         {
-                            // JCM Show user details only if not editing
+                            // JCM Show user details only if not SUPERVISOR
                             !editDetails &&
                             <>
                                 <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">

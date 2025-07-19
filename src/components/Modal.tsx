@@ -10,6 +10,7 @@ interface IProps {
     size: "xs" | "sm" | "md" | "lg" | "xl"
     children: React.ReactNode
     closeIcon?: boolean
+    zIndex?: number
     onClose: (value: boolean | any) => void
 }
 
@@ -38,7 +39,7 @@ export default function(props: IProps) {
 
     return (
         <Transition appear show={props.isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-40" onClose={() => props.onClose(false)}>
+            <Dialog as="div" className={`relative z-${props.zIndex ?? 40}`} onClose={() => props.onClose(false)}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -66,7 +67,7 @@ export default function(props: IProps) {
                                     {
                                         props.closeIcon &&
                                         <button 
-                                            className="absolute -right-2 -top-2 p-1 bg-white hover:bg-primary text-zinc-800 hover:text-white rounded-md shadow-xl" 
+                                            className="absolute right-2 top-2 p-1 bg-white hover:bg-primary text-zinc-800 hover:text-gray-400 rounded-md shadow-xl" 
                                             onClick={() => props.onClose(false)}>
                                             <IconX size={20} />
                                         </button>
