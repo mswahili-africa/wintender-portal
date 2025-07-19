@@ -141,10 +141,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
         setIsUpdating(true); // Set loading state to true
         try {
-            const response = await updateBidderCompany(payload, userId!);
+            const response = await updateBidderCompany(payload, userId! || user.id!); // JCM use user.id for SUPERVISOR role
             toast.success("Successfully updated");
 
-            const updatedUser = await getUserById(userId!);
+            const updatedUser = await getUserById(userId! || user.id!); // JCM use user.id for SUPERVISOR role
             setUser(updatedUser);
             if (updatedUser.company && updatedUser.company.categories) {
                 setSelectedCategoriesIds(updatedUser.company.categories);
