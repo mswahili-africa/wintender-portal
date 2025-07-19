@@ -49,7 +49,7 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                     </button>
                 </div>
 
-                {/* Status Buttons */}
+                {/*JCM Status Buttons */}
                 <div className="mb-6">
                     {["PROCUREMENT_ENTITY"].includes(userData?.role || "") &&
                         applicant.status === "SUBMITTED" &&
@@ -74,11 +74,10 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
 
                     {["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") &&
                         applicant.status === "CLOSED" && (
-                            <div className={`rounded-lg px-4 py-2 inline-block text-sm font-medium ${
-                                applicant.comment === "ACCEPTED"
+                            <div className={`rounded-lg px-4 py-2 inline-block text-sm font-medium ${applicant.comment === "ACCEPTED"
                                     ? "bg-green-100 text-green-800"
                                     : "bg-red-100 text-red-800"
-                            }`}>
+                                }`}>
                                 {applicant.comment}
                             </div>
                         )}
@@ -161,6 +160,8 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                     isOpen={isConfirmationModalOpen}
                     onClose={() => setIsConfirmationModalOpen(false)}
                     size="sm"
+                    zIndex={50}
+                    closeIcon={true}
                 >
                     <div className="p-6 text-center">
                         <div className="flex justify-center mb-4">
@@ -171,24 +172,26 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                                 }
                             />
                         </div>
-                        <h3 className="text-lg font-bold mb-2">Confirm {data.status}</h3>
+                        <h3 className="text-lg font-bold mb-2">Confirm {data.status === "ACCEPTED" ? "Acceptance" : "Rejection"}</h3>
                         <p className="text-sm text-gray-600">
                             Are you sure you want to {" "}
-                            <span className={`font-semibold text-${
-                                data.status === "ACCEPTED" ? "green" : "red"
-                            }-600`}>
-                                {data.status.toLowerCase()}
+                            <span className={`font-semibold text-${data.status === "ACCEPTED" ? "green" : "red"
+                                }-600`}>
+                                {data.status === "ACCEPTED" ? "accept" : "reject"}
                             </span>{" "}
                             this application? This action cannot be undone.
                         </p>
                         <div className="mt-6 flex justify-center gap-4">
+                            {
+                                !applicationReviewMutation.isLoading &&
+                                <Button
+                                    label="Cancel"
+                                    theme="secondary"
+                                    onClick={() => setIsConfirmationModalOpen(false)}
+                                />
+                            }
                             <Button
-                                label="Cancel"
-                                theme="secondary"
-                                onClick={() => setIsConfirmationModalOpen(false)}
-                            />
-                            <Button
-                                label={`I confirm ${data.status.toLowerCase()}`}
+                                label={`I confirm ${data.status === "ACCEPTED" ? "Acceptance" : "Rejection"}`}
                                 theme={data.status === "ACCEPTED" ? "primary" : "danger"}
                                 loading={applicationReviewMutation.isLoading}
                                 onClick={() => {
