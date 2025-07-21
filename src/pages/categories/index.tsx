@@ -54,7 +54,7 @@ export default function CategoryList() {
                     isLoading={isLoading}
                     hasSelection={false}
                     onSorting={handleSorting}
-                    hasActions={true}
+                    hasActions={false}
                     actionSlot={
                         (content: any) => {
                             return (

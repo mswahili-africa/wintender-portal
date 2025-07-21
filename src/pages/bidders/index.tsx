@@ -223,16 +223,15 @@ export default function Bidders() {
     const handleExportXLSX = () => {
         console.log(bidders?.content)
         const data = bidders?.content.map((bidder: any) => ({
-            "BidderName": bidder.name,
-            "BidderPhone": bidder.companyPrimaryNumber,
-            "BidderStatus": bidder.companyStatus,
-            "BidderAddress": bidder.companyAddress,
-            "BidderEmail": bidder.email,
-            "CompanyName": bidder.companyName,
-            "CompanyEmail": bidder.companyEmail,
-            "CompanyTin": bidder.companyTin,
+            "Bidder Name": bidder.name,
+            "Bidder Phone": bidder.companyPrimaryNumber,
+            "Bidder Status": bidder.companyStatus,
+            "Bidder Address": bidder.companyAddress,
+            "Bidder Email": bidder.email,
+            "Company Name": bidder.companyName,
+            "Company Email": bidder.companyEmail,
+            "Company Tin": bidder.companyTin,
         })) ?? [];
-        console.log("Exporting data:", data);
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(data);
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
@@ -446,7 +445,7 @@ export default function Bidders() {
                             </button>
                             {
                                 ["ADMINISTRATOR", "SUPERVISOR"].includes(userData?.role as string) &&
-                                <button onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
+                                <button className="hidden" onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
                                     <IconTrash className="h-5 w-5 text-red-500" />
                                 </button>
                             }
