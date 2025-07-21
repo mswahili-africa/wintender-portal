@@ -64,7 +64,8 @@ const allMenus: IRoute[] = [
             { path: "/tenders", label: "Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
             { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
             { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
-            { path: "/submitted-application", label: "Tender Box", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/submitted-application", label: "Tender Box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
+            { path: "/submitted-application", label: "My Submission", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -139,12 +140,12 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me"), // Exclude Categories sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me"  && sub.label !== "My Submission"), // Exclude Categories sub-menu
             }
             : menu.label === "Reports"
                 ? {
                     ...menu,
-                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Login Attempts"), // Exclude Payment Plans sub-menu
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Login Attempts" && sub.label !== "Publisher Performance"), // Exclude Payment Plans sub-menu
                 }
             : menu
         ),
@@ -155,7 +156,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards"), // Exclude Categories sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards"  && sub.label !== "Tender Box"), // Exclude Categories sub-menu
             }
             : menu.label === "Finance"
                 ? {
