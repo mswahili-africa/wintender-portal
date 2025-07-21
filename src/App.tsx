@@ -74,7 +74,7 @@ function App() {
                                 <Route path="users" element={<Users />} />
                                 <Route path="bidders" element={<Bidders />} />
                                 <Route path="entities-users" element={<ProcurementEntities />} />
-                                <Route path="users/:userId" element={<UserDetail />} />
+                                <Route path="users/:userId" element={<UserDetail selectedUser={null} selectedLoading={false} />} />
                                 <Route path="roles" element={<Roles />} />
                                 <Route path="publisher-perfomance" element={<PublisherPerformance />} />
                                 <Route path="company-documents" element={<CompanyDocuments />} />

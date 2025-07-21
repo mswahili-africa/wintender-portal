@@ -14,7 +14,7 @@ import { IconX } from "@tabler/icons-react";
 
 // JCM props interface
 interface UserProfileProps {
-  selectedUser: ICompany;
+  selectedUser: ICompany | null;
   selectedLoading: boolean;
 }
 
