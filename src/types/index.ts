@@ -425,6 +425,7 @@ export interface ITenderDetails {
   closeDate: number;
   status: string;
   consultationFee: number;
+  applicationFee: number;
   entityName: string;
   requirements: IRequirement[];
 }

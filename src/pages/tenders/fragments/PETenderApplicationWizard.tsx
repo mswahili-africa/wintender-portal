@@ -8,22 +8,13 @@ import { IconFileText, IconAlertTriangle } from "@tabler/icons-react";
 import { reviewApplication, uploadApplicationDocument } from "@/services/tenders";
 import Chip from "@/components/chip/Chip";
 
-const stages = [
-  "DETAILS",
-  "PAYMENT",
-  "PRELIMINARY",
-  "TECHNICAL",
-  "COMMERCIAL",
-  "CONSENT"
-];
-
 interface Props {
   tender: ITenderDetails;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export default function PETenderApplicationWizard({ tender, onClose, onSuccess }: Props) {
+export default function PETenderApplicationWizard({ tender, onClose }: Props) {
   const [currentStep, setCurrentStep] = useState(0);
   const [uploadedDocs, setUploadedDocs] = useState<Record<string, File | null>>({});
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
@@ -31,6 +22,11 @@ export default function PETenderApplicationWizard({ tender, onClose, onSuccess }
   const [consentGiven, setConsentGiven] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [applicationId, setApplicationId] = useState<string | null>(null);
+
+   const stages = ["DETAILS",
+    ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
+    "PRELIMINARY", "TECHNICAL", "COMMERCIAL", "CONSENT"
+  ];
 
   useEffect(() => {
     return () => {
