@@ -201,14 +201,6 @@ export default function ConsultationApplication() {
         <div>
             <div className="flex flex-row justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Consultation Application</h2>
-                <Button
-                    type="button"
-                    label="Top Up"
-                    icon={<IconCloudDollar  size={18} />}
-                    theme="primary"
-                    size="md"
-                    onClick={() => setOpen(true)}
-                />
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
