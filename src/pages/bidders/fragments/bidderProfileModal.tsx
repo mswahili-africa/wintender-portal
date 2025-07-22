@@ -233,7 +233,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     {/* JCM edit button */}
                                     <div className="flex justify-end w-full">
                                         {
-                                            ["MANAGER","SUPERVISOR"].includes(userData?.role || "") && // Show edit button only for supervisors
+                                            ["SUPERVISOR"].includes(userData?.role || "") && // Show edit button only for supervisors
                                             <Button
                                                 label={editDetails ? "Cancel Edit" : "Edit Details"}
                                                 size="sm"
