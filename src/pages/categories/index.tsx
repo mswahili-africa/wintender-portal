@@ -11,6 +11,7 @@ import Modal from "@/components/Modal";
 import { useMutation } from "@tanstack/react-query";
 import { ICategory } from "@/types";
 import { deleteCategory } from "@/services/tenders";
+import { useUserData } from "@/hooks/useUserData";
 
 export default function CategoryList() {
     const [page, setPage] = useState<number>(0);
@@ -20,6 +21,8 @@ export default function CategoryList() {
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+
+    const { userData } = useUserData(); // Assuming you have a user data provider
 
     const { categories, isLoading, refetch } = useCategories({
         page,
@@ -85,7 +88,7 @@ export default function CategoryList() {
                     isLoading={isLoading}
                     hasSelection={false}
                     onSorting={handleSorting}
-                    hasActions={true}
+                    hasActions={["PUBLISHER","SUPERVISOR"].includes(userData?.role || "") }
                     actionSlot={
                         (content: any) => {
                             return (
