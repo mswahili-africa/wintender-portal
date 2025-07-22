@@ -462,7 +462,7 @@ export default function Bidders() {
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
-                                ["SUPERVISOR","ADMINISTRATOR"].includes(userData?.role as string) &&
+                                ["SUPERVISOR"].includes(userData?.role as string) &&
                                 <button onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
                                     <IconTrash className="h-5 w-5 text-red-500" />
                                 </button>
