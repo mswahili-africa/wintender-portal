@@ -18,12 +18,12 @@ const columns: IColumn[] = [
     },
   },  
   {
-    name: "reference",
-    label: "Reference",
+    name: "Entity",
+    label: "Entity",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.reference;
+      return row.entityName;
     },
   },
   {
@@ -32,7 +32,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.tenderNumber;
+      return row.title;
     },
   },
   {
