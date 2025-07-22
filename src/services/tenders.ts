@@ -38,6 +38,17 @@ export async function getTendersInternational(params: IQueryParams) {
     return response.data
 }
 
+
+// JCM tender box service
+export async function getTenderBox(params: IQueryParams) {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?status=CLOSED", {
+        params: params
+    })
+
+    return response.data
+}
+
+
 export async function createTender(payload: FormData) {
     const response = await http.post<any>("/tenders/tender/create", payload, {
         headers: {

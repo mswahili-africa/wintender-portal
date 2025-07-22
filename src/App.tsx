@@ -33,6 +33,7 @@ import ConsultationApplication from "./pages/consultation/applicatons";
 import ProcurementEntities from "./pages/entities/peUsers";
 import SubmittedApplication from "./pages/applications/selfSubmited";
 import { ApplicantsList } from "./pages/applicants";
+import TenderBox from "./pages/tenders/TenderBox";
 
 export const queryClient = new QueryClient({});
 
@@ -65,6 +66,7 @@ function App() {
                                 <Route path="do-it-for-me" element={<ApplicationGroups />} />
                                 <Route path="submitted-application" element={<SubmittedApplication />} />
                                 <Route path="tenders" element={<TenderList />} />
+                                <Route path="tender-box" element={<TenderBox />} />
                                 <Route path="/tenders/:tenderId/applicants" element={<ApplicantsList />} />
 
                                 <Route path="payments" element={<Payments />} />

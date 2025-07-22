@@ -422,8 +422,8 @@ export default function PrivateTenders() {
                                 }
 
                                 {/* JCM tender applicant list button */}
-                                {
-                                    ["ADMINISTRATOR", "PUBLISHER", "MANAGER", "PROCUREMENT_ENTITY"].includes(userRole) && content.selfApply === true ?
+                                {/* {
+                                    ["PROCUREMENT_ENTITY"].includes(userRole) && content.selfApply === true ?
                                         <Fragment>
 
                                             <button
@@ -433,7 +433,7 @@ export default function PrivateTenders() {
                                                 <IconListDetails size={20} />
                                             </button>
                                         </Fragment> : null
-                                }
+                                } */}
                             </div>
                         );
                     }}

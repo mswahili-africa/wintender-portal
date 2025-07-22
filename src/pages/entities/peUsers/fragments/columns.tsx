@@ -40,7 +40,7 @@ const columns: IColumn[] = [
     },
     {
         name: "email",
-        label: "Phone",
+        label: "Email",
         sortable: false,
         plainObject: false,
     },

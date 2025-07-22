@@ -1,15 +1,15 @@
-import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useTenders from "@/hooks/useTendersInternational";
+import useTenders from "@/hooks/useTenderBox";
 import usePopup from "@/hooks/usePopup";
 import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
-import TenderCreateForm from "./fragments/tenderCreateForm";
+import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
@@ -23,9 +23,8 @@ import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
-import PETenderCreateForm from "./fragments/PETenderCreateForm";
 
-export default function InternationalTenders() {
+export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
@@ -43,6 +42,7 @@ export default function InternationalTenders() {
     const [tempSelectedCategory, setTempSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
+    const navigate = useNavigate();
 
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
@@ -70,7 +70,7 @@ export default function InternationalTenders() {
         setSearchQuery("");
     };
 
-    const { getTenders, isLoading, refetch } = useTenders({
+    const { getTenderBox, isLoading, refetch } = useTenders({
         page: page,
         search: searchQuery,
         sort: sort,
@@ -80,8 +80,6 @@ export default function InternationalTenders() {
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER"; // Extract role from userData, defaulting to "BIDDER" if not found
     const subscriptionDays = userData?.subscription;
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (subscriptionDays !== undefined && subscriptionDays < 1) {
@@ -255,14 +253,7 @@ export default function InternationalTenders() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">International Tenders</h2>
-                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
-                    <PETenderCreateForm
-                        onSuccess={() => {
-                            refetch();
-                        }}
-                    />
-                )}
+                <h2 className="text-lg font-bold">Tender Box</h2>
                 {(userRole === "BIDDER") && (
                     <button onClick={() => topUpSubscription()}>
                         <IconClockPlus size={30} className="text-green-600" />
@@ -378,11 +369,12 @@ export default function InternationalTenders() {
 
             </div>
 
+
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
 
                 <Table
                     columns={columns}
-                    data={getTenders ? getTenders.content : []}
+                    data={getTenderBox ? getTenderBox.content : []}
                     isLoading={isLoading}
                     hasSelection={false}
                     hasActions={true}
@@ -396,31 +388,37 @@ export default function InternationalTenders() {
                                 >
                                     <IconEye size={20} />
                                 </button>
-                                {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
-                                    <><Fragment>
-
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => handleEdit(content)}
-                                        >
-                                            <IconEdit size={20} />
-                                        </button>
-                                    </Fragment>
-                                        <Fragment>
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                        <><Fragment>
 
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => handleDelete(content)}
+                                                onClick={() => handleEdit(content)}
                                             >
-                                                <IconTrash size={20} />
+                                                <IconEdit size={20} />
                                             </button>
-                                        </Fragment></>
-                                )}
+                                        </Fragment>
+                                            <Fragment>
+
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => handleDelete(content)}
+                                                >
+                                                    <IconTrash size={20} />
+                                                </button>
+                                            </Fragment>
+
+                                        </>
+
+                                    )
+                                }
 
                                 {/* JCM tender applicant list button */}
-                                {/* {
-                                    ["PROCUREMENT_ENTITY"].includes(userRole)  && content.selfApply === true ?
+                                {
+                                    ["PROCUREMENT_ENTITY"].includes(userRole) && content.selfApply === true ?
                                         <Fragment>
+
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                                                 onClick={() => { openApplicantList(content) }}
@@ -428,7 +426,7 @@ export default function InternationalTenders() {
                                                 <IconListDetails size={20} />
                                             </button>
                                         </Fragment> : null
-                                } */}
+                                }
                             </div>
                         );
                     }}
@@ -438,17 +436,18 @@ export default function InternationalTenders() {
                     <div></div>
 
                     {
-                        getTenders?.pageable &&
+                        getTenderBox?.pageable &&
                         <Pagination
                             currentPage={page}
                             setCurrentPage={setPage}
-                            pageCount={getTenders.totalPages}
+                            pageCount={getTenderBox.totalPages}
                         />
                     }
                 </div>
             </div>
 
             {selectedTender && (
+
                 <TenderViewModal
                     selfApply={selectedTender.selfApply}
                     title={selectedTender.tenderNumber}
@@ -516,7 +515,6 @@ export default function InternationalTenders() {
                                 src={selectedTender.filePath}
                                 width="100%"
                                 height="500px"
-                                frameBorder="0"
                                 title="Tender Document"
                             ></iframe>
                         </div>
@@ -527,8 +525,9 @@ export default function InternationalTenders() {
                         </div>
                     </div>
                 </TenderViewModal>
-            )}
+            )
+            }
 
-        </div>
+        </div >
     )
 }
