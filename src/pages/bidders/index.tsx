@@ -5,9 +5,9 @@ import { Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
 import { ICompany } from "@/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { changeUserStatus } from "@/services/user";
+import { changeUserStatus, deleteBidder } from "@/services/user";
 import { IMessage } from "@/types/forms";
 import SMSModal from "./fragments/sms-model";
 import { sendMessageSingle } from "@/services/commons";
@@ -50,6 +50,7 @@ export default function Bidders() {
 
     // JCM DELETE MODAL
     const [isDeleting, setIsDeleting] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const { userData } = useUserData();
 
     const handleDeleteModalClose = () => {
@@ -57,8 +58,25 @@ export default function Bidders() {
     };
 
     const handleDeleteBidder = () => {
-        alert("Bidder deleted"); // Placeholder for delete logic
+        setDeleting(true);
+        deleteBidderMutation.mutate();
     };
+    
+    const deleteBidderMutation = useMutation({
+        mutationKey: ["deleteBidder", selectedUser?.id],
+        mutationFn: () => deleteBidder(selectedUser?.id || ""),
+        onSuccess: (data) => {
+            toast.success(data.message || "Bidder deleted successfully");
+            setDeleting(false);
+            setIsDeleting(false);
+            refetch();
+        },
+        onError: (error:any) => {
+            setDeleting(false);
+            toast.error(`Failed to delete bidder: ${error.message}`);
+        }
+    })
+    const {}=deleteBidderMutation;
     // JCM DELETE END
 
 
@@ -410,7 +428,7 @@ export default function Bidders() {
                             phone number: <span className="font-bold text-gray-900">{selectedUser?.phoneNumber || "N/A"}</span>
                         </p>
                         <div className="mt-4 flex justify-end space-x-2">
-                            {true &&
+                            {!deleting &&
                                 <Button
                                     label="Cancel"
                                     icon={<IconX size={18} />}
@@ -422,7 +440,7 @@ export default function Bidders() {
                             <Button
                                 label="DELETE BIDDER"
                                 icon={<IconTrash size={18} />}
-                                loading={false}
+                                loading={deleting}
                                 onClick={handleDeleteBidder}
                                 theme="danger"
                                 size="sm"
@@ -444,8 +462,8 @@ export default function Bidders() {
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
-                                ["ADMINISTRATOR", "SUPERVISOR"].includes(userData?.role as string) &&
-                                <button className="hidden" onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
+                                ["SUPERVISOR","ADMINISTRATOR"].includes(userData?.role as string) &&
+                                <button onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
                                     <IconTrash className="h-5 w-5 text-red-500" />
                                 </button>
                             }

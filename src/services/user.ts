@@ -62,3 +62,9 @@ export async function updateBidderCompany(payload: ICompany, userId: string) {
 
     return response.data
 }
+
+export async function deleteBidder(id: string) {
+    const response = await http.delete<any>(`/users/bidder/delete/${id}`)
+
+    return response.data
+}

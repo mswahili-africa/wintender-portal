@@ -88,6 +88,13 @@ export async function getCategories(params: {}) {
 
     return response.data
 }
+
+export async function deleteCategory(id: string) {
+    const response = await http.delete<any>(`/tenders/category/${id}/delete`);
+
+    return response.data
+}
+
 // JCM TENDER
 
 export async function assignBidder(payload: IAssignBidder) {
