@@ -273,6 +273,7 @@ export interface IStatisticSummary {
   requests: number
   tenders: number
   bidders: number
+  applications: number
 }
 
 export interface IPayment {

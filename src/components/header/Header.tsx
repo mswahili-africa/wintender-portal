@@ -1,7 +1,6 @@
 import { Menu } from "@headlessui/react";
 import {
     IconBellFilled,
-    IconWallet,
     IconPower,
     IconUserCircle
 } from "@tabler/icons-react";
@@ -16,6 +15,7 @@ import { Puff } from "react-loader-spinner";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { USSDPushEnquiry, USSDPushRequest } from "@/services/payments";
+import { WalletButton } from "../button/WalletButton";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
@@ -121,14 +121,7 @@ const Header = () => {
 
                     {
                         auth.user &&
-                        <div onClick={() => setIsOpen(true)} className="flex cursor-pointer justify-center w-full items-center p-2 h-10 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
-                            <div className="flex justify-center items-center w-9 h-9 rounded-md">
-                                <IconWallet className="text-slate-500" />
-                            </div>
-                            <p className="ml-2 text-center text-md uppercase text-slate-500 font-medium whitespace-nowrap">
-                                {new Intl.NumberFormat().format(walletBalance ?? 0)} TZS
-                            </p>
-                        </div>
+                        <WalletButton amount={walletBalance} onClick={() => setIsOpen(true)} />
                     }
 
                     <Menu as="div" className="relative inline-block text-left">

@@ -152,18 +152,19 @@ export default function Dashboard() {
     );
 
     const PEStats = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${stats?.statistics.requests}`} to="/tender-box" />
+            <StatCard icon={IconFileText} title="My Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Tender Box" description={`Applications: ${stats?.statistics.applications}`} to="/tender-box" />
         </div>
     );
 
     const BidderStats = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
             <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
             <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${stats?.statistics.requests}`} to="/do-it-for-me" />
+            <StatCard icon={IconGitPullRequest} title="Submissions" description={`Applications: ${stats?.statistics.applications}`} to="/do-it-for-me" />
         </div>
     );
 
@@ -253,8 +254,16 @@ export default function Dashboard() {
 
     return (
         <div className="p-2 min-h-screen">
-            <h2 className="text-xl font-bold mb-4">Billboards</h2>
-            <Billboards />
+            {
+                userRole !== "PROCUREMENT_ENTITY" ? <>
+                    <h2 className="text-xl font-bold mb-4">Billboards</h2>
+                    <Billboards />
+                </> : <>
+                    {/* <h2 className="text-xl font-bold mb-4">Dashboard</h2> */}
+                    <div className="text-3xl font-[300]">Hello, {userData?.company || userData?.name}</div>
+                    <div className="text-gray-600">Welcome to your dashboard</div>
+                </>
+            }
             <Modal isOpen={showModal} closeModal={closeModal} />
 
             {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (

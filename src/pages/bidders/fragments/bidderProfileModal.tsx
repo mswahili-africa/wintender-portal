@@ -28,6 +28,7 @@ import { IconX } from "@tabler/icons-react";
 import { useUserData } from "@/hooks/useUserData";
 import { IconEdit } from "@tabler/icons-react";
 import UserProfile from "@/pages/users/_username";
+import { WalletButton } from "@/components/button/WalletButton";
 
 interface IProps {
     children?: React.ReactNode;
@@ -229,23 +230,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                         variant="outline"
                                     />
                                 </div>
-                                <p className="flex items-center space-x-3">
-
-
-                                    <div className="flex cursor-pointer justify-center w-full items-center p-2 h-8 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
-                                        <div className="flex justify-center items-center w-9 h-9 rounded-md">
-                                            <IconWallet className="text-slate-500" />
-                                        </div>
-                                        <p className="ml-2 text-center text-md uppercase text-slate-500 font-medium whitespace-nowrap">
-                                            {new Intl.NumberFormat().format(user.walletAmount ??  0)} TZS
-                                            {/* {new Intl.NumberFormat().format(walletBalance ?? 0)} TZS */}
-                                        </p>
-                                    </div>
+                                <div className="flex items-center space-x-3">
+                                    <WalletButton amount={user.walletAmount}/>
 
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
                                     </button>
-                                </p>
+                                </div>
                             </div>
                         </div>
 
