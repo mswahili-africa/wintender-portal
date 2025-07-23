@@ -143,7 +143,8 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ACCOUNTANT: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards") && menu.label === "Tender" ? {
         ...menu,
         subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-    } : { ...menu
+    } : {
+        ...menu
     }),
     PROCUREMENT_ENTITY: () => allMenus
         .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
@@ -155,15 +156,24 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             : menu
         ),
     PUBLISHER: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards") && menu.label === "Tender" ? {
+        ...menu,
+        subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
+    } : {
+        ...menu
+    }),
+    SUPERVISOR: () => allMenus.filter(menu => (menu.label !== "Internal")).map(menu => menu.label === "Entities"
+        ? {
             ...menu,
-            subMenu: menu.subMenu?.filter(sub =>  sub.label !== "My Submissions"), // Exclude Categories sub-menu
-        } : { ...menu
-    } ),
-    SUPERVISOR: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards") && menu.label === "Tender" ? {
-            ...menu,
-            subMenu: menu.subMenu?.filter(sub =>  sub.label !== "My Submissions"), // Exclude Categories sub-menu
-        } : { ...menu
-    } ),
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
+        }
+        : menu.label === "Tender"
+            ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
+            }
+            : menu
+
+    ),
     BIDDER: () => allMenus
         .filter(menu => ["Tender", "Finance", "Consultation", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
