@@ -136,7 +136,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
             companyLogoFilePath: user.companyLogoFilePath || "",
             companyTinFilePath: user.companyTinFilePath || "",
             categoryIds: selectedCategoriesIds.filter(cat => cat !== null),
-            companyCategories: []
+            companyCategories: [],
+            walletAmount: user.walletAmount || 0
         };
 
         setIsUpdating(true); // Set loading state to true
