@@ -201,6 +201,7 @@ export interface ICompany {
   createdBy: string;
   updatedBy: string;
   planExpiryDate: number;
+  walletAmount: number;
   currentPlanId: string;
   companyName: string;
   companyStatus: string;

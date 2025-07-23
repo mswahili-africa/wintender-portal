@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconMessage } from "@tabler/icons-react";
+import { IconMessage, IconWallet } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -230,29 +230,37 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     />
                                 </div>
                                 <p className="flex items-center space-x-3">
-                                    {/* JCM edit button */}
-                                    <div className="flex justify-end w-full">
-                                        {
-                                            ["SUPERVISOR"].includes(userData?.role || "") && // Show edit button only for supervisors
-                                            <Button
-                                                label={editDetails ? "Cancel Edit" : "Edit Details"}
-                                                size="sm"
-                                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
-                                                theme="primary"
-                                                onClick={() => setEditDetails(!editDetails)}
-                                            />
-                                        }
-                                    </div>
-                                    {/* <button onClick={() => setEditDetails(!editDetails)}>
-                                        <IconEdit size={24} className="text-green-500" />
-                                    </button> */}
 
+
+                                    <div className="flex cursor-pointer justify-center w-full items-center p-2 h-8 bg-green-50 rounded-lg focus:outline-none ring-2 ring-green-600">
+                                        <div className="flex justify-center items-center w-9 h-9 rounded-md">
+                                            <IconWallet className="text-slate-500" />
+                                        </div>
+                                        <p className="ml-2 text-center text-md uppercase text-slate-500 font-medium whitespace-nowrap">
+                                            {new Intl.NumberFormat().format(user.walletAmount ??  0)} TZS
+                                            {/* {new Intl.NumberFormat().format(walletBalance ?? 0)} TZS */}
+                                        </p>
+                                    </div>
 
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
                                     </button>
                                 </p>
                             </div>
+                        </div>
+
+                        {/* JCM edit button */}
+                        <div className="flex justify-end w-full">
+                            {
+                                userData?.role === "SUPERVISOR" && // Show edit button only for supervisors
+                                <Button
+                                    label={editDetails ? "Cancel Edit" : "Edit Details"}
+                                    size="sm"
+                                    icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                    theme="primary"
+                                    onClick={() => setEditDetails(!editDetails)}
+                                />
+                            }
                         </div>
 
                         {
@@ -286,22 +294,11 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
 
                                 <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
+
                                     <div className="space-y-4">
                                         {/* JCM Edit categories only for supervisors */}
                                         <div className="flex flex-row items-center justify-between">
                                             <strong className="uppercase w-1/2">Categories</strong>
-
-                                            {/* JCM Dropdown to Add Categories */}
-                                            {/* <Select
-                                            options={availableOptions}
-                                            onChange={(selectedOption) => {
-                                                const selected = categories.find((c) => c.id === selectedOption?.value);
-                                                if (selected) addCategory(selected);
-                                            }}
-                                            placeholder="Search or select category"
-                                            className="w-1/2 border-0 border-green-700 focus:ring-0"
-                                            styles={customStyles}
-                                        /> */}
 
                                         </div>
 

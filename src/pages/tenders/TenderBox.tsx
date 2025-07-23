@@ -388,44 +388,19 @@ export default function PrivateTenders() {
                                 >
                                     <IconEye size={20} />
                                 </button>
-                                {
-                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
-                                        <><Fragment>
-
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => handleEdit(content)}
-                                            >
-                                                <IconEdit size={20} />
-                                            </button>
-                                        </Fragment>
-                                            <Fragment>
-
-                                                <button
-                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                    onClick={() => handleDelete(content)}
-                                                >
-                                                    <IconTrash size={20} />
-                                                </button>
-                                            </Fragment>
-
-                                        </>
-
-                                    )
-                                }
 
                                 {/* JCM tender applicant list button */}
                                 {
-                                    ["PROCUREMENT_ENTITY"].includes(userRole) && content.selfApply === true ?
-                                        <Fragment>
+                                    userRole === "PROCUREMENT_ENTITY" && content.selfApply === true &&
+                                    <Fragment>
 
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                                onClick={() => { openApplicantList(content) }}
-                                            >
-                                                <IconListDetails size={20} />
-                                            </button>
-                                        </Fragment> : null
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                            onClick={() => { openApplicantList(content) }}
+                                        >
+                                            <IconListDetails size={20} />
+                                        </button>
+                                    </Fragment>
                                 }
                             </div>
                         );

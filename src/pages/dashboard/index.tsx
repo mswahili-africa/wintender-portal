@@ -42,8 +42,8 @@ export default function Dashboard() {
     const [isConsultMeLoading, setIsConsultMeLoading] = useState(false);
     const closeModal = () => setShowModal(false);
 
-     const handleConsultMeClick = () => {
-        if(selectedBillboard)
+    const handleConsultMeClick = () => {
+        if (selectedBillboard)
             showConfirmation({
                 theme: "success",
                 title: "Request Consultation",
@@ -51,19 +51,19 @@ export default function Dashboard() {
                 onConfirm: () => requestMutation.mutate(selectedBillboard.id),
                 onCancel: () => { }
             })
-        }
+    }
 
     const requestMutation = useMutation({
-            mutationFn: (id:string) => createConsultMe(id),
-            onSuccess: () => {
-                toast.success("Request send successfully");
-            },
-            onError: (error: any) => {
-                toast.error(error.response?.data?.message ?? "");
-            }
-        });
+        mutationFn: (id: string) => createConsultMe(id),
+        onSuccess: () => {
+            toast.success("Request send successfully");
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message ?? "");
+        }
+    });
 
-        
+
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -84,7 +84,7 @@ export default function Dashboard() {
                 setBillboards(data);
             } catch (err) {
                 console.error("Failed to fetch billboards", err);
-            } 
+            }
         };
 
         if (userId !== "") {
@@ -148,6 +148,14 @@ export default function Dashboard() {
                 }).format(stats?.statistics.payments ?? 0)}`}
                 to="/publisher-reports"
             />
+        </div>
+    );
+
+    const PEStats = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${stats?.statistics.requests}`} to="/tender-box" />
         </div>
     );
 
@@ -255,9 +263,16 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {userRole.includes("PUBLISHER") && (
+            {(userRole.includes("PUBLISHER") || userRole.includes("SUPERVISOR")) && (
                 <div className="mt-6">
                     {loading ? <SkeletonLoader /> : <PublisherStats />}
+                </div>
+            )}
+
+            {/* JCM pe stats*/}
+            {userRole.includes("PROCUREMENT_ENTITY") && (
+                <div className="mt-6">
+                    {loading ? <SkeletonLoader /> : <PEStats />}
                 </div>
             )}
 
