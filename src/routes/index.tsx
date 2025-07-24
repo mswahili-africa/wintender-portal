@@ -166,12 +166,14 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             ...menu,
             subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
         }
-        : menu.label === "Tender"
-            ? {
-                ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
-            }
-            : menu
+        : menu.label === "Tender" ? {
+            ...menu,
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
+        }
+            : menu.label === "Consultation" ? {
+            ...menu,
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
+            } : menu
 
     ),
     BIDDER: () => allMenus
