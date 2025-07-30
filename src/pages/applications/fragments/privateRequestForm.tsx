@@ -1,9 +1,9 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import { createTender, getCategories } from "@/services/tenders";
-import { ITenders } from "@/types/index";
+import { ICompany, ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconCrown, IconFileText } from "@tabler/icons-react";
+import { IconCrown, IconFileText, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -12,9 +12,12 @@ import { mixed, number, object, string } from "yup";
 import Select from "react-select";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
+import { getUserRole } from "@/utils";
+
 
 interface IProps {
     onSuccess: () => void;
+    bidder?: ICompany; // JCM PROP USED TO PASS BIDDER WHEN PUBLISHER IS CREATING PRIVATE TENDER
     initials?: ITenders;
 }
 
@@ -32,12 +35,17 @@ const schema = object().shape({
     consultationFee: number().required("Consultation Fee is required"),
 });
 
-export default function PrivateTenderRequest({ onSuccess }: IProps) {
-    const [open, setOpen] = useState<boolean>(false);
+export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
+    const [open, setOpen] = useState<boolean>(false); // JCM added isOpen prop
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+
+    // JCM user role and location
+    const userRole = getUserRole();
+    const location = window.location.href;
+
 
     const {
         register,
@@ -143,6 +151,11 @@ export default function PrivateTenderRequest({ onSuccess }: IProps) {
         formData.append("categoryId", data.categoryId);
         formData.append("entityId", data.entityId);
         formData.append("consultationFee", data.consultationFee)
+        if (bidder) {
+            formData.append("bidderId", bidder.id);
+        } else {
+            formData.append("bidderId", "");
+        }
 
         uploadTenderMutation.mutate(formData);
     };
@@ -163,17 +176,24 @@ export default function PrivateTenderRequest({ onSuccess }: IProps) {
     });
 
     const openDate = watch("openDate");
-
     return (
         <div className="max-w-max">
-            <Button
-                type="button"
-                label="Request"
-                icon={<IconCrown size={18} />}
-                theme="primary"
-                size="md"
-                onClick={() => setOpen(true)}
-            />
+            {
+                ["PUBLISHER", "ADMINISTRATOR", "SUPERVISOR"].includes(userRole) && location.includes("bidder") ?
+                    <div onClick={() => bidder && setOpen(true)}>
+                        <IconPlus className="h-5 w-5 text-green-500" />
+                    </div>
+                    :
+                    <Button
+                        type="button"
+                        label="Request"
+                        icon={<IconCrown size={18} />}
+                        theme="primary"
+                        size="md"
+                        onClick={() => setOpen(true)}
+                    />
+
+            }
 
             <Modal
                 size="sm"
@@ -182,9 +202,12 @@ export default function PrivateTenderRequest({ onSuccess }: IProps) {
                 onClose={(v) => setOpen(v)}
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                <div className="mb-2">
-                        <span className="text-xs text-red-500 mt-1 mx-0.5">Send us a tender you need us to do it for you privately</span>
-                    </div>
+                    {
+                        ["PUBLISHER","ADMINISTRATOR", "SUPERVISOR"].includes(userRole) && <>
+                            <span className="text-sm text-green-500 mt-1 mx-0.5">Create private tender for:</span>
+                            <h1 className="text-lg font-bold mb-5">{bidder?.companyName}</h1>
+                        </>
+                    }
                     {/* Region */}
                     <div className="mb-2">
                         <label htmlFor="region" className="block mb-2">

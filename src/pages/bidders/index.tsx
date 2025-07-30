@@ -21,6 +21,7 @@ import Button from "@/components/button/Button";
 import { useUserData } from "@/hooks/useUserData";
 import Modal from "@/components/Modal";
 import * as XLSX from 'xlsx';
+import PrivateTenderRequest from "../applications/fragments/privateRequestForm";
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -53,6 +54,8 @@ export default function Bidders() {
     const [deleting, setDeleting] = useState(false);
     const { userData } = useUserData();
 
+    const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
+
     const handleDeleteModalClose = () => {
         setIsDeleting(false);
     };
@@ -61,22 +64,23 @@ export default function Bidders() {
         setDeleting(true);
         deleteBidderMutation.mutate();
     };
-    
+
     const deleteBidderMutation = useMutation({
         mutationKey: ["deleteBidder", selectedUser?.id],
         mutationFn: () => deleteBidder(selectedUser?.id || ""),
         onSuccess: (data) => {
             toast.success(data.message || "Bidder deleted successfully");
+            console.log(data);
             setDeleting(false);
             setIsDeleting(false);
             refetch();
         },
-        onError: (error:any) => {
+        onError: (error: any) => {
             setDeleting(false);
             toast.error(`Failed to delete bidder: ${error.message}`);
         }
     })
-    const {}=deleteBidderMutation;
+    const { } = deleteBidderMutation;
     // JCM DELETE END
 
 
@@ -462,7 +466,13 @@ export default function Bidders() {
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
-                                ["SUPERVISOR"].includes(userData?.role as string) &&
+                                ["SUPERVISOR", "PUBLISHER"].includes(userData?.role as string) &&
+                                <button onClick={() => {setSelectedUser(content) }}>
+                                    <PrivateTenderRequest onSuccess={refetch} bidder={content} />
+                                </button>
+                            }
+                            {
+                                ["SUPERVISOR",].includes(userData?.role as string) &&
                                 <button onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
                                     <IconTrash className="h-5 w-5 text-red-500" />
                                 </button>

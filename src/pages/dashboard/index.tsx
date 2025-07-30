@@ -42,7 +42,6 @@ export default function Dashboard() {
     const [isConsultMeLoading, setIsConsultMeLoading] = useState(false);
     const closeModal = () => setShowModal(false);
 
-    console.log("User Role:", userRole);
 
     const handleConsultMeClick = () => {
         if (selectedBillboard)
@@ -269,7 +268,7 @@ export default function Dashboard() {
                     <Billboards />
                 </> : <>
                     {/* <h2 className="text-xl font-bold mb-4">Dashboard</h2> */}
-                    <div className="text-3xl font-[300]">Hello, {userData?.company || userData?.name}</div>
+                    <div className="text-3xl font-[200]">Hello, {userData?.company || userData?.name}</div>
                     <div className="text-gray-600">Welcome to your dashboard</div>
                 </>
             }
