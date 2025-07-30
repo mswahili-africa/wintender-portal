@@ -274,6 +274,7 @@ export interface IStatisticSummary {
   tenders: number
   bidders: number
   applications: number
+  messageBalance: any
 }
 
 export interface IPayment {

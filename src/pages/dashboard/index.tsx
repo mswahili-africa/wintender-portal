@@ -4,7 +4,8 @@ import {
     IconFileText,
     IconReportMoney,
     IconPigMoney,
-    IconUser
+    IconUser,
+    IconMessage
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -298,6 +299,34 @@ export default function Dashboard() {
                     {loading ? <SkeletonLoader /> : <AdminStats />}
                 </div>
             )}
+
+            {
+                !["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
+                        <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <IconMessage className="w-6 h-6 text-green-600" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-gray-800">SMS Balance Report</h2>
+                            </div>
+
+                            <div className="space-y-3 text-gray-700 text-sm sm:text-base">
+                                <div className="flex justify-between">
+                                    <span className="font-medium">NextSMS:</span>
+                                    <span className="font-semibold">{loading ? <Spinner size="sm"/> : stats?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium">Onfon Media:</span>
+                                    <span className="font-semibold">{loading ? <Spinner size="sm"/> : stats?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                )
+            }
+
 
             {error && <div className="text-red-500 mt-4">{error}</div>}
         </div>
