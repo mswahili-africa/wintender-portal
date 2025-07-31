@@ -3,7 +3,7 @@ import Modal from "@/components/widgets/Modal";
 import { createTender, getCategories } from "@/services/tenders";
 import { ICompany, ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconCrown, IconFileText, IconPlus } from "@tabler/icons-react";
+import { IconCrown, IconFilePlus, IconFileText } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -181,7 +181,7 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
             {
                 ["PUBLISHER", "ADMINISTRATOR", "SUPERVISOR"].includes(userRole) && location.includes("bidder") ?
                     <div onClick={() => bidder && setOpen(true)}>
-                        <IconPlus className="h-5 w-5 text-green-500" />
+                        <IconFilePlus  className="h-5 w-5 text-green-500" />
                     </div>
                     :
                     <Button

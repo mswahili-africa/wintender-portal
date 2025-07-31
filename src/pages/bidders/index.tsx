@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconChevronDown, IconFileTypeXls, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronDown, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
@@ -20,8 +20,9 @@ import Select from "react-select";
 import Button from "@/components/button/Button";
 import { useUserData } from "@/hooks/useUserData";
 import Modal from "@/components/Modal";
-import * as XLSX from 'xlsx';
 import PrivateTenderRequest from "../applications/fragments/privateRequestForm";
+import { ExportXLSX } from "@/components/widgets/Excel";
+import bidderExcelColumns from "./fragments/bidderExcelColumns";
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -241,40 +242,13 @@ export default function Bidders() {
         setUserInfo(undefined);
     };
 
-    // JCM export XLSX
-    const handleExportXLSX = () => {
-        console.log(bidders?.content)
-        const data = bidders?.content.map((bidder: any) => ({
-            "Bidder Name": bidder.name,
-            "Bidder Phone": bidder.companyPrimaryNumber,
-            "Bidder Status": bidder.companyStatus,
-            "Bidder Address": bidder.companyAddress,
-            "Bidder Email": bidder.email,
-            "Company Name": bidder.companyName,
-            "Company Email": bidder.companyEmail,
-            "Company Tin": bidder.companyTin,
-        })) ?? [];
-        const workbook = XLSX.utils.book_new();
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-        XLSX.writeFile(workbook, "bidders.xlsx");
-    }
-
-
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Bidders</h2>
 
                 <div className="flex gap-x-2">
-                    <button
-                        type="button"
-                        className="bg-gray-600 text-sm text-white hover:bg-gray-500 py-2 px-3 rounded flex items-center"
-                        onClick={() => { handleExportXLSX() }}
-                    >
-                        <IconFileTypeXls size={20} className="mr-2" />
-                        Export XLSX
-                    </button>
+                    <ExportXLSX name="Bidders" data={bidders?.content || []} columns={bidderExcelColumns} />
                     <button
                         className="bg-green-600 text-white py-2 px-3 rounded hover:bg-blue-500 flex items-center"
                         onClick={openBulkSendModal}

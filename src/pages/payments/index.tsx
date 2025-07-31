@@ -12,6 +12,8 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { IPayment } from "@/types";
 import { update } from "lodash";
 import { getAllPayments } from "@/hooks/usePayments";
+import { ExportXLSX } from "@/components/widgets/Excel";
+import excelColumns from "./fragments/excelPaymentColumns";
 
 export default function () {
   const [page, setPage] = useState<number>(0);
@@ -26,7 +28,7 @@ export default function () {
     sort: sort,
     filter: filter, // Pass the appropriate filter value
   });
-  
+
   const handleSorting = (field: string, direction: SortDirection) => {
     setSort(`${field},${direction.toLowerCase()}`);
   };
@@ -50,7 +52,7 @@ export default function () {
         approveMutation.mutate(payload.transactionReference);
         refetch();
       },
-      onCancel: () => {},
+      onCancel: () => { },
     });
   };
   const rejectMutation = useMutation({
@@ -69,7 +71,7 @@ export default function () {
   };
 
   const { userData } = useUserDataContext();
-const userRole = userData?.role || "BIDDER";
+  const userRole = userData?.role || "BIDDER";
 
   function setUpdate(update: any) {
     throw new Error("Function not implemented.");
@@ -79,15 +81,18 @@ const userRole = userData?.role || "BIDDER";
     <div>
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-semibold">Payments</h2>
-        {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER") && (
-          <PaymentsForm
-            initials={update}
-            onSuccess={() => {
-              setUpdate(update);
-              refetch();
-            }}
-          />
-        )}
+        <div className="flex flex-row gap-4">
+          <ExportXLSX data={payments?.content || []} name={"Payments"} columns={excelColumns} />
+          {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER") && (
+            <PaymentsForm
+              initials={update}
+              onSuccess={() => {
+                setUpdate(update);
+                refetch();
+              }}
+            />
+          )}
+        </div>
       </div>
 
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
