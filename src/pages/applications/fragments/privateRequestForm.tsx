@@ -181,7 +181,7 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
             {
                 ["PUBLISHER", "ADMINISTRATOR", "SUPERVISOR"].includes(userRole) && location.includes("bidder") ?
                     <div onClick={() => bidder && setOpen(true)}>
-                        <IconFilePlus  className="h-5 w-5 text-green-500" />
+                        <IconFilePlus className="h-5 w-5 text-green-500" />
                     </div>
                     :
                     <Button
@@ -203,7 +203,7 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
                     {
-                        ["PUBLISHER","ADMINISTRATOR", "SUPERVISOR"].includes(userRole) && <>
+                        ["PUBLISHER", "ADMINISTRATOR", "SUPERVISOR"].includes(userRole) && <>
                             <span className="text-sm text-green-500 mt-1 mx-0.5">Create private tender for:</span>
                             <h1 className="text-lg font-bold mb-5">{bidder?.companyName}</h1>
                         </>
@@ -339,6 +339,37 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
                             {errors.summary?.message?.toString()}
                         </p>
                     </div>
+
+                    {/* JCM Consultation fee input */}
+                    {
+                        userRole !== "BIDDER" &&
+                        <div className="mb-2">
+                            <label htmlFor="consultationFee" className="block mb-2">
+                                Consultation Fee
+                            </label>
+
+                            <input
+                                type="text"
+                                inputMode="decimal"
+                                className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                                {...register("consultationFee", {
+                                    required: true,
+                                    pattern: {
+                                        value: /^\d+(\.\d{1,2})?$/,
+                                        message: "Enter a valid number",
+                                    },
+                                })}
+                                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+                                }}
+                            />
+
+
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.consultationFee?.message?.toString()}
+                            </p>
+                        </div>
+                    }
 
                     <div className="mb-6">
                         <label className="block mb-2">Tender Document</label>
