@@ -1,4 +1,4 @@
-import { IconChecklist, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconChecklist, IconFilterOff, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -14,6 +14,7 @@ import { update } from "lodash";
 import { getAllPayments } from "@/hooks/usePayments";
 import { ExportXLSX } from "@/components/widgets/Excel";
 import excelColumns from "./fragments/excelPaymentColumns";
+import Button from "@/components/button/Button";
 
 export default function () {
   const [page, setPage] = useState<number>(0);
@@ -97,12 +98,26 @@ export default function () {
 
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
         <div className="flex justify-between items-center p-4 border-b border-slate-200">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input-normal py-2 w-1/2 lg:w-1/4"
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="flex flex-row items-center gap-x-2">
+            <input
+              type="text"
+              placeholder="Search"
+              value={search}
+              className="input-normal py-2 min-w-64 lg:w-1/4"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {
+              search &&
+              <Button
+                type="button"
+                label="Reset"
+                icon={<IconFilterOff size={18} />}
+                theme="secondary"
+                size="sm"
+                onClick={() => setSearch("")}
+              />
+            }
+          </div>
         </div>
 
         <Table
