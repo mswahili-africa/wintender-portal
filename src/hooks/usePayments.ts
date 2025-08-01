@@ -14,7 +14,7 @@ interface IProps {
 
 export function getAllPayments({
     page,
-    search = "", // Provide default empty string for search
+    search, // Provide default empty string for search
     sort,
     filter,
   }: {
@@ -24,7 +24,7 @@ export function getAllPayments({
     filter?: any;
   }) {
     const { handleError } = useErrorHandler();
-  
+
     const { isLoading, isError, data, error, refetch } = useQuery({
       queryKey: [
         "getAllPayments",
