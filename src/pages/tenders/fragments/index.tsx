@@ -8,9 +8,9 @@ export default function TenderList() {
 
     return (
         <div>
-            <Tabs panels={["Private", "Government", "International"]}>
-                <PrivateTenders />
+            <Tabs panels={["Government","Private", "International"]}>
                 <GovernmentTenders />
+                <PrivateTenders />
                 <InternationalTenders />
             </Tabs>
         </div>
