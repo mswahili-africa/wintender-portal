@@ -39,3 +39,15 @@
         @apply w-full px-3 py-2 xl:py-2.5 text-xs xl:text-sm text-slate-600 placeholder-slate-400 border border-red-300 focus:border-red-600 focus:outline-none focus:ring-0 rounded-md
     }
 }
+
+.quill {
+  height: 180px; /* Set a fixed height */
+  /* or */
+  max-height: 500px; 
+  overflow-y: auto; 
+}
+/* For the content container within the editor */
+.quill .ql-container {
+  max-height: calc(100% - 42px); /* Adjust based on your toolbar height */
+  overflow-y: auto;
+}
