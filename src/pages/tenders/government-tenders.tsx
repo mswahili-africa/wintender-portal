@@ -461,7 +461,7 @@ export default function GovernmentTenders() {
                                 <p className="flex-1">{selectedTender.categoryName}</p>
                             </div>
                             <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.summary}</p>
+                                <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedTender.summary }}></p>
                             </div>
 
                             <div className="flex items-center">

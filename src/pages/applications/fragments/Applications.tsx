@@ -383,7 +383,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 </div>
                                 <div className="flex items-center">
                                     <strong className="w-32 text-gray-600">Summary:</strong>
-                                    <p className="flex-1">{selectedApplication.summary}</p>
+                                    <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedApplication.summary }}></p>
                                 </div>
 
                                 <div className="flex items-center">

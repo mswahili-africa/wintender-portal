@@ -13,6 +13,7 @@ import Select from "react-select";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import { getUserRole } from "@/utils";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 
 interface IProps {
@@ -51,6 +52,7 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
         register,
         handleSubmit,
         watch,
+        control,
         reset,
         setValue, // Added for setting values programmatically
         formState: { errors },
@@ -327,14 +329,9 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
                             Summary
                         </label>
 
-                        <textarea
-                            rows={3}
-                            className={`${errors.summary?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("summary", { required: true })}
-                        ></textarea>
+
+                        <TextEditor control={control} name="summary"/>
+                        
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.summary?.message?.toString()}
                         </p>

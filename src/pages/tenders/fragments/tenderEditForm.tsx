@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import { number, object, string } from "yup";
 import Select from "react-select";
 import { debounce } from "lodash";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 interface IProps {
     onSuccess: () => void;
@@ -43,6 +44,7 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         register,
         handleSubmit,
         watch,
+        control,
         reset,
         setValue, // Added for setting values programmatically
         formState: { errors },
@@ -346,14 +348,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                             Summary
                         </label>
 
-                        <textarea
-                            rows={3}
-                            className={`${errors.summary?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("summary", { required: true })}
-                        ></textarea>
+                        <TextEditor name="summary" control={control} />
+
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.summary?.message?.toString()}
                         </p>

@@ -16,6 +16,7 @@ import { debounce } from "lodash";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import Spinner from "@/components/spinners/Spinner";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 export enum RequirementStage {
     PRELIMINARY = "PRELIMINARY",
@@ -82,6 +83,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         register,
         handleSubmit,
         watch,
+        control,
         reset,
         setValue,
         formState: { errors },
@@ -354,7 +356,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                     </div>
                     <div className="mb-2">
                         <label className="block mb-2">Summary</label>
-                        <textarea className="input-normal" rows={3} {...register("summary")} />
+                        <TextEditor name="summary" control={control} />
                         <p className="text-xs text-red-500">
                             {typeof errors.summary?.message === "string" ? errors.summary.message : ""}
                         </p>

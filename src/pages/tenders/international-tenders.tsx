@@ -416,19 +416,6 @@ export default function InternationalTenders() {
                                             </button>
                                         </Fragment></>
                                 )}
-
-                                {/* JCM tender applicant list button */}
-                                {/* {
-                                    ["PROCUREMENT_ENTITY"].includes(userRole)  && content.selfApply === true ?
-                                        <Fragment>
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                                onClick={() => { openApplicantList(content) }}
-                                            >
-                                                <IconListDetails size={20} />
-                                            </button>
-                                        </Fragment> : null
-                                } */}
                             </div>
                         );
                     }}
@@ -473,7 +460,7 @@ export default function InternationalTenders() {
                                 <p className="flex-1">{selectedTender.categoryName}</p>
                             </div>
                             <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.summary}</p>
+                                <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedTender.summary }}></p>
                             </div>
 
                             <div className="flex items-center">
