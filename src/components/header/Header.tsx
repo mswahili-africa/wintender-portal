@@ -30,7 +30,7 @@ const Header = () => {
 
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
-        period: 1,
+        period: 6,
         phoneNumber: "",
         paymentReason: "SUBSCRIPTION"
     });
