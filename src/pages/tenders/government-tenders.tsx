@@ -82,23 +82,6 @@ export default function GovernmentTenders() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (subscriptionDays !== undefined && subscriptionDays < 1) {
-            showConfirmation({
-                theme: "danger",
-                title: "Your subscription has expired",
-                message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
-                onConfirm: () => {
-                    // Open payment modal when confirm is clicked
-                    setIsPaymentModalOpen(true);
-                },
-                onCancel: () => {
-                    // Redirect to home page when cancelled
-                    navigate("/");  // Redirect to home page
-                }
-            });
-        }
-    }, [subscriptionDays, navigate]);
 
     const paymentMutation = useMutation({
         mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
@@ -254,7 +237,7 @@ export default function GovernmentTenders() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">International Tenders</h2>
+                <h2 className="text-lg font-bold">Government Tenders</h2>
                 {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
                     <PETenderCreateForm
                         onSuccess={() => {
@@ -268,30 +251,6 @@ export default function GovernmentTenders() {
                     </button>
                 )}
             </div>
-
-            {isPaymentModalOpen && (
-                <PaymentModal
-                    paymentDetails={paymentDetails}
-                    setPaymentDetails={setPaymentDetails}
-                    onClose={() => setIsPaymentModalOpen(false)}
-                    onSubmit={() => paymentMutation.mutate(paymentDetails)}
-                >
-                    {/* Show loader and message when enquiry is in progress */}
-                    {isLoadingEnquiry && (
-                        <div className="flex justify-center items-center mt-4">
-                            <Puff
-                                height="60"
-                                width="60"
-                                radius="1"
-                                color="green"
-                                ariaLabel="loading"
-                                visible={isLoadingEnquiry}
-                            />
-                            <p className="mt-4">Please check your phone and accept payment by entering your password.</p>
-                        </div>
-                    )}
-                </PaymentModal>
-            )}
 
             {editTender ? (
                 <TenderEdit
