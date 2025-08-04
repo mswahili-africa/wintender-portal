@@ -252,6 +252,30 @@ export default function GovernmentTenders() {
                 )}
             </div>
 
+            {isPaymentModalOpen && (
+                <PaymentModal
+                    paymentDetails={paymentDetails}
+                    setPaymentDetails={setPaymentDetails}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                    onSubmit={() => paymentMutation.mutate(paymentDetails)}
+                >
+                    {/* Show loader and message when enquiry is in progress */}
+                    {isLoadingEnquiry && (
+                        <div className="flex justify-center items-center mt-4">
+                            <Puff
+                                height="60"
+                                width="60"
+                                radius="1"
+                                color="green"
+                                ariaLabel="loading"
+                                visible={isLoadingEnquiry}
+                            />
+                            <p className="mt-4">Please check your phone and accept payment by entering your password.</p>
+                        </div>
+                    )}
+                </PaymentModal>
+            )}
+
             {editTender ? (
                 <TenderEdit
                     initials={editTender}

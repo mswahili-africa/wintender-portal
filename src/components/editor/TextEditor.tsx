@@ -10,5 +10,5 @@ export function TextEditor({name,control}: Props) {
 
   const {field}=useController({name,control});
 
-  return <ReactQuill theme="snow" value={field.value} placeholder='Type here' onChange={field.onChange} className='editor' />;
+  return <ReactQuill theme="snow" value={field.value} placeholder='Type here' onChange={field.onChange} />;
 }
