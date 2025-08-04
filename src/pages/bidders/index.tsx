@@ -244,13 +244,13 @@ export default function Bidders() {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-10">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Bidders</h2>
 
                 <div className="flex gap-x-2">
                     <ExportXLSX name="Bidders" data={bidders?.content || []} columns={bidderExcelColumns} />
                     <button
-                        className="bg-green-600 text-white py-2 px-3 rounded hover:bg-blue-500 flex items-center"
+                        className="bg-green-600 text-white py-2 px-3 rounded hover:bg-green-800 flex items-center"
                         onClick={openBulkSendModal}
                     >
                         <IconMessage size={20} className="mr-2" />

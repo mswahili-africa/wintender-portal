@@ -43,7 +43,7 @@ export const ExportXLSX = ({ name, data, columns }: TExcelDocument) => {
     return (
         <button
             type="button"
-            className="bg-gray-600 text-sm text-white hover:bg-gray-500 py-2 px-3 rounded flex items-center"
+            className="bg-gray-600 text-sm text-white hover:bg-gray-800 py-2 px-3 rounded flex items-center"
             onClick={onExport}
         >
             <IconFileTypeXls size={20} className="mr-2" />

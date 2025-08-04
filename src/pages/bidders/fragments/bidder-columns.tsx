@@ -9,10 +9,10 @@ const columns: IColumn[] = [
         label: "name",
         sortable: false,
         plainObject: true,
-        element: (row: { name: string; companyName: string; companyLogoFilePath: string }) => (
+        element: (row: { name: string; companyName: string; companyLogoFilePath: string,createdAt:Date }) => (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
-                    src={row.companyLogoFilePath ? row.companyLogoFilePath : dummyLogo }
+                    src={row.companyLogoFilePath ? row.companyLogoFilePath : dummyLogo}
                     alt="Entity Logo"
                     style={{
                         width: '40px', // Adjust size as needed
@@ -22,7 +22,10 @@ const columns: IColumn[] = [
                         marginRight: '8px', // Space between logo and name
                     }}
                 />
-                <span>{ row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase()}</span> {/* Display the name next to the logo */}
+                <div className="flex flex-col">
+                    <span>{row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase()}</span> {/* Display the name next to the logo */}
+                    <span className="text-slate-400 text-xs">{new Date(row.createdAt).toLocaleDateString() }</span> {/* Display the name next to the logo */}
+                </div>
             </div>
         ),
     },

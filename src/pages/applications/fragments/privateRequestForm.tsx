@@ -449,7 +449,7 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
                         label="Request"
                         theme="primary"
                         size="md"
-                        loading={uploadTenderMutation.isLoading}
+                        loading={uploadTenderMutation.isPending}
                     />
                 </form>
             </Modal>
