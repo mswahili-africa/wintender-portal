@@ -5,7 +5,10 @@ import {
     IconReportMoney,
     IconPigMoney,
     IconUser,
-    IconMessage
+    IconMessage,
+    IconBrandWhatsapp,
+    IconMail,
+    IconPhoneCall
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -255,7 +258,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="p-2 min-h-screen">
+        <div className="p-2 min-h-screen relative">
             {
                 userRole !== "PROCUREMENT_ENTITY" ? <>
                     {
@@ -314,14 +317,41 @@ export default function Dashboard() {
                             <div className="space-y-3 text-gray-700 text-sm sm:text-base">
                                 <div className="flex justify-between">
                                     <span className="font-medium">NextSMS:</span>
-                                    <span className="font-semibold">{loading ? <Spinner size="sm"/> : stats?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
+                                    <span className="font-semibold">{loading ? <Spinner size="sm" /> : stats?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium">Onfon Media:</span>
-                                    <span className="font-semibold">{loading ? <Spinner size="sm"/> : stats?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
+                                    <span className="font-semibold">{loading ? <Spinner size="sm" /> : stats?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
                                 </div>
                             </div>
                         </div>
+
+
+                        {/* JCM CONTACTS  */}
+                        {
+                            ["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
+                                    {/* WhatsApp */}
+                                    <a
+                                        href="https://wa.me/+255736228228"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconBrandWhatsapp size={20} />
+                                        {/* <span className="text-sm group-hover:block hidden font-medium">WhatsApp</span> */}
+                                    </a>
+
+                                    {/* Email */}
+                                    <a
+                                        href="mailto:info@wintender.co.tz"
+                                        className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconMail size={20} />
+                                        {/* <span className="text-sm font-medium">Email</span> */}
+                                    </a>
+                                </div>
+                            )}
                     </div>
 
                 )
