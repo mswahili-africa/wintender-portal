@@ -422,6 +422,7 @@ export default function GovernmentTenders() {
             {selectedTender && (
                 <TenderViewModal
                     selfApply={selectedTender.selfApply}
+                    region={selectedTender.region}
                     title={selectedTender.tenderNumber}
                     tenderId={selectedTender.id}
                     onClose={() => setSelectedTender(null)}

@@ -14,9 +14,10 @@ interface ModalProps {
     children: React.ReactNode;
     isLoading: boolean;
     onDoItForMeClick: () => void;
+    region?: string; // JCM Add region prop for checking tender type
 }
 
-const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, isLoading, onDoItForMeClick }: ModalProps) => {
+const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, region, isLoading, onDoItForMeClick }: ModalProps) => {
     const user = useUserDataContext();
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
@@ -42,11 +43,21 @@ const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, isLoad
 
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
             <div className="bg-green-100 rounded-lg shadow-lg max-w-3xl w-full p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">{title}</h2>
                     <div className="flex space-x-4">
+                        {
+                            region === "GOVERNMENT" &&
+                            < Button
+                                label="Go NeST"
+                                size="sm"
+                                theme="secondary"
+                                variant="outline"
+                                onClick={() => window.open("https://nest.go.tz/")}
+                            />
+                        }
                         {/* Conditionally render button or spinner */}
                         {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
                             <div className="flex space-x-4">
@@ -71,6 +82,7 @@ const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, isLoad
                                             onClick={handleTenderApplyModal}
                                         />
                                     )}
+
 
                                     <Button
                                         label="Request 'Do it for me'"
