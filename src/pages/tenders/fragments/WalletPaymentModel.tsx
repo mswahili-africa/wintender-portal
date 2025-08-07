@@ -18,10 +18,8 @@ export default function WalletPaymentModal({
     onClose: () => void;
     children: React.ReactNode; // Accept children for dynamic content like loader or success message
 }) {
-    const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
     const [warningMessage, setWarningMessage] = useState(""); // To display warning message
-    const [paymentDetails, setPaymentDetails] = useState({ phoneNumber: "", amount: 1000 });
-    const [isWalletLoading, setIsWalletLoading] = useState(false);
+    const [paymentDetails, setPaymentDetails] = useState({ phoneNumber: "", amount: 10000 });
     const [messages, setMessages] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,10 +43,8 @@ export default function WalletPaymentModal({
         try {
             // Trigger the payment submission (API call)
             onSubmit();
-            setIsPayButtonDisabled(true);
             setWarningMessage("");
         } catch (error) {
-            setIsPayButtonDisabled(false);
             console.error("Error during payment submission:", error);
         }
     };
@@ -56,10 +52,10 @@ export default function WalletPaymentModal({
     // jcm payment
     const paymentMutation = useMutation({
         mutationFn: async (paymentData: IWalletTopUp) => {
-            setIsWalletLoading(true);
 
             // Step 1: Send initial payment request
-            if(paymentData.amount < 1000) {
+            if (paymentData.amount < 10000) {
+                setWarningMessage("Amount should be greater than 10000");
                 throw new Error("Amount should be greater than 1000");
             }
             const response = await USSDPushWalletRequest(paymentData);
@@ -70,7 +66,7 @@ export default function WalletPaymentModal({
 
             // Step 2: Poll the enquiry endpoint until it's not pending
             const maxTries = 7;
-            const interval = 5000; 
+            const interval = 5000;
             let attempts = 0;
             let finalStatus;
 
@@ -87,7 +83,7 @@ export default function WalletPaymentModal({
             }
 
             if (finalStatus.code === "SUCCESS") {
-                return finalStatus; 
+                return finalStatus;
             } else {
                 throw new Error(finalStatus.message || "Payment failed or timed out");
             }
@@ -96,13 +92,11 @@ export default function WalletPaymentModal({
         onSuccess: (data: any) => {
             toast.success(data.message || "Payment successful");
             setMessages('');
-            setIsWalletLoading(false);
         },
 
         onError: (error: any) => {
             setMessages('');
-            toast.error("Payment failed");
-            setIsWalletLoading(false);
+            toast.error(error.message || "Payment failed");
         },
 
         retry: 0,
@@ -124,6 +118,11 @@ export default function WalletPaymentModal({
             <div className="bg-white rounded-lg p-6 w-96">
                 <h3 className="text-xl font-bold text-gray-800">Top up wallet amount</h3>
                 <div className="mt-4">
+                    {warningMessage && (
+                        <div className="mt-2 text-red-500 text-sm w-full text-center mb-2">
+                            {warningMessage} {/* Display warning message */}
+                        </div>
+                    )}
                     <label className="block text-sm text-gray-600" htmlFor="phoneNumber">Phone Number</label>
                     <input
                         type="text"
@@ -135,11 +134,6 @@ export default function WalletPaymentModal({
                         placeholder="Enter your phone number"
                     />
                 </div>
-                {warningMessage && (
-                    <div className="mt-2 text-red-500 text-sm">
-                        {warningMessage} {/* Display warning message */}
-                    </div>
-                )}
                 <div className="mt-4">
                     <label className="block text-sm text-gray-600" htmlFor="period">Amount</label>
                     <input
@@ -147,12 +141,14 @@ export default function WalletPaymentModal({
                         id="amount"
                         name="amount"
                         pattern="[0-9]*"
+                        min={10000}
                         value={paymentDetails.amount}
                         onChange={handleChange}
                         className="input-normal w-full mt-2"
                         placeholder="Enter the amount"
                     />
                 </div>
+
 
                 {/* Dynamic content (Loading/Success Message) */}
                 <div className="mt-6">
@@ -163,17 +159,17 @@ export default function WalletPaymentModal({
                 {messages !== "" && (
                     <div className="text-green-600 w-full text-center text-xs">{messages}</div>
                 )}
-                {isWalletLoading && (
+                {paymentMutation.isPending && (
                     <div className="mt-4 text-center text-green-600">
                         <Loader />
                     </div>
                 )}
 
                 {/* Submit and Cancel buttons */}
-                {!isWalletLoading && (
+                {!paymentMutation.isPending && (
                     <div className="mt-10 flex justify-end space-x-2">
                         <Button label="Cancel" theme="danger" onClick={onClose} />
-                        <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={isPayButtonDisabled} />
+                        <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={paymentMutation.isLoading} />
                     </div>
                 )}
             </div>

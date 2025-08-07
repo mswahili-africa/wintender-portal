@@ -1,72 +1,87 @@
 import { useState } from "react";
 import Button from "@/components/button/Button";
+import { IconDeviceMobileDollar, IconLoader, IconPhone, IconWallet, IconX } from "@tabler/icons-react";
+import Spinner from "@/components/spinners/Spinner";
+import Loader from "@/components/spinners/Loader";
+
 export default function PaymentModal({
     paymentDetails,
     setPaymentDetails,
     onClose,
-    onSubmit,
+    onPayWallet,
+    onPayDirect,
     children,
 }: {
     paymentDetails: { phoneNumber: string; period: number };
     setPaymentDetails: React.Dispatch<React.SetStateAction<{ planId: string; period: number; phoneNumber: string; paymentReason: string }>>;
     onClose: () => void;
-    onSubmit: () => void;
-    children: React.ReactNode; // Accept children for dynamic content like loader or success message
+    onPayWallet: () => void;
+    onPayDirect: () => void;
+    children?: React.ReactNode;
 }) {
-    const [isLoading, setIsLoading] = useState(false);  // To track loading state
-    const [isPayButtonDisabled, setIsPayButtonDisabled] = useState(false); // Disable Pay button
-    const [warningMessage, setWarningMessage] = useState(""); // To display warning message
+    const [isLoading, setIsLoading] = useState(false);
+    const [warningMessage, setWarningMessage] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setPaymentDetails((prevDetails) => ({
-            ...prevDetails,
+        const regex = /^[0-9\b]+$/;
+
+        if (name === "phoneNumber" && !regex.test(value)) {
+            return;
+        }
+        setPaymentDetails((prev) => ({
+            ...prev,
             [name]: value,
         }));
     };
 
-    const handleSubmit = async () => {
+    const handlePayment = async (type: "wallet" | "direct") => {
         if (!paymentDetails.phoneNumber) {
-            setWarningMessage("Phone number is required!"); // Show warning message
-            return; // Prevent submission if phone number is empty
+            setWarningMessage("Phone number is required.");
+            return;
         }
 
+        setIsLoading(true);
+        setWarningMessage("");
+
         try {
-            // Trigger the payment submission (API call)
-            onSubmit();
-            setIsLoading(true);
-            setIsPayButtonDisabled(true);
-            setWarningMessage("");
+            type === "wallet" ? await onPayWallet() : await onPayDirect();
         } catch (error) {
+            console.error("Payment Error:", error);
+        } finally {
             setIsLoading(false);
-            setIsPayButtonDisabled(false);
-            console.error("Error during payment submission:", error);
         }
     };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg p-6 w-96">
-                <h3 className="text-xl font-bold text-gray-800">Renew Your Subscription</h3>
+            <div className="bg-white rounded-lg p-6 w-[95%] max-w-md">
+                {/* Header */}
+                <div className="flex justify-between items-center">
+                    <h3 className="text-xl font-bold text-gray-800">Renew Your Subscription</h3>
+                    <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
+                        <IconX className="text-red-600" size={22} />
+                    </button>
+                </div>
+
+                {/* Phone Input */}
                 <div className="mt-4">
-                    <label className="block text-sm text-gray-600" htmlFor="phoneNumber">Phone Number</label>
+                    <label htmlFor="phoneNumber" className="block text-sm text-gray-600">Phone Number</label>
                     <input
                         type="text"
                         id="phoneNumber"
                         name="phoneNumber"
                         value={paymentDetails.phoneNumber}
                         onChange={handleChange}
+                        placeholder="Enter phone number"
                         className="input-normal w-full mt-2"
-                        placeholder="Enter your phone number"
                     />
+                    {warningMessage && <p className="text-red-500 text-sm mt-1">{warningMessage}</p>}
                 </div>
-                {warningMessage && (
-                    <div className="mt-2 text-red-500 text-sm">
-                        {warningMessage} {/* Display warning message */}
-                    </div>
-                )}
+
+                {/* Period Selection */}
                 <div className="mt-4">
-                    <label className="block text-sm text-gray-600" htmlFor="period">Period</label>
+                    <label htmlFor="period" className="block text-sm text-gray-600">Subscription Period</label>
                     <input
                         type="range"
                         id="period"
@@ -78,39 +93,43 @@ export default function PaymentModal({
                         step="1"
                         className="w-full mt-2"
                     />
-                    <div className="mt-2 text-center">
-                        <span className="text-lg font">{paymentDetails.period} Months</span>
-                    </div>
-
-                    {/* Display Total Amount */}
-                    <div className="mt-4 text-center">
-                        <span className="text-l font-semibold">
-                            Total Amount:{" "}
-                            {new Intl.NumberFormat("en-Kenya", {
-                                style: "currency",
-                                currency: "TZS",
-                            }).format(10000 * paymentDetails.period)}
-                        </span>
-                    </div>
+                    <div className="text-center text-lg mt-1">{paymentDetails.period} Month(s)</div>
                 </div>
 
-                {/* Dynamic content (Loading/Success Message) */}
-                <div className="mt-6">
-                    {children}
+                {/* Total Amount */}
+                <div className="mt-4 text-center font-semibold">
+                    Total: {new Intl.NumberFormat("en-TZ", { style: "currency", currency: "TZS" }).format(10000 * paymentDetails.period)}
                 </div>
 
-                {/* Success Message */}
-                {isLoading &&  (
+                {/* Info Text */}
+                <p className="text-green-600 text-center text-sm mt-4 italic">
+                    Choose payment method:
+                </p>
+
+                {/* Dynamic Content Slot */}
+                <div className="mt-4">{children}</div>
+
+                {/* Action Buttons */}
+                <div className="w-full flex flex-row items-center justify-center">
+                    {
+                        isLoading ? (
+                            <Loader/>
+                        ) : (<>
+                            <button onClick={() => handlePayment("wallet")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                                <IconWallet />
+                                <p>Pay With Wallet</p>
+                            </button>
+                            <button onClick={() => handlePayment("direct")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                                <IconDeviceMobileDollar />
+                                <p>Pay With Mobile</p>
+                            </button></>
+                        )
+                    }
+                </div>
+
+                {isLoading && (
                     <div className="mt-4 text-center text-green-600">
-                        <span>Processing...</span>
-                    </div>
-                )}
-
-                {/* Submit and Cancel buttons */}
-                {!isLoading && (
-                    <div className="mt-10 flex justify-end space-x-2">
-                        <Button label="Cancel" theme="danger" onClick={onClose} />
-                        <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={isPayButtonDisabled} />
+                        Processing Payment...
                     </div>
                 )}
             </div>
