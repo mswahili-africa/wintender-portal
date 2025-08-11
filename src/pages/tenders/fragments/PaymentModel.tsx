@@ -1,26 +1,21 @@
 import { useState } from "react";
-import Button from "@/components/button/Button";
-import { IconDeviceMobileDollar, IconLoader, IconPhone, IconWallet, IconX } from "@tabler/icons-react";
-import Spinner from "@/components/spinners/Spinner";
-import Loader from "@/components/spinners/Loader";
+import { IconDeviceMobileDollar, IconWallet, IconX } from "@tabler/icons-react";
+import { USSDPushRequest, USSDPushEnquiry } from "@/services/payments";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { Puff } from "react-loader-spinner";
 
-export default function PaymentModal({
-    paymentDetails,
-    setPaymentDetails,
-    onClose,
-    onPayWallet,
-    onPayDirect,
-    children,
-}: {
-    paymentDetails: { phoneNumber: string; period: number };
-    setPaymentDetails: React.Dispatch<React.SetStateAction<{ planId: string; period: number; phoneNumber: string; paymentReason: string }>>;
-    onClose: () => void;
-    onPayWallet: () => void;
-    onPayDirect: () => void;
-    children?: React.ReactNode;
-}) {
-    const [isLoading, setIsLoading] = useState(false);
+export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
     const [warningMessage, setWarningMessage] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false); // JCM Added loading state
+    const navigate = useNavigate();
+    const [paymentDetails, setPaymentDetails] = useState({
+        planId: "66698e3f39cbe2504dd54c57",
+        period: 6,
+        phoneNumber: "",
+        paymentReason: "SUBSCRIPTION"
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -35,21 +30,55 @@ export default function PaymentModal({
         }));
     };
 
+    // paymentMutation for making the payment
+    const paymentMutation = useMutation({
+        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
+        onSuccess: (data) => {
+            startEnquiry(data.id);  // Start the enquiry API calls
+        },
+        onError: (error) => {
+            setIsProcessing(false);
+            toast.error("Payment failed: " + error);
+        }
+    });
+
+    const startEnquiry = (id: string) => {
+        setIsProcessing(true);
+        let attemptCount = 0;
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await USSDPushEnquiry(id);
+                // Check if response is successful
+                if (response.code === "SUCCESS") {
+                    toast.success("Payment confirmed.");
+                    clearInterval(intervalId);
+                    navigate("/");
+                }
+            } catch (error) {
+                toast.error("Error checking payment status.");
+            }
+
+            attemptCount += 1;
+            if (attemptCount >= 5) {
+                setIsProcessing(false);
+                clearInterval(intervalId);  // Stop after 5 attempts
+                window.location.reload();
+            }
+        }, 5000);  // 5-second interval
+    };
+
     const handlePayment = async (type: "wallet" | "direct") => {
         if (!paymentDetails.phoneNumber) {
             setWarningMessage("Phone number is required.");
             return;
         }
 
-        setIsLoading(true);
         setWarningMessage("");
 
         try {
-            type === "wallet" ? await onPayWallet() : await onPayDirect();
+            type === "wallet" ? console.log("Function not implemented") : paymentMutation.mutate(paymentDetails);
         } catch (error) {
             console.error("Payment Error:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -101,20 +130,37 @@ export default function PaymentModal({
                     Total: {new Intl.NumberFormat("en-TZ", { style: "currency", currency: "TZS" }).format(10000 * paymentDetails.period)}
                 </div>
 
-                {/* Info Text */}
-                <p className="text-green-600 text-center text-sm mt-4 italic">
-                    Choose payment method:
-                </p>
+
 
                 {/* Dynamic Content Slot */}
-                <div className="mt-4">{children}</div>
+                <div className="flex flex-col justify-center items-center mt-4">
+                    {
+                        (paymentMutation.isPending || isProcessing) &&
+                        <Puff
+                            height="60"
+                            width="60"
+                            radius="1"
+                            color="green"
+                            ariaLabel="loading"
+                            visible={(paymentMutation.isPending || isProcessing)}
+                        />
+                    }
+                    {
+                        isProcessing &&
+                        <p className="mt-4 text-xs text-center">Please check your phone and accept payment by entering your password.</p>
+                    }
+                </div>
 
+                {
+                    !(paymentMutation.isPending || isProcessing) &&
+                    <p className="text-green-600 text-center text-sm italic">
+                        Choose payment method:
+                    </p>
+                }
                 {/* Action Buttons */}
                 <div className="w-full flex flex-row items-center justify-center">
                     {
-                        isLoading ? (
-                            <Loader/>
-                        ) : (<>
+                        !(paymentMutation.isPending || isProcessing) && <>
                             <button onClick={() => handlePayment("wallet")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
                                 <IconWallet />
                                 <p>Pay With Wallet</p>
@@ -122,12 +168,13 @@ export default function PaymentModal({
                             <button onClick={() => handlePayment("direct")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
                                 <IconDeviceMobileDollar />
                                 <p>Pay With Mobile</p>
-                            </button></>
-                        )
+                            </button>
+                        </>
+
                     }
                 </div>
 
-                {isLoading && (
+                {(paymentMutation.isPending || isProcessing) && (
                     <div className="mt-4 text-center text-green-600">
                         Processing Payment...
                     </div>

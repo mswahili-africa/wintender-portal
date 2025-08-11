@@ -1,4 +1,4 @@
-import { IconChecklist, IconFilterOff, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconChecklist, IconFilterOff, IconSearch, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -10,11 +10,12 @@ import usePopup from "@/hooks/usePopup";
 import PaymentsForm from "./fragments/paymentsForm";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IPayment } from "@/types";
-import { update } from "lodash";
+import { set, update } from "lodash";
 import { getAllPayments } from "@/hooks/usePayments";
 import { ExportXLSX } from "@/components/widgets/Excel";
 import excelColumns from "./fragments/excelPaymentColumns";
 import Button from "@/components/button/Button";
+import PaymentDetailsModal from "./fragments/paymentDetailsModal";
 
 export default function () {
   const [page, setPage] = useState<number>(0);
@@ -22,6 +23,8 @@ export default function () {
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [filter] = useState<any>();
   const { showConfirmation } = usePopup();
+
+  const [selectedPayment, setSelectedPayment] = useState<IPayment | null>(null);
 
   const { payments, isLoading, refetch } = getAllPayments({
     page: page,
@@ -130,9 +133,16 @@ export default function () {
           actionSlot={(content: IPayment) => {
             return (
               <div className="flex justify-center items-center space-x-3">
+                <button
+                  className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                  onClick={() => { setSelectedPayment(content); }}
+                >
+                  <IconSearch size={20} />
+                </button>
                 {(userRole === "ADMINISTRATOR") &&
                   content.status == "PENDING" && (
                     <Fragment>
+
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                         onClick={() => handleApprove(content)}
@@ -153,8 +163,6 @@ export default function () {
         />
 
         <div className="flex justify-between items-center p-4 lg:px-8">
-          <div></div>
-
           {payments?.pageable && (
             <Pagination
               currentPage={page}
@@ -162,6 +170,16 @@ export default function () {
               pageCount={payments.totalPages}
             />
           )}
+
+          {/* payment details */}
+          {
+            selectedPayment && <PaymentDetailsModal 
+            payment={selectedPayment} 
+            loading={false} 
+            onClose={ ()=>
+              setSelectedPayment(null)
+            } />
+          }
         </div>
       </div>
     </div>

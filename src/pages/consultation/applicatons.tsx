@@ -262,7 +262,7 @@ export default function ConsultationApplication() {
             {isStatusModalOpen && selectedApplication && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="modal-content bg-green-100 rounded-lg shadow-lg w-[400px] p-4">
-                        <h3 className="font-bold text-lg mb-4">Changa Status</h3>
+                        <h3 className="font-bold text-lg mb-4">Change Status</h3>
                         <div className="mb-2">
                             <label htmlFor="status" className="block mb-2">
                                 Status

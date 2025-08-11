@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
+import {  IconEye, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -9,7 +9,6 @@ import usePopup from "@/hooks/usePopup";
 import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
-import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import Chip from "@/components/chip/Chip";
@@ -17,8 +16,6 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
 import PaymentModal from "./fragments/PaymentModel";
-import { USSDPushEnquiry, USSDPushRequest } from "@/services/payments";
-import { Puff } from "react-loader-spinner";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
@@ -32,7 +29,6 @@ export default function PrivateTenders() {
     const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-    const [isLoadingEnquiry, setIsLoadingEnquiry] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -44,12 +40,7 @@ export default function PrivateTenders() {
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const navigate = useNavigate();
 
-    const [paymentDetails, setPaymentDetails] = useState({
-        planId: "66698e3f39cbe2504dd54c57",
-        period: 1,
-        phoneNumber: "",
-        paymentReason: "SUBSCRIPTION"
-    });
+    
 
     const handleSearch = () => {
         setSearchQuery(generateSearchQuery());
@@ -99,41 +90,7 @@ export default function PrivateTenders() {
         }
     }, [subscriptionDays, navigate]);
 
-    const paymentMutation = useMutation({
-        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
-        onSuccess: (data) => {
-            setIsLoadingEnquiry(true); // Start loading while enquiry is in progress
-            startEnquiry(data.id);  // Start the enquiry API calls
-        },
-        onError: (error) => {
-            toast.error("Payment failed: " + error);
-        }
-    });
-
-    const startEnquiry = (id: string) => {
-        let attemptCount = 0;
-        const intervalId = setInterval(async () => {
-            try {
-                const response = await USSDPushEnquiry(id);
-                // Check if response is successful
-                if (response.code === "SUCCESS") {
-                    toast.success("Payment confirmed.");
-                    setIsLoadingEnquiry(false);  // Stop loader if payment is confirmed
-                    clearInterval(intervalId);
-                    navigate("/");
-                }
-            } catch (error) {
-                toast.error("Error checking payment status.");
-            }
-
-            attemptCount += 1;
-            if (attemptCount >= 5) {
-                setIsLoadingEnquiry(false);  // Stop loader after 5 attempts
-                clearInterval(intervalId);  // Stop after 5 attempts
-                window.location.reload();
-            }
-        }, 5000);  // 5-second interval
-    };
+    
 
     const doItForMeMutation = useApiMutation(async (tenderId: string) => requestDoForMe(tenderId));
 
@@ -263,26 +220,9 @@ export default function PrivateTenders() {
 
             {isPaymentModalOpen && (
                 <PaymentModal
-                    paymentDetails={paymentDetails}
-                    setPaymentDetails={setPaymentDetails}
                     onClose={() => setIsPaymentModalOpen(false)}
-                    onSubmit={() => paymentMutation.mutate(paymentDetails)}
-                >
-                    {/* Show loader and message when enquiry is in progress */}
-                    {isLoadingEnquiry && (
-                        <div className="flex justify-center items-center mt-4">
-                            <Puff
-                                height="60"
-                                width="60"
-                                radius="1"
-                                color="green"
-                                ariaLabel="loading"
-                                visible={isLoadingEnquiry}
-                            />
-                            <p className="mt-4">Please check your phone and accept payment by entering your password.</p>
-                        </div>
-                    )}
-                </PaymentModal>
+                />
+                   
             )}
 
             {editTender ? (

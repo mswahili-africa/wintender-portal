@@ -304,6 +304,9 @@ export interface IPayment {
   amount: number;
   requestOrigin: string;
   mno: string;
+  company:string;  // JCM
+  paymentReason:string;  // JCM
+  userName:string;  // JCM
   status: string;
   createdBy: string;
   updatedBy: string;
