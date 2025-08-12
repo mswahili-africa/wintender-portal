@@ -319,6 +319,7 @@ export interface IWalletTopUp {
   amount: number;
   phoneNumber: string;
   paymentReason: string;
+  mno?:string;
 }
 
 export interface IDoItForMe {
