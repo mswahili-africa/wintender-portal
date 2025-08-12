@@ -8,14 +8,17 @@ import { Puff } from "react-loader-spinner";
 
 export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
     const [warningMessage, setWarningMessage] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("");
     const [isProcessing, setIsProcessing] = useState(false); // JCM Added loading state
     const navigate = useNavigate();
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
         period: 6,
         phoneNumber: "",
+        mno: "",
         paymentReason: "SUBSCRIPTION"
     });
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -130,6 +133,36 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                     Total: {new Intl.NumberFormat("en-TZ", { style: "currency", currency: "TZS" }).format(10000 * paymentDetails.period)}
                 </div>
 
+                <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
+                    Choose payment method:
+                </p>
+
+                {/* payment providers */}
+                {
+                    !(paymentMutation.isPending || isProcessing) &&
+                <div className="w-full flex flex-col mb-5 justify-center items-center">
+                    <div className="grid grid-cols-5 justify-between items-center gap-5">
+                        {[
+                            { name: "Mpesa", img: "/payment_logo/voda.png" },
+                            { name: "mix", img: "/payment_logo/yas.png" },
+                            { name: "Airtel", img: "/payment_logo/airtel.png" },
+                            { name: "Halopesa", img: "/payment_logo/halopesa.png" },
+                            { name: "Azampesa", img: "/payment_logo/azam.jpg" },
+                        ].map((method) => (
+                            <div
+                                key={method.name}
+                                onClick={() => {setPaymentMethod(method.name);setPaymentDetails((prev) => ({ ...prev, mno: method.name }))}}
+                                className={`w-12 h-12 rounded cursor-pointer transition-all duration-200 
+        ${paymentMethod === method.name ? "ring-4 ring-green-500 scale-110" : "opacity-70 hover:opacity-100"}`}
+                            >
+                                <img src={method.img} className="object-cover rounded w-full h-full" alt={method.name} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                }
+
+
 
 
                 {/* Dynamic Content Slot */}
@@ -151,20 +184,20 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                     }
                 </div>
 
-                {
+                {/* {
                     !(paymentMutation.isPending || isProcessing) &&
                     <p className="text-green-600 text-center text-sm italic">
                         Choose payment method:
                     </p>
-                }
+                } */}
                 {/* Action Buttons */}
                 <div className="w-full flex flex-row items-center justify-center">
                     {
                         !(paymentMutation.isPending || isProcessing) && <>
-                            <button onClick={() => handlePayment("wallet")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                            {/* <button onClick={() => handlePayment("wallet")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
                                 <IconWallet />
                                 <p>Pay With Wallet</p>
-                            </button>
+                            </button> */}
                             <button onClick={() => handlePayment("direct")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
                                 <IconDeviceMobileDollar />
                                 <p>Pay With Mobile</p>
