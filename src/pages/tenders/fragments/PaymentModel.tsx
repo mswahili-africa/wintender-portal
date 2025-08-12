@@ -144,7 +144,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                             <div className="grid grid-cols-5 justify-between items-center gap-5">
                                 {[
                                     { name: "Mpesa", img: "/payment_logo/voda.png" },
-                                    { name: "mix", img: "/payment_logo/yas.png" },
+                                    { name: "Tigo", img: "/payment_logo/yas.png" },
                                     { name: "Airtel", img: "/payment_logo/airtel.png" },
                                     { name: "Halopesa", img: "/payment_logo/halopesa.png" },
                                     { name: "Azampesa", img: "/payment_logo/azam.jpg" },
