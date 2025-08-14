@@ -40,7 +40,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
     // paymentMutation for making the payment
     const paymentMutation = useMutation({
-        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string }) => USSDPushRequest(paymentData),
+        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string ,mno: string, source: string}) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
             startEnquiry(data.id);  // Start the enquiry API calls
         },
@@ -111,7 +111,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                     </button>
                 </div>
 
-                {warningMessage && <p className="text-red-500 text-sm mt-1">{warningMessage}</p>}
+                {warningMessage && <p className="text-red-500 text-sm mt-1 text-center">{warningMessage}</p>}
                 {/* Phone Input */}
                 <div className="mt-4">
                     <label htmlFor="phoneNumber" className="block text-sm text-gray-600">Phone Number</label>
@@ -197,7 +197,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                     }
                     {
                         isProcessing &&
-                        <p className="mt-4 text-xs text-center">Please check your phone and accept payment by entering your password.</p>
+                        <p className="mt-4 text-xs text-center">Please check your phone for confirmation.</p>
                     }
                 </div>
 

@@ -97,6 +97,8 @@ export interface IUSSDPushRequest {
     phoneNumber: string
     period: number
     paymentReason: string
+    mno: string
+    source: string
 }
 
 export interface IUSSDPushWalletRequest {
