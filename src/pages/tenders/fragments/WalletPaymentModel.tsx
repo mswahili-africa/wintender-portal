@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Loader from "@/components/spinners/Loader";
 import { IWalletTopUp } from "@/types";
 import { set } from "lodash";
+import { useUserData } from "@/hooks/useUserData";
 
 export default function WalletPaymentModal({
     isOpen,
@@ -27,6 +28,8 @@ export default function WalletPaymentModal({
         mno: ""
     }); // Initial payment details
     const [messages, setMessages] = useState('');
+
+    const { userData } = useUserData(); // Fetch user data to check payment mode
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -55,7 +58,6 @@ export default function WalletPaymentModal({
         }
     };
 
-    console.log("Payment Details:", paymentDetails);
 
     // jcm payment
     const paymentMutation = useMutation({
@@ -115,7 +117,7 @@ export default function WalletPaymentModal({
         amount: paymentDetails.amount,
         phoneNumber: paymentDetails.phoneNumber,
         paymentReason: "WALLET_IN",
-        mno:paymentDetails.mno
+        mno: paymentDetails.mno
     }
 
     const onSubmit = () => {
@@ -158,33 +160,35 @@ export default function WalletPaymentModal({
                     />
                 </div>
 
-                {!paymentMutation.isPending && (
-                    <>
-                        <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
-                            Choose payment method:
-                        </p>
-                        <div className="w-full flex flex-col justify-center items-center">
-                            <div className="grid grid-cols-5 justify-between items-center gap-5">
-                                {[
-                                    { name: "Mpesa", img: "/payment_logo/voda.png" },
-                                    { name: "Tigo", img: "/payment_logo/yas.png" },
-                                    { name: "Airtel", img: "/payment_logo/airtel.png" },
-                                    { name: "Halopesa", img: "/payment_logo/halopesa.png" },
-                                    { name: "Azampesa", img: "/payment_logo/azam.jpg" },
-                                ].map((method) => (
-                                    <div
-                                        key={method.name}
-                                        onClick={() => { setPaymentMethod(method.name); setPaymentDetails((prev) => ({ ...prev, mno: method.name })); }}
-                                        className={`w-12 h-12 rounded cursor-pointer transition-all duration-200 
+                {
+                    userData?.paymentMode === "AZAM_PAY" &&
+                    !paymentMutation.isPending && (
+                        <>
+                            <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
+                                Choose payment method:
+                            </p>
+                            <div className="w-full flex flex-col justify-center items-center">
+                                <div className="grid grid-cols-5 justify-between items-center gap-5">
+                                    {[
+                                        { name: "Mpesa", img: "/payment_logo/voda.png" },
+                                        { name: "Tigo", img: "/payment_logo/yas.png" },
+                                        { name: "Airtel", img: "/payment_logo/airtel.png" },
+                                        { name: "Halopesa", img: "/payment_logo/halopesa.png" },
+                                        { name: "Azampesa", img: "/payment_logo/azam.jpg" },
+                                    ].map((method) => (
+                                        <div
+                                            key={method.name}
+                                            onClick={() => { setPaymentMethod(method.name); setPaymentDetails((prev) => ({ ...prev, mno: method.name })); }}
+                                            className={`w-12 h-12 rounded cursor-pointer transition-all duration-200 
         ${paymentMethod === method.name ? "ring-4 ring-green-500 scale-110" : "opacity-70 hover:opacity-100"}`}
-                                    >
-                                        <img src={method.img} className="object-cover rounded w-full h-full" alt={method.name} />
-                                    </div>
-                                ))}
+                                        >
+                                            <img src={method.img} className="object-cover rounded w-full h-full" alt={method.name} />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    </>
-                )}
+                        </>
+                    )}
 
 
                 {/* Dynamic content (Loading/Success Message) */}

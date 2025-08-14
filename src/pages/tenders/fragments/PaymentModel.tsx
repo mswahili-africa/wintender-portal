@@ -5,17 +5,22 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Puff } from "react-loader-spinner";
+import { useUserData } from "@/hooks/useUserData";
 
 export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
     const [warningMessage, setWarningMessage] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [isProcessing, setIsProcessing] = useState(false); // JCM Added loading state
     const navigate = useNavigate();
+
+    const { userData } = useUserData();
+
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",
         period: 6,
         phoneNumber: "",
         mno: "",
+        source: "",
         paymentReason: "SUBSCRIPTION"
     });
 
@@ -70,16 +75,26 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
         }, 5000);  // 5-second interval
     };
 
-    const handlePayment = async (type: "wallet" | "direct") => {
+    const handlePayment = async (type: "WALLET" | "MOBILE") => {
+
+        setPaymentDetails((prev) => ({ ...prev, source: type })); // Set source to WALLET for wallet payments
+
         if (!paymentDetails.phoneNumber) {
             setWarningMessage("Phone number is required.");
             return;
+        }
+        
+        if (type === "WALLET" && userData) {
+            if ( userData?.walletAmount < (paymentDetails.period * 10000) ) {
+                setWarningMessage("Insufficient wallet balance. Please top up your wallet or choose a different payment method.");
+                return;
+            }
         }
 
         setWarningMessage("");
 
         try {
-            type === "wallet" ? console.log("Function not implemented") : paymentMutation.mutate(paymentDetails);
+            paymentMutation.mutate(paymentDetails);
         } catch (error) {
             console.error("Payment Error:", error);
         }
@@ -96,6 +111,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                     </button>
                 </div>
 
+                {warningMessage && <p className="text-red-500 text-sm mt-1">{warningMessage}</p>}
                 {/* Phone Input */}
                 <div className="mt-4">
                     <label htmlFor="phoneNumber" className="block text-sm text-gray-600">Phone Number</label>
@@ -108,7 +124,6 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                         placeholder="Enter phone number"
                         className="input-normal w-full mt-2"
                     />
-                    {warningMessage && <p className="text-red-500 text-sm mt-1">{warningMessage}</p>}
                 </div>
 
                 {/* Period Selection */}
@@ -136,6 +151,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
                 {/* payment providers */}
                 {
+                    userData?.paymentMode === "AZAM_PAY" &&
                     !(paymentMutation.isPending || isProcessing) && <>
                         <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
                             Choose payment method:
@@ -195,11 +211,11 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                 <div className="w-full flex flex-row items-center justify-center">
                     {
                         !(paymentMutation.isPending || isProcessing) && <>
-                            {/* <button onClick={() => handlePayment("wallet")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                            <button onClick={() => handlePayment("WALLET")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
                                 <IconWallet />
                                 <p>Pay With Wallet</p>
-                            </button> */}
-                            <button onClick={() => handlePayment("direct")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                            </button>
+                            <button onClick={() => handlePayment("MOBILE")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
                                 <IconDeviceMobileDollar />
                                 <p>Pay With Mobile</p>
                             </button>

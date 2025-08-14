@@ -472,3 +472,10 @@ export interface ISubmittedApplication {
   companyPrimaryNumber: string;
 }
 
+
+// JCM Settings Interface
+export interface ISettings {
+  general:any;
+  payment:any;
+  sms:any;
+}

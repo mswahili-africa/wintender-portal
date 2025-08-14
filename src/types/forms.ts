@@ -60,6 +60,7 @@ export interface IUserData {
     account: string;
     role: string;
     company: string;
+    paymentMode: string;
 }
 
 export interface IMessage {

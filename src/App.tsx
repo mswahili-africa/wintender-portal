@@ -35,6 +35,7 @@ import SubmittedApplication from "./pages/applications/selfSubmited";
 import { ApplicantsList } from "./pages/applicants";
 import TenderBox from "./pages/tenders/TenderBox";
 import GovernmentTenders from "./pages/tenders/government-tenders";
+import Settings from "./pages/settings";
 
 export const queryClient = new QueryClient({});
 
@@ -85,6 +86,7 @@ function App() {
                                 <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
                                 <Route path="login-attempt" element={<LoginAttempts />} />
+                                <Route path="settings" element={<Settings />} />
                             </Route>
 
                             <Route path="*" element={<NoMatch />} />
