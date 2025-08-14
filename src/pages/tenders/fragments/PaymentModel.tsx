@@ -77,15 +77,15 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
     const handlePayment = async (type: "WALLET" | "MOBILE") => {
 
-        setPaymentDetails((prev) => ({ ...prev, source: type })); // Set source to WALLET for wallet payments
+        const updatedDetails = { ...paymentDetails, source: type }; // Set source to WALLET for wallet payments
 
-        if (!paymentDetails.phoneNumber) {
+        if (!updatedDetails.phoneNumber) {
             setWarningMessage("Phone number is required.");
             return;
         }
         
         if (type === "WALLET" && userData) {
-            if ( userData?.walletAmount < (paymentDetails.period * 10000) ) {
+            if ( userData?.walletAmount < (updatedDetails.period * 10000) ) {
                 setWarningMessage("Insufficient wallet balance. Please top up your wallet or choose a different payment method.");
                 return;
             }
@@ -94,7 +94,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
         setWarningMessage("");
 
         try {
-            paymentMutation.mutate(paymentDetails);
+            paymentMutation.mutate(updatedDetails);
         } catch (error) {
             console.error("Payment Error:", error);
         }
