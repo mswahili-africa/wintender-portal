@@ -9,7 +9,7 @@ const columns: IColumn[] = [
     plainObject: true,
     element: (row: { company: string; userName: string; }) => (
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span>{row?.company ? row.company.toUpperCase() : row?.userName.toUpperCase()}</span>
+        <span>{row?.company ? row.company.toUpperCase() : row?.userName?.toUpperCase()}</span>
       </div>
     ),
   },
