@@ -16,7 +16,7 @@ export const PaymentSettings = ({ control }: TProps) => {
           name="payment.aggregator"
           control={control}
           render={({ field }) => {
-            return <div className="flex gap-4">
+            return <div className="flex gap-y-4">
               {["AZAM_PAY", "FLUTTERWAVE"].map((option) => (
                 <button
                   type="button"
@@ -44,7 +44,7 @@ export const PaymentSettings = ({ control }: TProps) => {
           name="payment.currency"
           control={control}
           render={({ field }) => (
-            <div className="flex gap-4">
+            <div className="flex gap-y-4">
               {["TZS", "KES", "UGS"].map((option) => (
                 <button
                   key={option}

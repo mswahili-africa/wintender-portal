@@ -17,7 +17,7 @@ export const SMSSettings = ({ control }: TProps) => {
           control={control}
           render={({ field }) => {
             return (
-              <div className="flex gap-4">
+              <div className="flex gap-y-4">
                 {["NEXT_SMS", "ONFONMEDIA"].map((option) => (
                   <button
                     type="button"

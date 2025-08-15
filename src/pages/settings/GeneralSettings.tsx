@@ -15,7 +15,7 @@ export const GeneralSettings = ({ control }: TProps) => {
           name="general.language"
           control={control}
           render={({ field }) => {
-            return <div className="flex gap-4">
+            return <div className="flex gap-y-4">
               {["ENGLISH", "SWAHILI"].map((option) => (
                 <button
                   type="button"
