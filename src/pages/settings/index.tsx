@@ -98,9 +98,6 @@ export default function Settings() {
                     />
 
                     {/* Submit */}
-                    {/* {
-                        updateSettingsMutation.isPending ? 
-                        <Spinner  /> : */}
                     <div className="flex justify-end gap-3">
                         <Button
                             type="button"
@@ -111,14 +108,13 @@ export default function Settings() {
                         />
 
                         <Button
-                            type="submit" // still triggers parent form submit
+                            type="button"
                             label="Confirm & Save"
                             theme="danger"
                             disabled={updateSettingsMutation.isPending}
                             loading={updateSettingsMutation.isPending}
                             size="md"
                             onClick={() => {
-                                // Use handleSubmit manually
                                 handleSubmit((data) => {
                                     if (confirmation !== "confirm") {
                                         toast.error("You must type 'confirm' to proceed");
@@ -135,7 +131,6 @@ export default function Settings() {
                             }}
                         />
                     </div>
-                    {/* } */}
                 </div>
             </Modal>
 
