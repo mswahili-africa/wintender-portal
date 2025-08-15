@@ -8,7 +8,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row?.bidderCompanyName ? row.bidderCompanyName.toUpperCase() : row?.bidderName.toUpperCase();
+      return row?.bidderCompanyName ? row.bidderCompanyName?.toUpperCase() : row?.bidderName?.toUpperCase();
     },
   },
   {
