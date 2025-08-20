@@ -86,15 +86,17 @@ export default function () {
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-semibold">Payments</h2>
         <div className="flex flex-row gap-4">
-          <ExportXLSX data={payments?.content || []} name={"Payments"} columns={excelColumns} />
           {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER") && (
-            <PaymentsForm
-              initials={update}
-              onSuccess={() => {
-                setUpdate(update);
-                refetch();
-              }}
-            />
+            <>
+              <ExportXLSX data={payments?.content || []} name={"Payments"} columns={excelColumns} />
+              <PaymentsForm
+                initials={update}
+                onSuccess={() => {
+                  setUpdate(update);
+                  refetch();
+                }}
+              />
+            </>
           )}
         </div>
       </div>
@@ -173,12 +175,12 @@ export default function () {
 
           {/* payment details */}
           {
-            selectedPayment && <PaymentDetailsModal 
-            payment={selectedPayment} 
-            loading={false} 
-            onClose={ ()=>
-              setSelectedPayment(null)
-            } />
+            selectedPayment && <PaymentDetailsModal
+              payment={selectedPayment}
+              loading={false}
+              onClose={() =>
+                setSelectedPayment(null)
+              } />
           }
         </div>
       </div>

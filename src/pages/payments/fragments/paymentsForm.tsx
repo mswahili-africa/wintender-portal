@@ -1,12 +1,16 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Button from "../../../components/button/Button";
 import Modal from "../../../components/widgets/Modal";
 import { createPayment } from "../../../services/payments";
 import { IPaymentForm } from "../../../types/forms";
+import bidders from "@/pages/bidders";
+import { getBidders } from "@/services/user";
+import { debounce } from "lodash";
+import Select from "react-select";
 
 
 interface IProps {
@@ -17,8 +21,12 @@ interface IProps {
 export default function ({ ...props }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
-        defaultValues: { controlNumber: "", phoneNumber: "", amount: 0, mno: "00", description: "" }
+        defaultValues: { controlNumber: "", phoneNumber: "", amount: 0, mno: "00", description: "", bidderId: "", paymentReason: "" }
     });
+
+
+    const [bidders, setBidders] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const createMutation = useMutation({
         mutationFn: (data: IPaymentForm) => createPayment(data),
@@ -31,7 +39,8 @@ export default function ({ ...props }: IProps) {
     })
 
     const submit = (data: IPaymentForm) => {
-        createMutation.mutate(data);
+        console.log(data);
+        // createMutation.mutate(data);
     }
 
     useEffect(() => {
@@ -40,8 +49,42 @@ export default function ({ ...props }: IProps) {
             setValue("phoneNumber", props.initials.phoneNumber ?? "");
             setValue("amount", props.initials.amount ?? 0);
             setValue("description", props.initials.description ?? "");
+            setValue("paymentReason", props.initials.paymentReason ?? "");
+            setValue("bidderId", props.initials.bidderId ?? "");
         }
-    }, [props.initials])
+    }, [props.initials, reset])
+
+
+
+    // JCM Debounced function to fetch bidders
+
+    const fetchBidders = useCallback(async (search = "") => {
+        if (!search) {
+            setBidders([]);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const allBidders = await getBidders({ page: 0, size: 5, search });
+            setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
+        } catch (error) {
+            console.error("Failed to fetch Bidders", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const debouncedFetchBidders = useCallback(
+        debounce((inputValue) => {
+            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+                fetchBidders(inputValue);
+            } else {
+                setBidders([]); // Clear entities if less than 5 characters
+            }
+        }, 5),
+        [fetchBidders]
+    );
 
     return (
         <div className="max-w-max">
@@ -62,7 +105,7 @@ export default function ({ ...props }: IProps) {
                         <input
                             type="number"
                             className={`${errors.controlNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('controlNumber', { required: true })}
+                            {...register('controlNumber', { required: true, valueAsNumber: true })}
                         />
                     </div>
                     <div className="mb-4">
@@ -94,13 +137,53 @@ export default function ({ ...props }: IProps) {
                         />
                     </div>
 
+                    {/* JCM reason */}
+                    <div className="mb-2">
+                        <label htmlFor="region" className="block mb-2">
+                            Payment Reason
+                        </label>
+
+                        <select
+                            className={`${errors.paymentReason?.type === "required" ? "input-error" : "input-normal"}`}
+                            {...register("paymentReason", { required: true })}
+                        >
+                            <option value="WALLET_IN">WALLET_IN</option>
+                            <option value="SUBSCRIPTION">SUBSCRIPTION</option>
+                            <option value="CONSULT_ME">CONSULT_ME</option>
+                        </select>
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.paymentReason?.message?.toString()}
+                        </p>
+                    </div>
+
+                    {/* JCM bidder search input */}
+                    <div className="flex flex-col">
+                        <div className="mb-2">
+                            <label htmlFor="bidder" className="block mb-2">
+                                Bidder
+                            </label>
+                            <Select
+                                options={bidders}
+                                onInputChange={(inputValue) => debouncedFetchBidders(inputValue)}
+                                onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
+                                isLoading={loading}
+                                placeholder="Search for a Bidder"
+                            />
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.bidderId?.message?.toString()}
+                            </p>
+
+                        </div>
+                    </div>
+
 
                     <Button
                         type="submit"
                         label="Request"
                         theme="primary"
                         size="md"
-                        loading={createMutation.isLoading} />
+                        loading={createMutation.isPending}
+                    />
 
                 </form>
             </Modal>
