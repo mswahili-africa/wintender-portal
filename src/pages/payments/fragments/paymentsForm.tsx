@@ -102,9 +102,9 @@ export default function ({ ...props }: IProps) {
                         <label htmlFor="Account" className="block mb-2">Control Number</label>
 
                         <input
-                            type="number"
+                            type="text"
                             className={`${errors.controlNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('controlNumber', { required: true, valueAsNumber: true })}
+                            {...register('controlNumber', { required: true })}
                         />
                     </div>
                     <div className="mb-4">

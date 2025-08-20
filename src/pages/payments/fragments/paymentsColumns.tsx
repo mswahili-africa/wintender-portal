@@ -18,6 +18,13 @@ const columns: IColumn[] = [
     label: "payer",
     sortable: false,
     plainObject: false,
+    element(content) {
+      if (!content) return <span>-</span>; // fallback
+      const formatted =
+        content.charAt(0).toUpperCase() + content.slice(1).toLowerCase();
+      return <span>{formatted}</span>;
+    }
+
   },
   {
     name: "phoneNumber",
@@ -63,10 +70,10 @@ const columns: IColumn[] = [
         case "PLAN":
           theme = "secondary";
           break;
-          case "WALLET_OUT":
+        case "WALLET_OUT":
           theme = "secondary";
           break;
-          case "WALLET_IN":
+        case "WALLET_IN":
           theme = "approved";
           break;
         default:
