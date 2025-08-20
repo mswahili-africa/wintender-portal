@@ -46,7 +46,7 @@ export default function ({ ...props }: IProps) {
         if (props.initials) {
             setValue("controlNumber", props.initials.controlNumber);
             setValue("phoneNumber", props.initials.phoneNumber ?? "");
-            setValue("amount", props.initials.amount ?? 0);
+            setValue("amount", props.initials.amount ?? 10000);
             setValue("description", props.initials.description ?? "");
             setValue("paymentReason", props.initials.paymentReason ?? "");
             setValue("bidderId", props.initials.bidderId ?? "");
@@ -117,7 +117,7 @@ export default function ({ ...props }: IProps) {
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs">(Minimum: 10000)</span></label>
+                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs text-green-500">(minimum: 10000)</span></label>
 
                         <input
                             type="number"
