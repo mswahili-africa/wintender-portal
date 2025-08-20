@@ -39,8 +39,7 @@ export default function ({ ...props }: IProps) {
     })
 
     const submit = (data: IPaymentForm) => {
-        console.log(data);
-        // createMutation.mutate(data);
+        createMutation.mutate(data);
     }
 
     useEffect(() => {
