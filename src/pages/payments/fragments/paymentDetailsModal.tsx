@@ -166,6 +166,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                 {/* Right Column - Location Info */}
                                 <div className="space-y-4">
                                     <strong>Company</strong>
+                                    {payment?.company && <p><strong>Name:</strong> {payment?.company}</p>}
                                     {/* {payment.companyTin && <p><strong>TIN:</strong> {payment.companyTin}</p>}
                                     {payment.companyAddress && <p><strong>Address:</strong> {payment.companyAddress}</p>}
                                     {payment.companyPrimaryNumber && <p><strong>Phone:</strong> {payment.companyPrimaryNumber}</p>}

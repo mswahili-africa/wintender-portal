@@ -21,7 +21,7 @@ interface IProps {
 export default function ({ ...props }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
-        defaultValues: { controlNumber: "", phoneNumber: "", amount: 0, mno: "00", description: "", bidderId: "", paymentReason: "" }
+        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "00", description: "", bidderId: "", paymentReason: "" }
     });
 
 
@@ -117,13 +117,16 @@ export default function ({ ...props }: IProps) {
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Amount</label>
+                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs">(Minimum: 10000)</span></label>
 
                         <input
                             type="number"
                             className={`${errors.amount?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('amount', { required: true })}
+                            {...register('amount', { required: true, valueAsNumber: true,min:10000 })}
                         />
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.amount?.message?.toString()}
+                        </p>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="Phone" className="block mb-2">Description</label>
@@ -173,6 +176,9 @@ export default function ({ ...props }: IProps) {
                             </p>
 
                         </div>
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.bidderId?.message?.toString()}
+                        </p>
                     </div>
 
 
