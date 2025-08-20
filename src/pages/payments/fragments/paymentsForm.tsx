@@ -152,6 +152,7 @@ export default function ({ ...props }: IProps) {
                             <option value="WALLET_IN">WALLET_IN</option>
                             <option value="SUBSCRIPTION">SUBSCRIPTION</option>
                             <option value="CONSULT_ME">CONSULT_ME</option>
+                            <option value="DO_IT_FOR_ME">DO_IT_FOR_ME</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.paymentReason?.message?.toString()}
