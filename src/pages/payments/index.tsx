@@ -86,7 +86,7 @@ export default function () {
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-semibold">Payments</h2>
         <div className="flex flex-row gap-4">
-          {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER") && (
+          {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "SUPERVISOR") && (
             <>
               <ExportXLSX data={payments?.content || []} name={"Payments"} columns={excelColumns} />
               <PaymentsForm

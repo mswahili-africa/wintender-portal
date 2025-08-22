@@ -117,7 +117,8 @@ export default function WalletPaymentModal({
         amount: paymentDetails.amount,
         phoneNumber: paymentDetails.phoneNumber,
         paymentReason: "WALLET_IN",
-        mno: paymentDetails.mno
+        mno: paymentDetails.mno,
+        source:"MOBILE"
     }
 
     const onSubmit = () => {

@@ -7,7 +7,6 @@ import Button from "../../../components/button/Button";
 import Modal from "../../../components/widgets/Modal";
 import { createPayment } from "../../../services/payments";
 import { IPaymentForm } from "../../../types/forms";
-import bidders from "@/pages/bidders";
 import { getBidders } from "@/services/user";
 import { debounce } from "lodash";
 import Select from "react-select";
@@ -20,8 +19,8 @@ interface IProps {
 
 export default function ({ ...props }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
-        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "00", description: "", bidderId: "", paymentReason: "" }
+    const { watch, register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
+        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "", source: "", description: "", bidderId: "", paymentReason: "" }
     });
 
 
@@ -50,6 +49,7 @@ export default function ({ ...props }: IProps) {
             setValue("description", props.initials.description ?? "");
             setValue("paymentReason", props.initials.paymentReason ?? "");
             setValue("bidderId", props.initials.bidderId ?? "");
+            setValue("source", props.initials.source ?? "");
         }
     }, [props.initials, reset])
 
@@ -98,45 +98,24 @@ export default function ({ ...props }: IProps) {
 
             <Modal size="sm" title="Receive payment" isOpen={open} onClose={(v) => setOpen(v)}>
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                    <div className="mb-4">
-                        <label htmlFor="Account" className="block mb-2">Control Number</label>
+                    {/* JCM bidder search input */}
+                    <div className="flex flex-col">
+                        <div className="mb-2">
+                            <label htmlFor="bidder" className="block mb-2">
+                                Bidder
+                            </label>
+                            <Select
+                                options={bidders}
+                                onInputChange={(inputValue) => debouncedFetchBidders(inputValue)}
+                                onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
+                                isLoading={loading}
+                                placeholder="Search for a Bidder"
+                            />
 
-                        <input
-                            type="text"
-                            className={`${errors.controlNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('controlNumber', { required: true })}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Phone number</label>
-
-                        <input
-                            type="number"
-                            className={`${errors.phoneNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('phoneNumber', { required: true })}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs text-green-500">(minimum: 10000)</span></label>
-
-                        <input
-                            type="number"
-                            className={`${errors.amount?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('amount', { required: true, valueAsNumber: true,min:10000 })}
-                        />
+                        </div>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.amount?.message?.toString()}
+                            {errors.bidderId?.message?.toString()}
                         </p>
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Description</label>
-
-                        <input
-                            type="text"
-                            placeholder="You  can add MNO or Bank payment reference here"
-                            className={`${errors.description?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('description', { required: true })}
-                        />
                     </div>
 
                     {/* JCM reason */}
@@ -154,34 +133,71 @@ export default function ({ ...props }: IProps) {
                             <option value="CONSULT_ME">CONSULT_ME</option>
                             <option value="DO_IT_FOR_ME">DO_IT_FOR_ME</option>
                         </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.paymentReason?.message?.toString()}
-                        </p>
                     </div>
 
-                    {/* JCM bidder search input */}
-                    <div className="flex flex-col">
-                        <div className="mb-2">
-                            <label htmlFor="bidder" className="block mb-2">
-                                Bidder
-                            </label>
-                            <Select
-                                options={bidders}
-                                onInputChange={(inputValue) => debouncedFetchBidders(inputValue)}
-                                onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
-                                isLoading={loading}
-                                placeholder="Search for a Bidder"
-                            />
-                            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                {errors.bidderId?.message?.toString()}
-                            </p>
+                    {/* JCM payment method */}
+                    <div className="mb-2">
+                        <label htmlFor="region" className="block mb-2">
+                            Payment Method
+                        </label>
 
-                        </div>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.bidderId?.message?.toString()}
-                        </p>
+                        <select
+                            className={`${errors.paymentReason?.type === "required" ? "input-error" : "input-normal"}`}
+                            {...register("source", { required: true })}
+                        >
+                            <option value="CASH">CASH</option>
+                            <option value="PAY_BILL">PAY_BILL</option>
+                            <option value="BANKING">BANKING</option>
+                        </select>
                     </div>
 
+                    
+
+                    {
+                        !(watch("paymentReason") === "SUBSCRIPTION" || watch("paymentReason") === "WALLET_IN") && watch("source") !== "CASH" && (
+                            <div className="mb-4">
+                                <label htmlFor="Account" className="block mb-2">Control Number</label>
+
+                                <input
+                                    type="text"
+                                    className={`${errors.controlNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
+                                    {...register('controlNumber', { required: true })}
+                                />
+                            </div>
+                        )
+                    }
+                    <div className="mb-4">
+                        <label htmlFor="Phone" className="block mb-2">Phone Number</label>
+
+                        <input
+                            type="number"
+                            className={`${errors.phoneNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
+                            {...register('phoneNumber', { required: true })}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs text-green-500">(minimum: 10000)</span></label>
+
+                        <input
+                            type="number"
+                            className={`${errors.amount?.type === 'required' ? 'input-error' : 'input-normal'}`}
+                            {...register('amount', { required: true, valueAsNumber: true, min: 10000 })}
+                        />
+                    </div>
+                    {
+                        watch("source") !== "CASH" && (
+                            <div className="mb-4">
+                                <label htmlFor="Phone" className="block mb-2">Description</label>
+
+                                <input
+                                    type="text"
+                                    placeholder="You  can add MNO or Bank payment reference here"
+                                    className={`${errors.description?.type === 'required' ? 'input-error' : 'input-normal'}`}
+                                    {...register('description', { required: true })}
+                                />
+                            </div>
+                        )
+                    }
 
                     <Button
                         type="submit"

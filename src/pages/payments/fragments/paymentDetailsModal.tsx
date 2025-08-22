@@ -61,19 +61,19 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
 
     // Get the userId from the user object passed in props
     const { payments } = getUserPayments({
-        userId: payment.id, // Pass the userId from the user object
+        userId: payment.createdBy, // Pass the userId from the user object
         page: page,
         filter: { ...Object.fromEntries(searchParams) }, // Pass filter here
     });
 
-    // const { applicationList } = useApplicationsList({
-    //     applicationGroup: "user-" + user.id,
-    //     groupId: "user-" + user.id,
-    //     page,
-    //     search,
-    //     sort,
-    //     filter: undefined,
-    // });
+    const { applicationList } = useApplicationsList({
+        applicationGroup: "user-" + payment.createdBy,
+        groupId: "user-" + payment.createdBy,
+        page,
+        search,
+        sort,
+        filter: undefined,
+    });
 
     const SendSingleSMS = (user: ICompany) => {
         setSelectedUser(user); // Set the selected user for the modal
@@ -107,6 +107,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
     return (
         <>
             <Modal
+                closeIcon={true}
                 isOpen={isOpen}
                 size={"xl"}
                 onClose={() => {
@@ -124,7 +125,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                 <div className="flex items-center space-x-3">
                                     <div className="overflow-hidden p-0.5">
                                         <img
-                                            src={ dummyLogo}
+                                            src={dummyLogo}
                                             alt={payment?.company}
                                             className="w-16 h-16 object-cover rounded-full border border-gray-300"
                                         />
@@ -133,7 +134,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                         <h4 className="lg:text-lg font-medium">{payment?.company?.toUpperCase()}</h4>
                                     </span>
                                     <Chip
-                                        label={payment?.status }
+                                        label={payment?.status}
                                         size="sm"
                                         theme={payment?.status === "SUCCESSFUL" ? "success" : "danger"}
                                         variant="outline"
@@ -157,6 +158,14 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                     <strong>Transaction Details</strong>
                                     <p><strong>Reference no:</strong> {payment?.transactionReference}</p>
                                     <p><strong>Amount:</strong> {payment?.amount}</p>
+                                    <p className="flex flex-row me-4 gap-x-2"><strong>Status:</strong>
+                                        <Chip
+                                            label={payment?.status}
+                                            size="sm"
+                                            theme={payment?.status === "SUCCESSFUL" ? "success" : "danger"}
+                                            variant="outline"
+                                        />
+                                    </p>
                                     <p><strong>Date:</strong> {payment?.createdAt}</p>
                                     <p><strong>Reason:</strong> {payment?.paymentReason}</p>
                                     <p><strong>Payer:</strong> {payment?.userName}</p>
@@ -167,12 +176,6 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                 <div className="space-y-4">
                                     <strong>Company</strong>
                                     {payment?.company && <p><strong>Name:</strong> {payment?.company}</p>}
-                                    {/* {payment.companyTin && <p><strong>TIN:</strong> {payment.companyTin}</p>}
-                                    {payment.companyAddress && <p><strong>Address:</strong> {payment.companyAddress}</p>}
-                                    {payment.companyPrimaryNumber && <p><strong>Phone:</strong> {payment.companyPrimaryNumber}</p>}
-                                    {payment.companyEmail && <p><strong>Email:</strong> {payment.companyEmail}</p>}
-                                    {payment.companyWebsite && <p><strong>Website:</strong> {payment.companyWebsite}</p>} */}
-                                    {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
                                 </div>
 
                             </div>
@@ -184,7 +187,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
 
 
                 {/* Toggle Button */}
-                < div className="flex flex-col items-center justify-center" >
+                < div className="flex flex-col items-center justify-center overflow-hidden" >
                     <label className="flex items-center cursor-pointer">
                         <span className="mr-2">Requests</span>
                         <div className="relative">
@@ -208,8 +211,8 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                     < div className="tab-content mt-4" >
                         {
                             isPaymentsView ? (
-                                <div className="container" >
-                                    <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                                <div className="container overflow-hidden" >
+                                    <div className="border border-slate-200 bg-white px-32 rounded-md overflow-x-auto">
                                         <Table
                                             columns={paymentsColumns}
                                             data={payments?.content ?? []}
@@ -229,7 +232,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                 </div >
                             ) : (
                                 <div className="container">
-                                    {/* <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                                    <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                         <Table
                                             columns={paymentListColumns}
                                             data={applicationList?.content ?? []}
@@ -245,7 +248,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                                 pageCount={applicationList?.totalPages!}
                                             />
                                         </div>
-                                    )} */}
+                                    )}
                                 </div>
                             )}
 

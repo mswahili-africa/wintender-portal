@@ -138,6 +138,7 @@ export interface IPaymentForm {
     paymentReason: string
     referenceId: string
     bidderId: string
+    source: string
 }
 
 export interface ICreditForm {
