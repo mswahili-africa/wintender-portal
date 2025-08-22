@@ -54,7 +54,7 @@ export default function Settings() {
             toast.success(data.message || "Settings updated successfully");
             setConfirmation("");
             setModalOpen(false);
-            console.log("Settings updated successfully");
+            window.location.reload();
         },
     });
 

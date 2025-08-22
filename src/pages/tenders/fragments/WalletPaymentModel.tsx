@@ -102,6 +102,7 @@ export default function WalletPaymentModal({
         onSuccess: (data: any) => {
             toast.success(data.message || "Payment successful");
             setMessages('');
+            onClose();
         },
 
         onError: (error: any) => {
@@ -202,8 +203,9 @@ export default function WalletPaymentModal({
                     <div className="text-green-600 w-full text-center text-xs">{messages}</div>
                 )}
                 {paymentMutation.isPending && (
-                    <div className="mt-4 text-center text-green-600">
+                    <div className="mt-4 text-center flex flex-col items-center text-green-600">
                         <Loader />
+                        <p>payment name: <strong>"{userData?.paymentMode === "AZAM_PAY" ? "Azam Pay" : "Ewallet Africa"}"</strong></p>
                     </div>
                 )}
 
@@ -211,7 +213,7 @@ export default function WalletPaymentModal({
                 {!paymentMutation.isPending && (
                     <div className="mt-10 flex justify-end space-x-2">
                         <Button label="Cancel" theme="danger" onClick={onClose} />
-                        <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={paymentMutation.isLoading} />
+                        <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={paymentMutation.isPending} />
                     </div>
                 )}
             </div>

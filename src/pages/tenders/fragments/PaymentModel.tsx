@@ -197,16 +197,10 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                     }
                     {
                         isProcessing &&
-                        <p className="mt-4 text-xs text-center">Please check your phone for confirmation.</p>
+                        <p className="mt-4 text-xs text-center">Please check your phone for payment confirmation. payment name: <strong>"{userData?.paymentMode === "AZAM_PAY" ? "Azam Pay" : "Ewallet Africa"}"</strong></p>
                     }
                 </div>
 
-                {/* {
-                    !(paymentMutation.isPending || isProcessing) &&
-                    <p className="text-green-600 text-center text-sm italic">
-                        Choose payment method:
-                    </p>
-                } */}
                 {/* Action Buttons */}
                 <div className="w-full flex flex-row items-center justify-center">
                     {
