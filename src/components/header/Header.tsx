@@ -28,11 +28,11 @@ const Header = () => {
 
 
     return (
-        <div className="lg:flex hidden lg:flex-col lg:-mt-10 lg:mb-20">
+        <div className="flex flex-col lg:-mt-10 lg:mb-20">
             {
                 ["BIDDER", "PROCUREMENT_ENTITY"].includes(user?.userData?.role as string) && (
 
-                    <div className="text-xs flex flex-row justify-end w-full mb-2">
+                    <div className="text-xs hidden sm:flex flex-row justify-end w-full mb-2">
                         <a href="tel:0747098558" target="_blank">
                             <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
                                 <div className="pr-3"><IconPhoneCall size={22} className="text-green-600" stroke={2} /></div>
@@ -55,8 +55,8 @@ const Header = () => {
                     </div>
                 )
             }
-            <div className="flex lg:justify-between  items-center ">
-                <div onClick={() => setIsPaymentModalOpen(true)} className="lg:flex lg:gap-5 cursor-pointer">
+            <div className="flex flex-row justify-between items-center ">
+                <div onClick={() => setIsPaymentModalOpen(true)} className="flex flex-row lg:gap-5 cursor-pointer">
                     {typeof subscription === 'number' && (() => {
                         if (subscription === 0) {
                             return (
@@ -97,7 +97,7 @@ const Header = () => {
                     })()}
                 </div>
                 <div className="flex items-center gap-4 min-w-32">
-                    <div className="lg:flex items-center gap-4 w-full">
+                    <div className="flex flex-row items-center gap-4 w-full">
                         <div className="p-1.5 hover:bg-slate-100 rounded-md">
                             <IconBellFilled className="h-6 w-6 text-slate-600" />
                         </div>
@@ -107,7 +107,7 @@ const Header = () => {
                             <WalletButton amount={walletBalance} onClick={() => setIsOpen(true)} />
                         }
 
-                        <Menu as="div" className="relative inline-block text-left">
+                        <Menu as="div" className="relative inline-block  text-left">
                             {
                                 auth.user &&
                                 <Menu.Button className="flex justify-center items-center h-10 w-10 bg-green-50 rounded-full focus:outline-none ring-2 ring-green-600">
