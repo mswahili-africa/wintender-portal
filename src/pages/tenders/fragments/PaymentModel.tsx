@@ -40,7 +40,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
     // paymentMutation for making the payment
     const paymentMutation = useMutation({
-        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string ,mno: string, source: string}) => USSDPushRequest(paymentData),
+        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string, mno: string, source: string }) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
             startEnquiry(data.id);  // Start the enquiry API calls
         },
@@ -83,9 +83,9 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
             setWarningMessage("Phone number is required.");
             return;
         }
-        
+
         if (type === "WALLET" && userData) {
-            if ( userData?.walletAmount < (updatedDetails.period * 10000) ) {
+            if (userData?.walletAmount < (updatedDetails.period * 10000)) {
                 setWarningMessage("Insufficient wallet balance. Please top up your wallet or choose a different payment method.");
                 return;
             }
@@ -102,127 +102,158 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg p-6 w-[95%] max-w-md">
-                {/* Header */}
-                <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-gray-800">Renew Your Subscription</h3>
-                    <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
-                        <IconX className="text-red-600" size={22} />
-                    </button>
-                </div>
-
-                {warningMessage && <p className="text-red-500 text-sm mt-1 text-center">{warningMessage}</p>}
-                {/* Phone Input */}
-                <div className="mt-4">
-                    <label htmlFor="phoneNumber" className="block text-sm text-gray-600">Phone Number</label>
-                    <input
-                        type="text"
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        value={paymentDetails.phoneNumber}
-                        onChange={handleChange}
-                        placeholder="Enter phone number"
-                        className="input-normal w-full mt-2"
-                    />
-                </div>
-
-                {/* Period Selection */}
-                <div className="mt-4">
-                    <label htmlFor="period" className="block text-sm text-gray-600">Subscription Period</label>
-                    <input
-                        type="range"
-                        id="period"
-                        name="period"
-                        value={paymentDetails.period}
-                        onChange={handleChange}
-                        min="1"
-                        max="12"
-                        step="1"
-                        className="w-full mt-2"
-                    />
-                    <div className="text-center text-lg mt-1">{paymentDetails.period} Month(s)</div>
-                </div>
-
-                {/* Total Amount */}
-                <div className="mt-4 text-center font-semibold">
-                    Total: {new Intl.NumberFormat("en-TZ", { style: "currency", currency: "TZS" }).format(10000 * paymentDetails.period)}
-                </div>
-
-
-                {/* payment providers */}
-                {
-                    userData?.paymentMode === "AZAM_PAY" &&
-                    !(paymentMutation.isPending || isProcessing) && <>
-                        <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
-                            Choose payment method:
-                        </p>
-                        <div className="w-full flex flex-col mb-5 justify-center items-center">
-                            <div className="grid grid-cols-5 justify-between items-center gap-5">
-                                {[
-                                    { name: "Mpesa", img: "/payment_logo/voda.png" },
-                                    { name: "Tigo", img: "/payment_logo/yas.png" },
-                                    { name: "Airtel", img: "/payment_logo/airtel.png" },
-                                    { name: "Halopesa", img: "/payment_logo/halopesa.png" },
-                                    { name: "Azampesa", img: "/payment_logo/azam.jpg" },
-                                ].map((method) => (
-                                    <div
-                                        key={method.name}
-                                        onClick={() => { setPaymentMethod(method.name); setPaymentDetails((prev) => ({ ...prev, mno: method.name })) }}
-                                        className={`w-12 h-12 rounded cursor-pointer transition-all duration-200 
-        ${paymentMethod === method.name ? "ring-4 ring-green-500 scale-110" : "opacity-70 hover:opacity-100"}`}
-                                    >
-                                        <img src={method.img} className="object-cover rounded w-full h-full" alt={method.name} />
-                                    </div>
-                                ))}
-                            </div>
+            <div className="bg-white rounded-lg p-6 w-[90%] sm:w-[60%] relative">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+                    <h3 className="text-xl font-bold col-span-full text-gray-800">Renew Your Subscription</h3>
+                    <div>
+                        {/* Header */}
+                        <div className="flex justify-between items-center">
+                            <button onClick={onClose} className="text-gray-600 hover:text-gray-800 absolute t0p-3 right-5">
+                                <IconX className="text-red-600" size={22} />
+                            </button>
                         </div>
-                    </>
-                }
+                        <div className="text-green-600 font-bold text-lg mb-2 mt-5">Pay direct from your wallet or mobile</div>
+                        {warningMessage && <p className="text-red-500 text-sm mt-1 text-center">{warningMessage}</p>}
+                        {/* Phone Input */}
+                        <div className="mt-4">
+                            <label htmlFor="phoneNumber" className="block text-sm text-gray-600">Phone Number</label>
+                            <input
+                                type="text"
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                value={paymentDetails.phoneNumber}
+                                onChange={handleChange}
+                                placeholder="Enter phone number"
+                                className="input-normal w-full mt-2"
+                            />
+                        </div>
+
+                        {/* Period Selection */}
+                        <div className="mt-4">
+                            <label htmlFor="period" className="block text-sm text-gray-600">Subscription Period</label>
+                            <input
+                                type="range"
+                                id="period"
+                                name="period"
+                                value={paymentDetails.period}
+                                onChange={handleChange}
+                                min="1"
+                                max="12"
+                                step="1"
+                                className="w-full mt-2"
+                            />
+                            <div className="text-center text-lg mt-1">{paymentDetails.period} Month(s)</div>
+                        </div>
+
+                        {/* Total Amount */}
+                        <div className="mt-4 text-center font-semibold">
+                            Total: {new Intl.NumberFormat("en-TZ", { style: "currency", currency: "TZS" }).format(10000 * paymentDetails.period)}
+                        </div>
+
+
+                        {/* payment providers */}
+                        {
+                            userData?.paymentMode === "AZAM_PAY" &&
+                            !(paymentMutation.isPending || isProcessing) && <>
+                                <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
+                                    Choose payment method:
+                                </p>
+                                <div className="w-full flex flex-col mb-5 justify-center items-center">
+                                    <div className="grid grid-cols-5 justify-between items-center gap-5">
+                                        {[
+                                            { name: "Mpesa", img: "/payment_logo/voda.png" },
+                                            { name: "Tigo", img: "/payment_logo/yas.png" },
+                                            { name: "Airtel", img: "/payment_logo/airtel.png" },
+                                            { name: "Halopesa", img: "/payment_logo/halopesa.png" },
+                                            { name: "Azampesa", img: "/payment_logo/azam.jpg" },
+                                        ].map((method) => (
+                                            <div
+                                                key={method.name}
+                                                onClick={() => { setPaymentMethod(method.name); setPaymentDetails((prev) => ({ ...prev, mno: method.name })) }}
+                                                className={`w-12 h-12 rounded cursor-pointer transition-all duration-200 ${paymentMethod === method.name ? "ring-4 ring-green-500 scale-110" : "opacity-70 hover:opacity-100"}`}
+                                            >
+                                                <img src={method.img} className="object-cover rounded w-full h-full" alt={method.name} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        }
 
 
 
 
-                {/* Dynamic Content Slot */}
-                <div className="flex flex-col justify-center items-center mt-4">
-                    {
-                        (paymentMutation.isPending || isProcessing) &&
-                        <Puff
-                            height="60"
-                            width="60"
-                            radius="1"
-                            color="green"
-                            ariaLabel="loading"
-                            visible={(paymentMutation.isPending || isProcessing)}
-                        />
-                    }
-                    {
-                        isProcessing &&
-                        <p className="mt-4 text-xs text-center">Please check your phone for payment confirmation. payment name: <strong>"{userData?.paymentMode === "AZAM_PAY" ? "Azam Pay" : "Ewallet Africa"}"</strong></p>
-                    }
-                </div>
+                        {/* Dynamic Content Slot */}
+                        <div className="flex flex-col justify-center items-center mt-4">
+                            {
+                                (paymentMutation.isPending || isProcessing) &&
+                                <Puff
+                                    height="60"
+                                    width="60"
+                                    radius="1"
+                                    color="green"
+                                    ariaLabel="loading"
+                                    visible={(paymentMutation.isPending || isProcessing)}
+                                />
+                            }
+                            {
+                                isProcessing &&
+                                <p className="mt-4 text-xs text-center">Please check your phone for payment confirmation. payment name: <strong>"{userData?.paymentMode === "AZAM_PAY" ? "Azam Pay" : "Ewallet Africa"}"</strong></p>
+                            }
+                        </div>
 
-                {/* Action Buttons */}
-                <div className="w-full flex flex-row items-center justify-center">
-                    {
-                        !(paymentMutation.isPending || isProcessing) && <>
-                            <button onClick={() => handlePayment("WALLET")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
-                                <IconWallet />
-                                <p>Pay With Wallet</p>
-                            </button>
-                            <button onClick={() => handlePayment("MOBILE")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
-                                <IconDeviceMobileDollar />
-                                <p>Pay With Mobile</p>
-                            </button>
-                        </>
+                        {/* Action Buttons */}
+                        <div className="w-full flex flex-row items-center justify-center">
+                            {
+                                !(paymentMutation.isPending || isProcessing) && <>
+                                    <button onClick={() => handlePayment("WALLET")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                                        <IconWallet />
+                                        <p>Pay With Wallet</p>
+                                    </button>
+                                    <button onClick={() => handlePayment("MOBILE")} className="p-3 w-full hover:bg-green-600 duration-200 cursor-pointer gap-x-3 flex flex-row text-white bg-green-500 items-center justify-center border">
+                                        <IconDeviceMobileDollar />
+                                        <p>Pay With Mobile</p>
+                                    </button>
+                                </>
 
-                    }
-                </div>
+                            }
+                        </div>
 
-                {(paymentMutation.isPending || isProcessing) && (
-                    <div className="mt-4 text-center text-green-600">
-                        Processing Payment...
+                        {(paymentMutation.isPending || isProcessing) && (
+                            <div className="mt-4 text-center text-green-600">
+                                Processing Payment...
+                            </div>
+                        )}
                     </div>
-                )}
+                    <div className="p-5 sm:border-l-4 sm:border-green-600 ps-3 text-sm">
+                        <p className="text-sm"><span className="text-green-600 font-bold text-lg">Altenatively,</span><br /> you can pay with <span className="font-bold">LIPA NAMBA</span> below: </p>
+                        <div className="flex flex-row gap-x-5 my-1 w-full justify-between">
+                            <div>
+                                <div className="flex flex-row gap-x-5 my-1 items-center">
+                                    <img src="/payment_logo/voda.png" className="w-8 h-8 rounded-lg" alt="" />
+                                    <p className="text-lg font-bold">58224582</p>
+                                </div>
+                                <p>Name: <span className="text-md font-bold">WINTENDER P SHOP</span></p>
+                            </div>
+                            <img className="object-fit h-20 w-20" src='/payment_logo/wintender_lipa.png' alt="qr code" />
+                        </div>
+
+                        <div className="font-bold text-green-600 text-md w-full my-3">--------OR--------</div>
+
+                        <p className="text-sm mb-2">You can pay with <span className="font-bold">BANK ACCOUNT</span> details below: </p>
+                        <p>Bank name: <span className="text-md font-bold">CRDB Bank PLC</span></p>
+                        <p>Account Name: <span className="text-md font-bold">Hatuamoja Company Limited</span></p>
+                        <p>Account Number: <span className="text-md font-bold">0150388028500</span></p>
+                        <p>Branch: <span className="text-md font-bold">Goba</span></p>
+                        <p>SwiftCode: <span className="text-md font-bold">CORUTZTZ</span></p>
+
+                        {/* General instructions with emphasis */}
+                        <div className="font-bold text-green-600 my-3">Important:</div>
+                        <p className="text-center text-sm text-red-600">
+                            "Once payment is made via LIPA NAMBA or BANK ACCOUNT, share the receipt to email <a href="mailto:finance@wintender.tz" className="font-bold">finance@wintender.tz</a>"
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     );

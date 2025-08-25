@@ -146,12 +146,12 @@ export default function ({ ...props }: IProps) {
                             {...register("source", { required: true })}
                         >
                             <option value="CASH">CASH</option>
-                            <option value="PAY_BILL">PAY_BILL</option>
-                            <option value="BANKING">BANKING</option>
+                            <option value="PAY_BILL">PAY_BILL (Lipa namba)</option>
+                            <option value="BANK">BANK</option>
                         </select>
                     </div>
 
-                    
+
 
                     {
                         !(watch("paymentReason") === "SUBSCRIPTION" || watch("paymentReason") === "WALLET_IN") && watch("source") !== "CASH" && (
@@ -208,6 +208,7 @@ export default function ({ ...props }: IProps) {
                     />
 
                 </form>
+
             </Modal>
         </div>
     )
