@@ -141,7 +141,7 @@ export default function () {
                 >
                   <IconSearch size={20} />
                 </button>
-                {(userRole === "ADMINISTRATOR") &&
+                {(userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT") &&
                   content.status == "PENDING" && (
                     <Fragment>
 
