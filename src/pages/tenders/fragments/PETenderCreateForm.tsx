@@ -37,6 +37,7 @@ interface IProps {
 }
 
 const schema = object().shape({
+    entityId: string().required("Entity is required"),
     tenderFile: mixed().required("Document File is required"),
     title: string().required("Title is required"),
     tenderNumber: string().required("Tender number is required"),
@@ -77,10 +78,6 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     const [loading, setLoading] = useState(false);
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER";
-    let entityId = '';
-    if (userData?.role === "PROCUREMENT_ENTITY") {
-        entityId = userData?.company;
-    }
 
     const {
         register,
@@ -100,7 +97,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
             summary: "",
             tenderType: "",
             openDate: "",
-            entityId: entityId,
+            entityId: '',
             categoryId: "",
             closeDate: "",
             applicationFee: 0,
@@ -239,7 +236,11 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
         const formData = new FormData();
         formData.append("file", data.tenderFile[0]);
-        formData.append("entityId", data.entityId || entityId);
+        if (userData?.role === "PROCUREMENT_ENTITY") {
+            formData.append("entityId", userData?.company);
+        }else{
+            formData.append("entityId", data.entityId);
+        }
         formData.append("categoryId", data.categoryId);
         formData.append("title", data.title);
         formData.append("region", data.region);
@@ -261,8 +262,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
-        // uploadTenderMutation.mutate(formData);
-        console.log(formData)
+        uploadTenderMutation.mutate(formData);
     };
 
     const renderStepContent = () => {
