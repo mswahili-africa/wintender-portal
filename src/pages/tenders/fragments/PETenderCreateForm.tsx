@@ -37,7 +37,7 @@ interface IProps {
 }
 
 const schema = object().shape({
-    entityId: string().required("Entity is required"),
+    entityId: string().optional(),
     tenderFile: mixed().required("Document File is required"),
     title: string().required("Title is required"),
     tenderNumber: string().required("Tender number is required"),
@@ -229,6 +229,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     };
 
     const submit = (data: Record<string, any>) => {
+        console.log(data);
         if (!consentGiven) {
             toast.error("You must agree to the terms and conditions.");
             return;
@@ -238,7 +239,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         formData.append("file", data.tenderFile[0]);
         if (userData?.role === "PROCUREMENT_ENTITY") {
             formData.append("entityId", userData?.company);
-        }else{
+        } else {
             formData.append("entityId", data.entityId);
         }
         formData.append("categoryId", data.categoryId);
@@ -271,17 +272,22 @@ export default function PETenderUpload({ onSuccess }: IProps) {
             return (
                 <>
                     <div className="mb-2">
-                        {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
-                            <><label htmlFor="com" className="block mb-2">
-                                Entity
-                            </label><Select
+                        {(userRole !== "PROCUREMENT_ENTITY") && (
+                            <>
+                                <label htmlFor="com" className="block mb-2">
+                                    Entity
+                                </label>
+                                <Select
                                     options={entities}
                                     onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
                                     onChange={(selectedOption) => setValue("entityId", selectedOption?.value)}
                                     isLoading={loading}
-                                    placeholder="Search for a entity" /><p className="text-xs text-red-500 mt-1 mx-0.5">
+                                    placeholder="Search for a entity"
+                                />
+                                <p className="text-xs text-red-500 mt-1 mx-0.5">
                                     {errors.bidder?.message?.toString()}
-                                </p></>
+                                </p>
+                            </>
                         )}
 
                     </div>
@@ -640,19 +646,15 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                     onClick={() => handleCompleteStep(currentStep)}
                                 />
                             ) : (
-                                // 
-                                uploadTenderMutation.isLoading ? (
-                                    <Spinner size="md" />
-                                ) : (
-                                    <Button
-                                        size="md"
-                                        type="submit"
-                                        label="Upload"
-                                        theme="primary"
-                                        loading={uploadTenderMutation.isLoading}
-                                    />
-                                )
-                            )}
+                                <Button
+                                    size="md"
+                                    type="submit"
+                                    label="Publish Tender"
+                                    theme="primary"
+                                    loading={uploadTenderMutation.isPending}
+                                />
+                            )
+                            }
                         </div>
                     </form>
                 </Modal>

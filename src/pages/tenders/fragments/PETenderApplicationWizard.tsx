@@ -343,7 +343,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
         {currentStep < stages.length - 1 ? (
           <Button label="Next" type="button" onClick={handleNext} disabled={!canProceed()} />
         ) : (
-          <Button loading={uploadTenderMutation.isLoading || isLoading} label="Submit Application" type="submit" />
+          <Button loading={uploadTenderMutation.isPending || isLoading} label="Submit Application" type="submit" />
         )}
       </div>
     </form>

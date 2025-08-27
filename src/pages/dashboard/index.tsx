@@ -263,7 +263,7 @@ export default function Dashboard() {
                 userRole !== "PROCUREMENT_ENTITY" ? <>
                     {
                         userRole.includes("BIDDER") && (<>
-                            <div className="text-3xl font-[200]">Hello, {userData?.company || userData?.name}</div>
+                            <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
                             <div className="text-gray-800 mb-6 w-fit">Welcome to your dashboard </div>
                         </>
                         )
@@ -272,7 +272,7 @@ export default function Dashboard() {
                     <Billboards />
                 </> : <>
                     {/* <h2 className="text-xl font-bold mb-4">Dashboard</h2> */}
-                    <div className="text-3xl font-[200]">Hello, {userData?.company || userData?.name}</div>
+                    <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
                     <div className="text-gray-600">Welcome to your dashboard</div>
                 </>
             }

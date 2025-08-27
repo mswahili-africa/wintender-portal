@@ -198,7 +198,7 @@ export default function DocumentUpload({ onSuccess }: IProps) {
                         label="Upload"
                         theme="primary"
                         size="md"
-                        loading={uploadDocumentMutation.isLoading}
+                        loading={uploadDocumentMutation.isPending}
                     />
                 </form>
             </Modal>
