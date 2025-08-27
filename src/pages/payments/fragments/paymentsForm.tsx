@@ -29,7 +29,7 @@ export default function ({ ...props }: IProps) {
 
     const createMutation = useMutation({
         mutationFn: (data: IPaymentForm) => createPayment(data),
-        onSuccess: (res) => {
+        onSuccess: () => {
             reset();
             setOpen(false);
             toast.success("POS Requested");

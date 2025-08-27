@@ -146,3 +146,11 @@ export interface ICreditForm {
     amount: number
     description: string
 }
+
+export interface IServiceForm {
+    id?: string
+    title: string
+    bidderId: string
+    description: string
+    consultationFee: number
+}

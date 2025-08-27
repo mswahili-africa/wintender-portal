@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconChevronDown, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronDown, IconFilePlus, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
@@ -440,9 +440,9 @@ export default function Bidders() {
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
-                                ["SUPERVISOR", "PUBLISHER"].includes(userData?.role as string) &&
-                                <button onClick={() => {setSelectedUser(content) }}>
-                                    <PrivateTenderRequest onSuccess={refetch} bidder={content} />
+                                ["SUPERVISOR", "PUBLISHER", "ADMINISTRATOR"].includes(userData?.role as string) &&
+                                <button onClick={() => { setSelectedUser(content) }}>
+                                    <IconFilePlus className="h-5 w-5 text-green-500" />
                                 </button>
                             }
                             {
@@ -494,6 +494,12 @@ export default function Bidders() {
                         </button>
                     </SMSModal>
                 )}
+
+                {
+                    selectedUser && isDeleting === false &&
+                    <PrivateTenderRequest onSuccess={refetch} bidder={selectedUser} />
+
+                }
             </div>
         </div>
     );

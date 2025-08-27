@@ -222,8 +222,8 @@ export default function WalletPaymentModal({
                         )}
                     </div>
                     <div className="p-5 sm:border-l-4 sm:border-green-600 ps-3 text-sm">
-                        <p className="text-sm"><span className="text-green-600 text-lg font-bold">Altenatively,</span><br /> you can pay with <span className="font-bold">LIPA NAMBA</span> below: </p>
-                        <div className="flex flex-row gap-x-5 my-1 w-full justify-between">
+                        <p className="text-sm"><span className="text-green-600 font-bold text-lg">Altenatively,</span><br /> you can pay with <span className="font-bold">LIPA NAMBA</span> below: </p>
+                        <div className="flex flex-col sm:flex-row gap-x-5 my-1 w-full justify-center sm:justify-between">
                             <div>
                                 <div className="flex flex-row gap-x-5 my-1 items-center">
                                     <img src="/payment_logo/voda.png" className="w-8 h-8 rounded-lg" alt="" />
@@ -231,10 +231,10 @@ export default function WalletPaymentModal({
                                 </div>
                                 <p>Name: <span className="text-md font-bold">WINTENDER P SHOP</span></p>
                             </div>
-                            <img className="object-fit h-20 w-20" src='/payment_logo/wintender_lipa.png' alt="qr code" />
+                            <img className="object-fit  h-28 w-28 sm:h-20 sm:w-20 mx-auto" src='/payment_logo/wintender_lipa.png' alt="qr code" />
                         </div>
 
-                        <div className="font-bold text-green-600 text-md w-full my-3">--------OR--------</div>
+                        <div className="font-bold text-green-600 text-md w-full sm:my-3 my-6">--------OR--------</div>
 
                         <p className="text-sm mb-2">You can pay with <span className="font-bold">BANK ACCOUNT</span> details below: </p>
                         <p>Bank name: <span className="text-md font-bold">CRDB Bank PLC</span></p>
@@ -246,7 +246,7 @@ export default function WalletPaymentModal({
                         {/* General instructions with emphasis */}
                         <div className="font-bold text-green-600 my-3">Important:</div>
                         <p className="text-center text-sm text-red-600">
-                            "Once payment is made via LIPA NAMBA or BANK ACCOUNT, share the receipt to email <a href="mailto:finance@wintender.tz" className="font-bold">finance@wintender.tz</a>"
+                            "Once payment is made via LIPA NAMBA or BANK ACCOUNT, share the receipt to email <a href="mailto:finance@wintender.tz" target="_blank" className="font-bold hover:underline">finance@wintender.tz</a>"
                         </p>
                     </div>
                 </div>

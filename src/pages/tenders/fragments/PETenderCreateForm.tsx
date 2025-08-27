@@ -77,7 +77,10 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     const [loading, setLoading] = useState(false);
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER";
-    const entityId = userData?.company;
+    let entityId = '';
+    if (userData?.role === "PROCUREMENT_ENTITY") {
+        entityId = userData?.company;
+    }
 
     const {
         register,
@@ -236,7 +239,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
         const formData = new FormData();
         formData.append("file", data.tenderFile[0]);
-        formData.append("entityId", data.entityId);
+        formData.append("entityId", data.entityId || entityId);
         formData.append("categoryId", data.categoryId);
         formData.append("title", data.title);
         formData.append("region", data.region);
@@ -258,7 +261,8 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
-        uploadTenderMutation.mutate(formData);
+        // uploadTenderMutation.mutate(formData);
+        console.log(formData)
     };
 
     const renderStepContent = () => {
@@ -452,7 +456,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
                     {/* JCM Consultation fee input */}
                     {
-                        userRole !== "PROCUREMENT_ENTITY" && 
+                        userRole !== "PROCUREMENT_ENTITY" &&
                         <div className="mb-2">
                             <label htmlFor="consultationFee" className="block mb-2">
                                 Consultation Fee
