@@ -161,7 +161,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions"), // Exclude Categories sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions" && sub.label !== "Government Tenders"), // Exclude Categories sub-menu
             }
             : menu.label === "Settings" ? {
                 ...menu,
