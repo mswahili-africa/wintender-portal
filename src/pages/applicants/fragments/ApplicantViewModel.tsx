@@ -7,6 +7,7 @@ import { IconAlertTriangle, IconFileDownload, IconX } from "@tabler/icons-react"
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
     applicant: any;
@@ -17,6 +18,7 @@ interface ModalProps {
 
 const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
     const { userData } = useUserDataContext();
+    const navigate = useNavigate();
 
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [data, setData] = useState({ id: "", status: "" });
@@ -27,9 +29,10 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
         },
         onSuccess: (response: any) => {
             toast.success(response?.message || "Request sent successfully");
+            navigate("/tender-box");
         },
-        onError: () => {
-            toast.error("Failed to submit request.");
+        onError: (response: any) => {
+            toast.error(response?.message || "Failed to submit request.");
         },
     });
 
