@@ -13,6 +13,7 @@ import { number, object, string } from "yup";
 import Select from "react-select";
 import { debounce } from "lodash";
 import { TextEditor } from "@/components/editor/TextEditor";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 interface IProps {
     onSuccess: () => void;
@@ -39,6 +40,9 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const { userData } = useUserDataContext();
+    const userRole = userData?.role || "BIDDER";
+
 
     const {
         register,
@@ -190,7 +194,12 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         formData.append("tenderGroup", "PUBLIC");
         formData.append("tenderType", data.tenderType);
         formData.append("categoryId", data.categoryId?.value || "");
-        formData.append("entityId", data.entityId?.value || "");
+        formData.append(
+            "entityId",
+            userRole === "PROCUREMENT_ENTITY" ?
+                userData?.company as string
+                : data.entityId?.value
+        );
         formData.append("consultationFee", data.consultationFee)
 
         updateTenderMutation.mutate(formData);
@@ -270,22 +279,24 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                     </div>
 
                     {/* Entity with search */}
-                    <div className="mb-2">
-                        <label htmlFor="com" className="block mb-2">
-                            Entity
-                        </label>
-                        <Select
-                            options={entities}
-                            value={entities.find(e => e.value === watch("entityId")?.value) || null}
-                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
-                            onChange={(selectedOption) => setValue("entityId", selectedOption?.value)}
-                            isLoading={loading}
-                            placeholder="Search for an entity"
-                        />
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.bidder?.message?.toString()}
-                        </p>
-                    </div>
+                    {(userRole !== "PROCUREMENT_ENTITY") && (
+                        <div className="mb-2">
+                            <label htmlFor="com" className="block mb-2">
+                                Entity
+                            </label>
+                            <Select
+                                options={entities}
+                                value={watch("entityId") || null}   // expects object
+                                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                                onChange={(selectedOption) => setValue("entityId", selectedOption)} // store object
+                                isLoading={loading}
+                                placeholder="Search for an entity"
+                            />
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.bidder?.message?.toString()}
+                            </p>
+                        </div>
+                    )}
 
                     {/* Category with search */}
                     <div className="mb-2">
@@ -293,14 +304,16 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                             Category
                         </label>
 
+
                         <Select
                             options={categories}
-                            value={categories.find(c => c.value === watch("categoryId")?.value) || null}
+                            value={watch("categoryId") || null} // expects object
                             onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
-                            onChange={(selectedOption) => setValue("categoryId", selectedOption?.value)}
+                            onChange={(selectedOption) => setValue("categoryId", selectedOption)} // store object
                             isLoading={loading}
                             placeholder="Search for a category"
                         />
+
 
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.category?.message?.toString()}
