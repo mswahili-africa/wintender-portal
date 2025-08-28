@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/assets/images/logo.png";
 import Button from "@/components/button/Button";
 import { forgotPassword } from "@/services/auth";
+import { IconPhoneCall, IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 
 
 
@@ -20,7 +21,7 @@ export default function () {
         mutationFn: (data: { username: string }) => forgotPassword(data),
         onSuccess: () => {
             toast.success("Reset instruction has been sent to your email");
-            navigate("/reset-password", {replace: false});  
+            navigate("/reset-password", { replace: false });
         },
         onError: (error: any) => { }
     });
@@ -30,7 +31,28 @@ export default function () {
     }
 
     return (
-        <div className="flex h-screen items-center justify-center bg-slate-50">
+        <div className="flex h-screen items-center justify-center bg-slate-50 relative">
+            <div className="text-xs h-fit absolute bottom-2  sm:top-2 flex flex-col gap-y-2 sm:gap-y-0 sm:flex-row justify-end w-full mb-2">
+                <a href="tel:0747098558" target="_blank">
+                    <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
+                        <div className="pr-3"><IconPhoneCall size={22} className="text-green-600" stroke={2} /></div>
+                        <span>+255 747 098 558</span>
+                    </div>
+                </a>
+                <a href="https://wa.me/+255736228228" target="_blank">
+                    <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
+                        <div className="pr-3"><IconBrandWhatsapp size={22} className="text-green-600" stroke={2} /></div>
+                        <span>WhatsApp</span>
+                    </div>
+                </a>
+                <a target="_blank"
+                    href="mailto:info@wintender.co.tz"
+                    className="flex items-center px-4 flex-row rounded-md hover:bg-slate-100"
+                >
+                    <IconMail size={22} className="text-green-600 mr-3" stroke={2} />
+                    <span>info@wintender.co.tz</span>
+                </a>
+            </div>
             <div className="w-1/2 lg:w-1/3 2xl:w-1/4 p-10 bg-white h-auto rounded-md shadow-sm">
 
                 <div className="flex flex-col justify-between items-center mb-8">
