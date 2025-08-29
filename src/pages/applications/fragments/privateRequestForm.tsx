@@ -217,7 +217,7 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
                             <h1 className="text-lg font-bold mb-5">{bidder?.companyName}</h1>
                         </>
                     }
-                    <Tabs panels={["Tender", "Service"]}>
+                    {/* <Tabs panels={["Tender", "Service"]}> */}
                         <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
                             {/* Region */}
                             <div className="mb-2">
@@ -458,8 +458,8 @@ export default function PrivateTenderRequest({ onSuccess, bidder }: IProps) {
                                 loading={uploadTenderMutation.isPending}
                             />
                         </form>
-                        <ServiceAssigningForm />
-                    </Tabs>
+                        {/* <ServiceAssigningForm /> */}
+                    {/* </Tabs> */}
                 </div>
             </Modal>
         </div>
