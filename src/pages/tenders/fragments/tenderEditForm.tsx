@@ -65,7 +65,8 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
             entityId: initials?.entityId,
             openDate: initials?.openDate,
             closeDate: initials?.closeDate,
-            consulatationFee: initials?.consultationFee,
+            applicationFee: initials?.applicationFee,
+            consultationFee: initials?.consultationFee,
         },
     });
 
@@ -78,6 +79,7 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
             setValue("tenderType", initials.tenderType);
             setValue("categoryId", initials.categoryId);
             setValue("entityId", initials.entityId);
+            setValue("applicationFee", initials.applicationFee);
             setValue("consultationFee", initials.consultationFee);
 
             // Convert milliseconds to datetime-local format (yyyy-MM-ddThh:mm)
@@ -200,6 +202,7 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                 userData?.company as string
                 : data.entityId?.value
         );
+        formData.append("applicationFee", data.applicationFee)
         formData.append("consultationFee", data.consultationFee)
 
         updateTenderMutation.mutate(formData);
@@ -226,7 +229,7 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         <div className="max-w-max">
 
             <Modal
-                size="sm"
+                size="md"
                 title="Edit Tender"
                 isOpen={open}
                 onClose={() => {
@@ -444,37 +447,70 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                         </div>
                     )}
 
+                    {/* JCM Application fee input */}
                     <div className="mb-2">
-                        <label htmlFor="consultationFee" className="block mb-2">
-                            Consultation Fee
+                        <label htmlFor="applicationFee" className="block mb-2">
+                            Application Fee
                         </label>
 
-                        <select
-                            className={`${errors.consultationFee?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("consultationFee", { required: true })}
-                        >
-                            <option value="200000">200,000</option>
-                            <option value="250000">250,000</option>
-                            <option value="300000">300,000</option>
-                            <option value="350000">350,000</option>
-                            <option value="400000">400,000</option>
-                            <option value="450000">450,000</option>
-                            <option value="500000">500,000</option>
-                            <option value="550000">550,000</option>
-                            <option value="600000">⁠600,000</option>
-                            <option value="650000">650,000</option>
-                            <option value="700000">700,000</option>
-                        </select>
+                        <input
+                            type="text"
+                            id="applicationFee"
+                            inputMode="decimal"
+                            className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                            {...register("applicationFee", {
+                                required: true,
+                                pattern: {
+                                    value: /^\d+(\.\d{1,2})?$/,
+                                    message: "Enter a valid number",
+                                },
+                            })}
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+                            }}
+                        />
+
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.consultationFee?.message?.toString()}
+                            {errors.applicationFee?.message?.toString()}
                         </p>
                     </div>
+
+                    {/* JCM Consultation fee input */}
+                    {
+                        userRole !== "PROCUREMENT_ENTITY" &&
+                        <div className="mb-2">
+                            <label htmlFor="consultationFee" className="block mb-2">
+                                Consultation Fee
+                            </label>
+
+                            <input
+                                type="text"
+                                inputMode="decimal"
+                                className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                                {...register("consultationFee", {
+                                    required: true,
+                                    pattern: {
+                                        value: /^\d+(\.\d{1,2})?$/,
+                                        message: "Enter a valid number",
+                                    },
+                                })}
+                                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+                                }}
+                            />
+
+
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.consultationFee?.message?.toString()}
+                            </p>
+                        </div>
+                    }
                     <Button
                         type="submit"
                         label="Update"
                         theme="primary"
                         size="md"
-                        loading={updateTenderMutation.isLoading}
+                        loading={updateTenderMutation.isPending}
                     />
                 </form>
             </Modal>
