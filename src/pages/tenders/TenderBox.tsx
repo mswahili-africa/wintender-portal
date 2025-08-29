@@ -1,4 +1,4 @@
-import {  IconEye, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
+import { IconEye, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -40,7 +40,7 @@ export default function PrivateTenders() {
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const navigate = useNavigate();
 
-    
+
 
     const handleSearch = () => {
         setSearchQuery(generateSearchQuery());
@@ -90,7 +90,7 @@ export default function PrivateTenders() {
         }
     }, [subscriptionDays, navigate]);
 
-    
+
 
     const doItForMeMutation = useApiMutation(async (tenderId: string) => requestDoForMe(tenderId));
 
@@ -222,7 +222,7 @@ export default function PrivateTenders() {
                 <PaymentModal
                     onClose={() => setIsPaymentModalOpen(false)}
                 />
-                   
+
             )}
 
             {editTender ? (
@@ -387,7 +387,7 @@ export default function PrivateTenders() {
                                 <p className="flex-1">{selectedTender.categoryName}</p>
                             </div>
                             <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.summary}</p>
+                                <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedTender.summary }}></p>
                             </div>
 
                             <div className="flex items-center">
@@ -405,7 +405,23 @@ export default function PrivateTenders() {
                                     } else {
                                         return selectedTender.status;
                                     }
-                                })()} size="sm" theme="success" />
+                                })()} size="sm" theme={(
+                                    () => {
+                                        const currentDate = new Date().getTime();
+                                        const closeDate = selectedTender.closeDate;
+                                        const remainingTime = closeDate - currentDate;
+                                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+
+                                        if (remainingDays < 0) {
+                                            return 'danger';
+                                        } else if (remainingDays <= 2) {
+                                            return 'warning';
+                                        } else {
+                                            return 'success';
+                                        }
+                                    }
+                                )()}
+                                />
                             </div>
                             <div className="flex items-center">
                                 <strong className="w-32 text-gray-600">Close Date:</strong>
