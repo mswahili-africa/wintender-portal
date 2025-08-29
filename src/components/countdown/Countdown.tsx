@@ -24,10 +24,10 @@ export const Countdown = ({ expirationTime }: TProps) => {
 
             {/* Countdown */}
             <div className="flex flex-row items-center gap-x-2 text-base">
-                <span className={`px-2 py-1 rounded text-white ${Math.floor((time / (1000 * 60 * 60)) % 24) <= 1 ? "bg-red-500" : "bg-green-500"}`}>
+                <span className={`px-2 py-1 rounded text-white ${Math.floor(time / (1000 * 60 * 60* 24))  < 1 ? "bg-red-500" : "bg-green-500"}`}>
                     {Math.floor((time / (1000 * 60 * 60)) % 24)}
                     <span className="font-medium text-xs "> h</span>
-                </span>
+                </span>                                                                                                                        
                 <span className="px-2 py-1 rounded bg-green-500 text-white">
                     {Math.floor((time / (1000 * 60)) % 60)}
                     <span className="font-medium text-xs"> m</span>
@@ -38,7 +38,5 @@ export const Countdown = ({ expirationTime }: TProps) => {
                 </span>
             </div>
         </div>
-
-
     )
 }
