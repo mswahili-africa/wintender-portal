@@ -21,6 +21,7 @@ import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import PETenderCreateForm from "./fragments/PETenderCreateForm";
+import { Countdown } from "@/components/countdown/Countdown";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
@@ -393,6 +394,10 @@ export default function GovernmentTenders() {
 
                         {/* Tender Details */}
                         <div className="space-y-2">
+                            <div className="flex flex-row w-fit justify- gap-x-2 items-center">
+                                <p className="flex-1">Remaining Time:</p>
+                                <Countdown expirationTime={selectedTender.closeDate} />
+                            </div>
                             <div className="flex items-center">
                                 <p className="flex-1">{selectedTender.entityName}</p>
                             </div>
