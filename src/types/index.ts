@@ -248,6 +248,7 @@ export interface ITenders {
   openDate: number;
   closeDate: number;
   tenderType: string;
+  applicationFee: number;
   consultationFee: number;
   categoryName: string;
   categoryId: string

@@ -55,13 +55,13 @@ const columns: IColumn[] = [
             const remainingTime = closeDate - currentDate;
             const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-            const displayStatus = remainingDays <= 2 ? 'CLOSING' : row.status;
+            const displayStatus = remainingDays <= 2 && remainingDays > 0 ? 'CLOSING' : remainingDays <= 0 ? 'CLOSED' : row.status;
 
             return (
                 <Chip
                     label={displayStatus}
                     size="sm"
-                    theme={displayStatus === 'CLOSING' ? 'warning' : 'success'}
+                    theme={displayStatus === 'CLOSING' ? 'warning' : displayStatus === 'CLOSED' ? 'danger' : 'success'}
                     variant="outline"
                 />
             );
