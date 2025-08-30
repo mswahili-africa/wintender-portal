@@ -1,44 +1,56 @@
 import { useEffect, useState } from "react";
 
 type TProps = {
-    expirationTime: number
-}
+  expirationTime: number;
+};
+
 export const Countdown = ({ expirationTime }: TProps) => {
-    const [time, setTime] = useState<number>(expirationTime - Date.now());
+  const [time, setTime] = useState<number>(expirationTime - Date.now());
 
-    // count down from current time to expiration time
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTime((prevTime) => prevTime - 1000);
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime((prevTime) => prevTime - 1000);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-    return (
-        <div className="flex flex-row items-center gap-x-4 font-bold text-gray-800">
-            {/* Days */}
-            <div className={`text-lg py-1 ${Math.floor(time / (1000 * 60 * 60 * 24)) <= 1 ? "bg-red-500" : "bg-green-500"}  text-white px-2 rounded`}>
-                {Math.floor(time / (1000 * 60 * 60 * 24))}{" "}
-                <span className="font-medium text-xs">day(s)</span>
-            </div>
+  const days = Math.floor(time / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((time / (1000 * 60)) % 60);
+  const seconds = Math.floor((time / 1000) % 60);
 
-            {/* Countdown */}
-            <div className="flex flex-row items-center gap-x-2 text-base">
-                <span className={`px-2 py-1 rounded text-white ${Math.floor((time / (1000 * 60 * 60)) % 24) <= 1 ? "bg-red-500" : "bg-green-500"}`}>
-                    {Math.floor((time / (1000 * 60 * 60)) % 24)}
-                    <span className="font-medium text-xs "> h</span>
-                </span>
-                <span className="px-2 py-1 rounded bg-green-500 text-white">
-                    {Math.floor((time / (1000 * 60)) % 60)}
-                    <span className="font-medium text-xs"> m</span>
-                </span>
-                <span className="px-2 py-1 rounded bg-green-500 text-white">
-                    {Math.floor((time / 1000) % 60)}
-                    <span className="font-medium text-xs"> s</span>
-                </span>
-            </div>
-        </div>
+  return (
+    <div
+      className={`flex items-center gap-4 px-4 py-1 rounded-lg shadow-lg backdrop-blur-md 
+      ${
+        days <= 1
+          ? "bg-red-500/80 text-white"
+          : "bg-green-500/80 text-white"
+      }`}
+    >
+      {/* Days */}
+      <div className="flex flex-col items-center">
+        <span className="text-sm font-extrabold">{days}</span>
+        <span className="text-[6pt] uppercase tracking-wide">Days</span>
+      </div>
 
+      {/* Hours */}
+      <div className="flex flex-col items-center">
+        <span className="text-sm font-extrabold">{hours}</span>
+        <span className="text-[6pt] uppercase tracking-wide">Hrs</span>
+      </div>
 
-    )
-}
+      {/* Minutes */}
+      <div className="flex flex-col items-center">
+        <span className="text-sm font-extrabold">{minutes}</span>
+        <span className="text-[6pt] uppercase tracking-wide">Mins</span>
+      </div>
+
+      {/* Seconds */}
+      <div className="flex flex-col items-center">
+        <span className="text-sm font-extrabold">{seconds}</span>
+        <span className="text-[6pt] uppercase tracking-wide">Secs</span>
+      </div>
+    </div>
+  );
+};

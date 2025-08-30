@@ -390,11 +390,18 @@ export default function InternationalTenders() {
 
                         {/* Tender Details */}
                         <div className="space-y-2">
-                            <div className="flex flex-row w-fit justify- gap-x-2 items-center">
-                                <p className="flex-1">Remaining Time:</p>
-                                <Countdown expirationTime={selectedTender.closeDate} />
+                            <div className="flex flex-col sm:flex-row w-full justify-between">
+                                <div className="flex items-center">
+                                    <strong className="w-32 text-gray-600">Close Date:</strong>
+                                    <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
+                                </div>
+                                <div className="flex flex-col px-4 gap-x-2 items-center">
+                                    <p className="flex-1 text-xs">Remaining Time:</p>
+                                    <Countdown expirationTime={selectedTender.closeDate} />
+                                </div>
                             </div>
                             <div className="flex items-center">
+                                <strong className="w-32 text-gray-600">Name:</strong>
                                 <p className="flex-1">{selectedTender.entityName}</p>
                             </div>
                             <div className="flex items-center">
@@ -422,10 +429,7 @@ export default function InternationalTenders() {
                                     }
                                 })()} size="sm" theme="success" />
                             </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Close Date:</strong>
-                                <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
-                            </div>
+
                             {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
                                 <><div className="flex items-center">
                                     <strong className="w-50 text-gray-600">Consultation Fee:</strong>
