@@ -17,7 +17,8 @@ import Select from "react-select";
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
-  const [status, setStatus] = useState<any>({ value: "SUBMITTED", label: "Submitted" });
+  const [status, setStatus] = useState<any>("SUBMITTED");
+  const [comment, setComment] = useState<any>({ value: null, label: "Submitted" });
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -33,7 +34,8 @@ export default function SubmittedApplication() {
     search: search,
     sort: sort,
     filter: filter,
-    comment: status?.value || null
+    status: status,
+    comment: comment?.value || null
   });
 
   const deleteMutation = useMutation({
@@ -72,6 +74,11 @@ export default function SubmittedApplication() {
     }
   }
 
+  const handleSubmissions = (comment: any) => {
+    setStatus(comment?.value === "ACCEPTED" ? "CLOSED":"SUBMITTED");
+    setComment(status?.value || null);
+
+  }
 
 
   return (
@@ -84,9 +91,9 @@ export default function SubmittedApplication() {
             { value: "REJECTED", label: "Evaluated" },
             { value: "ACCEPTED", label: "Awarded" },
           ]}
-          onChange={(e) => setStatus({ value: e?.value, label: e?.label })}
+          onChange={(e) => handleSubmissions({ value: e?.value, label: e?.label })}
           placeholder="Filter by"
-          value={status}
+          value={comment}
         />
       </div>
 
