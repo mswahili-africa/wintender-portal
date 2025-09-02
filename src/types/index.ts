@@ -481,3 +481,22 @@ export interface ISettings {
   payment:any;
   sms:any;
 }
+
+export interface IReply{
+  repliedMessageId: string;
+  createdAt?: number;
+  createdBy?: string;
+  name?: string;
+  id?: string;
+  message: string;
+}
+
+export interface IClarification{
+  id?: string;
+  message: string;
+  createdBy?: string | null;
+  updatedBy?: string | null;
+  createdAt?: number;
+  updatedAt?: number;
+  replies?: IReply[];
+}

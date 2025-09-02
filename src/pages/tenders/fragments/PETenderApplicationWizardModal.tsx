@@ -5,6 +5,7 @@ import Modal from "@/components/widgets/Modal";
 import { ITenderDetails } from "@/types";
 import PETenderApplicationWizard from "./PETenderApplicationWizard";
 import PETenderApplicationPayment from "./PETenderApplicationPayment";
+import { Countdown } from "@/components/countdown/Countdown";
 
 interface Props {
   isOpen: boolean;
@@ -40,6 +41,9 @@ export default function PETenderApplicationWizardModal({
 
   return (
     <Modal size="xl" isOpen={isOpen} onClose={onClose} title="Tender Application">
+      <div className="w-full flex justify-end">
+        <Countdown expirationTime={tender?.closeDate!}/>
+      </div>
       {loading ? (
         <div className="flex justify-center py-12">
           <Spinner size="md" />

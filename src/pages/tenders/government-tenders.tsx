@@ -10,8 +10,7 @@ import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import Button from "@/components/button/Button";
-import TenderViewModal from "./fragments/tenderViewModel";
-import Chip from "@/components/chip/Chip";
+import TenderViewModal from "./fragments/tenderViewModelNew";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +20,6 @@ import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import PETenderCreateForm from "./fragments/PETenderCreateForm";
-import { Countdown } from "@/components/countdown/Countdown";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
@@ -378,92 +376,99 @@ export default function GovernmentTenders() {
 
             {selectedTender && (
                 <TenderViewModal
-                    selfApply={selectedTender.selfApply}
-                    region={selectedTender.region}
-                    title={selectedTender.tenderNumber}
-                    tenderId={selectedTender.id}
+                    tender={selectedTender}
                     onClose={() => setSelectedTender(null)}
                     isLoading={isDoItForMeLoading}
                     onDoItForMeClick={handleDoItForMeClick}
-                >
-                    <div className="space-y-4">
-                        {/* Tender Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
-                        </div>
+                />
 
-                        {/* Tender Details */}
-                        <div className="space-y-2">
-                            <div className="flex flex-col sm:flex-row w-full justify-between">
-                                <div className="flex items-center">
-                                    <strong className="w-32 text-gray-600">Close Date:</strong>
-                                    <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
-                                </div>
-                                <div className="flex flex-col px-4 gap-x-2 items-center">
-                                    <p className="flex-1 text-xs">Remaining Time:</p>
-                                    <Countdown expirationTime={selectedTender.closeDate} />
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Name:</strong>
-                                <p className="flex-1">{selectedTender.entityName}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Category:</strong>
-                                <p className="flex-1">{selectedTender.categoryName}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedTender.summary }}></p>
-                            </div>
+                // <TenderViewModal
+                //     selfApply={selectedTender.selfApply}
+                //     region={selectedTender.region}
+                //     title={selectedTender.tenderNumber}
+                //     tenderId={selectedTender.id}
+                //     onClose={() => setSelectedTender(null)}
+                //     isLoading={isDoItForMeLoading}
+                //     onDoItForMeClick={handleDoItForMeClick}
+                // >
+                //     <div className="space-y-4">
+                //         {/* Tender Header */}
+                //         <div className="flex items-center justify-between mb-4">
+                //             <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
+                //         </div>
 
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Status:</strong>
-                                <Chip label={(() => {
-                                    const currentDate = new Date().getTime();
-                                    const closeDate = selectedTender.closeDate;
-                                    const remainingTime = closeDate - currentDate;
-                                    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+                //         {/* Tender Details */}
+                //         <div className="space-y-2">
+                //             <div className="flex flex-col sm:flex-row w-full justify-between">
+                //                 <div className="flex items-center">
+                //                     <strong className="w-32 text-gray-600">Close Date:</strong>
+                //                     <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
+                //                 </div>
+                //                 <div className="flex flex-col px-4 gap-x-2 items-center">
+                //                     <p className="flex-1 text-xs">Remaining Time:</p>
+                //                     <Countdown expirationTime={selectedTender.closeDate} />
+                //                 </div>
+                //             </div>
+                //             <div className="flex items-center">
+                //                 <strong className="w-32 text-gray-600">Name:</strong>
+                //                 <p className="flex-1">{selectedTender.entityName}</p>
+                //             </div>
+                //             <div className="flex items-center">
+                //                 <strong className="w-32 text-gray-600">Category:</strong>
+                //                 <p className="flex-1">{selectedTender.categoryName}</p>
+                //             </div>
+                //             <div className="flex items-center">
+                //                 <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedTender.summary }}></p>
+                //             </div>
 
-                                    if (remainingDays < 0) {
-                                        return 'CLOSED';
-                                    } else if (remainingDays <= 2) {
-                                        return 'CLOSING';
-                                    } else {
-                                        return selectedTender.status;
-                                    }
-                                })()} size="sm" theme="success" />
-                            </div>
+                //             <div className="flex items-center">
+                //                 <strong className="w-32 text-gray-600">Status:</strong>
+                //                 <Chip label={(() => {
+                //                     const currentDate = new Date().getTime();
+                //                     const closeDate = selectedTender.closeDate;
+                //                     const remainingTime = closeDate - currentDate;
+                //                     const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
-                            {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
-                                <><div className="flex items-center">
-                                    <strong className="w-50 text-gray-600">Consultation Fee:</strong>
-                                    <p className="flex-1">
-                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
-                                    </p>
-                                </div></>
+                //                     if (remainingDays < 0) {
+                //                         return 'CLOSED';
+                //                     } else if (remainingDays <= 2) {
+                //                         return 'CLOSING';
+                //                     } else {
+                //                         return selectedTender.status;
+                //                     }
+                //                 })()} size="sm" theme="success" />
+                //             </div>
 
-                            )}
-                        </div>
+                //             {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
+                //                 <><div className="flex items-center">
+                //                     <strong className="w-50 text-gray-600">Consultation Fee:</strong>
+                //                     <p className="flex-1">
+                //                         TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
+                //                     </p>
+                //                 </div></>
 
-                        <hr></hr>
+                //             )}
+                //         </div>
 
-                        {/* PDF Viewer */}
-                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                            <iframe
-                                src={selectedTender.filePath}
-                                width="100%"
-                                height="500px"
-                                frameBorder="0"
-                                title="Tender Document"
-                            ></iframe>
-                        </div>
+                //         <hr></hr>
 
-                        {/* Modal Footer */}
-                        <div className="flex justify-end space-x-2 mt-6">
-                            <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
-                        </div>
-                    </div>
-                </TenderViewModal>
+                //         {/* PDF Viewer */}
+                //         <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                //             <iframe
+                //                 src={selectedTender.filePath}
+                //                 width="100%"
+                //                 height="500px"
+                //                 frameBorder="0"
+                //                 title="Tender Document"
+                //             ></iframe>
+                //         </div>
+
+                //         {/* Modal Footer */}
+                //         <div className="flex justify-end space-x-2 mt-6">
+                //             <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
+                //         </div>
+                //     </div>
+                // </TenderViewModal>
             )}
 
         </div>

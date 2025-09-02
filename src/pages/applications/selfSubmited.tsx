@@ -11,13 +11,16 @@ import { deleteApplication } from "@/services/tenders";
 import usePopup from "@/hooks/usePopup";
 import toast from "react-hot-toast";
 import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
-import { now } from "lodash";
+import PETenderApplicationWizard from "../tenders/fragments/PETenderApplicationWizard";
+import Select from "react-select";
 
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
+  const [status, setStatus] = useState<any>({ value: "SUBMITTED", label: "Submitted" });
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [viewOpen, setViewOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
   const [filter] = useState<any>();
   const [selectedApplication, setSelectedApplication] = useState<ISubmittedApplication | null>(null);
   const { userData } = useUserDataContext();  // Use the hook to get user data
@@ -29,7 +32,8 @@ export default function SubmittedApplication() {
     page: page,
     search: search,
     sort: sort,
-    filter: filter
+    filter: filter,
+    comment: status?.value || null
   });
 
   const deleteMutation = useMutation({
@@ -57,16 +61,33 @@ export default function SubmittedApplication() {
     })
   }
 
-  // JCM handle view
-  const handleView = (content: ISubmittedApplication) => {
-    setViewOpen(true);
-    setSelectedApplication(content);
+  // JCM handle view &&
+  const handleTenderActions = (action: "view" | "edit", content: ISubmittedApplication) => {
+    if (action === "view") {
+      setSelectedApplication(content);
+      setViewOpen(true);
+    } else if (action === "edit") {
+      setSelectedApplication(content);
+      setEditOpen(true);
+    }
   }
+
+
 
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-bold">Submissions</h2>
+        <Select
+          options={[
+            { value: null, label: "Submitted" },
+            { value: "REJECTED", label: "Evaluated" },
+            { value: "ACCEPTED", label: "Awarded" },
+          ]}
+          onChange={(e) => setStatus({ value: e?.value, label: e?.label })}
+          placeholder="Filter by"
+          value={status}
+        />
       </div>
 
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -92,24 +113,32 @@ export default function SubmittedApplication() {
               <div className="flex justify-center space-x-2">
                 <button
                   className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                  onClick={() => handleView(application)}
+                  onClick={() => handleTenderActions("view", application)}
                 >
                   <IconEye size={20} />
                 </button>
+                <button
+                  className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                  onClick={() => handleTenderActions("edit", application)}
+                >
+                  <IconEdit size={20} />
+                </button>
                 {userRole === "BIDDER" && application.tenderCloseDate > Date.now() && (
-                  <Fragment>
-                    <button
-                     title={application.status === "SUBMITTED" ? "Recover Application" : "Delete Application"}
-                      className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                      onClick={() => handleDelete(application)}
-                    >
-                      {application.status === "SUBMITTED" ? (
-                        <IconRecycle size={20} />
-                      ) : (
-                        <IconTrash size={20} />
-                      )}
-                    </button>
-                  </Fragment>
+                  <>
+                    <Fragment>
+                      <button
+                        title={application.status === "SUBMITTED" ? "Recover Application" : "Delete Application"}
+                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                        onClick={() => handleDelete(application)}
+                      >
+                        {application.status === "SUBMITTED" ? (
+                          <IconRecycle size={20} />
+                        ) : (
+                          <IconTrash size={20} />
+                        )}
+                      </button>
+                    </Fragment>
+                  </>
                 )}
               </div>
             );
@@ -135,6 +164,15 @@ export default function SubmittedApplication() {
             onClose={() => setViewOpen(false)}
             isLoading={false}
           />
+        )}
+
+        {/* Edit modal */}
+        {editOpen && selectedApplication && (
+          // <PETenderApplicationWizard
+          //   tender={selectedApplication}
+          //   onClose={() => setEditOpen(false)}
+          // />
+          <div></div>
         )}
       </div>
     </div>
