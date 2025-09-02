@@ -75,8 +75,8 @@ export default function SubmittedApplication() {
   }
 
   const handleSubmissions = (comment: any) => {
-    setStatus(comment?.value === "ACCEPTED" ? "CLOSED":"SUBMITTED");
     setComment(status?.value || null);
+    setStatus(comment?.value === "ACCEPTED" ? "CLOSED":"SUBMITTED");
 
   }
 
