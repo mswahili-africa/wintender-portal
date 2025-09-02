@@ -14,6 +14,8 @@ export const ApplicantsList = () => {
     const [tenderDetails, setTenderDetails] = useState<any>(null);
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
+    const [comment, setComment] = useState<string | null>(null);
+    const [status, setStatus] = useState<string>("SUBMITTED");
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
     const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
@@ -25,6 +27,7 @@ export const ApplicantsList = () => {
     }, [location.state.tender]);
 
     useEffect(() => {
+
         if (location.state?.tender) {
             setTenderDetails(location.state.tender);
         }
@@ -37,6 +40,8 @@ export const ApplicantsList = () => {
         search,
         sort,
         filter: undefined,
+        status: status,
+        comment: comment || null
     });
 
     // Handle sorting of table columns
@@ -50,7 +55,16 @@ export const ApplicantsList = () => {
         setIsApplicationModalOpen(true);
     };
 
-    console.log("applicantList", applicantList?.content);
+    const handleFilteringChange = (comment: string | null, status: string) => {
+        setComment(comment);
+        setStatus(status);
+    };
+
+    const currentDate = new Date().getTime();
+    const closeDate = tenderDetails?.closeDate;
+    const remainingTime = closeDate - currentDate;
+    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+
     return (
         <div>
             <div className="flex flex-col justify-between mb-10 gap-3">
@@ -58,15 +72,12 @@ export const ApplicantsList = () => {
                 <div className="flex">
                     <strong className="w-32 text-gray-600">Tender:</strong>
 
-                <h2 className="font-bold">{tenderDetails?.title}</h2>
+                    <h2 className="font-bold">{tenderDetails?.title}</h2>
                 </div>
                 <div className="flex items-center">
                     <strong className="w-32 text-gray-600">Status:</strong>
                     <Chip label={(() => {
-                        const currentDate = new Date().getTime();
-                        const closeDate = tenderDetails?.closeDate;
-                        const remainingTime = closeDate - currentDate;
-                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+
 
                         if (remainingDays < 0) {
                             return 'CLOSED';
@@ -75,15 +86,21 @@ export const ApplicantsList = () => {
                         } else {
                             return tenderDetails?.status;
                         }
-                    })()} size="sm" theme="success" />
+                    })()} size="sm" theme={remainingDays <= 2 && remainingDays > 0 ? "warning" : remainingDays <= 0 ? "danger" : "success"} />
                 </div>
                 <div className="flex items-center">
                     <strong className="w-32 text-gray-600">Closing Date:</strong>
                     <p className="flex-1">{new Date(tenderDetails?.closeDate).toLocaleString()}</p>
                 </div>
-                {/* {["PROCUREMENT_ENTITY", "PUBLISHER","ADMINISTRATOR"].includes(userRole) && (
-                    <PrivateTenderRequest onSuccess={refetch} />
-                )} */}
+            </div>
+
+
+            {/* Filtering tabs */}
+            <div className="flex w-full justify-center mb-2">
+                <div className="flex flex-row rounded-2xl w-fit border-2 border-gray-400 gap-1 p-1">
+                    <button type="button" onClick={() => handleFilteringChange(null,"SUBMITTED")} className={` rounded-xl p-2 text-sm ${comment === "" ? "bg-green-600 text-white" : "text-gray-500"} `}>Applications</button>
+                    <button type="button" onClick={() => handleFilteringChange("ACCEPTED","CLOSED")} className={` rounded-xl p-2 text-sm ${comment === "ACCEPTED" ? "bg-green-600 text-white" : "text-gray-500"} `}>Vendors</button>
+                </div>
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">

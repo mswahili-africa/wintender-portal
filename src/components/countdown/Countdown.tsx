@@ -23,7 +23,7 @@ export const Countdown = ({ expirationTime }: TProps) => {
     <div
       className={`flex items-center gap-4 px-4 py-1 rounded-lg shadow-lg backdrop-blur-md 
       ${
-        days <= 1
+        days === 1
           ? "bg-red-500/80 text-white"
           : "bg-green-500/80 text-white"
       }`}

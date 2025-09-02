@@ -44,7 +44,7 @@ const TenderViewModal = ({ selfApply, title, onClose, tenderId, children, region
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
-            <div className="bg-green-100 rounded-lg shadow-lg max-w-3xl w-full p-4">
+            <div className="bg-green-100 rounded-lg shadow-lg max-w-4xl w-full p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold">{title}</h2>
                     <div className="flex space-x-4">

@@ -195,6 +195,10 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         },
     });
 
+    // days left before expiration
+    let daysLeft = Math.ceil((user.planExpiryDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    daysLeft = daysLeft < 0 ? 0 : daysLeft;
+    
     return (
         <>
             <Modal
@@ -221,17 +225,17 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                         />
                                     </div>
                                     <span>
-                                        <h4 className="lg:text-lg font-medium">{user?.companyName?.toUpperCase()}</h4>
-                                    </span>
+                                        <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
+                                    </span> |
                                     <Chip
-                                        label={user.planExpiryDate && user.planExpiryDate > Date.now() ? "PLAN ACTIVE" : "PLAN EXPIRED"}
+                                        label={`${daysLeft} days left`}
                                         size="sm"
-                                        theme={user.planExpiryDate && user.planExpiryDate > Date.now() ? "success" : "danger"}
+                                        theme={daysLeft >= 2 ? "success" : "danger"}
                                         variant="outline"
                                     />
                                 </div>
                                 <div className="flex items-center space-x-3">
-                                    <WalletButton amount={user.walletAmount}/>
+                                    <WalletButton amount={user.walletAmount} />
 
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
