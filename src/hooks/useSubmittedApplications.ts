@@ -9,21 +9,22 @@ interface IProps {
     search?: string
     sort?: string
     filter?: Record<string, any>
-    comment?: string
+    status?:string
+    comment?: string | null
 }
 
 export function useSubmittedApplication({...props}: IProps) {
     const { handleError } = useErrorHandler();
       const { isLoading, isError, data, error, refetch } = useQuery({
-          queryKey: ["getVendors", props.page, props.sort, props?.search, , props?.filter, props?.comment],
-          queryFn: () => listAllSubmittedApplication({page: props.page, size: 10, sort: props.sort, search: props.search, comment: props.comment}),
+          queryKey: ["getVendors", props.page, props.sort, props?.search, , props?.filter, props?.comment,props?.status],
+          queryFn: () => listAllSubmittedApplication({page: props.page, size: 10, sort: props.sort, search: props.search, comment: props.comment || null,status:props.status}),
           onError: (error: AxiosError) => handleError(error),
           refetchInterval: 20000
       });
   
       useEffect(() => {
           refetch();
-      }, [props.filter, props.page, props.search, props.sort, props.comment])
+      }, [props.filter, props.page, props.search, props.sort, props.comment,props.status])
   
       return {
           isLoading,
