@@ -231,7 +231,7 @@ export async function listAllSubmittedApplication(params: {}) {
 }
 
 export async function reviewApplication(id: string, status: string) {
-    const response = await http.put<any>(`/applications/application/${id}/review`, { status: status});
+    const response = await http.put<any>(`/applications/application/${id}/review`, { comment: status});
 
     return response.data;
 }
