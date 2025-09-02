@@ -35,7 +35,7 @@ export default function SubmittedApplication() {
     sort: sort,
     filter: filter,
     status: status,
-    comment: comment?.value || null
+    comment: comment?.value
   });
 
   const deleteMutation = useMutation({
@@ -75,8 +75,8 @@ export default function SubmittedApplication() {
   }
 
   const handleSubmissions = (comment: any) => {
-    setComment(status?.value || null);
     setStatus(comment?.value === "ACCEPTED" ? "CLOSED":"SUBMITTED");
+    setComment(comment);
 
   }
 

@@ -98,7 +98,7 @@ export const ApplicantsList = () => {
             {/* Filtering tabs */}
             <div className="flex w-full justify-center mb-2">
                 <div className="flex flex-row rounded-2xl w-fit border-2 border-gray-400 gap-1 p-1">
-                    <button type="button" onClick={() => handleFilteringChange(null,"SUBMITTED")} className={` rounded-xl p-2 text-sm ${comment === "" ? "bg-green-600 text-white" : "text-gray-500"} `}>Applications</button>
+                    <button type="button" onClick={() => handleFilteringChange(null,"SUBMITTED")} className={` rounded-xl p-2 text-sm ${comment === null ? "bg-green-600 text-white" : "text-gray-500"} `}>Applications</button>
                     <button type="button" onClick={() => handleFilteringChange("ACCEPTED","CLOSED")} className={` rounded-xl p-2 text-sm ${comment === "ACCEPTED" ? "bg-green-600 text-white" : "text-gray-500"} `}>Vendors</button>
                 </div>
             </div>
