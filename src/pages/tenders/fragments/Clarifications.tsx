@@ -129,7 +129,7 @@ export const Clarifications = ({ tender }: ClarificationsProps) => {
                                                 {clar.replies.map((reply: IReply) => (
                                                     <div key={reply.id} className={`${tender.createdBy === reply.createdBy ? "items-end" : "items-start"} flex flex-col  w-full`}>
                                                         <span className="text-xs font-bold text-blue-600">{tender.entityName }</span>
-                                                        <div className={`px-4 py-2 ${tender.createdBy === user.userData?.userId ? "bg-green-500 text-white rounded-br-none " : "bg-white text-gray-800 border-green-500 rounded-bl-none"}  rounded-2xl border shadow-sm max-w[80%]`}>
+                                                        <div className={`px-4 py-2 bg-white text-gray-800 border-green-500 rounded-br-none rounded-2xl border shadow-sm max-w[80%]`}>
                                                             {reply.message}
                                                         </div>
                                                         <span className="text-[10px] text-gray-400">
