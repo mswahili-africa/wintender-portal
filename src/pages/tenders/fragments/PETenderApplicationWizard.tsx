@@ -195,8 +195,8 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
             <strong className="w-32 text-gray-600">Status:</strong>
             <Chip label={(() => {
               const currentDate = new Date().getTime();
-              const closeDate = tender.closeDate;
-              const remainingTime = closeDate - currentDate;
+              const closeDate = tender?.closeDate;
+              const remainingTime = closeDate as number - currentDate;
               const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
               if (remainingDays < 0) return 'CLOSED';
               if (remainingDays <= 2) return 'CLOSING';

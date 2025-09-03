@@ -431,7 +431,7 @@ export interface ITenderDetails {
   summary: string;
   filePath: string;
   openDate: string;
-  closeDate: string;
+  closeDate: number | string;
   status: string;
   consultationFee: number;
   applicationFee: number;
