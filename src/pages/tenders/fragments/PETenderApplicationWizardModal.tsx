@@ -6,6 +6,7 @@ import { ITenderDetails } from "@/types";
 import PETenderApplicationWizard from "./PETenderApplicationWizard";
 import PETenderApplicationPayment from "./PETenderApplicationPayment";
 import { Countdown } from "@/components/countdown/Countdown";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   isOpen: boolean;
@@ -22,12 +23,16 @@ export default function PETenderApplicationWizardModal({
 }: Props) {
   const [loading, setLoading] = useState(true);
   const [tender, setTender] = useState<ITenderDetails | null>(null);
+  const [closedate, setClosedate] = useState<number | null>(null);
 
   useEffect(() => {
     if (!tenderId) return;
     setLoading(true);
     getTenderDetails(tenderId)
       .then((data) => {
+        if (data.closeDate) {
+          setClosedate(Date.parse(data.closeDate));
+        }
         setTender(data);
       })
       .catch((err) => {
@@ -37,13 +42,15 @@ export default function PETenderApplicationWizardModal({
       .finally(() => setLoading(false));
   }, [tenderId]);
 
+
   if (!isOpen) return null;
 
   return (
     <Modal size="xl" isOpen={isOpen} onClose={onClose} title="Tender Application">
       <div className="w-full flex justify-end">
-        <Countdown expirationTime={tender?.closeDate!}/>
+        {closedate && <Countdown expirationTime={closedate} />}
       </div>
+
       {loading ? (
         <div className="flex justify-center py-12">
           <Spinner size="md" />
