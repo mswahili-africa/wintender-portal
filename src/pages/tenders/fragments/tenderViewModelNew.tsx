@@ -167,8 +167,6 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                                                 (() => {
                                                     if (remainingDays < 0) {
                                                         return 'CLOSED';
-                                                    } else if (remainingDays === 1) {
-                                                        return 'CLOSING';
                                                     } else {
                                                         return tender.status;
                                                     }
@@ -177,10 +175,8 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                                             size="sm"
                                             theme={
                                                 (() => {
-                                                    if (remainingDays <= 0) {
+                                                    if (remainingDays < 0) {
                                                         return 'danger';
-                                                    } else if (remainingDays === 1) {
-                                                        return 'warning';
                                                     } else {
                                                         return 'success';
                                                     }
