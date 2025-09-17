@@ -10,7 +10,7 @@ import usePopup from "@/hooks/usePopup";
 import PaymentsForm from "./fragments/paymentsForm";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IPayment } from "@/types";
-import { set, update } from "lodash";
+import { update } from "lodash";
 import { getAllPayments } from "@/hooks/usePayments";
 import { ExportXLSX } from "@/components/widgets/Excel";
 import excelColumns from "./fragments/excelPaymentColumns";
