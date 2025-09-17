@@ -198,7 +198,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     // days left before expiration
     let daysLeft = Math.ceil((user.planExpiryDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
     daysLeft = daysLeft < 0 ? 0 : daysLeft;
-    
+
     return (
         <>
             <Modal
@@ -224,15 +224,20 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                             className="w-16 h-16 object-cover rounded-full border border-gray-300"
                                         />
                                     </div>
-                                    <span>
-                                        <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
-                                    </span> |
-                                    <Chip
-                                        label={`${daysLeft} days left`}
-                                        size="sm"
-                                        theme={daysLeft >= 2 ? "success" : "danger"}
-                                        variant="outline"
-                                    />
+                                    <div className="flex flex-col">
+                                    <div className="flex flex-col md:flex-row items-center gap-x-2">
+                                        <span>
+                                            <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
+                                        </span> |
+                                        <Chip
+                                            label={`${daysLeft} days left`}
+                                            size="sm"
+                                            theme={daysLeft >= 2 ? "success" : "danger"}
+                                            variant="outline"
+                                        />
+                                    </div>
+                                    <h5 className="text-sm font-bold">{user?.account}</h5>
+                                    </div>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <WalletButton amount={user.walletAmount} />

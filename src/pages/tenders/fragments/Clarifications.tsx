@@ -127,16 +127,13 @@ export const Clarifications = ({ tender }: ClarificationsProps) => {
                                         {clar?.replies && clar.replies.length > 0 ? (
                                             <div className="max-h-[500px] overflow-y-auto">
                                                 {clar.replies.map((reply: IReply) => (
-                                                    <div key={reply.id} className={`${tender.createdBy === reply.createdBy ? "items-end" : "items-start"} flex flex-col  w-full`}>
+                                                    <div key={reply.id} className={`items-end flex flex-col  w-full`}>
                                                         <span className="text-xs font-bold text-blue-600">{tender.entityName }</span>
                                                         <div className={`px-4 py-2 bg-white text-gray-800 border-green-500 rounded-br-none rounded-2xl border shadow-sm max-w[80%]`}>
                                                             {reply.message}
                                                         </div>
                                                         <span className="text-[10px] text-gray-400">
-                                                            {new Date(reply.createdAt!).toLocaleTimeString([], {
-                                                                hour: "2-digit",
-                                                                minute: "2-digit",
-                                                            })}
+                                                            {new Date(reply.createdAt!).toLocaleString()}
                                                         </span>
                                                     </div>
                                                 ))

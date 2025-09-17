@@ -14,8 +14,8 @@ import { IconX } from "@tabler/icons-react";
 
 // JCM props interface
 interface UserProfileProps {
-  selectedUser: ICompany | null;
-  selectedLoading: boolean;
+    selectedUser: ICompany | null;
+    selectedLoading: boolean;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading }) => {
@@ -45,10 +45,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
         // JCM if user passed as prop, use it directly
         selectedUser && setUser(selectedUser);
         selectedLoading && setLoading(selectedLoading);
-        
+
         async function fetchUser() {
             try {
-                if(selectedUser){
+                if (selectedUser) {
                     setUser(selectedUser);
                     setLoading(selectedLoading);
                     setSelectedCategoriesIds(selectedUser.companyCategories || []);
@@ -278,6 +278,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
+                                <button
+                                    type="submit"
+                                    className="bg-green-600 text-white rounded-md p-2 w-full"
+                                    disabled={isUpdating}
+                                >
+                                    {isUpdating ? (
+                                        <span>Loading...</span>
+                                    ) : (
+                                        "Update"
+                                    )}
+                                </button>
                             </div>
                             <div className="w-1/2 flex items-center justify-center">
                                 <img
