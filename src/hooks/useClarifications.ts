@@ -14,7 +14,7 @@ export default function({...props}: IProps) {
         queryKey: ["getClarifications",props.id],
         queryFn: () => getClarifications(props.id), 
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000
+        refetchInterval: 300000
     });
 
     useEffect(() => {

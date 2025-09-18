@@ -47,7 +47,8 @@ export default function () {
                         type="text"
                         placeholder="Search"
                         className="input-normal py-2 w-1/2 lg:w-1/4"
-                        onChange={(e) => setSearch(e.target.value)} />
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                 </div>
 
 

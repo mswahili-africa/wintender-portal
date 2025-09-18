@@ -27,7 +27,7 @@ export default function getApplications({tenderId,...props}: IProps) {
             comment: props.comment
         }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 100000
+        refetchInterval: 300000
     }); 
 
     useEffect(() => {

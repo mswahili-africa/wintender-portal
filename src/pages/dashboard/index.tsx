@@ -27,6 +27,8 @@ import { createConsultMe } from "@/services/tenders";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
+import { useBillboards } from "@/hooks/useBillboards";
+import { useSummary } from "@/hooks/useSystemDetails";
 
 type DashboardStats = ISummaryReport;
 
@@ -37,14 +39,13 @@ export default function Dashboard() {
     const account = userData?.account || "00000000";
 
     const { showConfirmation } = usePopup();
-    const [stats, setStats] = useState<DashboardStats | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [billboards, setBillboards] = useState<IConsultation[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedBillboard, setSelectedBillboard] = useState<IConsultation | null>(null);
-    const [isConsultMeLoading, setIsConsultMeLoading] = useState(false);
     const closeModal = () => setShowModal(false);
+    
+    const {consultationServices} = useBillboards({page:1});
+    const {summary,isLoading} = useSummary();
 
 
     const handleConsultMeClick = () => {
@@ -67,36 +68,6 @@ export default function Dashboard() {
             toast.error(error.response?.data?.message ?? "");
         }
     });
-
-
-
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                setLoading(true);
-                const response = await getSummaryReport();
-                setStats(response);
-            } catch (err) {
-                setError('Failed to load summary report. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        const fetchBillboards = async () => {
-            try {
-                const data = await getBillboards();
-                setBillboards(data);
-            } catch (err) {
-                console.error("Failed to fetch billboards", err);
-            }
-        };
-
-        if (userId !== "") {
-            fetchStats();
-            fetchBillboards();
-        }
-    }, [userId]);
 
     const SkeletonLoader = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -122,9 +93,9 @@ export default function Dashboard() {
 
     const AdminStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${stats?.statistics.bidders}`} to="/bidders" />
-            <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${stats?.statistics.requests}`} to="/do-it-for-me" />
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${summary?.statistics.bidders}`} to="/bidders" />
+            <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${summary?.statistics.requests}`} to="/do-it-for-me" />
             <StatCard
                 icon={IconReportMoney}
                 title="Payment"
@@ -133,7 +104,7 @@ export default function Dashboard() {
                     currency: 'TZS',
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                }).format(stats?.statistics.payments ?? 0)}`}
+                }).format(summary?.statistics.payments ?? 0)}`}
                 to="/payments"
             />
         </div>
@@ -141,7 +112,7 @@ export default function Dashboard() {
 
     const PublisherStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
             <StatCard
                 icon={IconPigMoney}
                 title="Commission"
@@ -150,7 +121,7 @@ export default function Dashboard() {
                     currency: 'TZS',
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                }).format(stats?.statistics.payments ?? 0)}`}
+                }).format(summary?.statistics.payments ?? 0)}`}
                 to="/publisher-reports"
             />
         </div>
@@ -159,23 +130,23 @@ export default function Dashboard() {
     const PEStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="My Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Tender Box" description={`Applications: ${stats?.statistics.applications}`} to="/tender-box" />
+            <StatCard icon={IconFileText} title="My Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Tender Box" description={`Applications: ${summary?.statistics.applications}`} to="/tender-box" />
         </div>
     );
 
     const BidderStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${stats?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${stats?.statistics.requests}`} to="/do-it-for-me" />
-            <StatCard icon={IconGitPullRequest} title="Submissions" description={`Applications: ${stats?.statistics.applications}`} to="/do-it-for-me" />
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${summary?.statistics.requests}`} to="/do-it-for-me" />
+            <StatCard icon={IconGitPullRequest} title="Submissions" description={`Applications: ${summary?.statistics.applications}`} to="/do-it-for-me" />
         </div>
     );
 
     const Billboards = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {billboards.map((board) => (
+            {consultationServices?.map((board) => (
                 <div
                     key={board.id}
                     className="bg-green-600 w-full bg-gradient-to-r from-indigo-500 rounded-xl text-white bg-cover cursor-pointer"
@@ -229,7 +200,7 @@ export default function Dashboard() {
                             theme="primary"
                             onClick={handleConsultMeClick}
                         >
-                            {isConsultMeLoading ? (
+                            {requestMutation.isPending ? (
                                 <div className="flex items-center gap-2">
                                     <Spinner size="sm" />
                                     Requesting...
@@ -280,26 +251,26 @@ export default function Dashboard() {
 
             {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (
                 <div className="mt-6">
-                    {loading ? <SkeletonLoader /> : <BidderStats />}
+                    {isLoading ? <SkeletonLoader /> : <BidderStats />}
                 </div>
             )}
 
             {(userRole.includes("PUBLISHER") || userRole.includes("SUPERVISOR")) && (
                 <div className="mt-6">
-                    {loading ? <SkeletonLoader /> : <PublisherStats />}
+                    {isLoading ? <SkeletonLoader /> : <PublisherStats />}
                 </div>
             )}
 
             {/* JCM pe stats*/}
             {userRole.includes("PROCUREMENT_ENTITY") && (
                 <div className="mt-6">
-                    {loading ? <SkeletonLoader /> : <PEStats />}
+                    {isLoading ? <SkeletonLoader /> : <PEStats />}
                 </div>
             )}
 
             {userRole.includes("ADMINISTRATOR") && (
                 <div className="mt-6">
-                    {loading ? <SkeletonLoader /> : <AdminStats />}
+                    {isLoading ? <SkeletonLoader /> : <AdminStats />}
                 </div>
             )}
 
@@ -317,11 +288,11 @@ export default function Dashboard() {
                             <div className="space-y-3 text-gray-700 text-sm sm:text-base">
                                 <div className="flex justify-between">
                                     <span className="font-medium">NextSMS:</span>
-                                    <span className="font-semibold">{loading ? <Spinner size="sm" /> : stats?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium">Onfon Media:</span>
-                                    <span className="font-semibold">{loading ? <Spinner size="sm" /> : stats?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
                                 </div>
                             </div>
                         </div>

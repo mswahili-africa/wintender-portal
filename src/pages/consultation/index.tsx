@@ -1,5 +1,4 @@
 
-import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/columns";
@@ -8,27 +7,14 @@ import { IConsultation } from "@/types/forms";
 import { IconTrash } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
-import { deleteBillboard, getBillboards } from "@/services/tenders";
+import { deleteBillboard } from "@/services/tenders";
+import { useBillboards } from "@/hooks/useBillboards";
 
 export default function Consultation() {
     const { showConfirmation } = usePopup();
-    const [billboards, setBillboards] = useState<IConsultation[]>([]);
-    const [billboardLoading, setBillboardLoading] = useState<boolean>(true);
+    // const [billboards, setBillboards] = useState<IConsultation[]>([]);
 
-    useEffect(() => {
-        fetchBillboards();
-    }, []);
-
-    const fetchBillboards = async () => {
-        try {
-            const data = await getBillboards();
-            setBillboards(data); // ✅ only set the array part
-        } catch (err) {
-            console.error("Failed to fetch billboards", err);
-        } finally {
-            setBillboardLoading(false);
-        }
-    };
+    const {consultationServices,refetch,isLoading} = useBillboards ({page:1});
 
     const handleDelete = (content: IConsultation) => {
         showConfirmation({
@@ -43,7 +29,7 @@ export default function Consultation() {
     const deleteMutation = useMutation({
         mutationFn: (data: IConsultation) => deleteBillboard(data.id),
         onSuccess: () => {
-            fetchBillboards();
+            refetch();
             toast.success("Billboard deleted successfully");
         },
         onError: (error: any) => {
@@ -55,15 +41,15 @@ export default function Consultation() {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Consultation Billboards</h2>
-                <CategoryCreate onSuccess={() => fetchBillboards()} />
+                <CategoryCreate onSuccess={() => refetch()} />
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
 
                 <Table
                     columns={columns}
-                    data={billboards || []}
-                    isLoading={billboardLoading}
+                    data={consultationServices || []}
+                    isLoading={isLoading}
                     hasSelection={false}
                     hasActions={true}
                     actionSlot={(content: IConsultation) => {
@@ -83,7 +69,7 @@ export default function Consultation() {
             </div>
 
             {/* Handle empty state */}
-            {billboards?.length === 0 && !billboardLoading && (
+            {consultationServices?.length === 0 && !isLoading && (
                 <div className="text-center p-4">
                     <p>No Billboards found.</p>
                 </div>

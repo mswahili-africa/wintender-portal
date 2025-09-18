@@ -11,6 +11,9 @@ import { getCategories } from "@/services/tenders";
 import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
+import Button from "@/components/button/Button";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/spinners/Spinner";
 
 // JCM props interface
 interface UserProfileProps {
@@ -142,22 +145,24 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
         setIsUpdating(true); // Set loading state to true
         try {
-            const response = await updateBidderCompany(payload, userId! || user.id!); // JCM use user.id for SUPERVISOR role
-            toast.success("Successfully updated");
-
-            const updatedUser = await getUserById(userId! || user.id!); // JCM use user.id for SUPERVISOR role
-            setUser(updatedUser);
-            if (updatedUser.company && updatedUser.company.categories) {
-                setSelectedCategoriesIds(updatedUser.company.categories);
-            }
+            updateUserMutation.mutate(payload);
 
         } catch (error) {
             console.error("Failed to update company info:", error);
             toast.error("Failed to update company info");
-        } finally {
-            setIsUpdating(false); // Reset loading state
         }
     };
+
+    const updateUserMutation = useMutation({
+        mutationFn: (updatedUser: ICompany) => updateBidderCompany(updatedUser, userId! || user?.id!),
+        onSuccess: async () => {
+            const updatedUser = await getUserById(userId! || user?.id!); // JCM use user.id for SUPERVISOR role
+            setUser(updatedUser);
+            if (updatedUser.company && updatedUser.company.categories) {
+                setSelectedCategoriesIds(updatedUser.company.categories);
+            }
+        },
+    });
 
     // JCM input style
     const customStyles = {
@@ -278,17 +283,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="bg-green-600 text-white rounded-md p-2 w-full"
-                                    disabled={isUpdating}
-                                >
-                                    {isUpdating ? (
-                                        <span>Loading...</span>
-                                    ) : (
-                                        "Update"
-                                    )}
-                                </button>
+                                <div className=" items-center flex flex-row mx-auto w-fit">
+                                    <Button
+                                        type="submit"
+                                        label="Update"
+                                        theme="success"
+                                        className="mx-auto"
+                                        size="md"
+                                        loading={updateUserMutation.isPending}
+                                    />
+                                </div>
                             </div>
                             <div className="w-1/2 flex items-center justify-center">
                                 <img
@@ -376,17 +380,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="bg-green-600 text-white rounded-md p-2 w-full"
-                                    disabled={isUpdating}
-                                >
-                                    {isUpdating ? (
-                                        <span>Loading...</span>
-                                    ) : (
-                                        "Update"
-                                    )}
-                                </button>
+                                <div className=" items-center flex flex-row mx-auto w-fit">
+                                    <Button
+                                        type="submit"
+                                        label="Update"
+                                        theme="success"
+                                        className="mx-auto"
+                                        size="md"
+                                        loading={updateUserMutation.isPending}
+                                    />
+                                </div>
                             </form>
                         ) : (
                             <p className="text-red-500">Company information not available</p>

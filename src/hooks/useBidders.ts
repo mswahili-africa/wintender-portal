@@ -20,7 +20,6 @@ export default function({...props}: IProps) {
         queryKey: ["getBidders", props.page, props.sort, props.search,props.address, props.categories?.join(","), props.filter],
         queryFn: () => getBidders({page: props.page, size: 10, sort: props.sort, search: props.search, address: props.address, categories: props.categories}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000
     });
 
     useEffect(() => {

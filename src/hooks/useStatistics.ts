@@ -10,7 +10,7 @@ export default function() {
         queryKey: ["getStatistics"],
         queryFn: () => getStatistics(),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000
+        refetchInterval: 300000, // 5 minutes
     });
  
     return {

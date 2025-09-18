@@ -16,7 +16,9 @@ import {
     IconLockAccessOff,
     IconUserUp,
     IconMan,
-    IconSettings
+    IconSettings,
+    IconAlertTriangle,
+    IconHeartRateMonitor
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -121,7 +123,17 @@ const allMenus: IRoute[] = [
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
-            { path: "/login-attempt", label: "Login Attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> }
+            { path: "/login-attempt", label: "Login Attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
+            {
+                label: "System Health",
+                path: "/system-health",
+                icon: <IconHeartRateMonitor size={20} strokeWidth={1.6} />,
+            },
+            {
+                label: "System Logs",
+                path: "/error-logs",
+                icon: <IconAlertTriangle size={20} strokeWidth={1.6} />,
+            }
         ],
     },
     {
@@ -134,7 +146,7 @@ const allMenus: IRoute[] = [
     }
 ];
 
-// JCM Assign routes based on user role
+//  Assign routes based on user role
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
     MANAGER: () => allMenus.filter(menu => (menu.label !== "Settings")).map(menu => menu.label === "Entities"
@@ -147,15 +159,21 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
             }
-            : menu
+            : menu.label === "Reports" ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+            } : menu
 
     ),
-    ACCOUNTANT: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards" && menu.label !== "Settings") && menu.label === "Tender" ? {
+    ACCOUNTANT: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards" && menu.label !== "Settings")
+        && menu.label === "Tender" ? {
         ...menu,
         subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-    } : {
-        ...menu
-    }),
+    } : menu.label === "Reports" ? {
+        ...menu,
+        subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+    } : menu
+    ),
     PROCUREMENT_ENTITY: () => allMenus
         .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
@@ -163,17 +181,18 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions" && sub.label !== "Government Tenders"), // Exclude Categories sub-menu
             }
-            : menu.label === "Settings" ? {
-                ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Roles sub-menu
-            } : menu
+            : menu
         ),
-    PUBLISHER: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards" && menu.label !== "Settings") && menu.label === "Tender" ? {
-        ...menu,
-        subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-    } : {
-        ...menu
-    }),
+    PUBLISHER: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards" && menu.label !== "Settings")
+        && menu.label === "Tender" ?
+        {
+            ...menu,
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
+        } : menu.label === "Reports" ? {
+            ...menu,
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+        } : menu
+    ),
     SUPERVISOR: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Settings")).map(menu => menu.label === "Entities"
         ? {
             ...menu,
@@ -186,6 +205,9 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             : menu.label === "Consultation" ? {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
+            } : menu.label === "Reports" ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
             } : menu
 
     ),
@@ -206,10 +228,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                         ...menu,
                         subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
                     }
-                    : menu.label === "Settings" ? {
-                        ...menu,
-                        subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Roles sub-menu
-                    } : menu
+                    : menu
         ),
     LEGAL: function (): IRoute[] {
         throw new Error("Function not implemented.");
