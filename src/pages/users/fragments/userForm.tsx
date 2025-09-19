@@ -17,7 +17,7 @@ import TextInput from "@/components/widgets/forms/TextInput";
 import { useUserDataContext } from "@/providers/userDataProvider";
 interface IProps {
   onSuccess: () => void;
-  initials?: IUser;
+  initials?: IUser | null;
 }
 
 const schema = object().shape({
@@ -25,13 +25,15 @@ const schema = object().shape({
   lastName: string().required("Last name is required"),
   email: string().email().required("Email is required"),
   phoneNumber: string().required("Phone number is required"),
-  role: string().required("Role is required"),
+  roleId: string().required("Role is required"),
   status: string().optional(),
   nationalId: string().required("National ID number is required"),
 });
 
 const updateSchema = object().shape({
   name: string().required("Name is required"),
+  roleId: string().required("Role is required"),
+  status: string().required("Status is required"),
 });
 
 export default function UserForm({ onSuccess, initials }: IProps) {
@@ -61,7 +63,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
     resolver: yupResolver(updateSchema),
   });
 
-  const { roles, isLoading } = useRoles({ page: 0, search: "", filter: {} });
+  const { roles } = useRoles({ page: 0, search: "", filter: {} });
 
   const createMutation = useMutation({
     mutationFn: (data: IRegisterForm) => signup(data),
@@ -106,7 +108,8 @@ export default function UserForm({ onSuccess, initials }: IProps) {
   useEffect(() => {
     if (initials) {
       updateSetValue("name", initials.name);
-      // updateSetValue("name", initials.roleId);
+      updateSetValue("roleId", initials.roleDetails?.id);
+      updateSetValue("status", initials.status);
       setUpdate(true);
     }
   }, [initials]);
@@ -182,8 +185,8 @@ export default function UserForm({ onSuccess, initials }: IProps) {
               </label>
 
               <select
-                className={errors.role ? "input-error" : "input-normal"}
-                {...register("role", { required: true })}
+                className={errors.roleId ? "input-error" : "input-normal"}
+                {...register("roleId", { required: true })}
                 disabled={!!initials}
               >
                 <option value=""></option>
@@ -228,6 +231,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
         title="Update User"
         isOpen={update}
         onClose={() => {
+          updateReset();
           setUpdate(false);
           reset();
         }}
@@ -253,34 +257,31 @@ export default function UserForm({ onSuccess, initials }: IProps) {
             </label>
 
             <select
-              className={errors.role ? "input-error" : "input-normal"}
-              {...register("role", { required: true })}
+              id="role"
+              className={errors.roleId ? "input-error" : "input-normal"}
+              {...register("roleId", { required: true })}
+              defaultValue={initials?.roleDetails?.id ?? ""}
             >
-              <option value=""></option>
-              {roles?.content
-                .filter((item: IRole) => {
-
-                  // For any role which is not ADMINISTRATOR, don't show any options
-                  if (["ADMINISTRATOR", "MANAGER"].includes(userRole)) {
-                    return !["ADMINISTRATOR", "PROCUREMENT_ENTITY","BIDDER"].includes(item.role);
-                  }
-
-                  // For ADMINISTRATOR, show everything (no filter needed)
-                  
-                  return false;
-                })
-                .map((item: IRole) => (
-                  <option
-                    selected={item.id === initials?.roleId}
-                    value={item.id}
-                    key={item.id}
-                  >
-                    {item.role}
-                  </option>
-                ))}
-
+              <option value="">Select a role</option>
+              {
+                roles?.content
+                  .filter((item: IRole) => {
+                    // For any role which is not ADMINISTRATOR, filter
+                    if (["ADMINISTRATOR", "MANAGER"].includes(userRole)) {
+                      return !["ADMINISTRATOR", "PROCUREMENT_ENTITY", "BIDDER", "SYSTEM"].includes(item.role);
+                    }
+                    // ADMINISTRATOR sees everything
+                    return true;
+                  })
+                  .map((item: IRole) => (
+                    <option key={item.id} value={item.id}>
+                      {item.role}
+                    </option>
+                  ))
+              }
             </select>
           </div>
+
 
           <div>
             <label htmlFor="role" className="block my-2">
@@ -288,7 +289,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
             </label>
 
             <select
-              className={errors.role ? "input-error" : "input-normal"}
+              className={errors.roleId ? "input-error" : "input-normal"}
               {...register("status", { required: true })}
               defaultValue={initials?.status}
             >
