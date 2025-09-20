@@ -10,7 +10,7 @@ import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import { signup, updateUser } from "@/services/auth";
 import { authStore } from "@/store/auth";
-import { IRole, IUser } from "@/types";
+import { IlistResponse, IRole, IUser } from "@/types";
 import { IRegisterForm } from "@/types/forms";
 import useRoles from "@/hooks/useRoles";
 import TextInput from "@/components/widgets/forms/TextInput";
@@ -36,7 +36,7 @@ const updateSchema = object().shape({
   status: string().required("Status is required"),
 });
 
-export default function UserForm({ onSuccess, initials }: IProps) {
+export default function UserForm({ onSuccess, initials, roles }: IProps & { roles: IlistResponse<IRole> | undefined }) {
   const auth = useSnapshot(authStore);
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -63,7 +63,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
     resolver: yupResolver(updateSchema),
   });
 
-  const { roles } = useRoles({ page: 0, search: "", filter: {} });
+  // const { roles } = useRoles({ page: 0, search: "", filter: {} });
 
   const createMutation = useMutation({
     mutationFn: (data: IRegisterForm) => signup(data),

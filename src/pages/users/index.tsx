@@ -1,26 +1,33 @@
 import { IconBallpen } from "@tabler/icons-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import UserForm from "./fragments/userForm";
 import useUsers from "@/hooks/useUsers";
 import columns from "./fragments/userColumns";
 import { IUser } from "@/types";
+import useRoles from "@/hooks/useRoles";
 
 
 export default function () {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
-    const [filter] = useState<any>();
+    const [filterUsers] = useState<any>();
     const [update, setUpdate] = useState<IUser>();
 
     const { users, isLoading, refetch } = useUsers({
         page: page,
         search: search,
         sort: sort,
-        filter: filter
+        filter: filterUsers
     });
+
+    // jcm roles
+    const filter = useMemo(() => ({}), []);
+
+    const { roles } = useRoles({ page: 0, search: "", filter });
+
 
     const handleSorting = (field: string, direction: SortDirection) => {
         setSort(`${field},${direction.toLowerCase()}`);
@@ -32,12 +39,20 @@ export default function () {
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Internal Users</h2>
 
+                {/* <UserForm
+                    onSuccess={() => {
+                        setUpdate(undefined);
+                        refetch();
+                    }}
+                    initials={update}
+                /> */}
                 <UserForm
                     onSuccess={() => {
                         setUpdate(undefined);
                         refetch();
                     }}
                     initials={update}
+                    roles={roles }
                 />
             </div>
 
