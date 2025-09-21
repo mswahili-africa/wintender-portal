@@ -163,12 +163,6 @@ export default function GovernmentTenders() {
     const handleEdit = (content: ITenders) => {
         setEditTender(content);
     }
-
-    // JCM Applicants List
-    const openApplicantList = (content: ITenders) => {
-        navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
-    }
-
     const handleEditModalClose = () => {
         setEditTender(undefined);
     };

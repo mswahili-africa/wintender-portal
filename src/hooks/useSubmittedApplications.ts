@@ -19,7 +19,7 @@ export function useSubmittedApplication({...props}: IProps) {
           queryKey: ["getVendors", props.page, props.sort, props?.search, , props?.filter, props?.comment,props?.status],
           queryFn: () => listAllSubmittedApplication({page: props.page, size: 10, sort: props.sort, search: props.search, comment: props.comment || null,status:props.status}),
           onError: (error: AxiosError) => handleError(error),
-          refetchInterval: 20000
+          refetchInterval: 300000,
       });
   
       useEffect(() => {

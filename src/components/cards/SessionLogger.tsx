@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../button/Button";
 
 const SessionTimeoutModal = () => {
+    const navigate = useNavigate();
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50 p-5">
             <div className="bg-white p-6 rounded shadow-lg">
@@ -11,9 +13,9 @@ const SessionTimeoutModal = () => {
                         size="md"
                         theme="primary"
                         type="button"
-                        >
-                        <span>Login to continue</span>
-                   </Button>
+                        label="Login Again"
+                        onClick={() => navigate("/login", { replace: true })}
+                    />
 
                 </div>
             </div>

@@ -42,7 +42,7 @@ export function getAllPayments({
           filter, // Pass the filter
         }),
       onError: (error: AxiosError) => handleError(error),
-      refetchInterval: 20000, // Adjust this interval as needed
+      refetchInterval: 120000 // 2 minutes
     });
   
     useEffect(() => {
@@ -73,7 +73,6 @@ export function getUserPayments({ userId, ...props }: IProps) { // userId is des
                 filter: props.filter,
             }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000,
     });
 
     useEffect(() => {

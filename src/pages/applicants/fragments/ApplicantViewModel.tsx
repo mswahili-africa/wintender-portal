@@ -62,7 +62,7 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                                     label="Accept"
                                     size="sm"
                                     theme="primary"
-                                    disabled={applicationReviewMutation.isLoading}
+                                    disabled={applicationReviewMutation.isPending}
                                     onClick={() => handleConfirmation("ACCEPTED", applicant.id)}
                                 />
                                 <Button
@@ -78,8 +78,8 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                     {["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") &&
                         applicant.status === "CLOSED" && (
                             <div className={`rounded-lg px-4 py-2 inline-block text-sm font-medium ${applicant.comment === "ACCEPTED"
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                                 }`}>
                                 {applicant.comment}
                             </div>
@@ -184,6 +184,22 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                             </span>{" "}
                             this application? This action cannot be undone.
                         </p>
+                        {
+                            data.status === "REJECTED" && (
+                                <div className="flex flex-col items-center mt-4 gap-2">
+                                    <strong className="text-gray-600">Comment</strong>
+                                    <textarea
+                                        className="w-full p-2 border rounded"
+                                    ></textarea>
+                                </div>
+                            )
+                        }
+                        <div className="flex flex-col items-center mt-4 gap-2">
+                            <strong className="text-gray-600">Comment</strong>
+                            <textarea
+                                className="w-full p-2 border rounded"
+                            ></textarea>
+                        </div>
                         <div className="mt-6 flex justify-center gap-4">
                             {
                                 !applicationReviewMutation.isLoading &&

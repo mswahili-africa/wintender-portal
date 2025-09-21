@@ -38,7 +38,7 @@ export function getAllApplicationsGroup({
                 filter, // Pass the filter
             }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 100000, // Adjust this interval as needed
+        refetchInterval: 300000, // Adjust this interval as needed
     });
 
     useEffect(() => {
@@ -69,7 +69,7 @@ export function getUserApplicationsGroup({ userId, ...props }: IProps) { // Acce
                 filter: props.filter,
             }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 100000,
+        refetchInterval: 300000,
     });
 
     useEffect(() => {

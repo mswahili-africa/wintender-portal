@@ -20,7 +20,6 @@ export default function({ account, ...props }: IProps) {
         queryFn: () => getDocuments(account,{ page: props.page, size: 10, sort: props.sort, search: props.search }),
         onError: (error: AxiosError) => handleError(error),
         enabled: !!account, 
-        refetchInterval: 20000,
     });
 
     useEffect(() => {

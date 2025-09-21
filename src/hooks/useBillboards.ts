@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
-import { getConsultMe, getDoForMeApplication } from "@/services/tenders";
+import { getBillboards, getConsultMe, getDoForMeApplication } from "@/services/tenders";
 import { IApplicationGroup } from "@/types";
+import Consultation from "@/pages/consultation";
 
 interface IProps {
     page: number
@@ -12,11 +13,11 @@ interface IProps {
     filter?: Record<string, any>
 }
 
-export default function({...props}: IProps) {
+export const useBillboards = ({...props}: IProps) =>{
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: [props.page, props.sort, props?.search, props?.filter],
-        queryFn: () => getConsultMe({page: props.page, size: 10, sort: props.sort, search: props.search}),
+        queryKey: ["getBillboards",props.page, props.sort, props?.search, props?.filter],
+        queryFn: () => getBillboards(),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 300000
     }); 
@@ -28,7 +29,7 @@ export default function({...props}: IProps) {
     return {
         isLoading,
         isError,
-        application: data,
+        consultationServices: data,
         error,
         refetch
     }
