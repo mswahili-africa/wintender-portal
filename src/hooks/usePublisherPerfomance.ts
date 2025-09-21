@@ -23,7 +23,6 @@ export default function usePublisherPerformance({ month, ...props }: IProps) {
             search: props.search
         }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000,
     });
 
     useEffect(() => {

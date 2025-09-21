@@ -11,6 +11,11 @@ import { getCategories } from "@/services/tenders";
 import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
+import Button from "@/components/button/Button";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/spinners/Spinner";
+import useCategories from "@/hooks/useCategories";
+import { useUserData } from "@/hooks/useUserData";
 
 // JCM props interface
 interface UserProfileProps {
@@ -23,18 +28,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     const auth = useSnapshot(authStore);
 
     const [user, setUser] = useState<ICompany | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [categories, setCategories] = useState<ICategory[]>([]);
+    // const [loading, setLoading] = useState<boolean>(true);
+    // const [categories, setCategories] = useState<ICategory[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const [selectedCategoriesIds, setSelectedCategoriesIds] = useState<string[]>([]);
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
+    const {categories} = useCategories({ page: 0, size: 1000, search: "", filter: {} });
+    const {userData,loading} = useUserData();
+
+
     const accountOwner = (): boolean => {
         return auth.user?.id === userId;
     };
 
-    const filteredCategories = categories
+    const filteredCategories = categories?.content
         .filter(category =>
             `${category.categoryGroup} ${category.name}`.toLowerCase().includes(searchTerm.toLowerCase())
         )
@@ -44,13 +53,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     useEffect(() => {
         // JCM if user passed as prop, use it directly
         selectedUser && setUser(selectedUser);
-        selectedLoading && setLoading(selectedLoading);
+        // selectedLoading && setLoading(selectedLoading);
 
         async function fetchUser() {
             try {
                 if (selectedUser) {
                     setUser(selectedUser);
-                    setLoading(selectedLoading);
+                    // setLoading(selectedLoading);
                     setSelectedCategoriesIds(selectedUser.companyCategories || []);
                     return;
                 }
@@ -64,33 +73,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                 }
             } catch (error) {
                 console.error("Failed to fetch user", error);
-            } finally {
-                setLoading(false);
             }
         }
 
         fetchUser();
     }, [userId]);
 
-
-
-    useEffect(() => {
-        async function fetchCategories() {
-            try {
-                const data = await getCategories({
-                    page: 0,
-                    size: 1000,
-                    search: "",
-                    filter: {},
-                });
-                setCategories(data.content);
-            } catch (error) {
-                console.error("Failed to fetch categories", error);
-            }
-        }
-
-        fetchCategories();
-    }, []);
 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -142,22 +130,24 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
         setIsUpdating(true); // Set loading state to true
         try {
-            const response = await updateBidderCompany(payload, userId! || user.id!); // JCM use user.id for SUPERVISOR role
-            toast.success("Successfully updated");
-
-            const updatedUser = await getUserById(userId! || user.id!); // JCM use user.id for SUPERVISOR role
-            setUser(updatedUser);
-            if (updatedUser.company && updatedUser.company.categories) {
-                setSelectedCategoriesIds(updatedUser.company.categories);
-            }
+            updateUserMutation.mutate(payload);
 
         } catch (error) {
             console.error("Failed to update company info:", error);
             toast.error("Failed to update company info");
-        } finally {
-            setIsUpdating(false); // Reset loading state
         }
     };
+
+    const updateUserMutation = useMutation({
+        mutationFn: (updatedUser: ICompany) => updateBidderCompany(updatedUser, userId! || user?.id!),
+        onSuccess: async () => {
+            const updatedUser = await getUserById(userId! || user?.id!); // JCM use user.id for SUPERVISOR role
+            setUser(updatedUser);
+            if (updatedUser.company && updatedUser.company.categories) {
+                setSelectedCategoriesIds(updatedUser.company.categories);
+            }
+        },
+    });
 
     // JCM input style
     const customStyles = {
@@ -203,18 +193,18 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
 
     // JCM available options for select
-    const availableOptions = categories
+    const availableOptions = categories?.content
         .filter((cat) => !selectedCategories.find((sc: any) => sc.id === cat.id))
         .map((cat) => ({ value: cat.id, label: cat.name }));
 
 
     // JCM useEffect to set initial selected categories
     useEffect(() => {
-        if (user?.companyCategories && categories.length > 0) {
-            const initialSelected = categories.filter((cat: any) =>
+        if (user?.companyCategories && categories?.content?.length! > 0) {
+            const initialSelected = categories?.content?.filter((cat: any) =>
                 user.companyCategories.includes(cat.id)
             );
-            setSelectedCategories(initialSelected);
+            setSelectedCategories(initialSelected as ICategory[]);
         }
     }, [user, categories]);
 
@@ -278,17 +268,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="bg-green-600 text-white rounded-md p-2 w-full"
-                                    disabled={isUpdating}
-                                >
-                                    {isUpdating ? (
-                                        <span>Loading...</span>
-                                    ) : (
-                                        "Update"
-                                    )}
-                                </button>
+                                <div className=" items-center flex flex-row mx-auto w-fit">
+                                    <Button
+                                        type="submit"
+                                        label="Update"
+                                        theme="success"
+                                        className="mx-auto"
+                                        size="md"
+                                        loading={updateUserMutation.isPending}
+                                    />
+                                </div>
                             </div>
                             <div className="w-1/2 flex items-center justify-center">
                                 <img
@@ -376,17 +365,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="bg-green-600 text-white rounded-md p-2 w-full"
-                                    disabled={isUpdating}
-                                >
-                                    {isUpdating ? (
-                                        <span>Loading...</span>
-                                    ) : (
-                                        "Update"
-                                    )}
-                                </button>
+                                <div className=" items-center flex flex-row mx-auto w-fit">
+                                    <Button
+                                        type="submit"
+                                        label="Update"
+                                        theme="success"
+                                        className="mx-auto"
+                                        size="md"
+                                        loading={updateUserMutation.isPending}
+                                    />
+                                </div>
                             </form>
                         ) : (
                             <p className="text-red-500">Company information not available</p>
@@ -398,7 +386,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                         <Select
                             options={availableOptions}
                             onChange={(selectedOption) => {
-                                const selected = categories.find((c: any) => c.id === selectedOption?.value);
+                                const selected = categories?.content?.find((c: any) => c.id === selectedOption?.value);
                                 if (selected) manageCategoriesSelection(selected);
                             }}
                             placeholder="Search or select category"

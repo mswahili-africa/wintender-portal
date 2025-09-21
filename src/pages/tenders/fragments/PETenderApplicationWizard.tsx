@@ -23,7 +23,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [applicationId, setApplicationId] = useState<string | null>(null);
 
-   const stages = ["DETAILS",
+  const stages = ["DETAILS",
     ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
     "PRELIMINARY", "TECHNICAL", "COMMERCIAL", "CONSENT"
   ];
@@ -242,6 +242,14 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     if (step === "CONSENT") {
       return (
         <div>
+          {/* optional files */}
+          <p>More Information(optional)</p>
+
+          <FileUploadField stage={"Optional"} fieldName={""}              // key={`${step}-${req.fieldName}`}
+          // stage={step}
+          // fieldName={req.fieldName}
+          // required={req.required}
+          />
           <p className="mb-2">I agree that the documents submitted are true and correct to the best of my knowledge.</p>
           <label className="flex items-center">
             <input
@@ -328,9 +336,9 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
         <div className="text-sm text-gray-600 mb-1">Step {currentStep + 1} of {stages.length}: <strong>{stages[currentStep]}</strong></div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className="bg-green-500 h-2 rounded-full"
+            className="bg-green-500 h-2 p-1 text-center min-w-fit rounded-full"
             style={{ width: `${progressPercentage}%`, transition: "width 0.3s ease" }}
-          />
+          >{progressPercentage}%</div>
         </div>
       </div>
 

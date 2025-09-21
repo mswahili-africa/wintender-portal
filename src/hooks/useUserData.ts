@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { isAuthenticated, tokenInfo } from "@/services/auth";
 import { IUserData } from "@/types/forms";
-import { authStore } from "@/store/auth";
-import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 
 const userDataCache: { data: IUserData | null; fetched: boolean } = {
     data: null,
@@ -14,6 +13,21 @@ export function useUserData() {
     const [userData, setUserData] = useState<IUserData | null>(userDataCache.data);
     const [loading, setLoading] = useState<boolean>(!userDataCache.fetched);
     const [error, setError] = useState<string | null>(null);
+
+    const {data} = useQuery({
+        queryKey: ["userData"],
+        queryFn: () => tokenInfo(),
+
+        
+    });
+     useEffect(() => {
+        if(data){
+            userDataCache.data = data;
+            userDataCache.fetched = true;
+            setUserData(data);
+            setLoading(false);
+        }
+    }, [data]);
 
     useEffect(() => {
         if (!isAuthenticated()) {
@@ -29,27 +43,7 @@ export function useUserData() {
             return;
         }
 
-        const fetchUserData = async () => {
-
-            try {
-
-                setLoading(true);
-                const data = await tokenInfo(); // Fetch data from API
-                userDataCache.data = data;
-                userDataCache.fetched = true;
-                setUserData(data);
-            } catch (err) {
-
-                toast.error("Unauthorized. Please log in.");
-
-                authStore.logout();
-
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserData();
+        
     }, []);
 
     return { userData, loading, error };

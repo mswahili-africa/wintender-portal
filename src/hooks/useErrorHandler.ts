@@ -61,7 +61,7 @@ export default function () {
                     message: "We're experiencing some technical difficulties. Please try again later.",
                     theme: "warning",
                 });
-                setTimeout(() => { closePopup();  }, 10000)
+                setTimeout(() => { closePopup(); }, 10000)
                 break;
         }
     }

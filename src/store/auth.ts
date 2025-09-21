@@ -22,7 +22,7 @@ export const authStore = proxy<AuthStore>({
     sessionToken: null,
 
     getToken(): string | null {
-        if(authStore.accessToken) {
+        if (authStore.accessToken) {
             return authStore.accessToken
         }
 
@@ -31,17 +31,17 @@ export const authStore = proxy<AuthStore>({
     },
 
     getSession(): string | null {
-        if(authStore.sessionToken) {
+        if (authStore.sessionToken) {
             return authStore.sessionToken
         }
         authStore.sessionToken = localStorage.getItem(TOKEN_KEY);
-        return  authStore.sessionToken
+        return authStore.sessionToken
     },
 
     getUser(): IAuthUser | null {
         const user = localStorage.getItem(USER_KEY);
 
-        if(user !== null) {
+        if (user !== null) {
             authStore.user = JSON.parse(user);
             return authStore.user
         }
@@ -57,7 +57,7 @@ export const authStore = proxy<AuthStore>({
 
     logout() {
         authStore.accessToken = null;
-        
+
         localStorage.removeItem(TOKEN_KEY);
         clearUserData();
 
@@ -70,27 +70,27 @@ export const authStore = proxy<AuthStore>({
 });
 
 
-export  function useSession() {
+export function useSession() {
     const [showModal, setShowModal] = useState(false);
     useEffect(() => {
-      const responseInterceptor = http.interceptors.response.use(
-        response => response,
-        error => {
-            if (error.response && error.response.status === 401) {
-                setShowModal(true);
-                setTimeout(() => {
-                    authStore.logout()
-                    setShowModal(false);
-              },3000)  
-          }
-          return Promise.reject(error);
-        }
-      );
-      return () => {
-        http.interceptors.response.eject(responseInterceptor);
-      };
+        const responseInterceptor = http.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response && error.response.status === 401) {
+                    setShowModal(true);
+                    setTimeout(() => {
+                        authStore.logout()
+                        setShowModal(false);
+                    }, 3000)
+                }
+                return Promise.reject(error);
+            }
+        );
+        return () => {
+            http.interceptors.response.eject(responseInterceptor);
+        };
     }, []);
     return {
-      showModal
-  }
+        showModal
+    }
 }

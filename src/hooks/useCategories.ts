@@ -19,7 +19,6 @@ export default function({...props}: IProps) {
         queryKey: ["getCategories", props.page, props.sort, props?.search ,props?.categories, props?.filter],
         queryFn: () => getCategories({page: props.page, size: props.size, sort: props.sort, search: props.search, categories: props.categories, filter: props.filter}), // Added categories as an array
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 20000
     });
 
     useEffect(() => {

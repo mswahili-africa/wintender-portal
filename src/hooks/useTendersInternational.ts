@@ -17,7 +17,6 @@ export default function({...props}: IProps) {
         queryKey: ["getTendersInternational", props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getTendersInternational({page: props.page, size: 30, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 100000
     });
 
     useEffect(() => {

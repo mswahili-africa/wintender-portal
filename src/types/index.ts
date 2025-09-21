@@ -17,6 +17,7 @@ export interface IQueryParams {
   searchKey?: string
   searchValue?: string
   filter?: Record<string, any>;
+  logType?: string;
 }
 
 export interface IQueryParamsUserFilter {

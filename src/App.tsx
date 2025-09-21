@@ -36,6 +36,8 @@ import { ApplicantsList } from "./pages/applicants";
 import TenderBox from "./pages/tenders/TenderBox";
 import GovernmentTenders from "./pages/tenders/government-tenders";
 import Settings from "./pages/settings";
+import SystemHealth from "./pages/system-health";
+import SystemLogs from "./pages/system-health/System-logs";
 
 export const queryClient = new QueryClient({});
 
@@ -86,6 +88,8 @@ function App() {
                                 <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
                                 <Route path="login-attempt" element={<LoginAttempts />} />
+                                <Route path="error-logs" element={<SystemLogs />} /> {/* JCM logs  */}
+                                <Route path="system-health" element={<SystemHealth />} /> {/* JCM health  */}
                                 <Route path="settings" element={<Settings />} />
                             </Route>
 

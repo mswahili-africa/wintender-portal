@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { TOKEN_KEY } from "./constants";
 import toast from "react-hot-toast";
 import { authStore } from "../store/auth";
+import { set } from "lodash";
 
 const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => {
   const defaultConfig: Record<string, any> = {
@@ -66,12 +67,12 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
         const status = error.response.status;
         const errorMessage = error.response.data?.message || error.response.data?.error;
 
-        // Handling different specific status codes
+        
         if (status === 401) {
           toast.error("Unauthorized. Please login again.");
 
           setTimeout(() => {
-            authStore.logout(); // Assuming authStore has a logout method
+            authStore.logout(); 
           }, 5000);
 
         } else if (status === 403) {
@@ -83,10 +84,15 @@ const createAxiosInstance = (config: AxiosRequestConfig = {}): AxiosInstance => 
           // toast.error("Server error. Please try again later.");
           return
         } else {
-          toast.error(errorMessage || "Something went wrong.");
+          toast.error("Something went wrong.");
         }
       } else if (error.request) {
+        if(error.request.status === 401){
         toast.error("No response from the source. Check your network.");
+        setTimeout(() => {
+          authStore.logout();
+        }, 5000);
+      }
       } else {
         toast.error("An unexpected error occurred.");
       }
