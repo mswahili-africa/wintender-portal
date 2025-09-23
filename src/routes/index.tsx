@@ -124,24 +124,25 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
             { path: "/login-attempt", label: "Login Attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
-            {
-                label: "System Health",
-                path: "/system-health",
-                icon: <IconHeartRateMonitor size={20} strokeWidth={1.6} />,
-            },
-            {
-                label: "System Logs",
-                path: "/error-logs",
-                icon: <IconAlertTriangle size={20} strokeWidth={1.6} />,
-            }
+
         ],
     },
     {
         path: "/settings",
-        label: "Settings",
+        label: "System",
         icon: <IconSettings className="duration-300 animate-spin" size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/settings", label: "Settings", icon: <IconSettings size={20} strokeWidth={1.5} /> },
+            {
+                label: "Logs",
+                path: "/error-logs",
+                icon: <IconAlertTriangle size={20} strokeWidth={1.6} />,
+            },
+            {
+                label: "Health",
+                path: "/system-health",
+                icon: <IconHeartRateMonitor size={20} strokeWidth={1.6} />,
+            }
         ],
     }
 ];
@@ -149,7 +150,7 @@ const allMenus: IRoute[] = [
 //  Assign routes based on user role
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
-    MANAGER: () => allMenus.filter(menu => (menu.label !== "Settings")).map(menu => menu.label === "Entities"
+    MANAGER: () => allMenus.map(menu => menu.label === "Entities"
         ? {
             ...menu,
             subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
@@ -159,41 +160,33 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
             }
-            : menu.label === "Reports" ? {
+            : menu.label === "System" ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Setting"), // Exclude Logs and Health sub-menus
             } : menu
 
     ),
-    ACCOUNTANT: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards" && menu.label !== "Settings")
+    ACCOUNTANT: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards")
         && menu.label === "Tender" ? {
         ...menu,
         subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-    } : menu.label === "Reports" ? {
+    } : menu.label === "System" ? {
         ...menu,
-        subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+        subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings" && sub.label !== "Logs"), // Exclude Logs and Health sub-menus
     } : menu
     ),
-    PROCUREMENT_ENTITY: () => allMenus
-        .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
-        .map(menu => menu.label === "Tender"
-            ? {
-                ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions" && sub.label !== "Government Tenders"), // Exclude Categories sub-menu
-            }
-            : menu
-        ),
-    PUBLISHER: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards" && menu.label !== "Settings")
+
+    PUBLISHER: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards")
         && menu.label === "Tender" ?
         {
             ...menu,
             subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-        } : menu.label === "Reports" ? {
+        } : menu.label === "System" ? {
             ...menu,
-            subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+            subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
         } : menu
     ),
-    SUPERVISOR: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Settings")).map(menu => menu.label === "Entities"
+    SUPERVISOR: () => allMenus.filter(menu => (menu.label !== "Internal")).map(menu => menu.label === "Entities"
         ? {
             ...menu,
             subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
@@ -205,12 +198,21 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             : menu.label === "Consultation" ? {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
-            } : menu.label === "Reports" ? {
+            } : menu.label === "System" ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "System Logs"), // Exclude System Logs sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
             } : menu
 
     ),
+    PROCUREMENT_ENTITY: () => allMenus
+        .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
+            ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions" && sub.label !== "Government Tenders"), // Exclude Categories sub-menu
+            }
+            : menu
+        ),
     BIDDER: () => allMenus
         .filter(menu => ["Tender", "Finance", "Consultation", "Dashboard", "Compliance"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
