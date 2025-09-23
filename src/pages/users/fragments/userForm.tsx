@@ -18,6 +18,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 interface IProps {
   onSuccess: () => void;
   initials?: IUser | null;
+  roles: IlistResponse<IRole> | undefined 
 }
 
 const schema = object().shape({
@@ -36,7 +37,7 @@ const updateSchema = object().shape({
   status: string().required("Status is required"),
 });
 
-export default function UserForm({ onSuccess, initials, roles }: IProps & { roles: IlistResponse<IRole> | undefined }) {
+export default function UserForm({ onSuccess, initials, roles }: IProps ) {
   const auth = useSnapshot(authStore);
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -130,6 +131,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps & { role
         title="Create User"
         isOpen={create}
         onClose={() => {
+          onSuccess();
           setCreate(false);
           reset();
         }}
@@ -233,7 +235,8 @@ export default function UserForm({ onSuccess, initials, roles }: IProps & { role
         onClose={() => {
           updateReset();
           setUpdate(false);
-          reset();
+          onSuccess();
+          updateReset(); 
         }}
       >
         <form
@@ -259,7 +262,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps & { role
             <select
               id="role"
               className={errors.roleId ? "input-error" : "input-normal"}
-              {...register("roleId", { required: true })}
+              {...updateRegister("roleId", { required: true })}
               defaultValue={initials?.roleDetails?.id ?? ""}
             >
               <option value="">Select a role</option>
@@ -290,7 +293,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps & { role
 
             <select
               className={errors.roleId ? "input-error" : "input-normal"}
-              {...register("status", { required: true })}
+              {...updateRegister("status", { required: true })}
               defaultValue={initials?.status}
             >
               <option value="ACTIVE">ACTIVE</option>
