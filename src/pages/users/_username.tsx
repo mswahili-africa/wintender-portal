@@ -35,8 +35,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     const [selectedCategoriesIds, setSelectedCategoriesIds] = useState<string[]>([]);
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
-    const {categories} = useCategories({ page: 0, size: 1000, search: "", filter: {} });
-    const {userData,loading} = useUserData();
+    const { categories } = useCategories({ page: 0, size: 1000, search: "", filter: {} });
+    const { userData, loading } = useUserData();
 
 
     const accountOwner = (): boolean => {
@@ -268,16 +268,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
-                                <div className=" items-center flex flex-row mx-auto w-fit">
-                                    <Button
-                                        type="submit"
-                                        label="Update"
-                                        theme="success"
-                                        className="mx-auto"
-                                        size="md"
-                                        loading={updateUserMutation.isPending}
-                                    />
-                                </div>
+                                <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 p-2 rounded" disabled={updateUserMutation.isPending}>{updateUserMutation.isPending ? <Spinner /> : "Update User"}</button>
                             </div>
                             <div className="w-1/2 flex items-center justify-center">
                                 <img
@@ -365,16 +356,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         className="border border-gray-300 rounded-md p-2"
                                     />
                                 </div>
-                                <div className=" items-center flex flex-row mx-auto w-fit">
-                                    <Button
-                                        type="submit"
-                                        label="Update"
-                                        theme="success"
-                                        className="mx-auto"
-                                        size="md"
-                                        loading={updateUserMutation.isPending}
-                                    />
-                                </div>
+                                <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 p-2 rounded" disabled={updateUserMutation.isPending}>{updateUserMutation.isPending ? <Spinner /> : "Update Company"}</button>
+
                             </form>
                         ) : (
                             <p className="text-red-500">Company information not available</p>

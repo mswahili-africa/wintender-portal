@@ -18,7 +18,8 @@ export default function SystemHealth() {
     const memory = healthData?.memory?.measurements[0]?.value || 0;
     const server = healthData?.health?.status;
     const diskStorage = healthData?.health?.components?.diskSpace;
-    const cpu = healthData?.cpu?.measurements[0]?.value || 0;
+    let cpu = healthData?.cpu?.measurements[0]?.value || 0;
+    cpu = cpu * 100; 
     const uptime = healthData?.uptime?.measurements[0]?.value || 0;
     const isServerUp = server === "UP";
 
@@ -98,7 +99,7 @@ export default function SystemHealth() {
                         <MetricCard
                             icon={<IconCpu className={`${cpu > 80 ? 'text-red-600' : 'text-blue-600'}`} size={28} />}
                             label="CPU Usage"
-                            value={cpu.toFixed(3) + " %"}
+                            value={cpu.toFixed(2) + " %"}
                         />
                         <MetricCard
                             icon={<IconDeviceSdCard className="text-orange-400" size={28} />}
