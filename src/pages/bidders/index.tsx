@@ -55,7 +55,6 @@ export default function Bidders() {
     const [deleting, setDeleting] = useState(false);
     const { userData } = useUserData();
 
-    const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
 
     const handleDeleteModalClose = () => {
         setIsDeleting(false);

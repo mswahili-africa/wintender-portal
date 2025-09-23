@@ -11,8 +11,8 @@ export const MetricCard = ({
         <div className="bg-white rounded-xl shadow p-5 flex items-center gap-4">
             <div className="p-3 rounded-lg bg-gray-100">{icon}</div>
             <div>
-                <small className="text-[10px] md:text-xs text-gray-500">{label}</small>
-                <p className="text-sm md:text-lg font-semibold text-gray-800">{value}</p>
+                <small className="text-xs text-gray-500">{label}</small>
+                <p className="text-md font-semibold text-gray-800">{value}</p>
             </div>
         </div>
     );
