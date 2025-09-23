@@ -130,6 +130,8 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         }
     }, []);
 
+
+    // Debounce the fetchEntities function
     const debouncedFetchEntities = useCallback(
         debounce((inputValue) => {
             if (inputValue.length >= 3) { // Only fetch if 3 or more characters
@@ -140,6 +142,8 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         }, 5),
         [fetchEntities]
     );
+
+    // Fetch categories
 
     const fetchCategories = useCallback(async (search = "") => {
         if (!search) {
@@ -484,13 +488,11 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                 }}
                             />
 
-
                             <p className="text-xs text-red-500 mt-1 mx-0.5">
                                 {errors.consultationFee?.message?.toString()}
                             </p>
                         </div>
                     }
-
 
                 </>
             );

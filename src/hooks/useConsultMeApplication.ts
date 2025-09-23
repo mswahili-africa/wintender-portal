@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
-import { getConsultMe, getDoForMeApplication } from "@/services/tenders";
-import { IApplicationGroup } from "@/types";
+import { getConsultMe } from "@/services/tenders";
 
 interface IProps {
     page: number
@@ -18,7 +17,7 @@ export default function({...props}: IProps) {
         queryKey: [props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getConsultMe({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000
+        refetchInterval: 1200000 
     }); 
 
     useEffect(() => {

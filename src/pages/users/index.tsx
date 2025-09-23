@@ -14,7 +14,7 @@ export default function () {
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filterUsers] = useState<any>();
-    const [update, setUpdate] = useState<IUser>();
+    const [update, setUpdate] = useState<IUser| null>(null);
 
     const { users, isLoading, refetch } = useUsers({
         page: page,
@@ -39,16 +39,9 @@ export default function () {
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Internal Users</h2>
 
-                {/* <UserForm
-                    onSuccess={() => {
-                        setUpdate(undefined);
-                        refetch();
-                    }}
-                    initials={update}
-                /> */}
                 <UserForm
                     onSuccess={() => {
-                        setUpdate(undefined);
+                        setUpdate(null);
                         refetch();
                     }}
                     initials={update}
