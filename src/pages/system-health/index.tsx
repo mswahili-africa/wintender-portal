@@ -95,7 +95,7 @@ export default function SystemHealth() {
                     </div>
 
                     {/* 🔹 Key Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                         <MetricCard
                             icon={<IconCpu className={`${cpu > 80 ? 'text-red-600' : 'text-blue-600'}`} size={28} />}
                             label="CPU Usage"
