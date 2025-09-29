@@ -12,7 +12,8 @@ import TextInput from "@/components/widgets/forms/TextInput";
 import { IEntity } from "@/types";
 
 interface IProps {
-  initials?: IEntity;
+  initials?: { type: "create" | "update" | "delete" | null, user: IEntity | null };
+  setIsModalOpen?: ( v:{ type: "create" | "update" | "delete" | null, user: IEntity | null }) => void;
   onSuccess: () => void;
 }
 
@@ -24,6 +25,7 @@ const schema = object().shape({
   entityType: string().required("Type is required"),
   email: string().required("Email is required"),
   summary: string().required("Summary is required"),
+  status: string().oneOf(["ACTIVE", "INACTIVE"]).required("Status is required")
 });
 
 export default function ({ ...props }: IProps) {
@@ -78,6 +80,7 @@ export default function ({ ...props }: IProps) {
 
 
   const submit = (data: Record<string, any>) => {
+    console.log(data);
     const formData = new FormData();
     formData.append("file", data.logoFile[0]);
     formData.append("name", data.name);
@@ -86,20 +89,32 @@ export default function ({ ...props }: IProps) {
     formData.append("entityType", data.entityType);
     formData.append("email", data.email);
     formData.append("summary", data.summary);
+    formData.append("status", data.status);
     createMutation.mutate(formData);
   };
 
   useEffect(() => {
-    if (props.initials) {
-      setValue("name", props.initials.name);
-      setValue("primaryNumber", `0${props.initials.primaryNumber.slice(1)}`),
-        setValue("address", props.initials.address);
-      setValue("email", props.initials.email);
-      setValue("summary", props.initials.summary);
+    if (props.initials?.type === "update" && props.initials?.user) {
+      setValue("name", props.initials.user.name);
+      setValue("primaryNumber", `0${props.initials.user.primaryNumber.slice(1)}`),
+      setValue("address", props.initials.user.address);
+      setValue("email", props.initials.user.email);
+      setValue("summary", props.initials.user.summary);
+      setValue("entityType", props.initials.user.entityType);
+      setValue("status", props.initials.user.status);
+
       setOpen(true);
     }
-  }, [props.initials]);
+    else if(props.initials?.type === "create"){
+      reset();
+      setOpen(true);
+    }
+  }, [props.initials?.type]);
 
+  const handleModalClose = () => {
+    props.setIsModalOpen?.({ type: null, user: null });
+    setOpen(false);
+  }
 
   return (
     <div className="max-w-max">
@@ -109,14 +124,14 @@ export default function ({ ...props }: IProps) {
         icon={<IconPlus size={18} />}
         theme="primary"
         size="md"
-        onClick={() => setOpen(true)}
+        onClick={() => props.setIsModalOpen?.({type: "create", user: null})}
       />
 
       <Modal
         size="lg"
         title="Procurement Entity"
         isOpen={open}
-        onClose={(v) => setOpen(v)}
+        onClose={handleModalClose}
       >
         <form className="" onSubmit={handleSubmit(submit)}>
           <div className="mb-2">
@@ -168,6 +183,31 @@ export default function ({ ...props }: IProps) {
             />
           </div>
 
+          {/* status radio for ACTIVE / INACTIVE */}
+          <div className="mb-4">
+            <label className="block mb-2">Status <span className="text-[8pt] text-red-500">(This will permanently remove the entity from the list)</span></label>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="active"
+                  value="ACTIVE"
+                  {...register("status")}
+                />
+                <label htmlFor="active">Active</label>
+              </div>
+              <div className="flex items-center space-x-2">  {/* Add space-x-2 */}
+                <input
+                  type="radio"
+                  id="inactive"
+                  value="INACTIVE"
+                  {...register("status")}
+                />
+                <label htmlFor="inactive">Inactive</label>
+              </div>
+            </div>
+          </div>
+
           <div className="mb-2">
             <label htmlFor="summary" className="block mb-2">
               Summary
@@ -185,6 +225,8 @@ export default function ({ ...props }: IProps) {
               {errors.summary?.message?.toString()}
             </p>
           </div>
+
+          {/* radio but */}
 
           <div className="mb-6">
             <label className="block mb-2">LOGO</label>
