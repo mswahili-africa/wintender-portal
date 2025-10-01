@@ -260,6 +260,7 @@ export default function GovernmentTenders() {
                                 onChange={(selectedOption) => setTempSelectedEntity(selectedOption?.value)}
                                 isLoading={loading}
                                 placeholder="Type..."
+                                className="w-full sm:w-[300px]"
                             />
                         </div>
                     )}
@@ -272,6 +273,7 @@ export default function GovernmentTenders() {
                                 onChange={(selectedOption) => setTempSelectedCategory(selectedOption?.value)}
                                 isLoading={loading}
                                 placeholder="Type..."
+                                className="w-full sm:w-[300px]"
                             />
                         </div>
                     )}
