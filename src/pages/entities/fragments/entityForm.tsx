@@ -185,26 +185,35 @@ export default function ({ ...props }: IProps) {
 
           {/* status radio for ACTIVE / INACTIVE */}
           <div className="mb-4">
-            <label className="block mb-2">Status <span className="text-[8pt] text-red-500">(This will permanently remove the entity from the list)</span></label>
+            <label className="block mb-2">Status <span className="text-[8pt] text-red-500"> (This will permanently affect the entity visibility in the system)</span></label>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+              <label htmlFor="active" className="flex items-center space-x-2">
                 <input
                   type="radio"
                   id="active"
                   value="ACTIVE"
                   {...register("status")}
                 />
-                <label htmlFor="active">Active</label>
-              </div>
-              <div className="flex items-center space-x-2">  {/* Add space-x-2 */}
+                <div>ACTIVE</div>
+              </label>
+              <label htmlFor="inactive" className="flex items-center space-x-2">  {/* Add space-x-2 */}
                 <input
                   type="radio"
                   id="inactive"
                   value="INACTIVE"
                   {...register("status")}
                 />
-                <label htmlFor="inactive">Inactive</label>
-              </div>
+                <div>INACTIVE</div>
+              </label>
+              <label htmlFor="deleted" className="flex items-center space-x-2">  {/* Add space-x-2 */}
+                <input
+                  type="radio"
+                  id="deleted"
+                  value="DELETED"
+                  {...register("status")}
+                />
+                <div>DELETED</div>
+              </label>
             </div>
           </div>
 
@@ -268,7 +277,7 @@ export default function ({ ...props }: IProps) {
             label="Register"
             theme="primary"
             size="md"
-            loading={createMutation.isLoading || updateMutation.isLoading}
+            loading={createMutation.isPending || updateMutation.isPending}
           />
         </form>
       </Modal>
