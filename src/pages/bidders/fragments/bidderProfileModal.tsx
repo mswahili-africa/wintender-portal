@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconMessage, IconWallet } from "@tabler/icons-react";
+import { IconMessage } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -19,10 +19,8 @@ import { getCategories } from "@/services/tenders";
 import { getUserPayments } from "@/hooks/usePayments";
 import applicationColumns from "./applicationListColumns";
 import useApplicationsList from "@/hooks/useApplicationsList";
-import usePopup from "@/hooks/usePopup";
 import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
-import Select from "react-select";
 import { updateBidderCategories } from "@/services/user";
 import { IconX } from "@tabler/icons-react";
 import { useUserData } from "@/hooks/useUserData";
@@ -35,12 +33,6 @@ interface IProps {
     user: ICompany;
     loading: boolean;
     onClose: () => void; // Add this to handle closing the modal from parent
-}
-
-// JCM user edit props
-interface UserProfileProps {
-    user: ICompany;
-    loading: boolean;
 }
 
 const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
