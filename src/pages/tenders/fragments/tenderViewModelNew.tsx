@@ -5,10 +5,11 @@ import { Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
 import PETenderApplicationWizardModal from "./PETenderApplicationWizardModal";
 import { IconX } from "@tabler/icons-react";
-import { Clarifications } from "./Clarifications";
 import { ITenders } from "@/types";
 import Chip from "@/components/chip/Chip";
 import { Countdown } from "@/components/countdown/Countdown";
+import { EligibleBidders } from "./eligibleBiddersList";
+import { Clarifications } from "./Clarifications";
 
 interface ModalProps {
     tender: ITenders;
@@ -26,13 +27,21 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
     // JCM Tender Tabs
     const [isDetails, setIsDetails] = useState(true);
     const [isClarification, setIsClarification] = useState(false);
+    const [isEligible, setIsEligible] = useState(false);
+
     const handleTabChange = (tab: string) => {
         if (tab === "DETAILS") {
             setIsDetails(true);
             setIsClarification(false);
+            setIsEligible
         } else if (tab === "CLARIFICATION") {
             setIsDetails(false);
             setIsClarification(true);
+            setIsEligible(false);
+        } else if (tab === "ELIGIBLE") {
+            setIsDetails(false);
+            setIsClarification(false);
+            setIsEligible(true);
         }
     }
 
@@ -59,7 +68,6 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
     const closeDate = tender.closeDate;
     const remainingTime = closeDate - currentDate;
     const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
@@ -118,13 +126,20 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                     </div>
                 </div>
 
-                <div className="flex w-full justify-center mb-4">
-                    <div className="flex flex-row w-full border-2 border-gray-400 gap-1 p-">
-                        <button type="button" onClick={() => handleTabChange("DETAILS")} className={` uppercase w-full p-2 text-sm ${isDetails ? "bg-green-600 text-white" : "text-gray-500"} `}>Tender Details</button>
-                        <button type="button" onClick={() => handleTabChange("CLARIFICATION")} className={` uppercase w-full p-2 text-sm ${isClarification ? "bg-green-600 text-white" : "text-gray-500"} `}>Clarifications</button>
-                    </div>
-                </div>
+                {tender.selfApply || (userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
+                    <div className="flex w-full justify-center mb-4">
+                        <div className="flex flex-row w-full border-2 border-gray-400 rounded">
+                            <button type="button" onClick={() => handleTabChange("DETAILS")} className={` uppercase w-full p-2 text-sm ${isDetails ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
 
+                            {tender.selfApply && (
+                            <button type="button" onClick={() => handleTabChange("CLARIFICATION")} className={` uppercase w-full p-2 text-sm ${isClarification ? "bg-green-600 text-white" : "text-gray-500"} `}>Clarifications</button>
+                            )}
+                            {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
+                                <button type="button" onClick={() => handleTabChange("ELIGIBLE")} className={` uppercase w-full p-2 text-sm ${isEligible ? "bg-green-600 text-white" : "text-gray-500"} `}>Eligible Bidders</button>
+                            )}
+                        </div>
+                    </div>
+                )}
                 <div className="mt-4 overflow-y-auto" style={{ minHeight: '40vh', maxHeight: '70vh' }}>
                     {
                         isDetails && (
@@ -211,7 +226,10 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                         )
                     }
                     {
-                        isClarification && <Clarifications tender={tender}/>
+                        isClarification && <Clarifications tender={tender} />
+                    }
+                    {
+                        isEligible && <EligibleBidders tender={tender} />
                     }
                 </div>
                 {/* Modal Footer */}
