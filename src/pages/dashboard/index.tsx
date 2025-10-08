@@ -7,19 +7,15 @@ import {
     IconUser,
     IconMessage,
     IconBrandWhatsapp,
-    IconMail,
-    IconPhoneCall
+    IconMail
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { getSummaryReport } from "@/services/reports";
-import { ISummaryReport } from "@/types";
 import { motion } from "framer-motion";
 import bgImage from "@/assets/images/img-dropbox-bg.svg";
-import { getBillboards } from "@/services/tenders";
 import { IConsultation } from "@/types/forms";
 import Spinner from "@/components/spinners/Spinner";
 import Button from "@/components/button/Button";
@@ -29,8 +25,6 @@ import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
-
-type DashboardStats = ISummaryReport;
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -46,7 +40,6 @@ export default function Dashboard() {
     
     const {consultationServices} = useBillboards({page:1});
     const {summary,isLoading} = useSummary();
-
 
     const handleConsultMeClick = () => {
         if (selectedBillboard)
