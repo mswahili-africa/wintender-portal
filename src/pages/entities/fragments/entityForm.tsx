@@ -148,6 +148,7 @@ export default function ({ ...props }: IProps) {
             >
               <option value="PRIVATE">PRIVATE</option>
               <option value="GOVERNMENT">GOVERNMENT</option>
+              <option value="MANUFACTURER">MANUFACTURER</option>
             </select>
             <p className="text-xs text-red-500 mt-1 mx-0.5">
               {errors.entityType?.message?.toString()}
