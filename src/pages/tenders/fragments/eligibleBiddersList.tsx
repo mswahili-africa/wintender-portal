@@ -10,6 +10,7 @@ import { IMessage } from "@/types/forms";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useApplicationsList from "@/hooks/useApplicationsList";
+import Spinner from "@/components/spinners/Spinner";
 
 type EligibleBiddersProps = {
     tender: ITenders;
@@ -153,41 +154,49 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {biddersWithApplications.length ? (
-                            biddersWithApplications.map((bidder: any, index: number) => (
-                                <tr
-                                    key={bidder.id}
-                                    onClick={() => setUserInfo(bidder)}
-                                    className="border-b border-gray-700 hover:bg-gray-800/20 transition cursor-pointer"
-                                >
-                                    <td className="p-1">{index + 1 + page * (bidders?.size ?? 0)}</td>
-                                    <td className="p-3">{bidder.companyName.toUpperCase()}</td>
-                                    <td className="p-3">{bidder.companyPrimaryNumber || "-"}</td>
-                                    <td className="p-3">
-                                        {bidder.planExpiryDate
-                                            ? renderSubscription(bidder.planExpiryDate)
-                                            : "-"}
-                                    </td>
-                                    <td className="p-3">
-                                        {bidder.hasApplied ? (
-                                            <span className="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">
-                                                {bidder.applicationStatus}
-                                            </span>
-                                        ) : (
-                                            <span className="text-gray-500 bg-gray-100 px-2 py-1 rounded-full text-xs font-medium">
-                                                Not Applied
-                                            </span>
-                                        )}
+                        {
+                            isLoading ?
+                                <tr>
+                                    <td colSpan={6} className="p-4 text-center text-gray-400 italic">
+                                        <Spinner />
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={6} className="p-4 text-center text-gray-400 italic">
-                                    No eligible bidders found.
-                                </td>
-                            </tr>
-                        )}
+                                :
+                                biddersWithApplications.length ? (
+                                    biddersWithApplications.map((bidder: any, index: number) => (
+                                        <tr
+                                            key={bidder.id}
+                                            onClick={() => setUserInfo(bidder)}
+                                            className="border-b border-gray-700 hover:bg-gray-800/20 transition cursor-pointer"
+                                        >
+                                            <td className="p-1">{index + 1 + page * (bidders?.size ?? 0)}</td>
+                                            <td className="p-3">{bidder.companyName.toUpperCase()}</td>
+                                            <td className="p-3">{bidder.companyPrimaryNumber || "-"}</td>
+                                            <td className="p-3">
+                                                {bidder.planExpiryDate
+                                                    ? renderSubscription(bidder.planExpiryDate)
+                                                    : "-"}
+                                            </td>
+                                            <td className="p-3">
+                                                {bidder.hasApplied ? (
+                                                    <span className="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">
+                                                        {bidder.applicationStatus}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-500 bg-gray-100 px-2 py-1 rounded-full text-xs font-medium">
+                                                        Not Applied
+                                                    </span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="p-4 text-center text-gray-400 italic">
+                                            No eligible bidders found.
+                                        </td>
+                                    </tr>
+                                )}
                     </tbody>
 
                 </table>
@@ -195,7 +204,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
 
             {/* Pagination */}
             <div className="flex justify-between items-center p-4">
-                <div />
+                {/* <div /> */}
                 {bidders?.pageable && (
                     <Pagination
                         currentPage={page}
