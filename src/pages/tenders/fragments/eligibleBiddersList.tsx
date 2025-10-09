@@ -58,10 +58,10 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
     });
 
     const { applicationList } = useApplicationsList({
-        groupId: tender.id, // Fetch applications for this tender
-        applicationGroup: {}, // Pass your application group if needed
+        groupId: tender.id,
+        applicationGroup: {},
         page: 0,
-        size: 1000, // Fetch a large number to cover all bidders
+        size: 1000, 
         sort: "createdAt,desc",
         filter: { tenderId: tender.id }
     });
@@ -72,7 +72,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
         return bidders.content.map((bidder: any) => {
             // Filter all applications made by this bidder
             const bidderApps = applicationList.content.filter(
-                (app: any) => app.bidderAccount === bidder.account // Or bidder.id depending on your data
+                (app: any) => app.bidderAccount === bidder.account 
             );
 
             return {
