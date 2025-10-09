@@ -86,7 +86,8 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                             />
                         }
                         {/* Conditionally render button or spinner */}
-                        {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
+                        {/* {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER" || userRole === "SUPERVISOR" || userRole === "ACCOUNTANT") && ( */}
+                        {!["PROCUREMENT_ENTITY","BIDDER"].includes(userRole) && (
                             <div className="flex space-x-4">
                                 <Button
                                     label="Assign Bidder"
