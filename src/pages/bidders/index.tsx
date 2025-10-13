@@ -439,7 +439,7 @@ export default function Bidders() {
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
-                                ["SUPERVISOR", "PUBLISHER", "ADMINISTRATOR","ACCOUNTANT"].includes(userData?.role as string) &&
+                                ["SUPERVISOR", "PUBLISHER", "ADMINISTRATOR"].includes(userData?.role as string) &&
                                 <button onClick={() => { setSelectedUser(content) }}>
                                     <IconFilePlus className="h-5 w-5 text-green-500" />
                                 </button>
