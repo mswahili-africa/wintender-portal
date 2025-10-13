@@ -127,7 +127,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                     </div>
                 </div>
 
-                {tender.selfApply || (userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
+                {tender.selfApply || (userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER" || userRole === "ACCOUNTANT" || userRole === "SUPERVISOR") && (
                     <div className="flex w-full justify-center mb-4">
                         <div className="flex flex-row w-full border-2 border-gray-400 rounded">
                             <button type="button" onClick={() => handleTabChange("DETAILS")} className={` uppercase w-full p-2 text-sm ${isDetails ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
@@ -135,7 +135,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick }: Modal
                             {tender.selfApply && (
                             <button type="button" onClick={() => handleTabChange("CLARIFICATION")} className={` uppercase w-full p-2 text-sm ${isClarification ? "bg-green-600 text-white" : "text-gray-500"} `}>Clarifications</button>
                             )}
-                            {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER") && (
+                            {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER" || userRole === "ACCOUNTANT" || userRole === "SUPERVISOR") && (
                                 <button type="button" onClick={() => handleTabChange("ELIGIBLE")} className={` uppercase w-full p-2 text-sm ${isEligible ? "bg-green-600 text-white" : "text-gray-500"} `}>Eligible Bidders</button>
                             )}
                         </div>
