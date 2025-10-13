@@ -3,18 +3,30 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
 
+  // {
+  //   name: "",
+  //   label: "type",
+  //   sortable: false,
+  //   plainObject: true,
+  //   element: (row: any) => {
+  //     const tenderGroup = row?.tenderGroup;
+
+  //     const theme: "primary" | "warning" =
+  //       tenderGroup === "PRIVATE" ? "primary" : "warning";
+
+  //     return 
+  //     <>
+  //       <div className="uppercase">{row.entityName}</div>
+  //     </>;
+  //   },
+  // },  
   {
-    name: "tenderGroup",
-    label: "type",
+    name: "",
+    label: "Name",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const tenderGroup = row?.tenderGroup;
-
-      const theme: "primary" | "warning" =
-        tenderGroup === "PRIVATE" ? "primary" : "warning";
-
-      return <Chip label={tenderGroup} size="sm" theme={theme} variant="outline" />;
+      return row?.bidderCompanyName;
     },
   },
   {
@@ -85,7 +97,7 @@ const columns: IColumn[] = [
 
   {
     name: "updatedAt",
-    label: "Updated At",
+    label: "Updated date",
     sortable: true,
     plainObject: false,
     element: (value: number | null) =>

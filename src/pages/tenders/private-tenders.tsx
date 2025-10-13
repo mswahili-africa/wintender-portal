@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconFilter, IconRefresh, IconListDetails, IconClockPlus, IconSquareCheck, IconSquareX, IconSquare } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -17,7 +17,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
 import PaymentModal from "./fragments/PaymentModel";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
@@ -35,6 +35,7 @@ export default function PrivateTenders() {
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isEligible, setIsEligible] = useState(false);
     const [tempKeyword, setTempKeyword] = useState("");
     const [tempSearchType, setTempSearchType] = useState("title");
     const [tempSelectedEntity, setTempSelectedEntity] = useState(null);
@@ -79,7 +80,8 @@ export default function PrivateTenders() {
         page: page,
         search: searchQuery,
         sort: sort,
-        filter: filter
+        filter: filter,
+        eligibility: isEligible
     });
 
     const { userData } = useUserDataContext();  // Use the hook to get user data
@@ -327,6 +329,14 @@ export default function PrivateTenders() {
                         theme="warning"
                         size="sm"
                         onClick={handleReset} // Resets filters
+                    />
+                    <Button
+                        type="button"
+                        label="Elligible Tenders"
+                        icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare  size={18} />}
+                        theme={isEligible ? "secondary" : "info"}
+                        size="sm"
+                        onClick={()=>setIsEligible(!isEligible)} // Resets filters
                     />
                 </div>
 

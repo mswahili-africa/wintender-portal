@@ -10,19 +10,20 @@ interface IProps {
     search?: string
     sort?: string
     filter?: Record<string, any>
+    eligibility?:boolean
 }
 
 export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getTendersGovernment", props.page, props.sort, props?.search, props?.filter],
-        queryFn: () => getTendersGovernment({page: props.page, size: 30, sort: props.sort, search: props.search}),
+        queryKey: ["getTendersGovernment", props.page, props.sort, props?.search, props?.filter,props?.eligibility],
+        queryFn: () => getTendersGovernment({page: props.page, size: 30, sort: props.sort, search: props.search,eligibility:props.eligibility}),
         onError: (error: AxiosError) => handleError(error),
     });
 
     useEffect(() => {
         refetch();
-    }, [props.filter, props.page, props.search, props.sort])
+    }, [props.filter, props.page, props.search, props.sort, props.eligibility]);
 
     return {
         isLoading,

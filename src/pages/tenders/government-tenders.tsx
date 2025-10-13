@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconListDetails } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconListDetails, IconSquare, IconSquareCheck } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -29,6 +29,7 @@ export default function GovernmentTenders() {
     const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isEligible, setIsEligible] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -62,7 +63,8 @@ export default function GovernmentTenders() {
         page: page,
         search: searchQuery,
         sort: sort,
-        filter: filter
+        filter: filter,
+        eligibility: isEligible
     });
 
     const { userData } = useUserDataContext();  // Use the hook to get user data
@@ -306,6 +308,14 @@ export default function GovernmentTenders() {
                         theme="warning"
                         size="sm"
                         onClick={handleReset} // Resets filters
+                    />
+                    <Button
+                        type="button"
+                        label="Elligible Tenders"
+                        icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
+                        theme={isEligible ? "secondary" : "info"}
+                        size="sm"
+                        onClick={() => setIsEligible(!isEligible)} // Resets filters
                     />
                 </div>
 

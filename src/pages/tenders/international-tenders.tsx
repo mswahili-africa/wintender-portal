@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconSquareCheck, IconSquare } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -32,6 +32,7 @@ export default function InternationalTenders() {
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isEligible, setIsEligible] = useState(false);
     const [tempKeyword, setTempKeyword] = useState("");
     const [tempSearchType, setTempSearchType] = useState("title");
     const [tempSelectedEntity, setTempSelectedEntity] = useState(null);
@@ -64,7 +65,8 @@ export default function InternationalTenders() {
         page: page,
         search: searchQuery,
         sort: sort,
-        filter: filter
+        filter: filter,
+        eligibility: isEligible
     });
 
     const { userData } = useUserDataContext();  // Use the hook to get user data
@@ -311,6 +313,14 @@ export default function InternationalTenders() {
                         theme="warning"
                         size="sm"
                         onClick={handleReset} // Resets filters
+                    />
+                    <Button
+                        type="button"
+                        label="Elligible Tenders"
+                        icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
+                        theme={isEligible ? "secondary" : "info"}
+                        size="sm"
+                        onClick={() => setIsEligible(!isEligible)} // Resets filters
                     />
                 </div>
 

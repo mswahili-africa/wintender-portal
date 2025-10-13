@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import { ICategory, ICompany } from "@/types";
+import { ICategory, ICompany, ITenders } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconMessage } from "@tabler/icons-react";
+import { IconEye, IconMessage, IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -27,6 +27,8 @@ import { useUserData } from "@/hooks/useUserData";
 import { IconEdit } from "@tabler/icons-react";
 import UserProfile from "@/pages/users/_username";
 import { WalletButton } from "@/components/button/WalletButton";
+import columns from "@/pages/tenders/fragments/tenderColumns";
+import useTenders from "@/hooks/useTenders";
 
 interface IProps {
     children?: React.ReactNode;
@@ -46,6 +48,17 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
+
+    const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
+
+    const tabs = [
+        { name: "Requests", value: "requests" },
+        { name: "Payments", value: "payments" },
+        { name: "Eligible Tenders", value: "eligible" },
+    ];
+
+    // const { userData } = useUserDataContext();  // Use the hook to get user data
+    // const userRole = userData?.role || "BIDDER";
 
     // JCM  edit details
     const { userData } = useUserData();
@@ -164,6 +177,12 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
     const sendSMS = useMutation({
         mutationFn: (data: IMessage) => sendMessageSingle(data),
+        /*************  ✨ Windsurf Command ⭐  *************/
+        /**
+         * Callback function to be called when the mutation is successful
+         * Will close the modal, reset the loading state and show a success toast
+         */
+        /*******  50bed3d9-7e01-41f7-a08c-df2ec70bb39e  *******/
         onSuccess: () => {
             toast.success("Sent successfully");
             setIsModalOpen(false); // Close modal on success
@@ -191,6 +210,15 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     let daysLeft = Math.ceil((user.planExpiryDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
     daysLeft = daysLeft < 0 ? 0 : daysLeft;
 
+
+    // ELLIGIBLE TENDERS LOGIC
+    const { getTenders, isLoading, refetch } = useTenders({
+        page: page,
+        sort: sort,
+        categories: user.companyCategories,
+
+    });
+
     return (
         <>
             <Modal
@@ -217,18 +245,18 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                    <div className="flex flex-col md:flex-row items-center gap-x-2">
-                                        <span>
-                                            <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
-                                        </span> |
-                                        <Chip
-                                            label={`${daysLeft} days left`}
-                                            size="sm"
-                                            theme={daysLeft >= 2 ? "success" : "danger"}
-                                            variant="outline"
-                                        />
-                                    </div>
-                                    <h5 className="text-sm font-bold">{user?.account}</h5>
+                                        <div className="flex flex-col md:flex-row items-center gap-x-2">
+                                            <span>
+                                                <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
+                                            </span> |
+                                            <Chip
+                                                label={`${daysLeft} days left`}
+                                                size="sm"
+                                                theme={daysLeft >= 2 ? "success" : "danger"}
+                                                variant="outline"
+                                            />
+                                        </div>
+                                        <h5 className="text-sm font-bold">{user?.account}</h5>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3">
@@ -255,138 +283,137 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                             }
                         </div>
 
-                        {
-                            // JCM Show user details only if not SUPERVISOR
-                            !editDetails &&
-                            <>
-                                <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                        {/* Left Column - User, Shop, and Status Info */}
-                                        <div className="space-y-4">
-                                            <strong>Contact Person</strong>
-                                            <p><strong>Person:</strong> {user.name}</p>
-                                            <p><strong>Email:</strong> {user.companyEmail}</p>
-                                            <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
-                                        </div>
+                    </section>
+                </div>
 
-                                        {/* Right Column - Location Info */}
-                                        <div className="space-y-4">
-                                            <strong>Company</strong>
-                                            {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
-                                            {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
-                                            {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
-                                            {user.companyEmail && <p><strong>Email:</strong> {user.companyEmail}</p>}
-                                            {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
-                                            {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
-                                        </div>
-
-                                    </div>
+                {
+                    // JCM Show user details only if not SUPERVISOR
+                    !editDetails &&
+                    <>
+                        <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                {/* Left Column - User, Shop, and Status Info */}
+                                <div className="space-y-4">
+                                    <strong>Contact Person</strong>
+                                    <p><strong>Person:</strong> {user.name}</p>
+                                    <p><strong>Email:</strong> {user.companyEmail}</p>
+                                    <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
                                 </div>
 
+                                {/* Right Column - Location Info */}
+                                <div className="space-y-4">
+                                    <strong>Company</strong>
+                                    {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
+                                    {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
+                                    {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
+                                    {user.companyEmail && <p><strong>Email:</strong> {user.companyEmail}</p>}
+                                    {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
+                                    {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
+                                </div>
+
+                            </div>
+                        </div>
 
 
-                                <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
 
-                                    <div className="space-y-4">
-                                        {/* JCM Edit categories only for supervisors */}
-                                        <div className="flex flex-row items-center justify-between">
-                                            <strong className="uppercase w-1/2">Categories</strong>
+                        <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
 
-                                        </div>
+                            <div className="space-y-4">
+                                {/* JCM Edit categories only for supervisors */}
+                                <div className="flex flex-row items-center justify-between">
+                                    <strong className="uppercase w-1/2">Categories</strong>
 
-                                        <div>
-                                            {/*JCM Selected Categories */}
-                                            <div className="flex flex-col gap-2 mb-4">
-                                                {selectedCategories.length === 0 ? (
-                                                    <span className="text-sm text-gray-400 my-10 w-full text-center">
-                                                        No categories
-                                                    </span>
-                                                ) : (
-                                                    selectedCategories.map((category) => (
-                                                        <span
-                                                            key={category.id}
-                                                            className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
-                                                        >
-                                                            {category.name}
-                                                            {/* <button
+                                </div>
+
+                                <div>
+                                    {/*JCM Selected Categories */}
+                                    <div className="flex flex-col gap-2 mb-4">
+                                        {selectedCategories.length === 0 ? (
+                                            <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                                No categories
+                                            </span>
+                                        ) : (
+                                            selectedCategories.map((category) => (
+                                                <span
+                                                    key={category.id}
+                                                    className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
+                                                >
+                                                    {category.name}
+                                                    {/* <button
                                                             type="button"
                                                             onClick={() => removeCategory(category)}
                                                             className="text-red-500 hover:text-red-700 ml-2 text-xs"
                                                         >
                                                             <IconX size={16} />
                                                         </button> */}
-                                                        </span>
-                                                    ))
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {
-                                            // JCM save button
-                                            // isChanged && selectedCategories.length > 0 &&
-                                            // <div className="w-full flex justify-center">
-                                            //     <Button
-                                            //         type="button"
-                                            //         label={updateCategoriesMutation.isLoading ? "Updating..." : "Save"}
-                                            //         size="md"
-                                            //         theme="primary"
-                                            //         loading={updateCategoriesMutation.isLoading}
-                                            //         disabled={updateCategoriesMutation.isLoading}
-                                            //         onClick={() => {
-                                            //             const categoryIds = selectedCategories.map((cat) => cat.id);
-                                            //             if (categoryIds.length > 0) {
-                                            //                 updateCategoriesMutation.mutate({
-                                            //                     id: user.id,
-                                            //                     categoryIds,
-                                            //                 });
-                                            //             }
-                                            //         }}
-                                            //     />
-                                            // </div>
-                                        }
-
-
-
+                                                </span>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
 
-                            </>
-                        }
-                        {/* JCM edit BIDDER profile*/}
-                        <div className="w-full">
-                            {
-                                editDetails && <UserProfile selectedUser={user} selectedLoading={false} />
-                            }
+                                {
+                                    // JCM save button
+                                    // isChanged && selectedCategories.length > 0 &&
+                                    // <div className="w-full flex justify-center">
+                                    //     <Button
+                                    //         type="button"
+                                    //         label={updateCategoriesMutation.isLoading ? "Updating..." : "Save"}
+                                    //         size="md"
+                                    //         theme="primary"
+                                    //         loading={updateCategoriesMutation.isLoading}
+                                    //         disabled={updateCategoriesMutation.isLoading}
+                                    //         onClick={() => {
+                                    //             const categoryIds = selectedCategories.map((cat) => cat.id);
+                                    //             if (categoryIds.length > 0) {
+                                    //                 updateCategoriesMutation.mutate({
+                                    //                     id: user.id,
+                                    //                     categoryIds,
+                                    //                 });
+                                    //             }
+                                    //         }}
+                                    //     />
+                                    // </div>
+                                }
+
+
+
+                            </div>
                         </div>
-                    </section>
+
+                    </>
+                }
+                {/* JCM edit BIDDER profile*/}
+                <div className="w-full">
+                    {
+                        editDetails && <UserProfile selectedUser={user} selectedLoading={false} />
+                    }
                 </div>
 
 
-                {/* Toggle Button */}
-                <div className="flex items-center justify-center">
-                    <label className="flex items-center cursor-pointer">
-                        <span className="mr-2">Requests</span>
-                        <div className="relative">
-                            <input
-                                type="checkbox"
-                                className="sr-only"
-                                checked={isPaymentsView}
-                                onChange={() => setIsPaymentsView(!isPaymentsView)}
-                            />
-                            <div className="w-12 h-6 bg-gray-300 rounded-full"></div>
-                            <div
-                                className={`absolute top-0 left-0 w-6 h-6 bg-white rounded-full shadow transition-transform transform ${isPaymentsView ? 'translate-x-6' : 'translate-x-0'
+
+                <div className="w-full flex justify-center mt-8">
+                    <div className="bg-gray-100 rounded-full p-1 flex shadow-md">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.value}
+                                onClick={() => setActiveTab(tab.value as typeof activeTab)}
+                                className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300
+              ${activeTab === tab.value
+                                        ? "bg-green-600 text-white shadow"
+                                        : "text-gray-600 hover:bg-gray-200"
                                     }`}
-                            ></div>
-                        </div>
-
-                        <span className="ml-2">Payments</span>
-                    </label>
+                            >
+                                {tab.name}
+                            </button>
+                        ))}
+                    </div>
                 </div>
+
 
                 {/* Tab Content */}
                 <div className="tab-content mt-4">
-                    {isPaymentsView ? (
+                    {activeTab === "requests" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                 <Table
@@ -406,7 +433,10 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                 </div>
                             )}
                         </div>
-                    ) : (
+                    }
+
+
+                    {activeTab === "payments" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                 <Table
@@ -426,7 +456,74 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                 </div>
                             )}
                         </div>
-                    )}
+                    }
+
+
+                    {/* ELLIGIBLE TENDERS */}
+                    {activeTab === "eligible" &&
+                        <div className="container">
+                            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                                <Table
+                                    columns={columns}
+                                    data={getTenders ? getTenders.content : []}
+                                    isLoading={isLoading}
+                                    hasSelection={false}
+                                    hasActions={true}
+                                    actionSlot={(content: ITenders) => {
+                                        return (
+                                            <div className="flex justify-center space-x-2">
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                                // onClick={() => handleView(content)}
+                                                >
+                                                    <IconEye size={20} />
+                                                </button>
+                                                {
+                                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userData?.role!) && (
+                                                        <><Fragment>
+
+                                                            <button
+                                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                            // onClick={() => handleEdit(content)}
+                                                            >
+                                                                <IconEdit size={20} />
+                                                            </button>
+                                                        </Fragment>
+                                                            <Fragment>
+
+                                                                <button
+                                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                                // onClick={() => handleDelete(content)}
+                                                                >
+                                                                    <IconTrash size={20} />
+                                                                </button>
+                                                            </Fragment>
+
+                                                        </>
+
+                                                    )
+                                                }
+                                            </div>
+                                        );
+                                    }}
+                                />
+
+                                <div className="flex justify-between items-center p-4 lg:px-8">
+                                    <div></div>
+
+                                    {
+                                        getTenders?.pageable &&
+                                        <Pagination
+                                            currentPage={page}
+                                            setCurrentPage={setPage}
+                                            pageCount={getTenders.totalPages}
+                                        />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                 </div>
 
                 {isModalOpen && (
@@ -488,7 +585,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                         </button>
                     </SMSModal>
                 )}
-            </Modal>
+            </Modal >
         </>
     );
 };

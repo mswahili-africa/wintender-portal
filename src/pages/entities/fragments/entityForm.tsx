@@ -13,7 +13,7 @@ import { IEntity } from "@/types";
 
 interface IProps {
   initials?: { type: "create" | "update" | "delete" | null, user: IEntity | null };
-  setIsModalOpen?: ( v:{ type: "create" | "update" | "delete" | null, user: IEntity | null }) => void;
+  setIsModalOpen?: (v: { type: "create" | "update" | "delete" | null, user: IEntity | null }) => void;
   onSuccess: () => void;
 }
 
@@ -97,7 +97,7 @@ export default function ({ ...props }: IProps) {
     if (props.initials?.type === "update" && props.initials?.user) {
       setValue("name", props.initials.user.name);
       setValue("primaryNumber", `0${props.initials.user.primaryNumber.slice(1)}`),
-      setValue("address", props.initials.user.address);
+        setValue("address", props.initials.user.address);
       setValue("email", props.initials.user.email);
       setValue("summary", props.initials.user.summary);
       setValue("entityType", props.initials.user.entityType);
@@ -105,7 +105,7 @@ export default function ({ ...props }: IProps) {
 
       setOpen(true);
     }
-    else if(props.initials?.type === "create"){
+    else if (props.initials?.type === "create") {
       reset();
       setOpen(true);
     }
@@ -124,7 +124,7 @@ export default function ({ ...props }: IProps) {
         icon={<IconPlus size={18} />}
         theme="primary"
         size="md"
-        onClick={() => props.setIsModalOpen?.({type: "create", user: null})}
+        onClick={() => props.setIsModalOpen?.({ type: "create", user: null })}
       />
 
       <Modal
@@ -185,38 +185,41 @@ export default function ({ ...props }: IProps) {
           </div>
 
           {/* status radio for ACTIVE / INACTIVE */}
-          <div className="mb-4">
-            <label className="block mb-2">Status <span className="text-[8pt] text-red-500"> (This will permanently affect the entity visibility in the system)</span></label>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="active" className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="active"
-                  value="ACTIVE"
-                  {...register("status")}
-                />
-                <div>ACTIVE</div>
-              </label>
-              <label htmlFor="inactive" className="flex items-center space-x-2">  {/* Add space-x-2 */}
-                <input
-                  type="radio"
-                  id="inactive"
-                  value="INACTIVE"
-                  {...register("status")}
-                />
-                <div>INACTIVE</div>
-              </label>
-              <label htmlFor="deleted" className="flex items-center space-x-2">  {/* Add space-x-2 */}
-                <input
-                  type="radio"
-                  id="deleted"
-                  value="DELETED"
-                  {...register("status")}
-                />
-                <div>DELETED</div>
-              </label>
+          {
+            props.initials?.user &&
+            <div className="mb-4">
+              <label className="block mb-2">Status <span className="text-[8pt] text-red-500"> (This will permanently affect the entity visibility in the system)</span></label>
+              <div className="flex items-center space-x-4">
+                <label htmlFor="active" className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="active"
+                    value="ACTIVE"
+                    {...register("status")}
+                  />
+                  <div>ACTIVE</div>
+                </label>
+                <label htmlFor="inactive" className="flex items-center space-x-2">  {/* Add space-x-2 */}
+                  <input
+                    type="radio"
+                    id="inactive"
+                    value="INACTIVE"
+                    {...register("status")}
+                  />
+                  <div>INACTIVE</div>
+                </label>
+                <label htmlFor="deleted" className="flex items-center space-x-2">  {/* Add space-x-2 */}
+                  <input
+                    type="radio"
+                    id="deleted"
+                    value="DELETED"
+                    {...register("status")}
+                  />
+                  <div>DELETED</div>
+                </label>
+              </div>
             </div>
-          </div>
+          }
 
           <div className="mb-2">
             <label htmlFor="summary" className="block mb-2">

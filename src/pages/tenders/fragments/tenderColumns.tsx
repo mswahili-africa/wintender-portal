@@ -1,5 +1,6 @@
 import Chip from "@/components/chip/Chip";
 import { IColumn } from "@/components/widgets/table/Table";
+import { IconMessage } from "@tabler/icons-react";
 
 // Helper function to convert text to sentence case
 const toSentenceCase = (text: string) => {
@@ -13,24 +14,35 @@ const columns: IColumn[] = [
         label: "Procurement entity",
         sortable: false,
         plainObject: true,
-        element: (row: { entityName: string; entityLogoFilePath: string }) => (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                    src={row.entityLogoFilePath}
-                    alt="Entity Logo"
-                    style={{
-                        width: '40px', // Adjust size as needed
-                        height: '40px',
-                        borderRadius: '50%', // Makes the image round
-                        objectFit: 'cover', // Ensures the image covers the area
-                        marginRight: '8px', // Space between logo and name
-                    }}
-                />
-                <span>{row.entityName ? row.entityName.toUpperCase() : row.entityName}</span> {/* Display the name next to the logo */}
+        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean }) => (
+            <div className="flex flex-col">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                        src={row.entityLogoFilePath}
+                        alt="Entity Logo"
+                        style={{
+                            width: '40px', // Adjust size as needed
+                            height: '40px',
+                            borderRadius: '50%', // Makes the image round
+                            objectFit: 'cover', // Ensures the image covers the area
+                            marginRight: '8px', // Space between logo and name
+                        }}
+                    />
+                    <div className="flex flex-col">
+                        <span>{row.entityName ? row.entityName.toUpperCase() : row.entityName}</span>
+                        {
+                            row?.selfApply &&
+                            <div className="text-xs flex flex-row items-center gap-x-2">
+                                <div className="text-gray-500 flex flex-row items-center"><IconMessage className="w-4 me-1" /> <div className="flex items-center flex-row h-full">: {row.clarifications || 0}</div> </div>
+                                <div className="h-2 w-2 rounded-full bg-green-600"></div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         ),
     },
-    { 
+    {
         name: "title",
         label: "Title",
         sortable: false,

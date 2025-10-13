@@ -38,6 +38,14 @@ export async function getTendersInternational(params: IQueryParams) {
     return response.data
 }
 
+export async function getTenders(params: IQueryParams) {
+    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC", {
+        params: params
+    })
+
+    return response.data
+}
+
 
 // JCM tender box service
 export async function getTenderBox(params: IQueryParams) {

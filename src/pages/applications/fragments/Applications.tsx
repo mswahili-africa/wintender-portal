@@ -205,6 +205,11 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
 
+    const currentDate = new Date().getTime();
+    const closeDate = selectedApplication?.closeDate;
+    const remainingTime = closeDate! - currentDate;
+    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+
     return (
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
             <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[80vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
@@ -238,7 +243,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         <IconSquareRoundedMinus size={20} />
                                     </button>
                                 )}
-                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER" ) && applicationList.status === "REQUESTED" && (
+                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && applicationList.status === "REQUESTED" && (
                                     <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
                                         <IconEdit size={20} />
                                     </button>
@@ -390,10 +395,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     <strong className="w-32 text-gray-600">Status:</strong>
                                     <Chip
                                         label={(() => {
-                                            const currentDate = new Date().getTime();
-                                            const closeDate = selectedApplication.closeDate;
-                                            const remainingTime = closeDate - currentDate;
-                                            const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
+
 
                                             // Determine the label based on the remaining days
                                             if (remainingDays < 0) {
@@ -405,7 +407,10 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                             }
                                         })()}
                                         size="sm"
-                                        theme="success"
+                                        // theme="danger"
+                                        theme={
+                                            remainingDays < 0 ? 'danger' : remainingDays <= 2 ? 'warning' : "success"
+                                        }
                                     />
                                 </div>
 
@@ -437,7 +442,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     src={selectedApplication.filePath}
                                     width="100%"
                                     height="500px"
-                                    frameBorder="0"
                                     title="Tender Document"
                                 ></iframe>
                             </div>

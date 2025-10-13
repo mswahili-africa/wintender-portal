@@ -71,8 +71,18 @@ export default function () {
   });
 
   const reject = (payload: IPayment) => {
-    rejectMutation.mutate(payload.transactionReference);
-  };
+    showConfirmation({
+      theme: "danger",
+      title: "Reject this payment?",
+      message:
+        "This action cannot be undone. Please verify that you want to reject.",
+      onConfirm: () => {
+        rejectMutation.mutate(payload.transactionReference);
+        refetch();
+      },
+      onCancel: () => { },
+    });
+  }
 
   const { userData } = useUserDataContext();
   const userRole = userData?.role || "BIDDER";
@@ -144,7 +154,6 @@ export default function () {
                 {(userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT") &&
                   content.status == "PENDING" && (
                     <Fragment>
-
                       <button
                         className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                         onClick={() => handleApprove(content)}
