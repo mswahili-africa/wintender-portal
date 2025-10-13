@@ -106,12 +106,15 @@ const columns: IColumn[] = [
       const diffMs = deadlineDate.getTime() - Date.now();
       const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-      const remaining = daysLeft > 0 ? `${daysLeft} days left` : "Expired";
+      const remaining = daysLeft > 0 ? `${daysLeft} days` : "Expired";
 
       return (
-        <span className={`font-bold ${daysLeft > 0 ? "text-green-600" : "text-red-600"}`}>
-          {remaining}
-        </span>
+        <Chip
+          label={remaining}
+          size="sm"
+          theme={daysLeft > 0 ? "success" : "danger"}
+          variant="outline"
+        />
       );
     }
   }

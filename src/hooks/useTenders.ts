@@ -19,7 +19,7 @@ export default function({...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["getTendersGovernment", props.page, props.sort, props?.search, props?.filter,props?.eligibility,props?.categories,props?.bidderId],
-        queryFn: () => getTenders({page: props.page, size: 30, sort: props.sort, search: props.search,eligibility:props.eligibility,categories:props.categories,bidderId:props.bidderId}),
+        queryFn: () => getTenders({page: props.page, size: 10, sort: props.sort, search: props.search,eligibility:props.eligibility,categories:props.categories,bidderId:props.bidderId}),
         onError: (error: AxiosError) => handleError(error),
     });
 
