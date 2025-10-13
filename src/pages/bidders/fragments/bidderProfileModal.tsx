@@ -215,7 +215,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const { getTenders, isLoading, refetch } = useTenders({
         page: page,
         sort: sort,
-        categories: user.companyCategories,
+        eligibility: true,
+        bidderId: user.id,
 
     });
 

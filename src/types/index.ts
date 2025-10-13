@@ -19,6 +19,7 @@ export interface IQueryParams {
   filter?: Record<string, any>;
   logType?: string;
   eligibility?:boolean
+  bidderId?: string
 }
 
 export interface IQueryParamsUserFilter {
@@ -41,6 +42,7 @@ export interface IlistResponse<T> {
   numberOfElements: number;
   size: number;
   empty: boolean;
+
 }
 
 export interface Pageable {
