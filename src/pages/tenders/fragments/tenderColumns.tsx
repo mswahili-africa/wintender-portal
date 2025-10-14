@@ -14,7 +14,7 @@ const columns: IColumn[] = [
         label: "Procurement entity",
         sortable: false,
         plainObject: true,
-        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean, clarifications:number }) => (
+        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean, clarifications: number }) => (
             <div className="flex flex-col">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img
@@ -58,26 +58,47 @@ const columns: IColumn[] = [
     },
     {
         name: "status",
-        label: "Status",
+        label: "Deadline",
         sortable: false,
         plainObject: true,
-        element: (row: any) => {
-            const currentDate = new Date().getTime();
-            const closeDate = row.closeDate;
-            const remainingTime = closeDate - currentDate;
-            const remainingDays = remainingTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+        element: (value: any) => {
+            if (!value) return <span>-</span>;
 
-            const displayStatus = remainingDays <= 2 && remainingDays > 0 ? 'CLOSING' : remainingDays <= 0 ? 'CLOSED' : row.status;
+            const closingDate = new Date(value.closeDate);
+            const deadlineDate = new Date(closingDate.getTime());
+
+            const diffMs = deadlineDate.getTime() - Date.now();
+
+            if (diffMs <= 0) {
+                return (
+                    <Chip
+                        label="CLOSED"
+                        size="xs"
+                        theme="danger"
+                        variant="outline"
+                    />
+                );
+            }
+
+            const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+            const remaining =
+                days > 0
+                    ? `${days} day${days > 1 ? "s" : ""}`
+                    : `${hours}h ${minutes}m`;
 
             return (
                 <Chip
-                    label={displayStatus}
-                    size="sm"
-                    theme={displayStatus === 'CLOSING' ? 'warning' : displayStatus === 'CLOSED' ? 'danger' : 'success'}
+                    label={remaining}
+                    size="xs"
+                    theme={days > 0 ? "success" : "warning"}
                     variant="outline"
                 />
             );
         }
+
     },
 ];
 

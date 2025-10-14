@@ -79,6 +79,8 @@ const Chip: React.FC<ChipProps> = ({
 
     const computeSize = () => {
         switch (size) {
+            case "xs":
+                return "text-[10px]";
             case "sm":
                 return "text-xs";
             case "lg":
@@ -93,7 +95,7 @@ const Chip: React.FC<ChipProps> = ({
             { 
                 computeVariant() &&
                 <div
-                    className={`max-w-max flex justify-center items-center px-3 py-1 rounded-lg font-medium uppercase ${computeVariant()} ${computeSize()}`}
+                    className={`max-w-max flex flex-row whitespace-nowrap justify-center items-center px-3 py-1 rounded-lg font-medium uppercase ${computeVariant()} ${computeSize()}`}
                     onClick={handleClick}
                 >
                     {avatar && <div className="mr-2">{renderAvatar()}</div>}

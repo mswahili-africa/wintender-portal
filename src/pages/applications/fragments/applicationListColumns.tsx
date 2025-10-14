@@ -100,23 +100,40 @@ const columns: IColumn[] = [
       if (!value) return <span>-</span>;
 
       const creationDate = new Date(value);
-
       const deadlineDate = new Date(creationDate.getTime() + 3 * 24 * 60 * 60 * 1000);
 
       const diffMs = deadlineDate.getTime() - Date.now();
-      const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-      const remaining = daysLeft > 0 ? `${daysLeft} days` : "Expired";
+      if (diffMs <= 0) {
+        return (
+          <Chip
+            label="Expired"
+            size="sm"
+            theme="danger"
+            variant="outline"
+          />
+        );
+      }
+
+      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+      const remaining =
+        days > 0
+          ? `${days} day${days > 1 ? "s" : ""}`
+          : `${hours}h ${minutes}m`;
 
       return (
         <Chip
           label={remaining}
           size="sm"
-          theme={daysLeft > 0 ? "success" : "danger"}
+          theme={days > 0 ? "success" : "warning"}
           variant="outline"
         />
       );
     }
+
   }
 ];
 
