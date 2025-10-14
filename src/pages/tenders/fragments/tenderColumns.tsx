@@ -14,7 +14,7 @@ const columns: IColumn[] = [
         label: "Procurement entity",
         sortable: false,
         plainObject: true,
-        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean }) => (
+        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean, clarifications:number }) => (
             <div className="flex flex-col">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img
