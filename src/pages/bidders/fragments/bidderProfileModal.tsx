@@ -47,7 +47,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
-    const [isPaymentsView, setIsPaymentsView] = useState(true);
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
 
@@ -85,7 +84,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const availableOptions = categories
         .filter((cat) => !selectedCategories.find((sc) => sc.id === cat.id))
         .map((cat) => ({ value: cat.id, label: cat.name }));
-
 
     useEffect(() => {
         if (user?.companyCategories && categories.length > 0 && isOpen) {
@@ -334,22 +332,26 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                                 No categories
                                             </span>
                                         ) : (
-                                            selectedCategories.map((category) => (
-                                                <span
-                                                    key={category.id}
-                                                    className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
-                                                >
-                                                    {category.name}
-                                                    {/* <button
-                                                            type="button"
-                                                            onClick={() => removeCategory(category)}
-                                                            className="text-red-500 hover:text-red-700 ml-2 text-xs"
-                                                        >
-                                                            <IconX size={16} />
-                                                        </button> */}
-                                                </span>
-                                            ))
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                {selectedCategories.map((category, index) => {
+                                                    const formattedName = category.name
+                                                        .toLowerCase()
+                                                        .replace(/\b\w/g, (char) => char.toUpperCase());
+
+                                                    return (
+                                                        <React.Fragment key={category.id}>
+                                                            <span className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm">
+                                                                {formattedName}
+                                                            </span>
+                                                            {index < selectedCategories.length - 1 && (
+                                                                <span className="text-gray-500">•</span>
+                                                            )}
+                                                        </React.Fragment>
+                                                    );
+                                                })}
+                                            </div>
                                         )}
+
                                     </div>
                                 </div>
 
@@ -414,7 +416,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
                 {/* Tab Content */}
                 <div className="tab-content mt-4">
-                    {activeTab === "requests" &&
+                    {activeTab === "payments" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                 <Table
@@ -437,7 +439,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                     }
 
 
-                    {activeTab === "payments" &&
+                    {activeTab === "requests" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                 <Table
@@ -499,9 +501,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                                                     <IconTrash size={20} />
                                                                 </button>
                                                             </Fragment>
-
                                                         </>
-
                                                     )
                                                 }
                                             </div>

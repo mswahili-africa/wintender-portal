@@ -5,7 +5,7 @@ import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationGroupColumns";
 import PrivateTenderRequest from "./fragments/privateRequestForm";
 import ApplicationsList from "./fragments/Applications";
-import { IApplicationGroup, IApplications } from "@/types";
+import { IApplicationGroup } from "@/types";
 import { IconEye, IconFile } from "@tabler/icons-react";
 import { getAllApplicationsGroup } from "@/hooks/useApplicationsGroup";
 import Tabs from "@/components/widgets/Tabs";
@@ -133,10 +133,6 @@ export default function ApplicationGroups() {
             </div>
           </div>
         </>
-
-
-
-
         <DIFMapplications />
 
       </Tabs>
