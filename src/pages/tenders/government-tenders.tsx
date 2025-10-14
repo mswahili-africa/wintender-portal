@@ -1,4 +1,4 @@
-import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconListDetails, IconSquare, IconSquareCheck } from "@tabler/icons-react";
+import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconSquare, IconSquareCheck } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useState, useCallback } from "react";
 import toast from "react-hot-toast";
