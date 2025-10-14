@@ -309,6 +309,7 @@ export default function GovernmentTenders() {
                         size="sm"
                         onClick={handleReset} // Resets filters
                     />
+                     {(userRole === "BIDDER") && (
                     <Button
                         type="button"
                         label="Elligible Tenders"
@@ -317,7 +318,8 @@ export default function GovernmentTenders() {
                         size="sm"
                         onClick={() => setIsEligible(!isEligible)} // Resets filters
                     />
-                </div>
+                     )}
+                </div> 
 
             </div>
 

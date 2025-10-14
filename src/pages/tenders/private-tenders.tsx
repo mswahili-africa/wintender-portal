@@ -330,6 +330,7 @@ export default function PrivateTenders() {
                         size="sm"
                         onClick={handleReset} // Resets filters
                     />
+                    {(userRole === "BIDDER") && (
                     <Button
                         type="button"
                         label="Elligible Tenders"
@@ -338,6 +339,7 @@ export default function PrivateTenders() {
                         size="sm"
                         onClick={()=>setIsEligible(!isEligible)} // Resets filters
                     />
+                    )}
                 </div>
 
             </div>
