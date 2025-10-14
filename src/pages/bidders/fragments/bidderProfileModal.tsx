@@ -47,7 +47,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
-    const [isPaymentsView, setIsPaymentsView] = useState(true);
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
 
@@ -130,13 +129,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [searchParams, _] = useSearchParams();
 
     // Get the userId from the user object passed in props
-    const { payments } = getUserPayments({
+    const { payments,isLoading:paymentLoading } = getUserPayments({
         userId: user.id, // Pass the userId from the user object
         page: page,
         filter: { ...Object.fromEntries(searchParams) }, // Pass filter here
     });
 
-    const { applicationList } = useApplicationsList({
+    const { applicationList,isLoading:requestLoading } = useApplicationsList({
         applicationGroup: "user-" + user.id,
         groupId: "user-" + user.id,
         page,
@@ -212,7 +211,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
 
     // ELLIGIBLE TENDERS LOGIC
-    const { getTenders, isLoading, refetch } = useTenders({
+    const { getTenders, isLoading } = useTenders({
         page: page,
         sort: sort,
         eligibility: true,
@@ -339,7 +338,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                                     key={category.id}
                                                     className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm"
                                                 >
-                                                    {category.name}
+                                                    {category.name.toLocaleUpperCase()}
                                                     {/* <button
                                                             type="button"
                                                             onClick={() => removeCategory(category)}
@@ -414,11 +413,12 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
                 {/* Tab Content */}
                 <div className="tab-content mt-4">
-                    {activeTab === "requests" &&
+                    {activeTab === "payments" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                 <Table
                                     columns={paymentsColumns}
+                                    loading={paymentLoading}
                                     data={payments?.content ?? []}
                                     hasSelection={false}
                                     hasActions={false}
@@ -437,11 +437,12 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                     }
 
 
-                    {activeTab === "payments" &&
+                    {activeTab === "requests" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                                 <Table
                                     columns={applicationColumns}
+                                    loading={requestLoading}
                                     data={applicationList?.content ?? []}
                                     hasSelection={false}
                                     hasActions={false}
@@ -469,7 +470,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     data={getTenders ? getTenders.content : []}
                                     isLoading={isLoading}
                                     hasSelection={false}
-                                    hasActions={true}
+                                    hasActions={false}
                                     actionSlot={(content: ITenders) => {
                                         return (
                                             <div className="flex justify-center space-x-2">

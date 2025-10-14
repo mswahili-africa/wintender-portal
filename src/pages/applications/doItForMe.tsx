@@ -44,23 +44,23 @@ export default function ApplicationGroups() {
 
 
   // Invoice generation logic (moved to ApplicationInvoice.tsx)
-  const viewProfomaInvoice = (id: string) => {
-    // filter applications based on status
-    const { applicationList, isLoading, refetch } = useApplicationsList({
-      applicationGroup: null,
-      groupId: "e0c7d6a4-7b5a-4f7f-9a7e-9e0a9e0a9e0a", // Dummy ID for all applications
-      page,
-      search,
-      sort,
-      filter: undefined,
-      visibility: "all"
-    });
+  // const viewProfomaInvoice = (id: string) => {
+  //   // filter applications based on status
+  //   const { applicationList, isLoading, refetch } = useApplicationsList({
+  //     applicationGroup: null,
+  //     groupId: "e0c7d6a4-7b5a-4f7f-9a7e-9e0a9e0a9e0a", // Dummy ID for all applications
+  //     page,
+  //     search,
+  //     sort,
+  //     filter: undefined,
+  //     visibility: "all"
+  //   });
 
 
-    navigate(`/application-profoma-invoice`, {
-      // state: { applicationGroupData: applicationGroup, applicationData: application }
-    });
-  };
+  //   navigate(`/application-profoma-invoice`, {
+  //     state: { applicationGroupData: applicationGroup, applicationData: application }
+  //   });
+  // };
 
   return (
     <div>
@@ -71,75 +71,115 @@ export default function ApplicationGroups() {
         )}
       </div>
 
-      <Tabs panels={["Per bidder", "All applications"]}>
-        <>
-          <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b border-slate-200">
-              <input
-                type="text"
-                placeholder="Search"
-                className="input-normal py-2 w-1/2 lg:w-1/4"
-                onChange={(e) => setSearch(e.target.value)} // Update search query
-              />
-            </div>
-
-            {/* Render the main table with application groups */}
-            <Table
-              columns={columns}
-              data={applicationGroupList?.content || []}
-              isLoading={isLoading}
-              hasSelection={false}
-              hasActions={true}
-              onSorting={handleSorting}
-              actionSlot={(applicationGroup: IApplicationGroup) => (
-                <div className="flex space-x-2">
-                  <button onClick={() => handleViewApplications(applicationGroup)}>
-                    <IconEye size={20} />
-                  </button>
-                  {/* {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && ( */}
-                    <button
-                      className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                      onClick={() => viewProfomaInvoice(applicationGroup.bidderId)}
-                    >
-                      <IconFile size={20} />
-                    </button>
-                  {/* )} */}
-                </div>
-              )}
+      {userData?.role === "BIDDER" ? (
+        <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+          <div className="flex justify-between items-center p-4 border-b border-slate-200">
+            <input
+              type="text"
+              placeholder="Search"
+              className="input-normal py-2 w-1/2 lg:w-1/4"
+              onChange={(e) => setSearch(e.target.value)}
             />
+          </div>
 
-            {/* Modal to display selected group's applications */}
-            {isGroupModalOpen && selectedGroupList && (
-              <ApplicationsList
-                applicationGroup={selectedGroupList}
-                groupId={selectedGroupList.id}
-                onClose={() => {
-                  setSelectedGroupList(null); // Clear the data
-                  setIsGroupModalOpen(false); // Close the modal
-                }}
-                onRefetch={refetch} // Pass the refetch function
+          {/* Per Bidder Table */}
+          <Table
+            columns={columns}
+            data={applicationGroupList?.content || []}
+            isLoading={isLoading}
+            hasSelection={false}
+            hasActions={true}
+            onSorting={handleSorting}
+            actionSlot={(applicationGroup: IApplicationGroup) => (
+              <div className="flex space-x-2">
+                <button onClick={() => handleViewApplications(applicationGroup)}>
+                  <IconEye size={20} />
+                </button>
+              </div>
+            )}
+          />
+
+          {/* Modal for applications */}
+          {isGroupModalOpen && selectedGroupList && (
+            <ApplicationsList
+              applicationGroup={selectedGroupList}
+              groupId={selectedGroupList.id}
+              onClose={() => {
+                setSelectedGroupList(null);
+                setIsGroupModalOpen(false);
+              }}
+              onRefetch={refetch}
+            />
+          )}
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center p-4 lg:px-8">
+            {applicationGroupList?.pageable && (
+              <Pagination
+                currentPage={page}
+                setCurrentPage={setPage}
+                pageCount={applicationGroupList.totalPages}
               />
             )}
+          </div>
+        </div>
+      ) : (
+        <Tabs panels={["Per bidder", "All applications"]}>
+          <>
+            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+              <div className="flex justify-between items-center p-4 border-b border-slate-200">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="input-normal py-2 w-1/2 lg:w-1/4"
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
 
-            {/* Pagination control */}
-            <div className="flex justify-between items-center p-4 lg:px-8">
-              {applicationGroupList?.pageable && (
-                <Pagination
-                  currentPage={page}
-                  setCurrentPage={setPage}
-                  pageCount={applicationGroupList.totalPages}
+              <Table
+                columns={columns}
+                data={applicationGroupList?.content || []}
+                isLoading={isLoading}
+                hasSelection={false}
+                hasActions={true}
+                onSorting={handleSorting}
+                actionSlot={(applicationGroup: IApplicationGroup) => (
+                  <div className="flex space-x-2">
+                    <button onClick={() => handleViewApplications(applicationGroup)}>
+                      <IconEye size={20} />
+                    </button>
+                  </div>
+                )}
+              />
+
+              {isGroupModalOpen && selectedGroupList && (
+                <ApplicationsList
+                  applicationGroup={selectedGroupList}
+                  groupId={selectedGroupList.id}
+                  onClose={() => {
+                    setSelectedGroupList(null);
+                    setIsGroupModalOpen(false);
+                  }}
+                  onRefetch={refetch}
                 />
               )}
+
+              <div className="flex justify-between items-center p-4 lg:px-8">
+                {applicationGroupList?.pageable && (
+                  <Pagination
+                    currentPage={page}
+                    setCurrentPage={setPage}
+                    pageCount={applicationGroupList.totalPages}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        </>
+          </>
 
+          <DIFMapplications />
+        </Tabs>
+      )}
 
-
-
-        <DIFMapplications />
-
-      </Tabs>
 
     </div>
   );

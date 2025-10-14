@@ -42,7 +42,7 @@ const columns: IColumn[] = [
     plainObject: true,
     element: (row: any) => {
       const amount = row.principleAmount;
-      const formattedAmount = new Intl.NumberFormat('en-US', {
+      const formattedAmount = new Intl.NumberFormat('en-TZ', {
         style: 'currency',
         currency: 'TZS',
       }).format(amount);
