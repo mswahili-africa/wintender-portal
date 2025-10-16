@@ -104,7 +104,7 @@ const columns: IColumn[] = [
       value ? new Date(value).toLocaleString() : "-", // Show "-" or "Loading..." when value is undefined
   },
   {
-    name: "createdAt",
+    name: "closeDate",
     label: "Deadline",
     sortable: true,
     plainObject: false,
@@ -113,12 +113,12 @@ const columns: IColumn[] = [
 
       const creationDate = new Date(value);
 
-      const deadlineDate = new Date(creationDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+      const deadlineDate = new Date(creationDate.getTime());
 
       const diffMs = deadlineDate.getTime() - Date.now();
       const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-      const remaining = daysLeft > 0 ? `${daysLeft} days` : "Expired";
+      const remaining = daysLeft > 0 ? `${daysLeft} days` : "CLOSED";
 
       return (
         <Chip
