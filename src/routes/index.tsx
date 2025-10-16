@@ -150,12 +150,9 @@ const allMenus: IRoute[] = [
 //  Assign routes based on user role
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
-    MANAGER: () => allMenus.map(menu => menu.label === "Entities"
-        ? {
-            ...menu,
-            subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
-        }
-        : menu.label === "Tender"
+    MANAGER: () => allMenus
+    .filter(menu => ["Tender", "Dashboard","Consultation","Entities"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
@@ -166,44 +163,54 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             } : menu
 
     ),
-    ACCOUNTANT: () => allMenus.filter(menu => (menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Billboards")
-        && menu.label === "Tender" ? {
-        ...menu,
-        subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-    } : menu.label === "System" ? {
-        ...menu,
-        subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings" && sub.label !== "Logs"), // Exclude Logs and Health sub-menus
-    } : menu
-    ),
-
-    PUBLISHER: () => allMenus.filter(menu => (menu.label !== "Bidders" && menu.label !== "Internal" && menu.label !== "Compliance" && menu.label !== "Finance" && menu.label !== "Billboards")
-        && menu.label === "Tender" ?
-        {
-            ...menu,
-            subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Categories sub-menu
-        } : menu.label === "System" ? {
-            ...menu,
-            subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
-        } : menu
-    ),
-    SUPERVISOR: () => allMenus.filter(menu => (menu.label !== "Internal")).map(menu => menu.label === "Entities"
-        ? {
-            ...menu,
-            subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
-        }
-        : menu.label === "Tender" ? {
-            ...menu,
-            subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
-        }
-            : menu.label === "Consultation" ? {
+    ACCOUNTANT: () => allMenus
+    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Finance","System"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
+            ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
-            } : menu.label === "System" ? {
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
+            }
+            : menu.label === "System" ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Setting"), // Exclude Logs and Health sub-menus
             } : menu
 
     ),
+
+    PUBLISHER: () => allMenus
+    .filter(menu => ["Tender", "Dashboard","Consultation","Entities"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
+            ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
+            }
+            : menu.label === "System" ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Setting"), // Exclude Logs and Health sub-menus
+            } : menu
+
+    ),
+    SUPERVISOR: () => allMenus
+        .filter(menu => menu.label !== "Internal" && menu.label !== "Compliance")
+        .map(menu => menu.label === "Entities"
+            ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
+            }
+            : menu.label === "Tender" ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
+            }
+            : menu.label === "Consultation" ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
+            }
+            : menu.label === "System" ? {
+                ...menu,
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
+            }
+            : menu
+        ),
     PROCUREMENT_ENTITY: () => allMenus
         .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
