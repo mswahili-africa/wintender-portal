@@ -3,7 +3,6 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationGroupColumns";
-import PrivateTenderRequest from "./fragments/privateRequestForm";
 import ApplicationsList from "./fragments/Applications";
 import { IApplicationGroup } from "@/types";
 import { IconEye, IconFile } from "@tabler/icons-react";
@@ -12,6 +11,7 @@ import Tabs from "@/components/widgets/Tabs";
 import DIFMapplications from "./fragments/DIFMApplications";
 import { useNavigate } from "react-router-dom";
 import useApplicationsList from "@/hooks/useApplicationsList";
+import PrivateTenderRequestButton from "./fragments/privateTenderRequestButton";
 
 export default function ApplicationGroups() {
   const { userData } = useUserDataContext();
@@ -66,8 +66,8 @@ export default function ApplicationGroups() {
     <div>
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-bold">Application: Do it For Me</h2>
-        {userRole === "BIDDER" && (
-          <PrivateTenderRequest onSuccess={refetch} />
+        {userRole !== "BIDDER" && (
+          <PrivateTenderRequestButton onSuccess={refetch} />
         )}
       </div>
 

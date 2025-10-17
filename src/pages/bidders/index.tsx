@@ -20,9 +20,9 @@ import Select from "react-select";
 import Button from "@/components/button/Button";
 import { useUserData } from "@/hooks/useUserData";
 import Modal from "@/components/Modal";
-import PrivateTenderRequest from "../applications/fragments/privateRequestForm";
 import { ExportXLSX } from "@/components/widgets/Excel";
 import bidderExcelColumns from "./fragments/bidderExcelColumns";
+import PrivateTenderRequestModal from "../applications/fragments/privateTenderRequestModal";
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -37,7 +37,6 @@ export default function Bidders() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
-    const [userInfo, setUserInfo] = useState<ICompany | any>();
     const [message, setMessage] = useState<string>("");
     const [isSending, setIsSending] = useState<boolean>(false);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
@@ -49,38 +48,28 @@ export default function Bidders() {
     const [tempSelectedRegion, setTempSelectedRegion] = useState<{ label: string, value: string } | null>(null);
     const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
     const [categorySearchTerm, setCategorySearchTerm] = useState("");
+    const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, user: ICompany | null }>(
+        { type: null, user: null }
+    );
 
     // JCM DELETE MODAL
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [deleting, setDeleting] = useState(false);
     const { userData } = useUserData();
 
 
-    const handleDeleteModalClose = () => {
-        setIsDeleting(false);
-    };
-
-    const handleDeleteBidder = () => {
-        setDeleting(true);
-        deleteBidderMutation.mutate();
-    };
+    
 
     const deleteBidderMutation = useMutation({
-        mutationKey: ["deleteBidder", selectedUser?.id],
-        mutationFn: () => deleteBidder(selectedUser?.id || ""),
+        mutationKey: ["deleteBidder", openModal.user?.id],
+        mutationFn: (id: string) => deleteBidder(id),
         onSuccess: (data) => {
             toast.success(data.message || "Bidder deleted successfully");
-            console.log(data);
-            setDeleting(false);
-            setIsDeleting(false);
+            handleModalClose();
             refetch();
         },
         onError: (error: any) => {
-            setDeleting(false);
             toast.error(`Failed to delete bidder: ${error.message}`);
         }
     })
-    const { } = deleteBidderMutation;
     // JCM DELETE END
 
 
@@ -238,7 +227,7 @@ export default function Bidders() {
     };
 
     const handleModalClose = () => {
-        setUserInfo(undefined);
+        setOpenModal({ type: null, user: null });
     };
 
     return (
@@ -378,9 +367,10 @@ export default function Bidders() {
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
 
-                {userInfo && (
+                {/*JCM BIDDER PROFILE MODAL */}
+                {openModal.type === "view" && (
                     <BidderProfileModal
-                        user={userInfo}
+                        user={openModal.user!}
                         loading={isLoading}
                         onClose={handleModalClose}
                     />
@@ -388,44 +378,41 @@ export default function Bidders() {
 
 
                 {/* JCM BIDDER DELETE MODAL */}
-                {
-                    isDeleting &&
-                    <Modal isOpen={isDeleting} onClose={handleDeleteModalClose} size={"md"} >
-                        <h1 className="text-lg font-bold"><strong>Delete Bidder?</strong></h1>
-                        <div className="flex items-center justify-center mb-4">
-                            <IconAlertTriangle size={80} className=" text-red-500 mr-2" />
-                        </div>
-                        <p className="text-sm px-5 text-gray-700">
-                            <span className="text-sm">Are you sure you want to delete bidder with the following details, this action cannot be undone</span> <br /><br />
-                            Company name: <span className="font-bold text-gray-900">{selectedUser?.companyName || "N/A"}</span> <br />
-                            Company email: <span className="font-bold text-gray-900">{selectedUser?.companyEmail || "N/A"}</span> <br />
-                            Company phone: <span className="font-bold text-gray-900">{selectedUser?.companyPrimaryNumber || "N/A"}</span> <br />
-                            Admin name: <span className="font-bold text-gray-900">{selectedUser?.name || "N/A"}</span> <br />
-                            Admin email: <span className="font-bold text-gray-900">{selectedUser?.email || "N/A"}</span> <br />
-                            phone number: <span className="font-bold text-gray-900">{selectedUser?.phoneNumber || "N/A"}</span>
-                        </p>
-                        <div className="mt-4 flex justify-end space-x-2">
-                            {!deleting &&
-                                <Button
-                                    label="Cancel"
-                                    icon={<IconX size={18} />}
-                                    onClick={handleDeleteModalClose}
-                                    theme="secondary"
-                                    size="sm"
-                                />
-                            }
+                <Modal isOpen={openModal.type === "delete"} onClose={handleModalClose} size={"md"} >
+                    <h1 className="text-lg font-bold"><strong>Delete Bidder?</strong></h1>
+                    <div className="flex items-center justify-center mb-4">
+                        <IconAlertTriangle size={80} className=" text-red-500 mr-2" />
+                    </div>
+                    <p className="text-sm px-5 text-gray-700">
+                        <span className="text-sm">Are you sure you want to delete bidder with the following details, this action cannot be undone</span> <br /><br />
+                        Company name: <span className="font-bold text-gray-900">{openModal.user?.companyName || "N/A"}</span> <br />
+                        Company email: <span className="font-bold text-gray-900">{openModal.user?.companyEmail || "N/A"}</span> <br />
+                        Company phone: <span className="font-bold text-gray-900">{openModal.user?.companyPrimaryNumber || "N/A"}</span> <br />
+                        Admin name: <span className="font-bold text-gray-900">{openModal.user?.name || "N/A"}</span> <br />
+                        Admin email: <span className="font-bold text-gray-900">{openModal.user?.email || "N/A"}</span> <br />
+                        phone number: <span className="font-bold text-gray-900">{openModal.user?.phoneNumber || "N/A"}</span>
+                    </p>
+                    <div className="mt-4 flex justify-end space-x-2">
+                        {deleteBidderMutation.isPending &&
                             <Button
-                                label="DELETE BIDDER"
-                                icon={<IconTrash size={18} />}
-                                loading={deleting}
-                                onClick={handleDeleteBidder}
-                                theme="danger"
+                                label="Cancel"
+                                icon={<IconX size={18} />}
+                                onClick={handleModalClose}
+                                theme="secondary"
                                 size="sm"
                             />
-                        </div>
-                    </Modal>
+                        }
+                        <Button
+                            label="DELETE BIDDER"
+                            icon={<IconTrash size={18} />}
+                            loading={deleteBidderMutation.isPending}
+                            onClick={() => deleteBidderMutation.mutate(openModal.user!.id)}
+                            theme="danger"
+                            size="sm"
+                        />
+                    </div>
+                </Modal>
 
-                }
 
                 <Table
                     columns={columns}
@@ -435,18 +422,18 @@ export default function Bidders() {
                     hasActions={true}
                     actionSlot={(content: any) => (
                         <div className="flex justify-center space-x-3">
-                            <button onClick={() => setUserInfo(content)}>
+                            <button onClick={() => setOpenModal({ type: "view", user: content })}>
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
                                 ["SUPERVISOR", "PUBLISHER", "ADMINISTRATOR", "ACCOUNTANT"].includes(userData?.role as string) &&
-                                <button onClick={() => { setSelectedUser(content) }}>
+                                <button onClick={() => { setOpenModal({ type: "create", user: content }); }}>
                                     <IconFilePlus className="h-5 w-5 text-green-500" />
                                 </button>
                             }
                             {
                                 ["SUPERVISOR"].includes(userData?.role as string) &&
-                                <button onClick={() => { setIsDeleting(true); setSelectedUser(content); }}>
+                                <button onClick={() => { setOpenModal({ type: "delete", user: content }) }}>
                                     <IconTrash className="h-5 w-5 text-red-500" />
                                 </button>
                             }
@@ -494,11 +481,13 @@ export default function Bidders() {
                     </SMSModal>
                 )}
 
-                {
-                    selectedUser && isDeleting === false &&
-                    <PrivateTenderRequest onSuccess={refetch} bidder={selectedUser} />
+                <PrivateTenderRequestModal
+                    onSuccess={refetch}
+                    bidder={openModal?.user!}
+                    open={openModal?.type === "create"}
+                    setOpen={handleModalClose}
+                />
 
-                }
             </div>
         </div>
     );

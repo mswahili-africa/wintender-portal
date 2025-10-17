@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 
 type Props = {
   name: string;
-  control: Control;
+  control: Control<any>;
 }
 export function TextEditor({name,control}: Props) {
 
