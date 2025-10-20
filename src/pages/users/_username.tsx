@@ -7,11 +7,9 @@ import ChangePasswordForm from "./fragments/changePasswordForm";
 import PasswordResetRequest from "./fragments/passwordResetRequest";
 import { getUserById, updateBidderCompany } from "@/services/user";
 import { ICategory, ICompany, IUser } from "@/types";
-import { getCategories } from "@/services/tenders";
 import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
-import Button from "@/components/button/Button";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/spinners/Spinner";
 import useCategories from "@/hooks/useCategories";
@@ -28,12 +26,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     const auth = useSnapshot(authStore);
 
     const [user, setUser] = useState<ICompany | null>(null);
-    // const [loading, setLoading] = useState<boolean>(true);
-    // const [categories, setCategories] = useState<ICategory[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-    const [selectedCategoriesIds, setSelectedCategoriesIds] = useState<string[]>([]);
-    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+
+
 
     const { categories } = useCategories({ page: 0, size: 1000, search: "", filter: {} });
     const { userData, loading } = useUserData();
@@ -43,24 +39,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
         return auth.user?.id === userId;
     };
 
-    const filteredCategories = categories?.content
-        .filter(category =>
-            `${category.categoryGroup} ${category.name}`.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .sort((a, b) => a.categoryGroup.localeCompare(b.categoryGroup) || a.name.localeCompare(b.name));
-
-
     useEffect(() => {
-        // JCM if user passed as prop, use it directly
-        selectedUser && setUser(selectedUser);
-        // selectedLoading && setLoading(selectedLoading);
-
         async function fetchUser() {
             try {
+                // JCM if user passed as prop, use it directly
                 if (selectedUser) {
                     setUser(selectedUser);
-                    // setLoading(selectedLoading);
-                    setSelectedCategoriesIds(selectedUser.companyCategories || []);
+                    const initialCats = categories?.content?.filter(cat =>
+                        selectedUser.companyCategories?.includes(cat.id)
+                    ) || [];
+                    setSelectedCategories(initialCats);
+
                     return;
                 }
                 const data = await getUserById(userId!);
@@ -68,8 +57,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
                 // Check if company and categories exist
                 if (data.company && data.company.categories) {
-                    console.log("Fetched categories:", data.company.categories);
-                    setSelectedCategories(data.company.categories);
+                    if (typeof data.company.categories[0] === "object") {
+                        setSelectedCategories(data.company.categories);
+                    } else {
+                        const freshCats = categories?.content?.filter(cat =>
+                            data.company.categories.includes(cat.id)
+                        ) || [];
+                        setSelectedCategories(freshCats);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch user", error);
@@ -77,7 +72,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
         }
 
         fetchUser();
-    }, [userId]);
+    }, [userId, selectedUser]);
 
 
 
@@ -123,12 +118,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
             companyVrn: user.companyVrn || "",
             companyLogoFilePath: user.companyLogoFilePath || "",
             companyTinFilePath: user.companyTinFilePath || "",
-            categoryIds: selectedCategoriesIds.filter(cat => cat !== null),
+            categoryIds: selectedCategories.map(cat => cat.id),
             companyCategories: [],
             walletAmount: user.walletAmount || 0
         };
 
-        setIsUpdating(true); // Set loading state to true
         try {
             updateUserMutation.mutate(payload);
 
@@ -141,12 +135,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     const updateUserMutation = useMutation({
         mutationFn: (updatedUser: ICompany) => updateBidderCompany(updatedUser, userId! || user?.id!),
         onSuccess: async () => {
-            const updatedUser = await getUserById(userId! || user?.id!); // JCM use user.id for SUPERVISOR role
+            toast.success("Company info updated!");
+            const updatedUser = await getUserById(userId! || user?.id!); // use SUPERVISOR id if user is SUPERVISOR
             setUser(updatedUser);
-            if (updatedUser.company && updatedUser.company.categories) {
-                setSelectedCategoriesIds(updatedUser.company.categories);
+
+            if (updatedUser.company?.categories?.length) {
+                if (typeof updatedUser.company.categories[0] === "object") {
+                    setSelectedCategories(updatedUser.company.categories);
+                } else {
+                    const freshCats = categories?.content?.filter(cat =>
+                        updatedUser.company.categories.includes(cat.id)
+                    ) || [];
+                    setSelectedCategories(freshCats);
+                }
             }
         },
+
     });
 
     // JCM input style
@@ -179,17 +183,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     };
 
     // JCM manage categories selection
-    const manageCategoriesSelection = (category: any) => {
-        if (!selectedCategories.find((c: any) => c.id === category.id)) {
-            setSelectedCategories([...selectedCategories, category]);
-            setSelectedCategoriesIds([...selectedCategoriesIds, category.id]);
-        } else {
-            setSelectedCategories(prev =>
-                prev.filter((c: any) => c.id !== category.id)
-            );
-            setSelectedCategoriesIds(prevSelected => prevSelected.filter(id => id !== category.id));
-        }
-    }
+    const manageCategoriesSelection = (category: ICategory) => {
+        setSelectedCategories(prev => {
+            const exists = prev.find(c => c.id === category.id);
+            if (exists) {
+                return prev.filter(c => c.id !== category.id);
+            } else {
+                return [...prev, category];
+            }
+        });
+    };
+
 
 
     // JCM available options for select

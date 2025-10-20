@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { getCategories } from "@/services/tenders";
 import useErrorHandler from "./useErrorHandler";
+import { ICategory } from "@/types";
 
 interface IProps {
     page: number
