@@ -18,19 +18,25 @@ interface IProps {
 }
 
 const schema = object().shape({
-  logoFile: mixed().required("Logo File is required"),
+  logoFile: mixed()
+    .test("fileType", "Please select a valid image file (jpg, png, etc.)", (value:any) => {
+      if (value && (value.type === "image/jpeg" || value.type === "image/png")) {
+        return true;
+      }
+      return false;
+    })
+    .required("Logo File is required"),
   name: string().required("Name is required"),
   primaryNumber: string().required("Primary Number is required"),
   address: string().required("Address is required"),
   entityType: string().required("Type is required"),
   email: string().required("Email is required"),
   summary: string().required("Summary is required"),
-  status: string().oneOf(["ACTIVE", "INACTIVE"]).required("Status is required")
+  status: string().oneOf(["ACTIVE", "INACTIVE"]).default("ACTIVE").required("Status is required")
 });
 
 export default function ({ ...props }: IProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const [logoFile, setLogoFile] = useState<string | any>();
 
   const {
     register,
@@ -44,18 +50,12 @@ export default function ({ ...props }: IProps) {
     defaultValues: { entityType: "", name: "", primaryNumber: "", },
   });
 
-  watch((data, { name, type }) => {
-    if (name === "logoFile" && type === "change") {
-      setLogoFile(data.tenderFile[0]?.name);
-    }
-  });
-
 
   const createMutation = useMutation({
     mutationFn: (data: FormData) => createEntity(data),
     onSuccess: () => {
       reset();
-      setLogoFile(undefined);
+      // setLogoFile(undefined);
       setOpen(false);
       toast.success("Entity created successfully");
     },
@@ -80,9 +80,8 @@ export default function ({ ...props }: IProps) {
 
 
   const submit = (data: Record<string, any>) => {
-    console.log(data);
     const formData = new FormData();
-    formData.append("file", data.logoFile[0]);
+    formData.append("file", data.logoFile);
     formData.append("name", data.name);
     formData.append("primaryNumber", data.primaryNumber);
     formData.append("address", data.address);
@@ -253,8 +252,8 @@ export default function ({ ...props }: IProps) {
                   strokeWidth={1.5}
                   className="mx-auto mb-4"
                 />
-                {logoFile ? (
-                  <div>{logoFile}</div>
+                {watch("logoFile") ? (
+                  <div>{watch("logoFile").name}</div>
                 ) : (
                   <Fragment>
                     <p>Add Entity LOGO .jpg file here</p>
@@ -267,7 +266,9 @@ export default function ({ ...props }: IProps) {
                 id="logoFile"
                 accept=".jpg"
                 className="hidden"
+                multiple={false}
                 {...register("logoFile")}
+                onChange={(e) => setValue("logoFile", e.target.files![0])}
               />
             </label>
 
@@ -276,13 +277,15 @@ export default function ({ ...props }: IProps) {
             </p>
           </div>
 
-          <Button
-            type="submit"
-            label="Register"
-            theme="primary"
-            size="md"
-            loading={createMutation.isPending || updateMutation.isPending}
-          />
+          <div className="w-fit mx-auto flex items-center">
+            <Button
+              type="submit"
+              label="Register"
+              theme="primary"
+              size="md"
+              loading={createMutation.isPending || updateMutation.isPending}
+            />
+          </div>
         </form>
       </Modal>
     </div>

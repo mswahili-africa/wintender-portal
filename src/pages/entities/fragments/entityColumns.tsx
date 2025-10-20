@@ -33,7 +33,7 @@ const columns: IColumn[] = [
             <Chip
                 label={value}
                 size="sm"
-                theme={value === 'GOVERNMENT' ? 'warning' : 'primary'}
+                theme={value === 'GOVERNMENT' ? 'warning' : value==="PRIVATE" ? 'primary' :  'approved'}
                 variant="lighter"
             />
         ),
