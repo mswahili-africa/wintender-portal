@@ -39,6 +39,7 @@ export default function InternationalTenders() {
     const [tempSelectedCategory, setTempSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
+    const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
 
 
 
@@ -176,22 +177,14 @@ export default function InternationalTenders() {
         [fetchEntities]
     );
 
-    const handleView = (content: ITenders) => {
-        setSelectedTender(content);
-    }
-
-    const handleEdit = (content: ITenders) => {
-        setEditTender(content);
+    const handleCloseModal = () => {
+        setOpenModal({ type: null, tender: null });
     }
 
     // JCM Applicants List
     const openApplicantList = (content: ITenders) => {
         navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
     }
-
-    const handleEditModalClose = () => {
-        setEditTender(undefined);
-    };
 
     const topUpSubscription = () => {
         setIsPaymentModalOpen(true);
@@ -232,16 +225,15 @@ export default function InternationalTenders() {
                 />
             )}
 
-            {editTender ? (
-                <TenderEdit
-                    initials={editTender}
-                    onSuccess={() => {
-                        setEditTender(null);
-                        refetch();
-                    }}
-                    onClose={handleEditModalClose}
-                />
-            ) : null}
+            <TenderEdit
+                open={openModal.type === "update"}
+                initials={openModal.tender!}
+                onSuccess={() => {
+                    handleCloseModal();
+                    refetch();
+                }}
+                onClose={handleCloseModal}
+            />
 
             <div className="flex justify-between items-center border-b border-slate-200">
                 <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
@@ -315,14 +307,14 @@ export default function InternationalTenders() {
                         onClick={handleReset} // Resets filters
                     />
                     {(userRole === "BIDDER") && (
-                    <Button
-                        type="button"
-                        label="Elligible Tenders"
-                        icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
-                        theme={isEligible ? "secondary" : "info"}
-                        size="sm"
-                        onClick={() => setIsEligible(!isEligible)} // Resets filters
-                    />
+                        <Button
+                            type="button"
+                            label="Elligible Tenders"
+                            icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
+                            theme={isEligible ? "secondary" : "info"}
+                            size="sm"
+                            onClick={() => setIsEligible(!isEligible)} // Resets filters
+                        />
                     )}
                 </div>
 
@@ -342,7 +334,7 @@ export default function InternationalTenders() {
                             <div className="flex justify-center space-x-2">
                                 <button
                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(content)}
+                                    onClick={() => setOpenModal({ type: "view", tender: content })}
                                 >
                                     <IconEye size={20} />
                                 </button>
@@ -351,7 +343,7 @@ export default function InternationalTenders() {
 
                                         <button
                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => handleEdit(content)}
+                                            onClick={() => setOpenModal({ type: "update", tender: content })}
                                         >
                                             <IconEdit size={20} />
                                         </button>
@@ -385,14 +377,13 @@ export default function InternationalTenders() {
                 </div>
             </div>
 
-            {selectedTender && (
-                <TenderViewModal
-                    tender={selectedTender}
-                    onClose={() => setSelectedTender(null)}
-                    isLoading={isDoItForMeLoading}
-                    onDoItForMeClick={handleDoItForMeClick}
-                />
-            )}
+            <TenderViewModal
+                isOpen={openModal.type === "view"}
+                tender={openModal.tender ?? null}
+                onClose={handleCloseModal}
+                isLoading={isDoItForMeLoading}
+                onDoItForMeClick={handleDoItForMeClick}
+            />
 
         </div>
     )

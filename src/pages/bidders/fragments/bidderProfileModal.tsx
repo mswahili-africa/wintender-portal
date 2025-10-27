@@ -29,6 +29,9 @@ import UserProfile from "@/pages/users/_username";
 import { WalletButton } from "@/components/button/WalletButton";
 import columns from "@/pages/tenders/fragments/tenderColumns";
 import useTenders from "@/hooks/useTenders";
+import TenderViewModal from "@/pages/tenders/fragments/tenderViewModelNew";
+import useCategories from "@/hooks/useCategories";
+import Loader from "@/components/spinners/Loader";
 
 interface IProps {
     children?: React.ReactNode;
@@ -46,7 +49,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, setMessage] = useState<string>("");
-    const [categories, setCategories] = useState<ICategory[]>([]);
+    const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
 
@@ -56,8 +59,14 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         { name: "Eligible Tenders", value: "eligible" },
     ];
 
-    // const { userData } = useUserDataContext();  // Use the hook to get user data
-    // const userRole = userData?.role || "BIDDER";
+
+
+    const { categories, isLoading: categoryLoading } = useCategories({
+        page: 0,
+        size: 1000,
+        search: "",
+        filter: {},
+    });
 
     // JCM  edit details
     const { userData } = useUserData();
@@ -65,76 +74,26 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-    const [isChanged, setIsChanged] = useState(false);
-
-    const addCategory = (category: ICategory) => {
-        if (!selectedCategories.find((c) => c.id === category.id)) {
-            setSelectedCategories([...selectedCategories, category]);
-            setIsChanged(true); // ← Mark as changed
-        }
-    };
-
-    const removeCategory = (category: ICategory) => {
-        setSelectedCategories(prev =>
-            prev.filter((c) => c.id !== category.id)
-        );
-        setIsChanged(true);
-    };
-
-    const availableOptions = categories
-        .filter((cat) => !selectedCategories.find((sc) => sc.id === cat.id))
-        .map((cat) => ({ value: cat.id, label: cat.name }));
 
     useEffect(() => {
-        if (user?.companyCategories && categories.length > 0 && isOpen) {
-            const initialSelected = categories.filter((cat) =>
+        if (user?.companyCategories && categories?.content.length! > 0 && isOpen) {
+            const initialSelected = categories?.content.filter((cat) =>
                 user.companyCategories.includes(cat.id)
             );
-            setSelectedCategories(initialSelected);
-            setIsChanged(false);
+            setSelectedCategories(initialSelected!);
         }
     }, [user, categories, isOpen]);
-
-
-    // JCM input style
-    const customStyles = {
-        control: (provided: any, state: any) => ({
-            ...provided,
-            borderColor: state.isFocused ? 'green' : 'green',
-            boxShadow: state.isFocused ? '0 0 0 1px green' : 'none',
-            '&:hover': {
-                borderColor: 'green',
-            },
-        }),
-        option: (provided: any, state: any) => ({
-            ...provided,
-            backgroundColor: state.isSelected
-                ? '#d1fae5'
-                : state.isFocused
-                    ? '#f0fdf4'
-                    : 'white',
-            color: 'black',
-        }),
-        singleValue: (provided: any) => ({
-            ...provided,
-            color: 'black',
-        }),
-        menu: (provided: any) => ({
-            ...provided,
-            zIndex: 9999,
-        }),
-    };
 
     const [searchParams, _] = useSearchParams();
 
     // Get the userId from the user object passed in props
-    const { payments,isLoading:paymentLoading } = getUserPayments({
+    const { payments, isLoading: paymentLoading } = getUserPayments({
         userId: user.id, // Pass the userId from the user object
         page: page,
         filter: { ...Object.fromEntries(searchParams) }, // Pass filter here
     });
 
-    const { applicationList,isLoading:requestLoading } = useApplicationsList({
+    const { applicationList, isLoading: requestLoading } = useApplicationsList({
         applicationGroup: "user-" + user.id,
         groupId: "user-" + user.id,
         page,
@@ -155,32 +114,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         sendSMS.mutate({ phoneNumber, message });
     };
 
-    useEffect(() => {
-        async function fetchCategories() {
-            try {
-                const data = await getCategories({
-                    page: 0,
-                    size: 1000,
-                    search: "",
-                    filter: {},
-                });
-                setCategories(data.content);
-            } catch (error) {
-                console.error("Failed to fetch categories", error);
-            }
-        }
-
-        fetchCategories();
-    }, []);
-
     const sendSMS = useMutation({
         mutationFn: (data: IMessage) => sendMessageSingle(data),
-        /*************  ✨ Windsurf Command ⭐  *************/
-        /**
-         * Callback function to be called when the mutation is successful
-         * Will close the modal, reset the loading state and show a success toast
-         */
-        /*******  50bed3d9-7e01-41f7-a08c-df2ec70bb39e  *******/
         onSuccess: () => {
             toast.success("Sent successfully");
             setIsModalOpen(false); // Close modal on success
@@ -189,18 +124,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         onError: () => {
             toast.error("Send failed");
             setIsSending(false); // Reset loading state on error
-        },
-    });
-
-    const updateCategoriesMutation = useMutation({
-        mutationFn: (data: { id: string; categoryIds: string[] }) =>
-            updateBidderCategories({ categoryIds: data.categoryIds }, data.id),
-        onSuccess: () => {
-            toast.success("Categories updated successfully");
-            setIsChanged(false);
-        },
-        onError: () => {
-            toast.error("Failed to update categories");
         },
     });
 
@@ -222,11 +145,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         <>
             <Modal
                 isOpen={isOpen}
+                zIndex={10}
                 size={"xl"}
                 onClose={() => {
                     setIsOpen(false);
                     onClose();
                 }}
+
             >
 
                 <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
@@ -295,8 +220,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                 <div className="space-y-4">
                                     <strong>Contact Person</strong>
                                     <p><strong>Person:</strong> {user.name}</p>
-                                    <p><strong>Email:</strong> {user.companyEmail}</p>
                                     <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
+                                    <p><strong>Email:</strong> {user.companyEmail}</p>
                                 </div>
 
                                 {/* Right Column - Location Info */}
@@ -327,57 +252,37 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                 <div>
                                     {/*JCM Selected Categories */}
                                     <div className="flex flex-col gap-2 mb-4">
-                                        {selectedCategories.length === 0 ? (
-                                            <span className="text-sm text-gray-400 my-10 w-full text-center">
-                                                No categories
-                                            </span>
+                                        {
+                                            categoryLoading ? (
+                                                <Loader />
+                                            ): selectedCategories.length === 0 ? (
+                                        <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                            No categories
+                                        </span>
                                         ) : (
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                {selectedCategories.map((category, index) => {
-                                                    const formattedName = category.name
-                                                        .toLowerCase()
-                                                        .replace(/\b\w/g, (char) => char.toUpperCase());
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            {selectedCategories.map((category, index) => {
+                                                const formattedName = category.name
+                                                    .toLowerCase()
+                                                    .replace(/\b\w/g, (char) => char.toUpperCase());
 
-                                                    return (
-                                                        <React.Fragment key={category.id}>
-                                                            <span className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm">
-                                                                {formattedName}
-                                                            </span>
-                                                            {index < selectedCategories.length - 1 && (
-                                                                <span className="text-gray-500">•</span>
-                                                            )}
-                                                        </React.Fragment>
-                                                    );
-                                                })}
-                                            </div>
-                                        )}
+                                                return (
+                                                    <React.Fragment key={category.id}>
+                                                        <span className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm">
+                                                            {formattedName}
+                                                        </span>
+                                                        {index < selectedCategories.length - 1 && (
+                                                            <span className="text-gray-500">•</span>
+                                                        )}
+                                                    </React.Fragment>
+                                                );
+                                            })}
+                                        </div>
+                                        )
+                                        }
 
                                     </div>
                                 </div>
-
-                                {
-                                    // JCM save button
-                                    // isChanged && selectedCategories.length > 0 &&
-                                    // <div className="w-full flex justify-center">
-                                    //     <Button
-                                    //         type="button"
-                                    //         label={updateCategoriesMutation.isLoading ? "Updating..." : "Save"}
-                                    //         size="md"
-                                    //         theme="primary"
-                                    //         loading={updateCategoriesMutation.isLoading}
-                                    //         disabled={updateCategoriesMutation.isLoading}
-                                    //         onClick={() => {
-                                    //             const categoryIds = selectedCategories.map((cat) => cat.id);
-                                    //             if (categoryIds.length > 0) {
-                                    //                 updateCategoriesMutation.mutate({
-                                    //                     id: user.id,
-                                    //                     categoryIds,
-                                    //                 });
-                                    //             }
-                                    //         }}
-                                    //     />
-                                    // </div>
-                                }
 
 
 
@@ -439,7 +344,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                         </div>
                     }
 
-
+                    {/* REQUESTS */}
                     {activeTab === "requests" &&
                         <div className="container">
                             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -473,39 +378,16 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                                     data={getTenders ? getTenders.content : []}
                                     isLoading={isLoading}
                                     hasSelection={false}
-                                    hasActions={false}
+                                    hasActions={!["BIDDER", "PROCUREMENT_ENTITY"].includes(userData?.role!)}
                                     actionSlot={(content: ITenders) => {
                                         return (
                                             <div className="flex justify-center space-x-2">
                                                 <button
                                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                                // onClick={() => handleView(content)}
+                                                    onClick={() => setOpenModal({ type: "view", tender: content })}
                                                 >
                                                     <IconEye size={20} />
                                                 </button>
-                                                {
-                                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userData?.role!) && (
-                                                        <><Fragment>
-
-                                                            <button
-                                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                            // onClick={() => handleEdit(content)}
-                                                            >
-                                                                <IconEdit size={20} />
-                                                            </button>
-                                                        </Fragment>
-                                                            <Fragment>
-
-                                                                <button
-                                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                                // onClick={() => handleDelete(content)}
-                                                                >
-                                                                    <IconTrash size={20} />
-                                                                </button>
-                                                            </Fragment>
-                                                        </>
-                                                    )
-                                                }
                                             </div>
                                         );
                                     }}
@@ -588,7 +470,24 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
                         </button>
                     </SMSModal>
                 )}
+
+
+                {
+                    openModal.tender && (
+                        <TenderViewModal
+                            isOpen={openModal.type === "view"}
+                            tender={openModal.tender}
+                            onClose={() => setOpenModal({ tender: null, type: null })}
+                            isLoading={false}
+                            onDoItForMeClick={function (): void {
+                                throw new Error("Function not implemented.");
+                            }}
+                        />
+                    )
+                }
             </Modal >
+
+
         </>
     );
 };

@@ -134,7 +134,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
             onSuccess();
         },
         onError: (error: any) => {
-            toast.error("Failed to register");
+            toast.error(error.data.message || "Registration failed");
         },
     });
 

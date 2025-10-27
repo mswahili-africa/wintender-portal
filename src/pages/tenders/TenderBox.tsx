@@ -26,7 +26,6 @@ export default function PrivateTenders() {
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
-    const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
@@ -179,18 +178,10 @@ export default function PrivateTenders() {
         setSelectedTender(content);
     }
 
-    const handleEdit = (content: ITenders) => {
-        setEditTender(content);
-    }
-
     // JCM Applicants List
     const openApplicantList = (content: ITenders) => {
         navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
     }
-
-    const handleEditModalClose = () => {
-        setEditTender(undefined);
-    };
 
     const topUpSubscription = () => {
         setIsPaymentModalOpen(true);
@@ -224,17 +215,6 @@ export default function PrivateTenders() {
                 />
 
             )}
-
-            {editTender ? (
-                <TenderEdit
-                    initials={editTender}
-                    onSuccess={() => {
-                        setEditTender(null);
-                        refetch();
-                    }}
-                    onClose={handleEditModalClose}
-                />
-            ) : null}
 
             <div className="flex justify-between items-center border-b border-slate-200">
                 <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>

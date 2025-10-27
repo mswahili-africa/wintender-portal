@@ -39,7 +39,7 @@ export default function(props: IProps) {
 
     return (
         <Transition appear show={props.isOpen} as={Fragment}>
-            <Dialog as="div" className={`relative z-${props.zIndex ?? 40}`} onClose={() => props.onClose(false)}>
+            <Dialog as="div" static className={`relative z-${props.zIndex ?? 40}`} onClose={() => props.onClose(false)}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"

@@ -16,6 +16,7 @@ import { TextEditor } from "@/components/editor/TextEditor";
 import { useUserDataContext } from "@/providers/userDataProvider";
 
 interface IProps {
+    open: boolean;
     onSuccess: () => void;
     initials?: ITenders;
     onClose: () => void;
@@ -33,9 +34,8 @@ const schema = object().shape({
     closeDate: string().required("Close Date is required"),
 });
 
-export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
+export default function TenderEdit({ onSuccess, initials, onClose,open=false }: IProps) {
 
-    const [open, setOpen] = useState<boolean>(true);
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
@@ -214,7 +214,6 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
         onSuccess: () => {
             reset();
             setTenderFile(undefined);
-            setOpen(false);
             toast.success("Tender Updated successfully");
             onSuccess();
         },
@@ -226,14 +225,13 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
     const openDate = watch("openDate");
 
     return (
-        <div className="max-w-max">
+        // <div className="max-w-max">
 
             <Modal
                 size="md"
                 title="Edit Tender"
                 isOpen={open}
                 onClose={() => {
-                    setOpen(false);
                     onClose(); // Call the parent handler when closing the modal
                 }}
             >
@@ -514,6 +512,6 @@ export default function TenderEdit({ onSuccess, initials, onClose }: IProps) {
                     />
                 </form>
             </Modal>
-        </div>
+        // </div>
     );
 }

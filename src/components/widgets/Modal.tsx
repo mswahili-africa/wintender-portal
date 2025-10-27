@@ -6,6 +6,7 @@ type TProps = {
     isOpen: boolean
     size: "xs" | "sm" | "md" | "lg" | "xl"
     title: string
+    zIndex?: number
     children: ReactNode
     onClose: (value: boolean) => void
 }
@@ -32,7 +33,7 @@ export default function({...props}: TProps) {
 
     return (
         <Transition appear show={props.isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => props.onClose(false)}>
+            <Dialog as="div" className={`relative z-${props.zIndex ?? 10}`} onClose={() => props.onClose(false)}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"

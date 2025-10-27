@@ -92,7 +92,7 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
     );
 
     return (
-        <Modal size="sm" title="Assign Bidder" isOpen={isOpen} onClose={onClose}>
+        <Modal zIndex={30} size="sm" title="Assign Bidder" isOpen={isOpen} onClose={onClose}>
             <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
                 {/* ✅ Bidder Selection with Debounced Search */}
                 <div className="mb-2">

@@ -71,12 +71,9 @@ const columns: IColumn[] = [
 
             if (diffMs <= 0) {
                 return (
-                    <Chip
-                        label="CLOSED"
-                        size="xs"
-                        theme="danger"
-                        variant="outline"
-                    />
+                    <span className="text-red-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">
+                        CLOSED
+                    </span>
                 );
             }
 
@@ -90,12 +87,9 @@ const columns: IColumn[] = [
                     : `${hours}h ${minutes}m`;
 
             return (
-                <Chip
-                    label={remaining}
-                    size="xs"
-                    theme={days > 0 ? "success" : "warning"}
-                    variant="outline"
-                />
+                <span className={`${days > 3 ? "text-green-700 bg-green-100" : "text-yellow-700 bg-yellow-100"} px-2 py-1 flex text-center items-center whitespace-nowrap rounded-full text-xs font-medium`}>
+                    {remaining}
+                </span>
             );
         }
 
