@@ -10,7 +10,6 @@ import Chip from "@/components/chip/Chip";
 import { Countdown } from "@/components/countdown/Countdown";
 import { EligibleBidders } from "./eligibleBiddersList";
 import { Clarifications } from "./Clarifications";
-import Modal from "@/components/Modal";
 import { Dialog, Transition } from "@headlessui/react";
 
 interface ModalProps {
@@ -238,6 +237,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                     </div>
                 </div>
 
+
                 {/* MOdALS */}
                 {/* Assign Bidder Modal */}
                 {assignBidderModalOpen && (
@@ -259,7 +259,6 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                         />
                     </Suspense>
                 )}
-
             </Dialog>
 
 

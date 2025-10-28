@@ -46,7 +46,7 @@ export default function PETenderApplicationWizardModal({
   if (!isOpen) return null;
 
   return (
-    <Modal size="xl" zIndex={30} isOpen={isOpen} onClose={onClose} title="Tender Application">
+    <Modal size="xl" zIndex={50} isOpen={isOpen} onClose={onClose} title="Tender Application">
       <div className="w-full flex justify-end">
         {closedate && <Countdown expirationTime={closedate} />}
       </div>

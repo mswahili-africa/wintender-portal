@@ -34,7 +34,7 @@ const regionOptions = tanzaniaRegions.map(r => ({ label: r, value: r }));
 
 export default function Bidders() {
     const [page, setPage] = useState<number>(0);
-    const [sort, setSort] = useState<string>("createdAt,desc");
+    const [sort, _] = useState<string>("createdAt,desc");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [message, setMessage] = useState<string>("");
@@ -55,9 +55,6 @@ export default function Bidders() {
     // JCM DELETE MODAL
     const { userData } = useUserData();
 
-
-    
-
     const deleteBidderMutation = useMutation({
         mutationKey: ["deleteBidder", openModal.user?.id],
         mutationFn: (id: string) => deleteBidder(id),
@@ -71,8 +68,6 @@ export default function Bidders() {
         }
     })
     // JCM DELETE END
-
-
 
     useEffect(() => {
         const addressParam = searchParams.get("address");

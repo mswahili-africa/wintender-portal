@@ -59,8 +59,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         { name: "Eligible Tenders", value: "eligible" },
     ];
 
-
-
     const { categories, isLoading: categoryLoading } = useCategories({
         page: 0,
         size: 1000,
@@ -145,8 +143,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
         <>
             <Modal
                 isOpen={isOpen}
-                zIndex={10}
                 size={"xl"}
+                zIndex={10}
                 onClose={() => {
                     setIsOpen(false);
                     onClose();
