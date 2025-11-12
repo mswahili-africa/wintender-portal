@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ITenders } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconEye, IconMessage, IconTrash } from "@tabler/icons-react";
+import { IconEye, IconMessage } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -15,13 +15,11 @@ import Pagination from "@/components/widgets/table/Pagination";
 import SMSModal from "./sms-model";
 import paymentsColumns from "./paymentsColumns"
 import dummyLogo from "@/assets/images/bidder-dummy-logo.png"
-import { getCategories } from "@/services/tenders";
 import { getUserPayments } from "@/hooks/usePayments";
 import applicationColumns from "./applicationListColumns";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
-import { updateBidderCategories } from "@/services/user";
 import { IconX } from "@tabler/icons-react";
 import { useUserData } from "@/hooks/useUserData";
 import { IconEdit } from "@tabler/icons-react";
@@ -37,10 +35,11 @@ interface IProps {
     children?: React.ReactNode;
     user: ICompany;
     loading: boolean;
+    zIndex?: number;
     onClose: () => void; // Add this to handle closing the modal from parent
 }
 
-const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
+const BidderProfileModal: React.FC<IProps> = ({ user, onClose,zIndex=10 }) => {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<string>("updatedAt,desc");
@@ -144,7 +143,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
             <Modal
                 isOpen={isOpen}
                 size={"xl"}
-                zIndex={10}
+                zIndex={zIndex}
                 onClose={() => {
                     setIsOpen(false);
                     onClose();
@@ -266,12 +265,12 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose }) => {
 
                                                 return (
                                                     <React.Fragment key={category.id}>
-                                                        <span className="flex items-center w-fit gap-1 px-3 py-1 text-black rounded-full text-sm">
+                                                        <span className="flex items-center w-fit gap-1 px-3 py-1 text-black bg-green-100 border-green-500 border-2 rounded-full text-sm">
                                                             {formattedName}
                                                         </span>
-                                                        {index < selectedCategories.length - 1 && (
+                                                        {/* {index < selectedCategories.length - 1 && (
                                                             <span className="text-gray-500">•</span>
-                                                        )}
+                                                        )} */}
                                                     </React.Fragment>
                                                 );
                                             })}

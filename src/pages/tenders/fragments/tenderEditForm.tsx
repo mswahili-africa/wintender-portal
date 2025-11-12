@@ -34,7 +34,7 @@ const schema = object().shape({
     closeDate: string().required("Close Date is required"),
 });
 
-export default function TenderEdit({ onSuccess, initials, onClose,open=false }: IProps) {
+export default function TenderEdit({ onSuccess, initials, onClose, open = false }: IProps) {
 
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
@@ -195,7 +195,11 @@ export default function TenderEdit({ onSuccess, initials, onClose,open=false }: 
         formData.append("closeDate", data.closeDate);
         formData.append("tenderGroup", "PUBLIC");
         formData.append("tenderType", data.tenderType);
-        formData.append("categoryId", data.categoryId?.value || "");
+        if (data.categoryId !== null) {
+            formData.append("categoryId", data.categoryId?.value || "");
+        }else {
+            return toast.error("Please select a category");
+        }
         formData.append(
             "entityId",
             userRole === "PROCUREMENT_ENTITY" ?
@@ -225,238 +229,265 @@ export default function TenderEdit({ onSuccess, initials, onClose,open=false }: 
     const openDate = watch("openDate");
 
     return (
-        // <div className="max-w-max">
+        <Modal
+            size="md"
+            title="Edit Tender"
+            isOpen={open}
+            onClose={() => {
+                onClose();
+            }}
+        >
+            <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
+                {/* Region */}
+                <div className="mb-2">
+                    <label htmlFor="region" className="block mb-2">
+                        Region
+                    </label>
 
-            <Modal
-                size="md"
-                title="Edit Tender"
-                isOpen={open}
-                onClose={() => {
-                    onClose(); // Call the parent handler when closing the modal
-                }}
-            >
-                <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                    {/* Region */}
+                    <select
+                        className={`${errors.region?.type === "required" ? "input-error" : "input-normal"}`}
+                        {...register("region", { required: true })}
+                    >
+                        <option value="PRIVATE">PRIVATE</option>
+                        <option value="GOVERNMENT">GOVERNMENT</option>
+                        <option value="INTERNATIONAL">INTERNATIONAL</option>
+                    </select>
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.region?.message?.toString()}
+                    </p>
+                </div>
+                {/* Tender Type */}
+                <div className="mb-2">
+                    <label htmlFor="tenderType" className="block mb-2">
+                        Type
+                    </label>
+
+                    <select
+                        className={`${errors.tenderType?.type === "required" ? "input-error" : "input-normal"}`}
+                        {...register("tenderType", { required: true })}
+                    >
+                        <option value="EXPRESSION_OF_INTEREST">EXPRESSION OF INTEREST (EI)</option>
+                        <option value="REQUEST_OF_PROPOSAL">REQUEST OF PROPOSAL (RFP)</option>
+                        <option value="REQUEST_FOR_QUOTATION">REQUEST FOR QUOTATION (RFQ)</option>
+                        <option value="PRE_QUALIFICATION">PRE QUALIFICATION (PQ)</option>
+                        <option value="REQUEST_FOR_BID">REQUEST FOR BID (RFB)</option>
+                        <option value="REQUEST_FOR_TENDER">REQUEST FOR TENDER (RFT)</option>
+                        <option value="INVITATION_TO_TENDER">INVITATION TO TENDER (ITT)</option>
+                        <option value="INVITATION_TO_BID">INVITATION TO BID (IFB)</option>
+                        <option value="⁠REQUEST_FOR_INFORMATION">⁠REQUEST FOR INFORMATION (RFI)</option>
+                    </select>
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.tenderType?.message?.toString()}
+                    </p>
+                </div>
+
+                {/* Entity with search */}
+                {(userRole !== "PROCUREMENT_ENTITY") && (
                     <div className="mb-2">
-                        <label htmlFor="region" className="block mb-2">
-                            Region
+                        <label htmlFor="com" className="block mb-2">
+                            Entity
                         </label>
-
-                        <select
-                            className={`${errors.region?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("region", { required: true })}
-                        >
-                            <option value="PRIVATE">PRIVATE</option>
-                            <option value="GOVERNMENT">GOVERNMENT</option>
-                            <option value="INTERNATIONAL">INTERNATIONAL</option>
-                        </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.region?.message?.toString()}
-                        </p>
-                    </div>
-                    {/* Tender Type */}
-                    <div className="mb-2">
-                        <label htmlFor="tenderType" className="block mb-2">
-                            Type
-                        </label>
-
-                        <select
-                            className={`${errors.tenderType?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("tenderType", { required: true })}
-                        >
-                            <option value="EXPRESSION_OF_INTEREST">EXPRESSION OF INTEREST (EI)</option>
-                            <option value="REQUEST_OF_PROPOSAL">REQUEST OF PROPOSAL (RFP)</option>
-                            <option value="REQUEST_FOR_QUOTATION">REQUEST FOR QUOTATION (RFQ)</option>
-                            <option value="PRE_QUALIFICATION">PRE QUALIFICATION (PQ)</option>
-                            <option value="REQUEST_FOR_BID">REQUEST FOR BID (RFB)</option>
-                            <option value="REQUEST_FOR_TENDER">REQUEST FOR TENDER (RFT)</option>
-                            <option value="INVITATION_TO_TENDER">INVITATION TO TENDER (ITT)</option>
-                            <option value="INVITATION_TO_BID">INVITATION TO BID (IFB)</option>
-                            <option value="⁠REQUEST_FOR_INFORMATION">⁠REQUEST FOR INFORMATION (RFI)</option>
-                        </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.tenderType?.message?.toString()}
-                        </p>
-                    </div>
-
-                    {/* Entity with search */}
-                    {(userRole !== "PROCUREMENT_ENTITY") && (
-                        <div className="mb-2">
-                            <label htmlFor="com" className="block mb-2">
-                                Entity
-                            </label>
-                            <Select
-                                options={entities}
-                                value={watch("entityId") || null}   // expects object
-                                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
-                                onChange={(selectedOption) => setValue("entityId", selectedOption)} // store object
-                                isLoading={loading}
-                                placeholder="Search for an entity"
-                            />
-                            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                {errors.bidder?.message?.toString()}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Category with search */}
-                    <div className="mb-2">
-                        <label htmlFor="category" className="block mb-2">
-                            Category
-                        </label>
-
-
                         <Select
-                            options={categories}
-                            value={watch("categoryId") || null} // expects object
-                            onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
-                            onChange={(selectedOption) => setValue("categoryId", selectedOption)} // store object
+                            options={entities}
+                            value={watch("entityId") || null}   // expects object
+                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                            onChange={(selectedOption) => setValue("entityId", selectedOption)} // store object
                             isLoading={loading}
-                            placeholder="Search for a category"
-                        />
-
-
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.category?.message?.toString()}
-                        </p>
-                    </div>
-
-                    <div className="mb-2">
-                        <label htmlFor="Number" className="block mb-2">
-                            Number
-                        </label>
-
-                        <input
-                            type="text"
-                            className={`${errors.tenderNumber?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("tenderNumber", { required: true })}
+                            placeholder="Search for an entity"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.tenderNumber?.message?.toString()}
+                            {errors.bidder?.message?.toString()}
                         </p>
                     </div>
+                )}
 
-                    <div className="mb-2">
-                        <label htmlFor="title" className="block mb-2">
-                            Title
-                        </label>
+                {/* Category with search */}
+                <div className="mb-2">
+                    <label htmlFor="category" className="block mb-2">
+                        Category
+                    </label>
 
-                        <input
-                            type="text"
-                            className={`${errors.title?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("title", { required: true })}
-                        />
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.title?.message?.toString()}
-                        </p>
-                    </div>
 
-                    <div className="mb-2">
-                        <label htmlFor="summary" className="block mb-2">
-                            Summary
-                        </label>
+                    <Select
+                        options={categories}
+                        value={watch("categoryId") || null} // expects object
+                        onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
+                        onChange={(selectedOption) => setValue("categoryId", selectedOption)} // store object
+                        isLoading={loading}
+                        placeholder="Search for a category"
+                    />
 
-                        <TextEditor name="summary" control={control} />
 
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.summary?.message?.toString()}
-                        </p>
-                    </div>
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.category?.message?.toString()}
+                    </p>
+                </div>
 
-                    <div className="mb-6">
-                        <label className="block mb-2">Tender Document</label>
-                        <label
-                            htmlFor="tenderFile"
-                            className="label block py-10 bg-slate-50 border border-dashed border-slate-200 rounded-md cursor-pointer"
-                        >
-                            <div className="text-slate-500 text-xs text-center font-light">
-                                <IconFileText
-                                    size={32}
-                                    strokeWidth={1.5}
-                                    className="mx-auto mb-4"
-                                />
-                                {tenderFile ? (
-                                    <div>{tenderFile}</div>
-                                ) : (
-                                    <Fragment>
-                                        <p>Add your tender document .pdf file here</p>
-                                        <p className="text-blue-500 font-medium">Click to browse</p>
-                                    </Fragment>
-                                )}
-                            </div>
-                            <input
-                                type="file"
-                                id="tenderFile"
-                                accept=".pdf"
-                                className="hidden"
-                                {...register("tenderFile")}
+                <div className="mb-2">
+                    <label htmlFor="Number" className="block mb-2">
+                        Number
+                    </label>
+
+                    <input
+                        type="text"
+                        className={`${errors.tenderNumber?.type === "required"
+                            ? "input-error"
+                            : "input-normal"
+                            }`}
+                        {...register("tenderNumber", { required: true })}
+                    />
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.tenderNumber?.message?.toString()}
+                    </p>
+                </div>
+
+                <div className="mb-2">
+                    <label htmlFor="title" className="block mb-2">
+                        Title
+                    </label>
+
+                    <input
+                        type="text"
+                        className={`${errors.title?.type === "required"
+                            ? "input-error"
+                            : "input-normal"
+                            }`}
+                        {...register("title", { required: true })}
+                    />
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.title?.message?.toString()}
+                    </p>
+                </div>
+
+                <div className="mb-2">
+                    <label htmlFor="summary" className="block mb-2">
+                        Summary
+                    </label>
+
+                    <TextEditor name="summary" control={control} />
+
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.summary?.message?.toString()}
+                    </p>
+                </div>
+
+                <div className="mb-6">
+                    <label className="block mb-2">Tender Document</label>
+                    <label
+                        htmlFor="tenderFile"
+                        className="label block py-10 bg-slate-50 border border-dashed border-slate-200 rounded-md cursor-pointer"
+                    >
+                        <div className="text-slate-500 text-xs text-center font-light">
+                            <IconFileText
+                                size={32}
+                                strokeWidth={1.5}
+                                className="mx-auto mb-4"
                             />
-                        </label>
+                            {tenderFile ? (
+                                <div>{tenderFile}</div>
+                            ) : (
+                                <Fragment>
+                                    <p>Add your tender document .pdf file here</p>
+                                    <p className="text-blue-500 font-medium">Click to browse</p>
+                                </Fragment>
+                            )}
+                        </div>
+                        <input
+                            type="file"
+                            id="tenderFile"
+                            accept=".pdf"
+                            className="hidden"
+                            {...register("tenderFile")}
+                        />
+                    </label>
 
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.tenderFile?.message?.toString()}
-                        </p>
-                    </div>
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.tenderFile?.message?.toString()}
+                    </p>
+                </div>
 
 
+                <div className="mb-2">
+                    <label htmlFor="openDate" className="block mb-2">
+                        Open Date
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="openDate"
+                        className={`${errors.openDate?.type === "required"
+                            ? "input-error"
+                            : "input-normal"
+                            }`}
+                        {...register("openDate", { required: true })}
+                    />
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.openDate?.message?.toString()}
+                    </p>
+                </div>
+
+                {openDate != "" && (
                     <div className="mb-2">
-                        <label htmlFor="openDate" className="block mb-2">
-                            Open Date
+                        <label htmlFor="closeDate" className="block mb-2">
+                            Close Date
                         </label>
 
                         <input
                             type="datetime-local"
-                            id="openDate"
-                            className={`${errors.openDate?.type === "required"
+                            id="closeDate"
+                            className={`${errors.closeDate?.type === "required"
                                 ? "input-error"
                                 : "input-normal"
                                 }`}
-                            {...register("openDate", { required: true })}
+                            {...register("closeDate", { required: true })}
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.openDate?.message?.toString()}
+                            {errors.closeDate?.message?.toString()}
                         </p>
                     </div>
+                )}
 
-                    {openDate != "" && (
-                        <div className="mb-2">
-                            <label htmlFor="closeDate" className="block mb-2">
-                                Close Date
-                            </label>
+                {/* JCM Application fee input */}
+                <div className="mb-2">
+                    <label htmlFor="applicationFee" className="block mb-2">
+                        Application Fee
+                    </label>
 
-                            <input
-                                type="datetime-local"
-                                id="closeDate"
-                                className={`${errors.closeDate?.type === "required"
-                                    ? "input-error"
-                                    : "input-normal"
-                                    }`}
-                                {...register("closeDate", { required: true })}
-                            />
-                            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                {errors.closeDate?.message?.toString()}
-                            </p>
-                        </div>
-                    )}
+                    <input
+                        type="text"
+                        id="applicationFee"
+                        inputMode="decimal"
+                        className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                        {...register("applicationFee", {
+                            required: true,
+                            pattern: {
+                                value: /^\d+(\.\d{1,2})?$/,
+                                message: "Enter a valid number",
+                            },
+                        })}
+                        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+                        }}
+                    />
 
-                    {/* JCM Application fee input */}
+                    <p className="text-xs text-red-500 mt-1 mx-0.5">
+                        {errors.applicationFee?.message?.toString()}
+                    </p>
+                </div>
+
+                {/* JCM Consultation fee input */}
+                {
+                    userRole !== "PROCUREMENT_ENTITY" &&
                     <div className="mb-2">
-                        <label htmlFor="applicationFee" className="block mb-2">
-                            Application Fee
+                        <label htmlFor="consultationFee" className="block mb-2">
+                            Consultation Fee
                         </label>
 
                         <input
                             type="text"
-                            id="applicationFee"
                             inputMode="decimal"
                             className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
-                            {...register("applicationFee", {
+                            {...register("consultationFee", {
                                 required: true,
                                 pattern: {
                                     value: /^\d+(\.\d{1,2})?$/,
@@ -468,50 +499,20 @@ export default function TenderEdit({ onSuccess, initials, onClose,open=false }: 
                             }}
                         />
 
+
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.applicationFee?.message?.toString()}
+                            {errors.consultationFee?.message?.toString()}
                         </p>
                     </div>
-
-                    {/* JCM Consultation fee input */}
-                    {
-                        userRole !== "PROCUREMENT_ENTITY" &&
-                        <div className="mb-2">
-                            <label htmlFor="consultationFee" className="block mb-2">
-                                Consultation Fee
-                            </label>
-
-                            <input
-                                type="text"
-                                inputMode="decimal"
-                                className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
-                                {...register("consultationFee", {
-                                    required: true,
-                                    pattern: {
-                                        value: /^\d+(\.\d{1,2})?$/,
-                                        message: "Enter a valid number",
-                                    },
-                                })}
-                                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    e.target.value = e.target.value.replace(/[^0-9.]/g, "");
-                                }}
-                            />
-
-
-                            <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                {errors.consultationFee?.message?.toString()}
-                            </p>
-                        </div>
-                    }
-                    <Button
-                        type="submit"
-                        label="Update"
-                        theme="primary"
-                        size="md"
-                        loading={updateTenderMutation.isPending}
-                    />
-                </form>
-            </Modal>
-        // </div>
+                }
+                <Button
+                    type="submit"
+                    label="Update"
+                    theme="primary"
+                    size="md"
+                    loading={updateTenderMutation.isPending}
+                />
+            </form>
+        </Modal>
     );
 }

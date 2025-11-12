@@ -138,6 +138,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
                     user={userInfo}
                     loading={isLoading}
                     onClose={handleModalClose}
+                    zIndex={50}
                 />
             )}
 
