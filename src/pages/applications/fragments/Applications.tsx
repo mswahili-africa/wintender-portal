@@ -347,20 +347,26 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         onClose={() => setSelectedApplication(null)}
                     >
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <strong className="w-32 text-gray-600">Bidder:</strong>
                                 <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{applicationGroup.bidderAccount}</strong> : {applicationGroup.bidderAccount}</h3>
                             </div>
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <strong className="w-32 text-gray-600">Phone:</strong>
                                 <a href={`tel:${applicationGroup.bidderCompanyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
                                     {applicationGroup.bidderCompanyPrimaryNumber}
                                 </a>
                             </div>
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center mb-4">
                                 <strong className="w-32 text-gray-600">Email:</strong>
                                 <a href={`mailto:${applicationGroup.bidderCompanyEmail}`} className="text-l font-semi-bold text-gray-800">
                                     {applicationGroup.bidderCompanyEmail}
+                                </a>
+                            </div>
+                            <div className="flex items-center mb-4">
+                                <strong className="w-32 text-gray-600">Assignor name:</strong>
+                                <a href={`mailto:${applicationGroup.assignorName}`} className="text-l font-semi-bold text-gray-800">
+                                    {applicationGroup.assignorName}
                                 </a>
                             </div>
 

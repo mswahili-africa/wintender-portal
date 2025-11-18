@@ -103,7 +103,7 @@ export default function BillboardCreate({ onSuccess, initials }: IProps) {
                         label="Post"
                         theme="primary"
                         size="md"
-                        loading={createBillboardMutation.isLoading} />
+                        loading={createBillboardMutation.isPending} />
 
                 </form>
             </Modal>

@@ -36,6 +36,15 @@ const columns: IColumn[] = [
     },
   },
   {
+    name: "assignorName",
+    label: "Assignor",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      return row.assignorName || '-';
+    },
+  },
+  {
     name: "Fees",
     label: "Fees",
     sortable: false,

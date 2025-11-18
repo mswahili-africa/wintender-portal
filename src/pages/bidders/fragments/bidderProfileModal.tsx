@@ -150,11 +150,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose,zIndex=10 }) => {
                 }}
 
             >
-
                 <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
                     <section className="w-full space-y-6">
-
-
                         <div className="border-b border-zinc-200 pb-4">
                             <div className="my-2 flex gap-4 justify-between">
                                 <div className="flex items-center space-x-3">

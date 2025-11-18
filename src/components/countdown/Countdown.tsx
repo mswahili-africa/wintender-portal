@@ -30,25 +30,25 @@ export const Countdown = ({ expirationTime }: TProps) => {
     >
       {/* Days */}
       <div className="flex flex-col items-center">
-        <span className="text-sm font-extrabold">{days}</span>
+        <span className="text-sm font-extrabold">{days > 0 ? days : 0}</span>
         <span className="text-[6pt] uppercase tracking-wide">Days</span>
       </div>
 
       {/* Hours */}
       <div className="flex flex-col items-center">
-        <span className="text-sm font-extrabold">{hours}</span>
+        <span className="text-sm font-extrabold">{hours>0 ? hours : 0}</span>
         <span className="text-[6pt] uppercase tracking-wide">Hrs</span>
       </div>
 
       {/* Minutes */}
       <div className="flex flex-col items-center">
-        <span className="text-sm font-extrabold">{minutes}</span>
+        <span className="text-sm font-extrabold">{minutes>0 ? minutes : 0}</span>
         <span className="text-[6pt] uppercase tracking-wide">Mins</span>
       </div>
 
       {/* Seconds */}
       <div className="flex flex-col items-center">
-        <span className="text-sm font-extrabold">{seconds}</span>
+        <span className="text-sm font-extrabold">{seconds>0 ? seconds : 0}</span>
         <span className="text-[6pt] uppercase tracking-wide">Secs</span>
       </div>
     </div>

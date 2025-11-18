@@ -18,7 +18,8 @@ import {
     IconMan,
     IconSettings,
     IconAlertTriangle,
-    IconHeartRateMonitor
+    IconHeartRateMonitor,
+    IconMessages
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -115,6 +116,14 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/users", label: "Staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
             { path: "/roles", label: "Roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
+        ],
+    },
+    {
+        path: "/support",
+        label: "Support",
+        icon: <IconGlobe size={20} strokeWidth={1.5} />,
+        subMenu: [
+            { path: "/messages", label: "Messages", icon: <IconMessages size={20} strokeWidth={1.5} /> },
         ],
     },
     {

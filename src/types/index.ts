@@ -18,8 +18,9 @@ export interface IQueryParams {
   searchValue?: string
   filter?: Record<string, any>;
   logType?: string;
-  eligibility?:boolean
+  eligibility?: boolean
   bidderId?: string
+  phoneNumber?: string
 }
 
 export interface IQueryParamsUserFilter {
@@ -309,9 +310,9 @@ export interface IPayment {
   amount: number;
   requestOrigin: string;
   mno: string;
-  company:string;  // JCM
-  paymentReason:string;  // JCM
-  userName:string;  // JCM
+  company: string;  // JCM
+  paymentReason: string;  // JCM
+  userName: string;  // JCM
   status: string;
   createdBy: string;
   updatedBy: string;
@@ -324,7 +325,7 @@ export interface IWalletTopUp {
   amount: number;
   phoneNumber: string;
   paymentReason: string;
-  mno?:string;
+  mno?: string;
   source?: string;
 }
 
@@ -365,6 +366,7 @@ export interface IApplicationGroup {
   bidderCompanyEmail: string;
   readStatus: string;
   bidderName: string;
+  assignorName?: string;
   createdBy: string;
   updatedBy: string;
   createdAt: number;
@@ -407,6 +409,7 @@ export interface IApplications {
   bidderCompanyName: string;
   bidderCompanyTin: string;
   bidderCompanyVrn: string;
+  assignorName?: string;
 }
 
 export interface IBidderApplication {
@@ -481,12 +484,12 @@ export interface ISubmittedApplication {
 
 // JCM Settings Interface
 export interface ISettings {
-  general:any;
-  payment:any;
-  sms:any;
+  general: any;
+  payment: any;
+  sms: any;
 }
 
-export interface IReply{
+export interface IReply {
   repliedMessageId: string;
   createdAt?: number;
   createdBy?: string;
@@ -495,7 +498,7 @@ export interface IReply{
   message: string;
 }
 
-export interface IClarification{
+export interface IClarification {
   id?: string;
   message: string;
   createdBy?: string | null;
@@ -503,4 +506,24 @@ export interface IClarification{
   createdAt?: number;
   updatedAt?: number;
   replies?: IReply[];
+}
+
+export interface IContacts {
+  name: string;
+  phoneNumber: string;
+  status: string;
+  updatedAt: number;
+}
+
+export interface IMessages {
+  id: string;
+  createdAt: number;
+  serviceType: string;
+  name: string;
+  phoneNumber: string;
+  message: string;
+  messageResponse: string;
+  status: string;
+  action: string;
+  smsFallback: boolean;
 }

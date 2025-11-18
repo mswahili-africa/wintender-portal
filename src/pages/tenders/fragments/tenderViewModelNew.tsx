@@ -70,7 +70,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                             <h2 className="text-xl font-bold">{tender?.tenderNumber}</h2>
                             <div className="flex space-x-4">
                                 {
-                                    tender?.region === "GOVERNMENT" &&
+                                    tender?.region === "GOVERNMENT" && remainingTime > 0 &&
                                     < Button
                                         label="Go NeST"
                                         size="sm"
@@ -80,7 +80,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                     />
                                 }
                                 {/* Conditionally render button or spinner */}
-                                {!["PROCUREMENT_ENTITY", "BIDDER"].includes(userRole) && (
+                                {!["PROCUREMENT_ENTITY", "BIDDER"].includes(userRole) && remainingTime > 0 && (
                                     <div className="flex space-x-4">
                                         <Button
                                             label="Assign Bidder"
@@ -90,7 +90,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                         />
                                     </div>
                                 )}
-                                {userRole === "BIDDER" && (
+                                {userRole === "BIDDER" && remainingTime > 0 && (
                                     isLoading ? (
                                         <Spinner size="sm" />
                                     ) : (

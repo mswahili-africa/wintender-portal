@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { number, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useBillboards } from '@/hooks/useBillboards';
 
 const schema = object().shape({
     bidderId: string().required("Bidder is required"),
@@ -24,10 +25,14 @@ export const ServiceAssigningForm = () => {
         defaultValues: { id: "", bidderId: "", title: "", description: "", consultationFee: 10000 }
     });
 
+
+    const { consultationServices, refetch, isLoading } = useBillboards({ page: 1 });
+
+
     const serviceAssigningMutation = useMutation({
         mutationFn: async (data: IServiceForm) => {
             console.log(data);
-            return data; // must return something, even if just data
+            return data;
         },
         onSuccess: () => {
             reset();

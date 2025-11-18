@@ -71,7 +71,7 @@ const columns: IColumn[] = [
 
             if (diffMs <= 0) {
                 return (
-                    <span className="text-red-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">
+                    <span className="text-red-700 bg-red-100 px-2 py-1 rounded-full text-xs font-medium">
                         CLOSED
                     </span>
                 );
