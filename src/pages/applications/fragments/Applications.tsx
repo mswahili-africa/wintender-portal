@@ -243,7 +243,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         <IconSquareRoundedMinus size={20} />
                                     </button>
                                 )}
-                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && applicationList.status === "REQUESTED" && (
+                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && applicationList.status !== "COMPLETED" && (
                                     <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
                                         <IconEdit size={20} />
                                     </button>
