@@ -72,7 +72,7 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
       <div>
         <div className="flex items-center justify-between">
           <h3 className="flex items-center space-x-2">
-            Messages
+            Messages: <span className="font-medium">{contact.name}</span>
           </h3>
           <button onClick={onClose} className="rounded-lg p-1 hover:bg-red-200 ">
             <IconX/>
