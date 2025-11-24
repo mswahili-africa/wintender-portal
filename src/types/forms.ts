@@ -66,6 +66,10 @@ export interface IUserData {
 export interface IMessage {
     phoneNumber: string
     message: string
+    mediaType?: string
+    media?: string
+    messageMode?: string
+    name?: string
 }
 
 export interface IConsultation {

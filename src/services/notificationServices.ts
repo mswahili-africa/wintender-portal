@@ -3,7 +3,7 @@ import { IQueryParams, IContacts, IMessages, IlistResponse } from "@/types";
 import { IMessage } from "@/types/forms";
 
 export async function getContacts(params: IQueryParams) {
-  const response = await http.get<IlistResponse<IContacts>>(`notification/messaging/whatsapp/contacts`, {
+  const response = await http.get<IlistResponse<IContacts>>(`commons/message/whatsapp/contacts`, {
     params: {
       ...params,
     },
@@ -12,7 +12,7 @@ export async function getContacts(params: IQueryParams) {
 }
 
 export async function getMessages(params: IQueryParams) {
-  const response = await http.get<IlistResponse<IMessages>>(`notification/messaging/whatsapp/messages`, {
+  const response = await http.get<IlistResponse<IMessages>>(`commons/message/whatsapp/messages`, {
     params: {
       ...params,
     },
@@ -22,6 +22,6 @@ export async function getMessages(params: IQueryParams) {
 
 // send message
 export async function sendTexts(data: IMessage, group: string) {
-  const response = await http.post<any>(`notification/messaging/sms?group=${group}`, data)
+  const response = await http.post<any>(`/commons/message/send-sms?group=${group}`, data)
   return response.data
 }

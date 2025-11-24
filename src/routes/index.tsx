@@ -119,8 +119,8 @@ const allMenus: IRoute[] = [
         ],
     },
     {
-        path: "/support",
-        label: "Support",
+        path: "/inquiries",
+        label: "Inquiries & Support",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/messages", label: "Messages", icon: <IconMessages size={20} strokeWidth={1.5} /> },
@@ -160,7 +160,7 @@ const allMenus: IRoute[] = [
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
     MANAGER: () => allMenus
-    .filter(menu => ["Tender", "Dashboard","Consultation","Entities"].includes(menu.label)) // Only show the allowed menus
+    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -173,7 +173,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
 
     ),
     ACCOUNTANT: () => allMenus
-    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Finance","System"].includes(menu.label)) // Only show the allowed menus
+    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Finance","System","Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -187,7 +187,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ),
 
     PUBLISHER: () => allMenus
-    .filter(menu => ["Tender", "Dashboard","Consultation","Entities"].includes(menu.label)) // Only show the allowed menus
+    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -200,7 +200,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
 
     ),
     SUPERVISOR: () => allMenus
-        .filter(menu => menu.label !== "Internal" && menu.label !== "Compliance")
+        .filter(menu =>!["Internal", "Compliance"].includes(menu.label)) // Exclude Internal and Compliance menus
         .map(menu => menu.label === "Entities"
             ? {
                 ...menu,

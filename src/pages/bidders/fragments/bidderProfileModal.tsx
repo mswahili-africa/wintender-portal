@@ -30,6 +30,7 @@ import useTenders from "@/hooks/useTenders";
 import TenderViewModal from "@/pages/tenders/fragments/tenderViewModelNew";
 import useCategories from "@/hooks/useCategories";
 import Loader from "@/components/spinners/Loader";
+import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 
 interface IProps {
     children?: React.ReactNode;
@@ -39,7 +40,7 @@ interface IProps {
     onClose: () => void; // Add this to handle closing the modal from parent
 }
 
-const BidderProfileModal: React.FC<IProps> = ({ user, onClose,zIndex=10 }) => {
+const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) => {
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<string>("updatedAt,desc");
@@ -249,30 +250,30 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose,zIndex=10 }) => {
                                         {
                                             categoryLoading ? (
                                                 <Loader />
-                                            ): selectedCategories.length === 0 ? (
-                                        <span className="text-sm text-gray-400 my-10 w-full text-center">
-                                            No categories
-                                        </span>
-                                        ) : (
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            {selectedCategories.map((category, index) => {
-                                                const formattedName = category.name
-                                                    .toLowerCase()
-                                                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                                            ) : selectedCategories.length === 0 ? (
+                                                <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                                    No categories
+                                                </span>
+                                            ) : (
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    {selectedCategories.map((category, index) => {
+                                                        const formattedName = category.name
+                                                            .toLowerCase()
+                                                            .replace(/\b\w/g, (char) => char.toUpperCase());
 
-                                                return (
-                                                    <React.Fragment key={category.id}>
-                                                        <span className="flex items-center w-fit gap-1 px-3 py-1 text-black bg-green-100 border-green-500 border-2 rounded-full text-sm">
-                                                            {formattedName}
-                                                        </span>
-                                                        {/* {index < selectedCategories.length - 1 && (
+                                                        return (
+                                                            <React.Fragment key={category.id}>
+                                                                <span className="flex items-center w-fit gap-1 px-3 py-1 text-black bg-green-100 border-green-500 border-2 rounded-full text-sm">
+                                                                    {formattedName}
+                                                                </span>
+                                                                {/* {index < selectedCategories.length - 1 && (
                                                             <span className="text-gray-500">•</span>
                                                         )} */}
-                                                    </React.Fragment>
-                                                );
-                                            })}
-                                        </div>
-                                        )
+                                                            </React.Fragment>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )
                                         }
 
                                     </div>
@@ -405,7 +406,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose,zIndex=10 }) => {
 
                 </div>
 
-                {isModalOpen && (
+                {/* {isModalOpen && (
                     <SMSModal
                         isOpen={isModalOpen}
                         onClose={() => !isSending && setIsModalOpen(false)}
@@ -463,7 +464,14 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose,zIndex=10 }) => {
                             {isSending ? "Sending..." : "Send"}
                         </button>
                     </SMSModal>
-                )}
+                )} */}
+                <GeneralSMSModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                    title={"Send message"}
+                />
 
 
                 {

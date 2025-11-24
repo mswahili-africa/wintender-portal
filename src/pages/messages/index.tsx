@@ -7,9 +7,10 @@ import { SMSModal } from "./fragments/SMSModal";
 import { useContacts } from "@/hooks/notificationRepository";
 import { IContacts } from "@/types";
 import Button from "@/components/button/Button";
+import GeneralSMSModal from "./fragments/GeneralSmsModal";
 
 export default function Messages() {
-    const [handleModal, setHandleModal] = useState<{ type: "view" | "", object: any }>(
+    const [handleModal, setHandleModal] = useState<{ type: "view" | "sendBulk" | "", object: any }>(
         {
             type: "",
             object: null
@@ -23,13 +24,22 @@ export default function Messages() {
         });
     }
 
-    const { contacts, refetch, isLoading } = useContacts({ page: 1 });
+    const { contacts, refetch, isLoading } = useContacts({ page: 0, size: 10 });
 
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Messages</h2>
-                <Button label="Refresh" icon={<IconRefresh />} theme="secondary" loading={isLoading} onClick={() => refetch()}/>
+                <h2 className="text-lg font-bold">Contacts</h2>
+                <div className="flex gap-2">
+                    <Button label="Refresh" icon={<IconRefresh />} theme="secondary" loading={isLoading} onClick={() => refetch()} />
+                    <button
+                        className="bg-green-600 text-white py-2 px-3 rounded hover:bg-green-800 flex items-center"
+                        onClick={() => setHandleModal({ type: "sendBulk", object: null })}
+                    >
+                        <IconMessage size={20} className="mr-2" />
+                        Send Bulk
+                    </button>
+                </div>
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -63,12 +73,12 @@ export default function Messages() {
                 contact={handleModal.object}
             />
 
-            {/* Handle empty state */}
-            {contacts?.content.length === 0 && !isLoading && (
-                <div className="text-center p-4">
-                    <p>No contacts found.</p>
-                </div>
-            )}
+            {/* Bulk message modal */}
+            <GeneralSMSModal
+                isOpen={handleModal.type === "sendBulk"}
+                onClose={handleModalClose} 
+                title={"Send Message"}
+            />
         </div>
     );
 }

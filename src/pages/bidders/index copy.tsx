@@ -23,7 +23,6 @@ import Modal from "@/components/Modal";
 import { ExportXLSX } from "@/components/widgets/Excel";
 import bidderExcelColumns from "./fragments/bidderExcelColumns";
 import PrivateTenderRequestModal from "../applications/fragments/privateTenderRequestModal";
-import GeneralSMSModal from "../messages/fragments/GeneralSmsModal";
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -448,12 +447,34 @@ export default function Bidders() {
                     )}
                 </div>
 
-                {/* sms modal */}
-                <GeneralSMSModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    title={""}
-                />
+                {isModalOpen && (
+                    <SMSModal
+                        isOpen={isModalOpen}
+                        onClose={() => !isSending && setIsModalOpen(false)}
+                        title={selectedUser ? `Send SMS to ${selectedUser.companyName}` : "Send Bulk SMS"}
+                    >
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea
+                                className="input-normal w-full mb-4"
+                                rows={4}
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="Type your message here"
+                                maxLength={160}
+                            />
+                            <p className="text-sm text-gray-500">{message.length}/160 characters</p>
+                        </div>
+
+                        <button
+                            className={`bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500 w-full ${isSending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            onClick={handleSendSMS}
+                            disabled={isSending}
+                        >
+                            {isSending ? "Sending..." : "Send"}
+                        </button>
+                    </SMSModal>
+                )}
 
                 <PrivateTenderRequestModal
                     onSuccess={refetch}

@@ -5,7 +5,7 @@ import { sendTexts } from "@/services/notificationServices";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Modal from "@/components/Modal";
 import Button from "@/components/button/Button";
-import { IconSend } from "@tabler/icons-react";
+import { IconSend, IconX } from "@tabler/icons-react";
 import Loader from "@/components/spinners/Loader";
 import { useMessages } from "@/hooks/notificationRepository";
 import { IContacts } from "@/types";
@@ -23,8 +23,9 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
   const phoneNumber = contact?.phoneNumber;
   const queryClient = useQueryClient();
 
-  const { messages, isLoading } = useMessages({
+  const { messages, isLoading, refetch } = useMessages({
     page: 0,
+    size: 50,
     phoneNumber,
   });
 
@@ -34,7 +35,7 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getMessages"] });
-
+      refetch();
       toast.success("SMS sent successfully");
     },
 
@@ -51,6 +52,7 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
     const message: IMessage = {
       phoneNumber: phoneNumber!,
       message: reply,
+      messageMode: "WHATSAPP",
     };
     const group = "SINGLE";
 
@@ -72,17 +74,15 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
           <h3 className="flex items-center space-x-2">
             Messages
           </h3>
-          <Button
-            className="icon-only"
-            onClick={onClose}
-            color="grey"
-          />
+          <button onClick={onClose} className="rounded-lg p-1 hover:bg-red-200 ">
+            <IconX/>
+          </button>
         </div>
       </div>
 
       <div className="pb-0 overflow-visible">
         <div className="max-h-[600px] min-h-[200px] w-full overflow-y-auto">
-          <div className="max-h-[600px] min-h-[200px] w-full overflow-y-auto">
+          <div className="max-h-[600px] min-h-[200px] w-full overflow-y-auto pt-5">
             {isLoading ? (
               <div className="flex h-full w-full items-center justify-center py-10">
                 <Loader />
@@ -148,9 +148,7 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
         </div>
       </div>
 
-      <div className="mt-4 flex justify-end space-x-2">
-        <Button onClick={onClose}>Cancel</Button>
-      </div>
+      
     </Modal>
   );
 };
