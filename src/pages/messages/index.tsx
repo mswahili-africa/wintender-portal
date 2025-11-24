@@ -32,13 +32,6 @@ export default function Messages() {
                 <h2 className="text-lg font-bold">Contacts</h2>
                 <div className="flex gap-2">
                     <Button label="Refresh" icon={<IconRefresh />} theme="secondary" loading={isLoading} onClick={() => refetch()} />
-                    <button
-                        className="bg-green-600 text-white py-2 px-3 rounded hover:bg-green-800 flex items-center"
-                        onClick={() => setHandleModal({ type: "sendBulk", object: null })}
-                    >
-                        <IconMessage size={20} className="mr-2" />
-                        Send Bulk
-                    </button>
                 </div>
             </div>
 
@@ -71,13 +64,6 @@ export default function Messages() {
                 open={handleModal.type === "view"}
                 onClose={handleModalClose}
                 contact={handleModal.object}
-            />
-
-            {/* Bulk message modal */}
-            <GeneralSMSModal
-                isOpen={handleModal.type === "sendBulk"}
-                onClose={handleModalClose} 
-                title={"Send Message"}
             />
         </div>
     );

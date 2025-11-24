@@ -40,9 +40,9 @@ const columns: IColumn[] = [
         name: "createdAt",
         label: "Date time",
         sortable: false,
-        plainObject: false,
+        plainObject: true,
         element(content) {
-            return new Date(content.createdAt).toLocaleString();
+            return new Date(content.updatedAt).toLocaleString();
         },
     },
 ];

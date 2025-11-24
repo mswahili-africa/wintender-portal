@@ -20,7 +20,7 @@ export default function GeneralSMSModal({ isOpen, onClose, title, selectedUser, 
 
     const [message, setMessage] = useState<string>("");
     const [isMessageToAll, setIsMessageToAll] = useState<boolean>(true); // true means bulk message 
-    const [mediaType, setMediaType] = useState<'video' | 'image' | ''>(''); // null means no media, just text
+    const [mediaType, setMediaType] = useState<'file' | ''>(''); // null means no media, just text
     const [media, setMedia] = useState<string>(''); // url for media type
     const [numberOfRecipient, setNumberOfRecipient] = useState<string>(''); // number of recipients
 
@@ -137,7 +137,7 @@ export default function GeneralSMSModal({ isOpen, onClose, title, selectedUser, 
                                     className="form-radio"
                                     value=""
                                     checked={mediaType === ''}
-                                    onChange={(e) => setMediaType(e.target.value as 'video' | 'image' | "")}
+                                    onChange={(e) => setMediaType(e.target.value as 'file' | "")}
                                 />
                                 <span className="ml-2">None</span>
                             </label>
@@ -145,27 +145,17 @@ export default function GeneralSMSModal({ isOpen, onClose, title, selectedUser, 
                                 <input
                                     type="radio"
                                     className="form-radio"
-                                    value="video"
-                                    checked={mediaType === 'video'}
-                                    onChange={(e) => setMediaType(e.target.value as 'video' | 'image' | '')}
+                                    value="file"
+                                    checked={mediaType === 'file'}
+                                    onChange={(e) => setMediaType(e.target.value as 'file' | '')}
                                 />
-                                <span className="ml-2">Video</span>
-                            </label>
-                            <label className="inline-flex items-center">
-                                <input
-                                    type="radio"
-                                    className="form-radio"
-                                    value="image"
-                                    checked={mediaType === 'image'}
-                                    onChange={(e) => setMediaType(e.target.value as 'video' | 'image' | '')}
-                                />
-                                <span className="ml-2">Image</span>
+                                <span className="ml-2">File</span>
                             </label>
                         </div>
                     </div>
                     {mediaType && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{mediaType === 'video' ? 'Video' : 'Image'} URL</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{mediaType === 'file' ? 'File' : ''} URL</label>
                             <input
                                 type="url"
                                 className="input-normal w-full mb-4"

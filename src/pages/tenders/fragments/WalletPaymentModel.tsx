@@ -108,7 +108,7 @@ export default function WalletPaymentModal({
 
         onError: (error: any) => {
             setMessages('');
-            toast.error("Payment failed");
+            toast.error(error.response.data.message || "Payment failed");
         },
 
         retry: 0,
