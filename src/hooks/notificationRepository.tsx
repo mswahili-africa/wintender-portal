@@ -42,7 +42,7 @@ export function useMessages(props: IQueryParams) {
         phoneNumber: props.phoneNumber,
         ...props.filter,
       }),
-    refetchInterval: 300000, // 5 minutes
+    refetchInterval: 30000, // 30 seconds
   });
 
   return { isLoading, isError, messages: data, refetch };
