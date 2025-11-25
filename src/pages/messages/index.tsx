@@ -3,11 +3,10 @@ import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/columns";
 import { IconMessage, IconRefresh } from "@tabler/icons-react";
 import { useState } from "react";
-import { SMSModal } from "./fragments/SMSModal";
+import { ConversationModal } from "./fragments/ConversationModal";
 import { useContacts } from "@/hooks/notificationRepository";
 import { IContacts } from "@/types";
 import Button from "@/components/button/Button";
-import GeneralSMSModal from "./fragments/GeneralSmsModal";
 
 export default function Messages() {
     const [handleModal, setHandleModal] = useState<{ type: "view" | "sendBulk" | "", object: any }>(
@@ -60,7 +59,7 @@ export default function Messages() {
             </div>
 
             {/* Message modal */}
-            <SMSModal
+            <ConversationModal
                 open={handleModal.type === "view"}
                 onClose={handleModalClose}
                 contact={handleModal.object}

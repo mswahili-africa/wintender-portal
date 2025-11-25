@@ -2,17 +2,16 @@ import React, { useState, useEffect, Fragment } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import { ICategory, ICompany, ITenders } from "@/types";
+import { ICategory, ICompany, IContacts, ITenders } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconEye, IconMessage } from "@tabler/icons-react";
+import { IconBrandWhatsapp, IconEye, IconMessage } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import Modal from "@/components/Modal";
 import { Table } from "@/components/widgets/table/Table";
 import Pagination from "@/components/widgets/table/Pagination";
-import SMSModal from "./sms-model";
 import paymentsColumns from "./paymentsColumns"
 import dummyLogo from "@/assets/images/bidder-dummy-logo.png"
 import { getUserPayments } from "@/hooks/usePayments";
@@ -31,6 +30,7 @@ import TenderViewModal from "@/pages/tenders/fragments/tenderViewModelNew";
 import useCategories from "@/hooks/useCategories";
 import Loader from "@/components/spinners/Loader";
 import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
+import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
 
 interface IProps {
     children?: React.ReactNode;
@@ -49,7 +49,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, setMessage] = useState<string>("");
-    const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
+    const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | null, tender: ITenders | null }>({ type: null, tender: null });
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
 
@@ -59,19 +59,28 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         { name: "Eligible Tenders", value: "eligible" },
     ];
 
+    
     const { categories, isLoading: categoryLoading } = useCategories({
         page: 0,
         size: 1000,
         search: "",
         filter: {},
     });
-
+    
     // JCM  edit details
     const { userData } = useUserData();
     const [editDetails, setEditDetails] = useState<boolean>(false);
-
+    
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
+    const contact:IContacts= {
+            name: user?.companyName || "",
+            phoneNumber: user?.companyPrimaryNumber || "",
+            status: "",
+            updatedAt: user?.updatedAt || 0,
+        }
+
+    if(!contact) return null;
 
     useEffect(() => {
         if (user?.companyCategories && categories?.content.length! > 0 && isOpen) {
@@ -181,6 +190,9 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                 <div className="flex items-center space-x-3">
                                     <WalletButton amount={user.walletAmount} />
 
+                                    <button onClick={() => setOpenModal({ type: "whatsapp", tender: null })}>
+                                        <IconBrandWhatsapp size={24} className="text-green-500" />
+                                    </button>
                                     <button onClick={() => SendSingleSMS(user)}>
                                         <IconMessage size={24} className="text-green-500" />
                                     </button>
@@ -406,65 +418,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                 </div>
 
-                {/* {isModalOpen && (
-                    <SMSModal
-                        isOpen={isModalOpen}
-                        onClose={() => !isSending && setIsModalOpen(false)}
-                        title={selectedUser ? `Send SMS to ${selectedUser.name}` : "Send Bulk SMS"}
-                    >
-                        {!selectedUser && (
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                <textarea
-                                    className="input-normal w-full mb-4"
-                                    rows={4}
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    placeholder="Type your message here"
-                                    maxLength={160} // Limit to 160 characters
-                                />
-                                <p className="text-sm text-gray-500">
-                                    {message.length}/160 characters
-                                </p>
-                            </div>
-                        )}
-                        {selectedUser && (
-                            <>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
-                                    <input
-                                        type="text"
-                                        className="input-normal w-full mb-4"
-                                        value={selectedUser.name + ' - ' + selectedUser.phoneNumber}
-                                        readOnly
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                    <textarea
-                                        id="message"
-                                        className="input-normal w-full mb-4"
-                                        rows={4}
-                                        value={message}
-                                        onChange={(e) => setMessage(e.target.value)}
-                                        placeholder="Type your message here"
-                                        maxLength={160} // Limit to 160 characters
-                                    />
-                                    <p className="text-sm text-gray-500">
-                                        {message.length}/160 characters
-                                    </p>
-                                </div>
-                            </>
-                        )}
-                        <button
-                            className={`bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500 w-full ${isSending ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            onClick={handleSendSMS}
-                            disabled={isSending}
-                        >
-                            {isSending ? "Sending..." : "Send"}
-                        </button>
-                    </SMSModal>
-                )} */}
+                
                 <GeneralSMSModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
@@ -487,7 +441,16 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                         />
                     )
                 }
+
+                {/* Whatsapp conversation */}
+                <ConversationModal
+                    open={openModal.type === "whatsapp"}
+                    onClose={() => setOpenModal({ tender: null, type: null })}
+                    contact={contact}
+                />
+
             </Modal >
+
 
 
         </>

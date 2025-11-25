@@ -18,7 +18,7 @@ type TModal = {
   contact: IContacts | null;
 };
 
-export const SMSModal = ({ open, onClose, contact }: TModal) => {
+export const ConversationModal = ({ open, onClose, contact }: TModal) => {
   const [reply, setReply] = useState<string>("");
   const phoneNumber = contact?.phoneNumber;
   const queryClient = useQueryClient();
@@ -67,22 +67,22 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
   };
 
   return (
-    <Modal size="lg" isOpen={open} onClose={onClose}>
+    <Modal size="lg" isOpen={open} onClose={onClose} zIndex={50}>
 
       <div>
         <div className="flex items-center justify-between">
-          <h3 className="flex items-center space-x-2">
-            Messages: <span className="font-medium">{contact.name}</span>
-          </h3>
+          <div className="flex items-center space-x-2  font-bold">
+            Messages:<span className="ms-2">{contact.name}</span>
+          </div>
           <button onClick={onClose} className="rounded-lg p-1 hover:bg-red-200 ">
-            <IconX/>
+            <IconX />
           </button>
         </div>
       </div>
 
       <div className="pb-0 overflow-visible">
-        <div className="max-h-[600px] min-h-[200px] w-full overflow-y-auto">
-          <div className="max-h-[600px] min-h-[200px] w-full overflow-y-auto pt-5">
+        <div className="max-h-[550px] md:max-h-[600px] min-h-[200px] w-full overflow-y-auto">
+          <div className="max-h-[550px] md:max-h-[600px] min-h-[200px] w-full overflow-y-auto pt-5">
             {isLoading ? (
               <div className="flex h-full w-full items-center justify-center py-10">
                 <Loader />
@@ -127,12 +127,21 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
             )}
           </div>
         </div>
-        
+
         <div className="flex items-start gap-2 pt-3 border-t">
           <textarea
             value={reply}
             onChange={(e) => setReply(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) => {
+              // e.key === "Enter" && handleSend();
+              if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+                handleSend();
+              }
+              if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+              }
+            }
+            }
             rows={2}
             placeholder="Type your reply..."
             className="flex-1 resize-none rounded-lg border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -148,7 +157,7 @@ export const SMSModal = ({ open, onClose, contact }: TModal) => {
         </div>
       </div>
 
-      
+
     </Modal>
   );
 };

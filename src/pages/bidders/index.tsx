@@ -4,7 +4,7 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
-import { ICompany } from "@/types";
+import { ICompany, IContacts } from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus, deleteBidder } from "@/services/user";
@@ -55,6 +55,8 @@ export default function Bidders() {
 
     // JCM DELETE MODAL
     const { userData } = useUserData();
+
+    
 
     const deleteBidderMutation = useMutation({
         mutationKey: ["deleteBidder", openModal.user?.id],
@@ -454,6 +456,9 @@ export default function Bidders() {
                     onClose={() => setIsModalOpen(false)}
                     title={""}
                 />
+
+                
+
 
                 <PrivateTenderRequestModal
                     onSuccess={refetch}
