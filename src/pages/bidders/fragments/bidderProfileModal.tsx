@@ -54,7 +54,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
 
     const tabs = [
-        { name: "Requests", value: "requests" },
+        { name: "Do it for me", value: "requests" },
         { name: "Payments", value: "payments" },
         { name: "Eligible Tenders", value: "eligible" },
     ];
@@ -450,9 +450,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                 />
 
             </Modal >
-
-
-
         </>
     );
 };
