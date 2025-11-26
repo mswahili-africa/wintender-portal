@@ -243,13 +243,13 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return (
         <div>
           {/* optional files */}
-          <p>More Information(optional)</p>
+          {/* <p>More Information(optional)</p> */}
 
-          <FileUploadField stage={"Optional"} fieldName={""}              // key={`${step}-${req.fieldName}`}
-          // stage={step}
+          {/* <FileUploadField stage={"Optional"} fieldName={""}      */}
+          {/* // stage={step}
           // fieldName={req.fieldName}
-          // required={req.required}
-          />
+          // required={req.required} */}
+          {/* /> */}
           <p className="mb-2">I agree that the documents submitted are true and correct to the best of my knowledge.</p>
           <label className="flex items-center">
             <input

@@ -122,6 +122,11 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                         {/* {tender?.selfApply ||  ["ADMINISTRATOR","MANAGER","PUBLISHER","ACCOUNTANT","SUPERVISOR"].includes(userRole) && ( */}
                             <div className="flex w-full justify-center mb-4">
                                 <div className="flex flex-row w-full border-2 border-gray-400 rounded">
+                                    {
+                                        tender?.selfApply && userRole === "BIDDER" && (
+                                            <button type="button" onClick={() => setActiveTab("DETAILS")} className={` uppercase w-full p-2 text-sm ${activeTab === "DETAILS" ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
+                                        )
+                                    }
                                     <button type="button" onClick={() => setActiveTab("DETAILS")} className={` uppercase w-full p-2 text-sm ${activeTab === "DETAILS" ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
 
                                     {tender?.selfApply && (
