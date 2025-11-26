@@ -9,7 +9,7 @@ import {
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
-import { authStore } from "@/store/auth";
+import { authStore } from "@/store/auth"; 
 import { useUserDataContext } from "@/providers/userDataProvider";
 import WalletPaymentModal from "@/pages/tenders/fragments/WalletPaymentModel";
 import { useState } from "react";
@@ -24,8 +24,6 @@ const Header = () => {
 
     const walletBalance = user?.userData?.walletAmount;
     const subscription = user?.userData?.subscription;
-
-
 
     return (
         <div className="flex flex-col lg:-mt-10 lg:mb-20">

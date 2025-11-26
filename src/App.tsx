@@ -39,6 +39,7 @@ import Settings from "./pages/settings";
 import SystemHealth from "./pages/system-health";
 import SystemLogs from "./pages/system-health/System-logs";
 import Messages from "./pages/messages";
+import FloatingChatButton from "./ai/components/FloatingChatButton";
 
 export const queryClient = new QueryClient({});
 
@@ -102,6 +103,8 @@ function App() {
                     <div>
                         <Outlet />
                     </div>
+
+                    <FloatingChatButton />
                 </PopupProvider>
             </QueryClientProvider>
         </UserDataProvider>

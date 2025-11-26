@@ -55,8 +55,6 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
 
-
-
     const [searchParams, _] = useSearchParams();
 
     // Get the userId from the user object passed in props
@@ -86,8 +84,6 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
         setIsSending(true); // Start loading state
         sendSMS.mutate({ phoneNumber, message });
     };
-
-
 
     const sendSMS = useMutation({
         mutationFn: (data: IMessage) => sendMessageSingle(data),

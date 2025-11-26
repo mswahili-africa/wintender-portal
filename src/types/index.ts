@@ -527,3 +527,9 @@ export interface IMessages {
   action: string;
   smsFallback: boolean;
 }
+
+export interface IAIChatMessage {
+    role: "USER" | "ASSISTANT";
+    content: string;
+    timestamp: string;
+}
