@@ -12,7 +12,6 @@ import columns from "./fragments/tenderColumns";
 import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModelNew";
-import Chip from "@/components/chip/Chip";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
@@ -21,15 +20,12 @@ import { debounce, set } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
-import { Countdown } from "@/components/countdown/Countdown";
-import { Clarifications } from "./fragments/Clarifications";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
-    const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);

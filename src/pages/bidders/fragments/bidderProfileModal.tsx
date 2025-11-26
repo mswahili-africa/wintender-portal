@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
@@ -47,8 +47,8 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     const [isOpen, setIsOpen] = useState<boolean>(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
-    const [isSending, setIsSending] = useState<boolean>(false); // Loading state
-    const [message, setMessage] = useState<string>("");
+    // const [isSending, setIsSending] = useState<boolean>(false); // Loading state
+    const [message, _] = useState<string>("");
     const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | null, tender: ITenders | null }>({ type: null, tender: null });
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
@@ -91,7 +91,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         }
     }, [user, categories, isOpen]);
 
-    const [searchParams, _] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // Get the userId from the user object passed in props
     const { payments, isLoading: paymentLoading } = getUserPayments({
@@ -117,7 +117,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     const handleSendSMS = () => {
         const phoneNumber = selectedUser?.phoneNumber || "0100000000"; // Default number for bulk
         if (!phoneNumber) return;
-        setIsSending(true); // Start loading state
         sendSMS.mutate({ phoneNumber, message });
     };
 
@@ -126,11 +125,9 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         onSuccess: () => {
             toast.success("Sent successfully");
             setIsModalOpen(false); // Close modal on success
-            setIsSending(false);
         },
         onError: () => {
             toast.error("Send failed");
-            setIsSending(false); // Reset loading state on error
         },
     });
 
@@ -278,9 +275,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                                                 <span className="flex items-center w-fit gap-1 px-3 py-1 text-black bg-green-100 border-green-500 border-2 rounded-full text-sm">
                                                                     {formattedName}
                                                                 </span>
-                                                                {/* {index < selectedCategories.length - 1 && (
-                                                            <span className="text-gray-500">•</span>
-                                                        )} */}
                                                             </React.Fragment>
                                                         );
                                                     })}

@@ -4,12 +4,11 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
 import useBidders from "@/hooks/useBidders";
 import columns from "./fragments/bidder-columns";
-import { ICompany, IContacts } from "@/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { ICompany } from "@/types";
+import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { changeUserStatus, deleteBidder } from "@/services/user";
 import { IMessage } from "@/types/forms";
-import SMSModal from "./fragments/sms-model";
 import { sendMessageSingle } from "@/services/commons";
 import { resetUser } from "@/services/auth";
 import BidderProfileModal from "./fragments/bidderProfileModal";
@@ -196,27 +195,6 @@ export default function Bidders() {
             toast.error("Change failed");
         },
     });
-
-    const sendSMS = useMutation({
-        mutationFn: (data: IMessage) => sendMessageSingle(data),
-        onSuccess: () => {
-            toast.success("Sent successfully");
-            setIsModalOpen(false);
-            setIsSending(false);
-            refetch();
-        },
-        onError: () => {
-            toast.error("Send failed");
-            setIsSending(false);
-        },
-    });
-
-    const handleSendSMS = () => {
-        const phoneNumber = selectedUser?.companyPrimaryNumber || "0100000000";
-        if (!phoneNumber) return;
-        setIsSending(true);
-        sendSMS.mutate({ phoneNumber, message });
-    };
 
     const openBulkSendModal = () => {
         setSelectedUser(null);

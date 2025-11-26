@@ -15,16 +15,32 @@ import WalletPaymentModal from "@/pages/tenders/fragments/WalletPaymentModel";
 import { useState } from "react";
 import PaymentModal from "@/pages/tenders/fragments/PaymentModel";
 import { WalletButton } from "../button/WalletButton";
+import { useContacts } from "@/hooks/notificationRepository";
+import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
     const user = useUserDataContext();
     const [isOpen, setIsOpen] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [handleModal, setHandleModal] = useState<{ type: "view" | "", object: any }>(
+        {
+            type: "",
+            object: null
+        }
+    );
+
+    const handleModalClose = () => {
+        setHandleModal({
+            type: "",
+            object: null
+        });
+    }
 
     const walletBalance = user?.userData?.walletAmount;
     const subscription = user?.userData?.subscription;
 
+    const { contacts } = useContacts({ page: 0, size: 10 });
 
 
     return (
@@ -98,9 +114,53 @@ const Header = () => {
                 </div>
                 <div className="flex items-center gap-4 min-w-32">
                     <div className="flex flex-row items-center gap-4 w-full">
-                        <div className="p-1.5 hover:bg-slate-100 rounded-md">
-                            <IconBellFilled className="h-6 w-6 text-slate-600" />
-                        </div>
+                        {
+                            !["BIDDER", "PROCUREMENT_ENTITY"].includes(user?.userData?.role as string) &&
+                                <Menu as="div" className="relative inline-block text-left">
+                                    <Menu.Button className="p-1.5 hover:bg-slate-100 rounded-md">
+                                        <div className="relative">
+                                            <IconBellFilled className="h-6 w-6 text-slate-600" />
+                                            <div className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
+                                                {contacts?.content && contacts?.content.filter((contact) => contact.status === "UNREAD").length}
+                                            </div>
+                                        </div>
+                                    </Menu.Button>
+                                    <Menu.Items className="absolute right-0 z-10 mt-2 w-72 origin-top-right overflow-hidden bg-white rounded-md shadow-lg focus:outline-none">
+                                        <div className="text-sm text-gray-500 p-3">Notifications</div>
+                                        {
+                                            contacts?.content && contacts?.content.length === 0 &&
+                                            <div className="p-4 w-full text-center text-sm text-slate-600">
+                                                No new notifications
+                                            </div>
+                                        }
+
+                                        {/* Array of notifications */}
+                                        {
+                                            contacts?.content && contacts?.content.length > 0 && contacts?.content.filter((contact) => contact.status === "UNREAD").map((contact) => (
+                                                <Menu.Item key={contact.phoneNumber} as={"div"} className="border-b border-slate-200 py-2 px-4 hover:bg-slate-50 hover:cursor-pointer">
+                                                    <div className="flex items-center gap-3" onClick={() => setHandleModal({ type: "view", object: contact })}>
+                                                        <IconBrandWhatsapp size={25} className="text-green-600" />
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-medium text-slate-600">{contact.name}</span>
+                                                            <span className="text-xs text-slate-400">{new Date(contact.updatedAt).toLocaleString()}</span>
+                                                        </div>
+                                                    </div>
+                                                </Menu.Item>
+                                            ))
+                                        }
+
+
+                                        <Menu.Item>
+                                            <Link
+                                                to="/messages"
+                                                className="flex items-center justify-center border-t border-slate-200 hover:bg-slate-50 rounded-b-md font-medium py-2 px-3">
+                                                <span className="text-xs text-gray-400">View All</span>
+                                            </Link>
+                                        </Menu.Item>
+
+                                    </Menu.Items>
+                                </Menu>
+                        }
 
                         {
                             auth.user &&
@@ -169,6 +229,13 @@ const Header = () => {
                     />
 
                 )}
+
+                {/* Message modal */}
+                <ConversationModal
+                    open={handleModal.type === "view"}
+                    onClose={handleModalClose}
+                    contact={handleModal.object}
+                />
             </div>
         </div >
     );

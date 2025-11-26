@@ -4,14 +4,13 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/submittedColumsColumns";
 import { ISubmittedApplication } from "@/types";
-import { IconEdit, IconEye, IconRecycle, IconTrash } from "@tabler/icons-react";
+import { IconEye, IconRecycle, IconTrash } from "@tabler/icons-react";
 import { useSubmittedApplication } from "@/hooks/useSubmittedApplications";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { deleteApplication } from "@/services/tenders";
 import usePopup from "@/hooks/usePopup";
 import toast from "react-hot-toast";
 import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
-import PETenderApplicationWizard from "../tenders/fragments/PETenderApplicationWizard";
 import Select from "react-select";
 
 export default function SubmittedApplication() {
@@ -75,7 +74,7 @@ export default function SubmittedApplication() {
   }
 
   const handleSubmissions = (comment: any) => {
-    setStatus(comment?.value === "ACCEPTED" ? "CLOSED":"SUBMITTED");
+    setStatus(comment?.value === "ACCEPTED" ? "CLOSED" : "SUBMITTED");
     setComment(comment);
 
   }
@@ -125,12 +124,6 @@ export default function SubmittedApplication() {
                 >
                   <IconEye size={20} />
                 </button>
-                {/* <button
-                  className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                  onClick={() => handleTenderActions("edit", application)}
-                >
-                  <IconEdit size={20} />
-                </button> */}
                 {userRole === "BIDDER" && application.tenderCloseDate > Date.now() && (
                   <>
                     <Fragment>
@@ -172,15 +165,6 @@ export default function SubmittedApplication() {
             onClose={() => setViewOpen(false)}
             isLoading={false}
           />
-        )}
-
-        {/* Edit modal */}
-        {editOpen && selectedApplication && (
-          // <PETenderApplicationWizard
-          //   tender={selectedApplication}
-          //   onClose={() => setEditOpen(false)}
-          // />
-          <div></div>
         )}
       </div>
     </div>

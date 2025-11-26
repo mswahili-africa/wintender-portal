@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconChevronDown, IconChevronUp, IconSend } from "@tabler/icons-react";
+import { IconChevronUp, IconSend } from "@tabler/icons-react";
 import useClarifications from "@/hooks/useClarifications";
 import { IClarification, IReply, ITenders } from "@/types";
 import Spinner from "@/components/spinners/Spinner";
