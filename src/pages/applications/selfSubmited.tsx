@@ -18,7 +18,7 @@ export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
   const [status, setStatus] = useState<any>("PENDING");
-  const [comment, setComment] = useState<any>({ value: null, label: "Submitted" });
+  const [comment, setComment] = useState<any>({ value: "PENDING", label: "PENDING" });
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -125,12 +125,12 @@ export default function SubmittedApplication() {
                 >
                   <IconEye size={20} />
                 </button>
-                <button
+                {/* <button
                   className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
                   onClick={() => handleTenderActions("edit", application)}
                 >
                   <IconEdit size={20} />
-                </button>
+                </button> */}
                 {userRole === "BIDDER" && application.tenderCloseDate > Date.now() && (
                   <>
                     <Fragment>
