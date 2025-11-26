@@ -14,7 +14,7 @@ const columns: IColumn[] = [
         label: "Procurement entity",
         sortable: false,
         plainObject: true,
-        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean, clarifications: number }) => (
+        element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean, clarificationCount: number }) => (
             <div className="flex flex-col">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img
@@ -33,7 +33,7 @@ const columns: IColumn[] = [
                         {
                             row?.selfApply &&
                             <div className="text-xs flex flex-row items-center gap-x-2">
-                                <div className="text-gray-500 flex flex-row items-center"><IconMessage className="w-4 me-1" /> <div className="flex items-center flex-row h-full">: {row.clarifications || 0}</div> </div>
+                                <div className="text-gray-500 flex flex-row items-center"><IconMessage className="w-4 me-1" /> <div className="flex items-center flex-row h-full">: {row.clarificationCount || 0}</div> </div>
                                 <div className="h-2 w-2 rounded-full bg-green-600"></div>
                             </div>
                         }

@@ -120,6 +120,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                         </div>
 
                         {/* {tender?.selfApply ||  ["ADMINISTRATOR","MANAGER","PUBLISHER","ACCOUNTANT","SUPERVISOR"].includes(userRole) && ( */}
+                        { new Date(tender?.closeDate!) > new Date() && (
                             <div className="flex w-full justify-center mb-4">
                                 <div className="flex flex-row w-full border-2 border-gray-400 rounded">
                                     
@@ -133,7 +134,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                     )}
                                 </div>
                             </div>
-                        {/* )}  */}
+                        )} 
                         <div className="mt-4 overflow-y-auto" style={{ minHeight: '40vh', maxHeight: '70vh' }}>
                             {
                                 activeTab === "DETAILS" && (
