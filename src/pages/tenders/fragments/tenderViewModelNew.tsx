@@ -54,7 +54,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
     const remainingTime = closeDate! - currentDate;
     const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
 
-    
+    console.log(tender)
 
     return (
         <>
@@ -120,7 +120,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                             </div>
                         </div>
 
-                        {tender?.selfApply || (userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER" || userRole === "ACCOUNTANT" || userRole === "SUPERVISOR") && (
+                        {/* {tender?.selfApply ||  ["ADMINISTRATOR","MANAGER","PUBLISHER","ACCOUNTANT","SUPERVISOR"].includes(userRole) && ( */}
                             <div className="flex w-full justify-center mb-4">
                                 <div className="flex flex-row w-full border-2 border-gray-400 rounded">
                                     <button type="button" onClick={() => setActiveTab("DETAILS")} className={` uppercase w-full p-2 text-sm ${activeTab === "DETAILS" ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
@@ -133,7 +133,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                     )}
                                 </div>
                             </div>
-                        )}
+                        {/* )}  */}
                         <div className="mt-4 overflow-y-auto" style={{ minHeight: '40vh', maxHeight: '70vh' }}>
                             {
                                 activeTab === "DETAILS" && (
