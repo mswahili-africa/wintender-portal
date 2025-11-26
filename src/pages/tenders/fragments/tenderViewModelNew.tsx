@@ -54,7 +54,6 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
     const remainingTime = closeDate! - currentDate;
     const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
 
-    console.log(tender)
 
     return (
         <>
