@@ -39,7 +39,7 @@ export default function () {
                         <span>+255 747 098 558</span>
                     </div>
                 </a>
-                <a href="https://wa.me/+255736228228" target="_blank">
+                <a href="https://wa.me/+255766028558" target="_blank">
                     <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
                         <div className="pr-3"><IconBrandWhatsapp size={22} className="text-green-600" stroke={2} /></div>
                         <span>WhatsApp</span>

@@ -298,7 +298,7 @@ export default function Dashboard() {
                                 <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
                                     {/* WhatsApp */}
                                     <a
-                                        href="https://wa.me/+255736228228"
+                                        href="https://wa.me/+255766028558"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
