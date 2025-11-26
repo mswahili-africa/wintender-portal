@@ -357,14 +357,19 @@ export default function PrivateTenders() {
                                 </button>
                                 {
                                     ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
-                                        <><Fragment>
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => setOpenModal({ type: "update", tender: content })}
-                                            >
-                                                <IconEdit size={20} />
-                                            </button>
-                                        </Fragment>
+                                        <>
+                                        {
+                                            new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY" ?
+                                            "" :
+                                            <Fragment>
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => setOpenModal({ type: "update", tender: content })}
+                                                >
+                                                    <IconEdit size={20} />
+                                                </button>
+                                            </Fragment>
+                                        }
                                             <Fragment>
 
                                                 <button
