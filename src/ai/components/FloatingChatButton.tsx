@@ -5,11 +5,11 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 
 export default function FloatingChatButton() {
 
-    const user = useUserDataContext();
+    const { userData } = useUserDataContext();
     const [open, setOpen] = useState(false);
     const { isChatOpen } = useChat();
 
-    // if (user.userData?.account || isChatOpen) return null;
+    if (!userData?.account || isChatOpen) return null;
 
     return (
         <>

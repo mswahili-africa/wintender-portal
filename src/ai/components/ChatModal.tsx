@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IconX, IconArrowUp } from "@tabler/icons-react";
 import ChatBox from "./ChatBox";
 import { getUserChats, sendChatMessage } from "@/ai/services/apis";
@@ -16,7 +16,7 @@ export default function ChatModal({ onClose }: ChatModalProps) {
 
   useEffect(() => {
     setChatOpen(true);
-    return () => setChatOpen(false);
+    // return () => setChatOpen(false);
   }, []);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function ChatModal({ onClose }: ChatModalProps) {
           alignItems: "center",
         }}
       >
-        <h3>WinTenderAI</h3>
+        <h3>TenderAI</h3>
         <button onClick={onClose}>
           <IconX />
         </button>
@@ -141,6 +141,12 @@ export default function ChatModal({ onClose }: ChatModalProps) {
           <IconArrowUp size={20} />
         </button>
       </div>
+
+      <span className="block text-center text-gray-500 text-xs mt-2">
+        TenderAI can make mistakes. Check important info.
+      </span>
+
+
     </div>
   );
 }

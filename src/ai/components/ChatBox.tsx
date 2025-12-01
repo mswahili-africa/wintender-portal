@@ -1,5 +1,5 @@
 // components/ChatBox.tsx
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface Message {
     role: "USER" | "ASSISTANT";
