@@ -40,7 +40,6 @@ export default function Dashboard() {
     
     const {consultationServices} = useBillboards({page:1});
     const {summary,isLoading} = useSummary();
-    console.log(summary);
 
     const handleConsultMeClick = () => {
         if (selectedBillboard)

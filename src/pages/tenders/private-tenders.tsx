@@ -202,10 +202,10 @@ export default function PrivateTenders() {
     };
 
     const handleDoItForMeClick = () => {
-        if (selectedTender) {
+        if (openModal.tender) {
             setIsDoItForMeLoading(true);
-            doItForMeMutation.mutate(selectedTender.id, {
-                onSettled: () => {
+            doItForMeMutation.mutate(openModal.tender.id, {
+                onSettled: () => { 
                     setIsDoItForMeLoading(false);
                 },
             });
