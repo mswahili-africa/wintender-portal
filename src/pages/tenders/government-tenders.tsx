@@ -168,7 +168,7 @@ export default function GovernmentTenders() {
 
 
     const handleDoItForMeClick = () => {
-        if (selectedTender) {
+        if (openModal.tender) {
             if (subscriptionDays !== undefined && subscriptionDays < 1) {
                 showConfirmation({
                     theme: "danger",
@@ -185,7 +185,7 @@ export default function GovernmentTenders() {
                 });
             } else {
                 setIsDoItForMeLoading(true);
-                doItForMeMutation.mutate(selectedTender.id, {
+                doItForMeMutation.mutate(openModal.tender.id, {
                     onSettled: () => {
                         setIsDoItForMeLoading(false);
                     },
