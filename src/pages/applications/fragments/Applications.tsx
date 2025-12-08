@@ -35,6 +35,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
+    const [status, setStatus] = useState<string>("");
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
 
@@ -214,7 +215,34 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
             <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[80vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-bold text-lg">Requests</h3>
+                    <h3 className="font-bold text-lg">Requests: {applicationGroup?.bidderCompanyName}</h3>
+                    <div className="flex flex-row gap-2">
+                        <div className="mb-2">
+                            <input
+                                type="text"
+                                placeholder="Search here..."
+                                className="input-normal py-2 w-60"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <select
+                                className={`${errors.status?.type === "required"
+                                    ? "input-error"
+                                    : "input-normal"
+                                    }`}
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <option value="">ALL</option>
+                                <option value="ON_PROGRESS">ON PROGRESS</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="RETURNED">RETURNED</option>
+                                <option value="CANCELED">CANCELED</option>
+                            </select>
+                        </div>
+                    </div>
                     <button onClick={onClose} className="text-red-500">Close</button>
                 </div>
 
@@ -243,7 +271,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         <IconSquareRoundedMinus size={20} />
                                     </button>
                                 )}
-                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && applicationList.status !== "COMPLETED" && (
+                                {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (
                                     <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
                                         <IconEdit size={20} />
                                     </button>
