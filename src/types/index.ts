@@ -280,7 +280,12 @@ export interface IStatisticSummary {
   tenders: number
   bidders: number
   applications: number
-  messageBalance: any
+  messageBalance: any,
+  procurementEntities: {
+    GOVERNMENT: number,
+    PRIVATE: number,
+    MANUFACTURER: number
+  }
 }
 
 export interface IPayment {

@@ -45,7 +45,7 @@ export default function ApplicationGroups() {
     <div>
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-bold">Application: Do it For Me</h2>
-        {userRole !== "BIDDER" && (
+        {!["PROCUREMENT_ENTITY"].includes(userRole) && (
           <PrivateTenderRequestButton onSuccess={refetch} />
         )}
       </div>

@@ -226,6 +226,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     <p><strong>Person:</strong> {user.name}</p>
                                     <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
                                     <p><strong>Email:</strong> {user.companyEmail}</p>
+                                    <p><strong>Plan:</strong> {user.currentPlanId}</p>
                                 </div>
 
                                 {/* Right Column - Location Info */}

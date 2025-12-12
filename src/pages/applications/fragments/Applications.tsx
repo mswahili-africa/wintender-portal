@@ -18,6 +18,7 @@ import useApplicationsList from "@/hooks/useApplicationsList";
 import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
+import { on } from "events";
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
@@ -46,6 +47,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         page,
         search,
         sort,
+        status: status !== "" ? status : undefined,
         filter: undefined,
     });
 
@@ -211,6 +213,12 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const remainingTime = closeDate! - currentDate;
     const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
 
+    const handleCloseModal = () => {
+        setSearch("");
+        setStatus("");
+        onClose();
+    }
+
     return (
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
             <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[80vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
@@ -220,7 +228,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         <div className="mb-2">
                             <input
                                 type="text"
-                                placeholder="Search here..."
+                                placeholder="Search tender title here..."
                                 className="input-normal py-2 w-60"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -243,7 +251,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             </select>
                         </div>
                     </div>
-                    <button onClick={onClose} className="text-red-500">Close</button>
+                    <button onClick={handleCloseModal} className="text-red-500">Close</button>
                 </div>
 
 
