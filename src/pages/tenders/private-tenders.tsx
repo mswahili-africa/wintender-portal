@@ -12,7 +12,6 @@ import columns from "./fragments/tenderColumns";
 import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModelNew";
-import Chip from "@/components/chip/Chip";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
@@ -21,15 +20,12 @@ import { debounce, set } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
-import { Countdown } from "@/components/countdown/Countdown";
-import { Clarifications } from "./fragments/Clarifications";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
-    const [editTender, setEditTender] = useState<ITenders | any>();
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
@@ -206,10 +202,10 @@ export default function PrivateTenders() {
     };
 
     const handleDoItForMeClick = () => {
-        if (selectedTender) {
+        if (openModal.tender) {
             setIsDoItForMeLoading(true);
-            doItForMeMutation.mutate(selectedTender.id, {
-                onSettled: () => {
+            doItForMeMutation.mutate(openModal.tender.id, {
+                onSettled: () => { 
                     setIsDoItForMeLoading(false);
                 },
             });
@@ -357,14 +353,19 @@ export default function PrivateTenders() {
                                 </button>
                                 {
                                     ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
-                                        <><Fragment>
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => setOpenModal({ type: "update", tender: content })}
-                                            >
-                                                <IconEdit size={20} />
-                                            </button>
-                                        </Fragment>
+                                        <>
+                                        {
+                                            new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY" ?
+                                            "" :
+                                            <Fragment>
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => setOpenModal({ type: "update", tender: content })}
+                                                >
+                                                    <IconEdit size={20} />
+                                                </button>
+                                            </Fragment>
+                                        }
                                             <Fragment>
 
                                                 <button

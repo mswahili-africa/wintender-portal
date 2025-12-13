@@ -16,7 +16,6 @@ import PrivateTenderRequestButton from "./fragments/privateTenderRequestButton";
 export default function ApplicationGroups() {
   const { userData } = useUserDataContext();
   const userRole = userData?.role || "BIDDER";
-  const navigate = useNavigate();
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("updatedAt,desc");
@@ -42,31 +41,11 @@ export default function ApplicationGroups() {
     setIsGroupModalOpen(true);
   };
 
-
-  // Invoice generation logic (moved to ApplicationInvoice.tsx)
-  // const viewProfomaInvoice = (id: string) => {
-  //   // filter applications based on status
-  //   const { applicationList, isLoading, refetch } = useApplicationsList({
-  //     applicationGroup: null,
-  //     groupId: "e0c7d6a4-7b5a-4f7f-9a7e-9e0a9e0a9e0a", // Dummy ID for all applications
-  //     page,
-  //     search,
-  //     sort,
-  //     filter: undefined,
-  //     visibility: "all"
-  //   });
-
-
-  //   navigate(`/application-profoma-invoice`, {
-  //     state: { applicationGroupData: applicationGroup, applicationData: application }
-  //   });
-  // };
-
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-bold">Application: Do it For Me</h2>
-        {userRole !== "BIDDER" && (
+        {!["PROCUREMENT_ENTITY"].includes(userRole) && (
           <PrivateTenderRequestButton onSuccess={refetch} />
         )}
       </div>

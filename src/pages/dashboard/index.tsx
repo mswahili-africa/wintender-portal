@@ -7,7 +7,9 @@ import {
     IconUser,
     IconMessage,
     IconBrandWhatsapp,
-    IconMail
+    IconMail,
+    IconBuildingStore,
+    IconBuilding
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -37,10 +39,9 @@ export default function Dashboard() {
     const [showModal, setShowModal] = useState(false);
     const [selectedBillboard, setSelectedBillboard] = useState<IConsultation | null>(null);
     const closeModal = () => setShowModal(false);
-    
-    const {consultationServices} = useBillboards({page:1});
-    const {summary,isLoading} = useSummary();
-    console.log(summary);
+
+    const { consultationServices } = useBillboards({ page: 1 });
+    const { summary, isLoading } = useSummary();
 
     const handleConsultMeClick = () => {
         if (selectedBillboard)
@@ -88,7 +89,6 @@ export default function Dashboard() {
     const AdminStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${summary?.statistics.bidders}`} to="/bidders" />
             <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${summary?.statistics.requests}`} to="/do-it-for-me" />
             <StatCard
                 icon={IconReportMoney}
@@ -101,6 +101,11 @@ export default function Dashboard() {
                 }).format(summary?.statistics.payments ?? 0)}`}
                 to="/payments"
             />
+            {/* <StatCard icon={IconGitPullRequest} title="Procument entities" description={`Government:${summary?.statistics?.procurementEntities?.GOVERNMENT ?? 0} <br /> Private:${summary?.statistics?.procurementEntities?.PRIVATE ?? 0} `} to="/do-it-for-me" /> */}
+            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${summary?.statistics.bidders}`} to="/bidders" />
+            <StatCard icon={IconBuilding} title="Government entities" description={`Government: ${summary?.statistics?.procurementEntities?.GOVERNMENT ?? 0}  `} to="/do-it-for-me" />
+            <StatCard icon={IconBuildingStore} title="Private entities" description={` Private: ${summary?.statistics?.procurementEntities?.PRIVATE ?? 0} `} to="/do-it-for-me" />
+
         </div>
     );
 
@@ -289,31 +294,28 @@ export default function Dashboard() {
                                     <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
+
 
 
                         {/* JCM CONTACTS  */}
                         {
                             ["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
                                 <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
-                                    {/* WhatsApp */}
                                     <a
-                                        href="https://wa.me/+255736228228"
+                                        href="https://wa.me/+255766028558"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
                                     >
                                         <IconBrandWhatsapp size={20} />
-                                        {/* <span className="text-sm group-hover:block hidden font-medium">WhatsApp</span> */}
                                     </a>
 
-                                    {/* Email */}
                                     <a
                                         href="mailto:info@wintender.co.tz"
                                         className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
                                     >
                                         <IconMail size={20} />
-                                        {/* <span className="text-sm font-medium">Email</span> */}
                                     </a>
                                 </div>
                             )}

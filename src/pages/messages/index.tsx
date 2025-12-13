@@ -7,8 +7,10 @@ import { ConversationModal } from "./fragments/ConversationModal";
 import { useContacts } from "@/hooks/notificationRepository";
 import { IContacts } from "@/types";
 import Button from "@/components/button/Button";
+import Pagination from "@/components/widgets/table/Pagination";
 
 export default function Messages() {
+    const [page, setPage] = useState<number>(0);
     const [handleModal, setHandleModal] = useState<{ type: "view" | "sendBulk" | "", object: any }>(
         {
             type: "",
@@ -23,7 +25,7 @@ export default function Messages() {
         });
     }
 
-    const { contacts, refetch, isLoading } = useContacts({ page: 0, size: 10 });
+    const { contacts, refetch, isLoading } = useContacts({ page: page, size: 10 });
 
     return (
         <div>
@@ -56,6 +58,15 @@ export default function Messages() {
                     }}
                 />
 
+            </div>
+            <div className="flex justify-center p-4">
+                {contacts?.pageable && (
+                    <Pagination
+                        currentPage={page}
+                        setCurrentPage={setPage}
+                        pageCount={contacts?.totalPages!}
+                    />
+                )}
             </div>
 
             {/* Message modal */}

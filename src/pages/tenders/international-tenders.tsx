@@ -191,9 +191,9 @@ export default function InternationalTenders() {
     };
 
     const handleDoItForMeClick = () => {
-        if (selectedTender) {
+        if (openModal.tender) {
             setIsDoItForMeLoading(true);
-            doItForMeMutation.mutate(selectedTender.id, {
+            doItForMeMutation.mutate(openModal.tender.id, {
                 onSettled: () => {
                     setIsDoItForMeLoading(false);
                 },

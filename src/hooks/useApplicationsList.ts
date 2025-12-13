@@ -13,20 +13,21 @@ interface IProps {
     sort?: string
     filter?: Record<string, any>
     visibility?: string
+    status?: string
 }
 
 export default function({groupId,...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: [props.applicationGroup?.id, props.page, props.sort, props?.search, props?.filter,props?.visibility],
-        queryFn: () => getDoForMeApplication(groupId ,{page: props.page, size: 10, sort: props.sort,visibility:props.visibility, search: props.search, ...props.filter}),
+        queryKey: [props.applicationGroup?.id, props.page,props.status, props.sort, props?.search, props?.filter,props?.visibility],
+        queryFn: () => getDoForMeApplication(groupId ,{page: props.page, size: 10, sort: props.sort,visibility:props.visibility, search: props.search, status: props.status, ...props.filter}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 600000,
     }); 
 
     useEffect(() => {
         refetch();
-    }, [props.filter, props.page, props.search, props.sort, props.visibility]);
+    }, [props.filter, props.page, props.search, props.sort,props.status, props.visibility]);
 
     return {
         isLoading,

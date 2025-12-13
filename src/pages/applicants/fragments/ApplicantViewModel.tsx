@@ -1,6 +1,5 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
-import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
 import { IconAlertTriangle, IconFileDownload, IconX } from "@tabler/icons-react";
@@ -56,7 +55,7 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                 <div className="mb-6">
                     {["PROCUREMENT_ENTITY"].includes(userData?.role || "") &&
                         applicant.status === "SUBMITTED" &&
-                        applicant.comment === null && (
+                        applicant.comment === "SUBMITTED" && (
                             <div className="flex gap-3">
                                 <Button
                                     label="Accept"
@@ -194,15 +193,9 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                                 </div>
                             )
                         }
-                        <div className="flex flex-col items-center mt-4 gap-2">
-                            <strong className="text-gray-600">Comment</strong>
-                            <textarea
-                                className="w-full p-2 border rounded"
-                            ></textarea>
-                        </div>
                         <div className="mt-6 flex justify-center gap-4">
                             {
-                                !applicationReviewMutation.isLoading &&
+                                !applicationReviewMutation.isPending &&
                                 <Button
                                     label="Cancel"
                                     theme="secondary"
@@ -212,7 +205,7 @@ const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
                             <Button
                                 label={`I confirm ${data.status === "ACCEPTED" ? "Acceptance" : "Rejection"}`}
                                 theme={data.status === "ACCEPTED" ? "primary" : "danger"}
-                                loading={applicationReviewMutation.isLoading}
+                                loading={applicationReviewMutation.isPending}
                                 onClick={() => {
                                     applicationReviewMutation.mutate({
                                         id: data.id,
