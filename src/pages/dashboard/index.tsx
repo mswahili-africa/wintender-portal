@@ -9,7 +9,8 @@ import {
     IconBrandWhatsapp,
     IconMail,
     IconBuildingStore,
-    IconBuilding
+    IconBuilding,
+    IconStack2
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -35,7 +36,7 @@ export default function Dashboard() {
     const account = userData?.account || "00000000";
 
     const { showConfirmation } = usePopup();
-    const [error, setError] = useState<string | null>(null);
+    const [error, _] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedBillboard, setSelectedBillboard] = useState<IConsultation | null>(null);
     const closeModal = () => setShowModal(false);
@@ -90,6 +91,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
             <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${summary?.statistics.requests}`} to="/do-it-for-me" />
+            <StatCard icon={IconStack2} title="Categories" description={`categories: 813`} to="/do-it-for-me" />
             <StatCard
                 icon={IconReportMoney}
                 title="Payment"
@@ -112,6 +114,7 @@ export default function Dashboard() {
     const PublisherStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
+            <StatCard icon={IconStack2} title="Categories" description={`categories: 813`} to="/do-it-for-me" />
             <StatCard
                 icon={IconPigMoney}
                 title="Commission"
@@ -123,6 +126,9 @@ export default function Dashboard() {
                 }).format(summary?.statistics.payments ?? 0)}`}
                 to="/publisher-reports"
             />
+            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${summary?.statistics.bidders}`} to="/bidders" />
+            <StatCard icon={IconBuilding} title="Government entities" description={`Government: ${summary?.statistics?.procurementEntities?.GOVERNMENT ?? 0}  `} to="/do-it-for-me" />
+            <StatCard icon={IconBuildingStore} title="Private entities" description={` Private: ${summary?.statistics?.procurementEntities?.PRIVATE ?? 0} `} to="/do-it-for-me" />
         </div>
     );
 
