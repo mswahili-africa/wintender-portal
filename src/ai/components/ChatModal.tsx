@@ -89,7 +89,7 @@ export default function ChatModal({ onClose }: ChatModalProps) {
           alignItems: "center",
         }}
       >
-        <h3>TenderAI</h3>
+        <h3>WintenderAI</h3>
         <button onClick={onClose}>
           <IconX />
         </button>

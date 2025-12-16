@@ -225,31 +225,25 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="font-bold text-lg">Requests: {applicationGroup?.bidderCompanyName}</h3>
                     <div className="flex flex-row gap-2">
-                        <div className="mb-2">
-                            <input
-                                type="text"
-                                placeholder="Search tender title here..."
-                                className="input-normal py-2 w-60"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <select
-                                className={`${errors.status?.type === "required"
-                                    ? "input-error"
-                                    : "input-normal"
-                                    }`}
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                            >
-                                <option value="">ALL</option>
-                                <option value="ON_PROGRESS">ON PROGRESS</option>
-                                <option value="COMPLETED">COMPLETED</option>
-                                <option value="RETURNED">RETURNED</option>
-                                <option value="CANCELED">CANCELED</option>
-                            </select>
-                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search tender title here..."
+                            className="input-normal w-60"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <select
+                            className="input-normal w-full sm:w-36"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="">ALL</option>
+                            <option value="ON_PROGRESS">ON PROGRESS</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="REQUESTED">REQUESTED</option>
+                            <option value="RETURNED">RETURNED</option>
+                            <option value="CANCELED">CANCELED</option>
+                        </select>
                     </div>
                     <button onClick={handleCloseModal} className="text-red-500">Close</button>
                 </div>
@@ -506,6 +500,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

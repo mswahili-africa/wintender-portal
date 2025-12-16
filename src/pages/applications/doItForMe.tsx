@@ -9,8 +9,6 @@ import { IconEye, IconFile } from "@tabler/icons-react";
 import { getAllApplicationsGroup } from "@/hooks/useApplicationsGroup";
 import Tabs from "@/components/widgets/Tabs";
 import DIFMapplications from "./fragments/DIFMApplications";
-import { useNavigate } from "react-router-dom";
-import useApplicationsList from "@/hooks/useApplicationsList";
 import PrivateTenderRequestButton from "./fragments/privateTenderRequestButton";
 
 export default function ApplicationGroups() {
@@ -56,7 +54,7 @@ export default function ApplicationGroups() {
             <input
               type="text"
               placeholder="Search"
-              className="input-normal py-2 w-1/2 lg:w-1/4"
+              className="input-normal w-1/2 lg:w-1/4"
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -110,7 +108,7 @@ export default function ApplicationGroups() {
                 <input
                   type="text"
                   placeholder="Search"
-                  className="input-normal py-2 w-1/2 lg:w-1/4"
+                  className="input-normal w-1/2 lg:w-1/4"
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>

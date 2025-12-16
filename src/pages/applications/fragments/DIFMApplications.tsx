@@ -1,7 +1,6 @@
-import { IconCheckbox, IconEdit, IconEye, IconFile, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
-import applicationListColumns from "./applicationListColumns";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -30,6 +29,7 @@ export default function DIFMapplications() {
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
+    const [status, setStatus] = useState<string | undefined>(undefined);
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
 
@@ -40,8 +40,9 @@ export default function DIFMapplications() {
         page,
         search,
         sort,
+        status,
         filter: undefined,
-        visibility:"all"
+        visibility: "all"
     });
 
     useEffect(() => {
@@ -207,12 +208,26 @@ export default function DIFMapplications() {
         <div className="modal-content rounded-lg shadow-lg p-4 z-60"> {/* Set max height and overflow */}
             <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-lg">Requests</h3>
-                <input
-                type="text"
-                placeholder="Search"
-                className="input-normal py-2 w-1/2 lg:w-1/4"
-                onChange={(e) => setSearch(e.target.value)} // Update search query
-              />
+                <div className="flex flex-col sm:flex-row gap-2 sm:w-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="input-normal w-full"
+                        onChange={(e) => setSearch(e.target.value)} // Update search query
+                    />
+                    <select
+                        className={`input-normal w-full sm:w-3/4`}
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
+                        <option value="">Status</option>
+                        <option value="ON_PROGRESS">ON PROGRESS</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                        <option value="REQUESTED">REQUESTED</option>
+                        <option value="RETURNED">RETURNED</option>
+                        <option value="CANCELED">CANCELED</option>
+                    </select>
+                </div>
             </div>
 
 

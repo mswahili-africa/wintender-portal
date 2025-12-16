@@ -9,31 +9,35 @@ interface IProps {
     page: number
     search?: string
     sort?: string
+    status?: string
     filter?: Record<string, any>
 }
 
 export function getAllApplicationsGroup({
     page,
     search,
+    status,
     sort,
     filter,
 }: {
     page: number;
     search: string;
     sort: string;
+    status?: string;
     filter?: any; // Define this type based on your requirements
 }) {
     const { handleError } = useErrorHandler();
 
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: [
-            "getAllApplicationsGroup", page,sort,search,filter ?? "all", // If filter is undefined, set it as 'all'
+            "getAllApplicationsGroup", page,sort,search,filter,status ?? "all", // If filter is undefined, set it as 'all'
         ],
         queryFn: () =>
             getDoForMeGroup({
                 page,
                 size: 10, // Set the size per your requirement
                 sort,
+                status,
                 search,
                 filter, // Pass the filter
             }),
@@ -43,7 +47,7 @@ export function getAllApplicationsGroup({
 
     useEffect(() => {
         refetch(); // Refetch when filter, page, search, or sort change
-    }, [filter, page, search, sort, refetch]);
+    }, [filter, page, search, sort,status, refetch]);
 
     return {
         isLoading,

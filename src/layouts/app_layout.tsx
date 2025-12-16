@@ -4,7 +4,7 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import AuthLayout from "@/layouts/auth_layout";
 import Header from "@/components/header/Header";
 
-export default function() {
+export default function () {
 
     return (
         <AuthLayout>
@@ -18,7 +18,7 @@ export default function() {
                             <MobileMenu />
                         </div>
 
-                        <Header/>
+                        <Header />
                         <Outlet />
                     </div>
                 </div>

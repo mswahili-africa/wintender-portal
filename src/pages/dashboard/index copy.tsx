@@ -28,7 +28,6 @@ import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
-import AdminStats from "./fragments/AdminStats";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -88,7 +87,7 @@ export default function Dashboard() {
         </Link>
     );
 
-    const AdminStats_j = () => (
+    const AdminStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
             <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${summary?.statistics.requests}`} to="/do-it-for-me" />
@@ -254,8 +253,6 @@ export default function Dashboard() {
                 </>
             }
             <Modal isOpen={showModal} closeModal={closeModal} />
-            <h2 className="text-xl font-extralight my-4">Brief statistics</h2>
-
 
             {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (
                 <div className="mt-6">
@@ -278,60 +275,58 @@ export default function Dashboard() {
 
             {userRole.includes("ADMINISTRATOR") && (
                 <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary!} />}
+                    {isLoading ? <SkeletonLoader /> : <AdminStats />}
                 </div>
             )}
 
             {
                 !["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
-                    <>
-                        <h2 className="text-xl font-extralight my-4">Reports</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
-                            <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="bg-green-100 p-3 rounded-full">
-                                        <IconMessage className="w-6 h-6 text-green-600" />
-                                    </div>
-                                    <h2 className="text-lg font-semibold text-gray-800">SMS Balance Report</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
+                        <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <IconMessage className="w-6 h-6 text-green-600" />
                                 </div>
-
-                                <div className="space-y-3 text-gray-700 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="font-medium">NextSMS:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="font-medium">Onfon Media:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
-                                    </div>
-                                </div>
+                                <h2 className="text-lg font-semibold text-gray-800">SMS Balance Report</h2>
                             </div>
 
+                            <div className="space-y-3 text-gray-700 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="font-medium">NextSMS:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium">Onfon Media:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
+                                </div>
+                            </div>
+                        </div> 
 
 
-                            {/* JCM CONTACTS  */}
-                            {
-                                ["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
-                                    <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
-                                        <a
-                                            href="https://wa.me/+255766028558"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
-                                        >
-                                            <IconBrandWhatsapp size={20} />
-                                        </a>
 
-                                        <a
-                                            href="mailto:info@wintender.co.tz"
-                                            className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
-                                        >
-                                            <IconMail size={20} />
-                                        </a>
-                                    </div>
-                                )}
-                        </div>
-                    </>
+                        {/* JCM CONTACTS  */}
+                        {
+                            ["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
+                                    <a
+                                        href="https://wa.me/+255766028558"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconBrandWhatsapp size={20} />
+                                    </a>
+
+                                    <a
+                                        href="mailto:info@wintender.co.tz"
+                                        className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconMail size={20} />
+                                    </a>
+                                </div>
+                            )}
+                    </div>
+
                 )
             }
 
