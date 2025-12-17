@@ -275,6 +275,7 @@ export interface IRequests {
   total: number;
   open: number;
   awarded: number;
+  submitted: number;
 }
 
 export interface ITendersSummary {

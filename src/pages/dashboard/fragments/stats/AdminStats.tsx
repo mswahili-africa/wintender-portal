@@ -35,6 +35,7 @@ export default function AdminStats({ summary }: IProps) {
           { label: "Total Requests", value: summary?.requests?.total ?? 0 },
           { label: "Total Opened", value: summary?.requests?.open ?? 0 },
           { label: "Total Awarded", value: summary?.requests?.awarded ?? 0 },
+          { label: "Total Submitted", value: summary?.requests?.submitted ?? 0 },
         ]}
       />
 
