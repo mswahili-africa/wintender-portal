@@ -271,16 +271,14 @@ export interface ITenders {
 
 
 // SUMMARY REPORT INTERFACES
-export interface IRequestsMonthlySummary {
-  COMPLETED: string;
-  RETURNED: string;
-  REQUESTED: string;
-  ON_PROGRESS: string;
+export interface IRequests {
+  total: number;
+  open: number;
+  awarded: number;
 }
 
 export interface ITendersSummary {
   total: number;
-  thisMonth: number;
   categories: number;
   open: number;
 }
@@ -296,13 +294,17 @@ export interface IMessageBalance {
   onfonMedia: string;
 }
 
+interface IBiddersSummary {
+  total: number;
+  active: number;
+}
+
 export interface ISummaryReport {
-  bidders: number;
-  requestsMonthlySummary: IRequestsMonthlySummary;
+  bidders: IBiddersSummary;
   tenders: ITendersSummary;
   payments: number;
   procurementEntities: IProcurementEntities;
-  requests: number;
+  requests: IRequests;
   messageBalance: IMessageBalance;
   applications: number;
 }
@@ -312,25 +314,6 @@ export interface IStatisticsResponse {
   statistics: ISummaryReport;
 }
 // end
-
-
-// export interface ISummaryReport {
-//   statistics: IStatisticSummary
-// }
-
-// export interface IStatisticSummary {
-//   payments: number
-//   requests: number
-//   tenders: number
-//   bidders: number
-//   applications: number
-//   messageBalance: any,
-//   procurementEntities: {
-//     GOVERNMENT: number,
-//     PRIVATE: number,
-//     MANUFACTURER: number
-//   }
-// }
 
 export interface IPayment {
   id: string;

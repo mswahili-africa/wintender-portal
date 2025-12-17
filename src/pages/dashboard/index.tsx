@@ -22,8 +22,7 @@ import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
-import AdminStats from "./fragments/AdminStats";
-import PublisherStats from "./fragments/publisherStats";
+import AdminStats from "./fragments/stats/AdminStats";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -207,15 +206,9 @@ export default function Dashboard() {
             <h2 className="text-xl font-extralight my-4">Brief statistics</h2>
 
 
-            {(userRole.includes("MANAGER") || userRole.includes("BIDDER") || userRole.includes("ACCOUNTANT")) && (
+            {(userRole.includes("BIDDER") ) && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <BidderStats />}
-                </div>
-            )}
-
-            {(userRole.includes("PUBLISHER") || userRole.includes("SUPERVISOR")) && (
-                <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <PublisherStats summary={summary!} />}
                 </div>
             )}
 
@@ -226,7 +219,7 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {userRole.includes("ADMINISTRATOR") && (
+            { ["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR"].includes(userRole) && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary!} />}
                 </div>
@@ -245,12 +238,12 @@ export default function Dashboard() {
                                     <h2 className="text-lg font-semibold text-gray-800">SMS Balance Report</h2>
                                 </div>
 
-                                <div className="space-y-3 text-gray-700 text-sm">
-                                    <div className="flex justify-between">
+                                <div className="space-y-2 text-gray-700">
+                                    <div className="flex justify-between text-sm">
                                         <span className="font-medium">NextSMS:</span>
                                         <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.nextSMS ?? "0"}</span>
                                     </div>
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between text-sm">
                                         <span className="font-medium">Onfon Media:</span>
                                         <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onfonMedia ?? "0"}</span>
                                     </div>

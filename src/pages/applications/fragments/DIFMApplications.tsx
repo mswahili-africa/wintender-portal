@@ -222,9 +222,11 @@ export default function DIFMapplications() {
                     >
                         <option value="">Status</option>
                         <option value="ON_PROGRESS">ON PROGRESS</option>
-                        <option value="COMPLETED">COMPLETED</option>
+                        <option value="SUBMITTED">SUBMITTED</option>
                         <option value="REQUESTED">REQUESTED</option>
                         <option value="RETURNED">RETURNED</option>
+                        <option value="AWARDED">AWARDED</option>
+                        <option value="NOT_AWARDED">NOT_AWARDED</option>
                         <option value="CANCELED">CANCELED</option>
                     </select>
                 </div>

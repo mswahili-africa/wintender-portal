@@ -239,9 +239,11 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         >
                             <option value="">ALL</option>
                             <option value="ON_PROGRESS">ON PROGRESS</option>
-                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="SUBMITTED">SUBMITTED</option>
                             <option value="REQUESTED">REQUESTED</option>
                             <option value="RETURNED">RETURNED</option>
+                            <option value="AWARDED">AWARDED</option>
+                            <option value="NOT_AWARDED">NOT_AWARDED</option>
                             <option value="CANCELED">CANCELED</option>
                         </select>
                     </div>
@@ -278,7 +280,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         <IconEdit size={20} />
                                     </button>
                                 )}
-                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (applicationList.status === "REQUESTED" || applicationList.status === "ON_PROGRESS") && (
+                                {(userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (
                                     <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(applicationList)}>
                                         <IconCheckbox size={20} />
                                     </button>
@@ -315,8 +317,10 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     {...register("status", { required: true })}
                                 >
                                     <option value="ON_PROGRESS">ON PROGRESS</option>
-                                    <option value="COMPLETED">COMPLETED</option>
+                                    <option value="SUBMITTED">SUBMITTED</option>
                                     <option value="RETURNED">RETURNED</option>
+                                    <option value="AWARDED">AWARDED</option>
+                                    <option value="NOT_AWARDED">NOT_AWARDED</option>
                                     <option value="CANCELED">CANCELED</option>
                                 </select>
                                 <p className="text-xs text-red-500 mt-1 mx-0.5">

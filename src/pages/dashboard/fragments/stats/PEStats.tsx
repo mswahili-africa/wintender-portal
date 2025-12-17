@@ -2,7 +2,7 @@
 import {
   IconFileText,
 } from "@tabler/icons-react";
-import StatGroupCard from "./StatGroupCard";
+import StatGroupCard from "../StatGroupCard";
 import { ISummaryReport } from "@/types";
 
 interface IProps {

@@ -5,7 +5,7 @@ import {
   IconBuilding,
   IconUsersGroup,
 } from "@tabler/icons-react";
-import StatGroupCard from "./StatGroupCard";
+import StatGroupCard from "../StatGroupCard";
 import { ISummaryReport } from "@/types";
 
 interface IProps {
@@ -21,8 +21,9 @@ export default function AdminStats({ summary }: IProps) {
         title="Tenders"
         icon={<IconFileText size={20} />}
         items={[
+          { label: "Open Tenders", value: summary?.tenders?.open ?? 0 },
+          { label: "Categories", value:  summary?.tenders?.categories ?? 0 },
           { label: "Total Published", value: summary?.tenders?.total ?? 0 },
-          { label: "Categories", value:  813 },
         ]}
       />
 
@@ -31,9 +32,9 @@ export default function AdminStats({ summary }: IProps) {
         title="Do it for me"
         icon={<IconGitPullRequest size={20} />}
         items={[
-          { label: "Total Requests", value: summary?.requests ?? 0 },
-        //   { label: "Pending", value: summary?.statistics?.pendingRequests ?? 0 },
-        //   { label: "Completed", value: summary?.statistics?.completedRequests ?? 0 },
+          { label: "Total Requests", value: summary?.requests?.total ?? 0 },
+          { label: "Total Opened", value: summary?.requests?.open ?? 0 },
+          { label: "Total Awarded", value: summary?.requests?.awarded ?? 0 },
         ]}
       />
 
@@ -62,10 +63,8 @@ export default function AdminStats({ summary }: IProps) {
         title="Bidders"
         icon={<IconUsersGroup size={20} />}
         items={[
-          { label: "Total Bidders", value: summary?.bidders ?? 0 },
-        //   { label: "Subscribed", value: summary?.statistics?.subscribedBidders ?? 0 },
-        //   { label: "Unsubscribed", value: summary?.statistics?.unsubscribedBidders ?? 0 },
-        //   { label: "Retainers", value: summary?.statistics?.retainers ?? 0 },
+          { label: "Total Bidders", value: summary?.bidders?.total ?? 0 },
+          { label: "Active Bidders", value: summary?.bidders?.active ?? 0 },
         ]}
       />
     </div>
