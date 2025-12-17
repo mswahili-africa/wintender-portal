@@ -23,6 +23,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
 import AdminStats from "./fragments/stats/AdminStats";
+import BidderStats from "./fragments/stats/BidderStats";
+import PEStats from "./fragments/stats/PEStats";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -69,33 +71,6 @@ export default function Dashboard() {
                     <p className="text-gray-600 text-sm"><Skeleton width={100} /></p>
                 </div>
             ))}
-        </div>
-    );
-
-    const StatCard = ({ icon: Icon, title, description, to }: any) => (
-        <Link to={to}>
-            <div className="bg-white shadow-md p-4 sm:p-6 rounded-lg cursor-pointer hover:bg-gray-50">
-                <Icon className="w-6 h-6 mb-4 text-green-600" />
-                <h3 className="text-base font-bold">{title}</h3>
-                <p className="text-gray-600 text-sm">{description}</p>
-            </div>
-        </Link>
-    );
-
-    const PEStats = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="My Tenders" description={`Open: ${summary?.tenders?.open}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Tender Box" description={`Applications: ${summary?.tenders?.total}`} to="/tender-box" />
-        </div>
-    );
-
-    const BidderStats = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.tenders?.open}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${summary?.requests}`} to="/do-it-for-me" />
-            <StatCard icon={IconGitPullRequest} title="Submissions" description={`Applications: ${summary?.applications}`} to="/do-it-for-me" />
         </div>
     );
 
@@ -188,9 +163,10 @@ export default function Dashboard() {
             {
                 userRole !== "PROCUREMENT_ENTITY" ? <>
                     {
-                        userRole.includes("BIDDER") && (<>
+                        userRole && userRole.includes("BIDDER") && (<>
                             <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
-                            <div className="text-gray-800 mb-6 w-fit">Welcome to your dashboard </div>
+                            <div className="text-gray-800 mb-2 w-fit">Welcome to your dashboard </div>
+                            <div className="text-gray-900 font-bold mb-6 w-fit text-xs">{account}</div>
                         </>
                         )
                     }
@@ -208,14 +184,14 @@ export default function Dashboard() {
 
             {(userRole.includes("BIDDER") ) && (
                 <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <BidderStats />}
+                    {isLoading ? <SkeletonLoader /> : <BidderStats summary={summary!}/>}
                 </div>
             )}
 
             {/* JCM pe stats*/}
             {userRole.includes("PROCUREMENT_ENTITY") && (
                 <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <PEStats />}
+                    {isLoading ? <SkeletonLoader /> : <PEStats summary={summary!}/>}
                 </div>
             )}
 
