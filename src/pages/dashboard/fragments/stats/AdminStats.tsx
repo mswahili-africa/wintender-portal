@@ -21,9 +21,10 @@ export default function AdminStats({ summary }: IProps) {
         title="Tenders"
         icon={<IconFileText size={20} />}
         items={[
-          { label: "Open Tenders", value: summary?.tenders?.open ?? 0 },
-          { label: "Categories", value:  summary?.tenders?.categories ?? 0 },
           { label: "Total Published", value: summary?.tenders?.total ?? 0 },
+          { label: "Open", value: summary?.tenders?.open ?? 0 },
+          { label: "This Month", value: summary?.tenders?.thisMonth ?? 0 },
+          { label: "Categories", value:  summary?.tenders?.categories ?? 0 },
         ]}
       />
 
@@ -33,9 +34,10 @@ export default function AdminStats({ summary }: IProps) {
         icon={<IconGitPullRequest size={20} />}
         items={[
           { label: "Total Requests", value: summary?.requests?.total ?? 0 },
-          { label: "Total Opened", value: summary?.requests?.open ?? 0 },
-          { label: "Total Awarded", value: summary?.requests?.awarded ?? 0 },
-          { label: "Total Submitted", value: summary?.requests?.submitted ?? 0 },
+          { label: "On progress", value: summary?.requests?.open ?? 0 },
+          { label: "Submitted", value: summary?.requests?.submitted ?? 0 },
+          { label: "Awarded", value: summary?.requests?.awarded ?? 0 },
+          { label: "Cancelled", value: summary?.requests?.cancelled ?? 0 },
         ]}
       />
 

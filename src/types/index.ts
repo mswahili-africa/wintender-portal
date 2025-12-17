@@ -275,6 +275,7 @@ export interface IRequests {
   total: number;
   open: number;
   awarded: number;
+  cancelled: number;
   submitted: number;
 }
 
@@ -282,6 +283,7 @@ export interface ITendersSummary {
   total: number;
   categories: number;
   open: number;
+  thisMonth: number;
 }
 
 export interface IProcurementEntities {

@@ -165,8 +165,10 @@ export default function Dashboard() {
                     {
                         userRole && userRole.includes("BIDDER") && (<>
                             <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
-                            <div className="text-gray-800 mb-2 w-fit">Welcome to your dashboard </div>
-                            <div className="text-gray-900 font-bold mb-6 w-fit text-xs">{account}</div>
+                            <div className="flex flex-col sm:flex-row justify-between mb-6">
+                                <div className="text-gray-800 mb-2 w-fit">Welcome to your dashboard </div>
+                                <div className="text-gray-900 font-bold  w-fit text-xs">Account: {account}</div>
+                            </div>
                         </>
                         )
                     }
@@ -182,20 +184,20 @@ export default function Dashboard() {
             <h2 className="text-xl font-extralight my-4">Brief statistics</h2>
 
 
-            {(userRole.includes("BIDDER") ) && (
+            {(userRole.includes("BIDDER")) && (
                 <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <BidderStats summary={summary!}/>}
+                    {isLoading ? <SkeletonLoader /> : <BidderStats summary={summary!} />}
                 </div>
             )}
 
             {/* JCM pe stats*/}
             {userRole.includes("PROCUREMENT_ENTITY") && (
                 <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <PEStats summary={summary!}/>}
+                    {isLoading ? <SkeletonLoader /> : <PEStats summary={summary!} />}
                 </div>
             )}
 
-            { ["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR"].includes(userRole) && (
+            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR"].includes(userRole) && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary!} />}
                 </div>
