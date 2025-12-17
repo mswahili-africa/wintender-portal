@@ -44,9 +44,9 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
         onSuccess: (data) => {
             startEnquiry(data.id);  // Start the enquiry API calls
         },
-        onError: (error) => {
+        onError: (error:any) => {
             setIsProcessing(false);
-            toast.error("Payment failed: " + error);
+            toast.error(error.data?.message || error.message || "Unknown error occurred.");
         }
     });
 

@@ -295,7 +295,7 @@ export default function PrivateTenders() {
                                 type="text"
                                 onChange={(e) => setTempKeyword(e.target.value)}
                                 className="input-normal w-full px-3 border rounded-md"
-                                placeholder="Type..."
+                                placeholder="Type keyword..."
                             />
                         </div>
                     )}

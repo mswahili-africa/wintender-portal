@@ -1,16 +1,10 @@
 import {
-    IconUsersGroup,
     IconGitPullRequest,
     IconFileText,
-    IconReportMoney,
-    IconPigMoney,
     IconUser,
     IconMessage,
     IconBrandWhatsapp,
     IconMail,
-    IconBuildingStore,
-    IconBuilding,
-    IconStack2
 } from "@tabler/icons-react";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -29,6 +23,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
 import AdminStats from "./fragments/AdminStats";
+import PublisherStats from "./fragments/publisherStats";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -88,65 +83,20 @@ export default function Dashboard() {
         </Link>
     );
 
-    const AdminStats_j = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Do it for me" description={`Requests: ${summary?.statistics.requests}`} to="/do-it-for-me" />
-            <StatCard icon={IconStack2} title="Categories" description={`Categories: 813`} to="/do-it-for-me" />
-            <StatCard
-                icon={IconReportMoney}
-                title="Payment"
-                description={`Total: ${new Intl.NumberFormat('en-TZ', {
-                    style: 'decimal',
-                    currency: 'TZS',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).format(summary?.statistics.payments ?? 0)}`}
-                to="/payments"
-            />
-            {/* <StatCard icon={IconGitPullRequest} title="Procument entities" description={`Government:${summary?.statistics?.procurementEntities?.GOVERNMENT ?? 0} <br /> Private:${summary?.statistics?.procurementEntities?.PRIVATE ?? 0} `} to="/do-it-for-me" /> */}
-            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${summary?.statistics.bidders}`} to="/bidders" />
-            <StatCard icon={IconBuilding} title="Government entities" description={`Government: ${summary?.statistics?.procurementEntities?.GOVERNMENT ?? 0}  `} to="/do-it-for-me" />
-            <StatCard icon={IconBuildingStore} title="Private entities" description={` Private: ${summary?.statistics?.procurementEntities?.PRIVATE ?? 0} `} to="/do-it-for-me" />
-
-        </div>
-    );
-
-    const PublisherStats = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconStack2} title="Categories" description={`Categories: 813`} to="/do-it-for-me" />
-            <StatCard
-                icon={IconPigMoney}
-                title="Commission"
-                description={`Total Earned: TZS ${new Intl.NumberFormat('en-TZ', {
-                    style: 'decimal',
-                    currency: 'TZS',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).format(summary?.statistics.payments ?? 0)}`}
-                to="/publisher-reports"
-            />
-            <StatCard icon={IconUsersGroup} title="Bidders" description={`Active: ${summary?.statistics.bidders}`} to="/bidders" />
-            <StatCard icon={IconBuilding} title="Government entities" description={`Government: ${summary?.statistics?.procurementEntities?.GOVERNMENT ?? 0}  `} to="/do-it-for-me" />
-            <StatCard icon={IconBuildingStore} title="Private entities" description={` Private: ${summary?.statistics?.procurementEntities?.PRIVATE ?? 0} `} to="/do-it-for-me" />
-        </div>
-    );
-
     const PEStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="My Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Tender Box" description={`Applications: ${summary?.statistics.applications}`} to="/tender-box" />
+            <StatCard icon={IconFileText} title="My Tenders" description={`Open: ${summary?.tenders?.open}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Tender Box" description={`Applications: ${summary?.tenders?.total}`} to="/tender-box" />
         </div>
     );
 
     const BidderStats = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={IconUser} title={account} description="Account" to={`/users/${userId}`} />
-            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.statistics.tenders}`} to="/tenders" />
-            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${summary?.statistics.requests}`} to="/do-it-for-me" />
-            <StatCard icon={IconGitPullRequest} title="Submissions" description={`Applications: ${summary?.statistics.applications}`} to="/do-it-for-me" />
+            <StatCard icon={IconFileText} title="Tenders" description={`Open: ${summary?.tenders?.open}`} to="/tenders" />
+            <StatCard icon={IconGitPullRequest} title="Requests" description={`Requested: ${summary?.requests}`} to="/do-it-for-me" />
+            <StatCard icon={IconGitPullRequest} title="Submissions" description={`Applications: ${summary?.applications}`} to="/do-it-for-me" />
         </div>
     );
 
@@ -265,7 +215,7 @@ export default function Dashboard() {
 
             {(userRole.includes("PUBLISHER") || userRole.includes("SUPERVISOR")) && (
                 <div className="mt-6">
-                    {isLoading ? <SkeletonLoader /> : <PublisherStats />}
+                    {isLoading ? <SkeletonLoader /> : <PublisherStats summary={summary!} />}
                 </div>
             )}
 
@@ -298,11 +248,11 @@ export default function Dashboard() {
                                 <div className="space-y-3 text-gray-700 text-sm">
                                     <div className="flex justify-between">
                                         <span className="font-medium">NextSMS:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.nextSMS ?? "0"}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="font-medium">Onfon Media:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onfonMedia ?? "0"}</span>
                                     </div>
                                 </div>
                             </div>

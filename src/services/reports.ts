@@ -1,9 +1,9 @@
 import http from "@/http";
-import { ISummaryReport, } from "@/types";
+import { IStatisticsResponse } from "@/types";
 
 
 export async function getSummaryReport() {
-    const response = await http.get<ISummaryReport>(`/reports/statistics/summary`)
+    const response = await http.get<IStatisticsResponse>(`/reports/statistics/summary`)
 
-    return response.data
+    return response.data.statistics
 }

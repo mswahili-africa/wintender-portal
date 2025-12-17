@@ -18,7 +18,7 @@ export default function SystemLogs() {
     const [search] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>();
-    const [tempSearchType, setTempSearchType] = useState<string>("LOG");
+    const [tempSearchType, setTempSearchType] = useState<string>("ERROR");
 
     const { logs, isLoading, refetch } = useSystemLogs({
         page: page,
@@ -43,7 +43,7 @@ export default function SystemLogs() {
                 <h3 className="text-lg font-bold">System Logs</h3>
 
                 <Select
-                    className="w-1/3"
+                    className="w-1/3" 
                     options={options}
                     onChange={(selectedOption : any) => {
                         setTempSearchType(selectedOption?.value);

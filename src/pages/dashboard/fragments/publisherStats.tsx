@@ -1,9 +1,9 @@
 // components/dashboard/AdminStats.tsx
 import {
   IconFileText,
-  IconGitPullRequest,
   IconBuilding,
   IconUsersGroup,
+  IconPigMoney,
 } from "@tabler/icons-react";
 import StatGroupCard from "./StatGroupCard";
 import { ISummaryReport } from "@/types";
@@ -12,7 +12,7 @@ interface IProps {
   summary: ISummaryReport;
 }
 
-export default function AdminStats({ summary }: IProps) {
+export default function PublisherStats({ summary }: IProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       
@@ -22,18 +22,24 @@ export default function AdminStats({ summary }: IProps) {
         icon={<IconFileText size={20} />}
         items={[
           { label: "Total Published", value: summary?.tenders?.total ?? 0 },
-          { label: "Categories", value:  813 },
+          { label: "Categories", value:  summary?.tenders?.categories ?? 0},
         ]}
       />
 
       {/* REQUESTS */}
       <StatGroupCard
-        title="Do it for me"
-        icon={<IconGitPullRequest size={20} />}
+        title="Commission"
+        icon={<IconPigMoney size={20} />}
         items={[
-          { label: "Total Requests", value: summary?.requests ?? 0 },
-        //   { label: "Pending", value: summary?.statistics?.pendingRequests ?? 0 },
-        //   { label: "Completed", value: summary?.statistics?.completedRequests ?? 0 },
+          { 
+            label: "Total Earned: TZS", 
+            value: new Intl.NumberFormat('en-TZ', {
+                    style: 'decimal',
+                    currency: 'TZS',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }).format(summary?.payments ?? 0)
+          },
         ]}
       />
 
@@ -63,8 +69,6 @@ export default function AdminStats({ summary }: IProps) {
         icon={<IconUsersGroup size={20} />}
         items={[
           { label: "Total Bidders", value: summary?.bidders ?? 0 },
-        //   { label: "Subscribed", value: summary?.statistics?.subscribedBidders ?? 0 },
-        //   { label: "Unsubscribed", value: summary?.statistics?.unsubscribedBidders ?? 0 },
         //   { label: "Retainers", value: summary?.statistics?.retainers ?? 0 },
         ]}
       />

@@ -270,23 +270,67 @@ export interface ITenders {
 }
 
 
-export interface ISummaryReport {
-  statistics: IStatisticSummary
+// SUMMARY REPORT INTERFACES
+export interface IRequestsMonthlySummary {
+  COMPLETED: string;
+  RETURNED: string;
+  REQUESTED: string;
+  ON_PROGRESS: string;
 }
 
-export interface IStatisticSummary {
-  payments: number
-  requests: number
-  tenders: number
-  bidders: number
-  applications: number
-  messageBalance: any,
-  procurementEntities: {
-    GOVERNMENT: number,
-    PRIVATE: number,
-    MANUFACTURER: number
-  }
+export interface ITendersSummary {
+  total: number;
+  thisMonth: number;
+  categories: number;
+  open: number;
 }
+
+export interface IProcurementEntities {
+  MANUFACTURER: number;
+  GOVERNMENT: number;
+  PRIVATE: number;
+}
+
+export interface IMessageBalance {
+  nextSMS: string;
+  onfonMedia: string;
+}
+
+export interface ISummaryReport {
+  bidders: number;
+  requestsMonthlySummary: IRequestsMonthlySummary;
+  tenders: ITendersSummary;
+  payments: number;
+  procurementEntities: IProcurementEntities;
+  requests: number;
+  messageBalance: IMessageBalance;
+  applications: number;
+}
+
+export interface IStatisticsResponse {
+  code: string;
+  statistics: ISummaryReport;
+}
+// end
+
+
+// export interface ISummaryReport {
+//   statistics: IStatisticSummary
+// }
+
+// export interface IStatisticSummary {
+//   payments: number
+//   requests: number
+//   tenders: number
+//   bidders: number
+//   applications: number
+//   messageBalance: any,
+//   procurementEntities: {
+//     GOVERNMENT: number,
+//     PRIVATE: number,
+//     MANUFACTURER: number
+//   }
+// }
 
 export interface IPayment {
   id: string;
@@ -534,7 +578,7 @@ export interface IMessages {
 }
 
 export interface IAIChatMessage {
-    role: "USER" | "ASSISTANT";
-    content: string;
-    timestamp: string;
+  role: "USER" | "ASSISTANT";
+  content: string;
+  timestamp: string;
 }
