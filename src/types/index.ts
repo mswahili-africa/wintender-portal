@@ -273,9 +273,10 @@ export interface ITenders {
 // SUMMARY REPORT INTERFACES
 export interface IRequests {
   total: number;
+  request: number;
   open: number;
   awarded: number;
-  cancelled: number;
+  canceled: number;
   submitted: number;
 }
 

@@ -29,11 +29,12 @@ export default function BidderStats({ summary }: IProps) {
         title="Do it for me"
         icon={<IconGitPullRequest size={20} />}
         items={[
-          { label: "Total Requests", value: summary?.requests?.total ?? 0 },
+          { label: "Total Do it for Me", value: summary?.requests?.total ?? 0 },
+          { label: "Requests", value: summary?.requests?.request ?? 0 },
           { label: "On progress", value: summary?.requests?.open ?? 0 },
           { label: "Submitted", value: summary?.requests?.submitted ?? 0 },
           { label: "Awarded", value: summary?.requests?.awarded ?? 0 },
-          { label: "Cancelled", value: summary?.requests?.cancelled ?? 0 },
+          { label: "Cancelled", value: summary?.requests?.canceled ?? 0 },
         ]}
       />
 
