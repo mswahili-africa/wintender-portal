@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, IContacts, ITenders } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconMessage, IconSend } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -240,16 +240,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
                                     {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
                                 </div>
-
-                                {/* do it for me */}
-                                {/* <div className="space-y-4">
-                                    <strong>Do it for me</strong>
-                                    <p><strong>Total:</strong> {applicationList?.summary?.total}</p>
-                                    <p><strong>Requests:</strong> {applicationList?.summary?.request}</p>
-                                    <p><strong>Submitted:</strong> {applicationList?.summary?.submitted}</p>
-                                    <p><strong>Awarded:</strong> {applicationList?.summary?.awarded}</p>
-                                    <p><strong>Cancelled:</strong> {applicationList?.summary?.canceled}</p>
-                                </div> */}
                             </div>
                         </div>
                         <div className="border-b border-zinc-200 text-sm  pb-5">
@@ -261,16 +251,16 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                                 </div>
 
-                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 w-full">
 
                                     {/* Total */}
-                                    <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                    <div className="bg-white border border-gray-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 rounded-full bg-gray-100 text-gray-600">
-                                                <IconListNumbers size={22} />
+                                                <IconListNumbers size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
                                                     Total
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
@@ -281,13 +271,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     </div>
 
                                     {/* Requests */}
-                                    <div className="bg-white border border-blue-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                    <div className="bg-white border border-blue-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                                                <IconFileText size={22} />
+                                            <div className="p-2 rounded-full bg-purple-100 text-purple-600">
+                                                <IconFileText size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
                                                     Requests
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
@@ -297,14 +287,31 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                         </div>
                                     </div>
 
-                                    {/* Submitted */}
-                                    <div className="bg-white border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                    {/* on progress */}
+                                    <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-green-100 text-green-600">
-                                                <IconSend size={22} />
+                                            <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                                                <IconLoader size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                    On progress
+                                                </p>
+                                                <p className="text-md font-bold text-gray-800">
+                                                    {applicationList?.summary?.open ?? 0}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Submitted */}
+                                    <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-full bg-green-100 text-green-600">
+                                                <IconSend size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
                                                     Submitted
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
@@ -315,13 +322,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     </div>
 
                                     {/* Awarded */}
-                                    <div className="bg-white border border-emerald-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                    <div className="bg-white border border-emerald-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 rounded-full bg-emerald-100 text-emerald-600">
-                                                <IconAward size={22} />
+                                                <IconAward size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
                                                     Awarded
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
@@ -332,13 +339,13 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     </div>
 
                                     {/* Cancelled */}
-                                    <div className="bg-white border border-red-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                    <div className="bg-white border border-red-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 rounded-full bg-red-100 text-red-600">
-                                                <IconX size={22} />
+                                                <IconX size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
                                                     Cancelled
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
