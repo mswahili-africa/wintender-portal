@@ -60,6 +60,9 @@ const columns: IColumn[] = [
 
       switch (row.status) {
         case "SUCCESS":
+        case "SUBMITTED":
+          theme = "success";
+          break;
         case "COMPLETED":
           theme = "success";
           break;

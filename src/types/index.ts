@@ -43,6 +43,7 @@ export interface IlistResponse<T> {
   numberOfElements: number;
   size: number;
   empty: boolean;
+  summary: any | null;
 
 }
 

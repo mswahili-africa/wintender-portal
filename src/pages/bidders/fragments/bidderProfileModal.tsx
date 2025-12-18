@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, IContacts, ITenders } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconBrandWhatsapp, IconEye, IconMessage } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconMessage, IconSend } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -59,28 +59,28 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         { name: "Eligible Tenders", value: "eligible" },
     ];
 
-    
+
     const { categories, isLoading: categoryLoading } = useCategories({
         page: 0,
         size: 1000,
         search: "",
         filter: {},
     });
-    
+
     // JCM  edit details
     const { userData } = useUserData();
     const [editDetails, setEditDetails] = useState<boolean>(false);
-    
+
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-    const contact:IContacts= {
-            name: user?.companyName || "",
-            phoneNumber: user?.companyPrimaryNumber || "",
-            status: "",
-            updatedAt: user?.updatedAt || 0,
-        }
+    const contact: IContacts = {
+        name: user?.companyName || "",
+        phoneNumber: user?.companyPrimaryNumber || "",
+        status: "",
+        updatedAt: user?.updatedAt || 0,
+    }
 
-    if(!contact) return null;
+    if (!contact) return null;
 
     useEffect(() => {
         if (user?.companyCategories && categories?.content.length! > 0 && isOpen) {
@@ -108,6 +108,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         sort,
         filter: undefined,
     });
+
 
     const SendSingleSMS = (user: ICompany) => {
         setSelectedUser(user); // Set the selected user for the modal
@@ -240,9 +241,117 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
                                 </div>
 
+                                {/* do it for me */}
+                                {/* <div className="space-y-4">
+                                    <strong>Do it for me</strong>
+                                    <p><strong>Total:</strong> {applicationList?.summary?.total}</p>
+                                    <p><strong>Requests:</strong> {applicationList?.summary?.request}</p>
+                                    <p><strong>Submitted:</strong> {applicationList?.summary?.submitted}</p>
+                                    <p><strong>Awarded:</strong> {applicationList?.summary?.awarded}</p>
+                                    <p><strong>Cancelled:</strong> {applicationList?.summary?.canceled}</p>
+                                </div> */}
                             </div>
                         </div>
+                        <div className="border-b border-zinc-200 text-sm  pb-5">
 
+                            <div className="space-y-4">
+                                {/* JCM Edit categories only for supervisors */}
+                                <div className="flex flex-row items-center justify-between">
+                                    <strong className="uppercase text-zinc-400 w-1/2">Do it for me</strong>
+
+                                </div>
+
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
+
+                                    {/* Total */}
+                                    <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-full bg-gray-100 text-gray-600">
+                                                <IconListNumbers size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                    Total
+                                                </p>
+                                                <p className="text-md font-bold text-gray-800">
+                                                    {applicationList?.summary?.total ?? 0}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Requests */}
+                                    <div className="bg-white border border-blue-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                                                <IconFileText size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                    Requests
+                                                </p>
+                                                <p className="text-md font-bold text-gray-800">
+                                                    {applicationList?.summary?.request ?? 0}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Submitted */}
+                                    <div className="bg-white border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-full bg-green-100 text-green-600">
+                                                <IconSend size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                    Submitted
+                                                </p>
+                                                <p className="text-md font-bold text-gray-800">
+                                                    {applicationList?.summary?.submitted ?? 0}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Awarded */}
+                                    <div className="bg-white border border-emerald-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-full bg-emerald-100 text-emerald-600">
+                                                <IconAward size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                    Awarded
+                                                </p>
+                                                <p className="text-md font-bold text-gray-800">
+                                                    {applicationList?.summary?.awarded ?? 0}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Cancelled */}
+                                    <div className="bg-white border border-red-100 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-full bg-red-100 text-red-600">
+                                                <IconX size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                                                    Cancelled
+                                                </p>
+                                                <p className="text-md font-bold text-gray-800">
+                                                    {applicationList?.summary?.canceled ?? 0}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
 
 
                         <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
@@ -413,7 +522,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                 </div>
 
-                
+
                 <GeneralSMSModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
