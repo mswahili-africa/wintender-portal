@@ -1,12 +1,9 @@
 import {
-    IconGitPullRequest,
-    IconFileText,
-    IconUser,
     IconMessage,
     IconBrandWhatsapp,
     IconMail,
+    IconMoneybag,
 } from "@tabler/icons-react";
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -25,6 +22,7 @@ import { useSummary } from "@/hooks/useSystemDetails";
 import AdminStats from "./fragments/stats/AdminStats";
 import BidderStats from "./fragments/stats/BidderStats";
 import PEStats from "./fragments/stats/PEStats";
+import { formatMoney } from "@/utils";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -204,7 +202,7 @@ export default function Dashboard() {
             )}
 
             {
-                !["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                !["BIDDER", "PROCUREMENT_ENTITY", "PUBLISHER", "MANAGER"].includes(userRole) && (
                     <>
                         <h2 className="text-xl font-extralight my-4">Reports</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
@@ -213,7 +211,7 @@ export default function Dashboard() {
                                     <div className="bg-green-100 p-3 rounded-full">
                                         <IconMessage className="w-6 h-6 text-green-600" />
                                     </div>
-                                    <h2 className="text-lg font-semibold text-gray-800">SMS Balance Report</h2>
+                                    <h2 className="text-l font-semibold text-gray-800">SMS Balance</h2>
                                 </div>
 
                                 <div className="space-y-2 text-gray-700">
@@ -224,6 +222,26 @@ export default function Dashboard() {
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">Onfon Media:</span>
                                         <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onfonMedia ?? "0"}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="bg-green-100 p-3 rounded-full">
+                                        <IconMoneybag className="w-6 h-6 text-green-600" />
+                                    </div>
+                                    <h2 className="text-l font-semibold text-gray-800">Payments</h2>
+                                </div>
+
+                                <div className="space-y-2 text-gray-700">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="font-medium">All Time:</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.totalAmount ?? 0)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="font-medium">This Month:</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.thisMonth ?? 0)}</span>
                                     </div>
                                 </div>
                             </div>

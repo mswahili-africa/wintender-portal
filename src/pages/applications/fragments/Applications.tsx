@@ -1,4 +1,4 @@
-import { IconCheckbox, IconEdit, IconEye, IconFile, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconListNumbers, IconLoader, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IApplicationGroup, IApplications } from "@/types";
-import { deleteDoForMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
+import { deleteDoForMe, requestApplicationPDFReport, updatePrincipleAmount, updateStatus } from "@/services/tenders";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
@@ -18,7 +18,7 @@ import useApplicationsList from "@/hooks/useApplicationsList";
 import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
-import { on } from "events";
+import { IApplicationPDFReport } from "@/types/forms";
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
@@ -36,6 +36,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
+    const [reportMonth, setReportMonth] = useState<number | null>(null);
     const [status, setStatus] = useState<string>("");
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
@@ -61,6 +62,18 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         defaultValues: { status: "", comments: "" },
     });
 
+    const requestPDFReportMutation = useMutation({
+        mutationFn: (payload: IApplicationPDFReport) =>
+            requestApplicationPDFReport(payload),
+
+        onSuccess: () => {
+            toast.success("Check your WhatsApp for the PDF report");
+        },
+
+        onError: () => {
+            toast.error("Request failed");
+        },
+    });
 
     const deteleMutation = useMutation({
         mutationFn: (doItForMeId: string) => deleteDoForMe(doItForMeId),
@@ -223,7 +236,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
             <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[80vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-bold text-lg">Requests: {applicationGroup?.bidderCompanyName}</h3>
+                    <h3 className="font-bold text-l">{applicationGroup?.bidderCompanyName}</h3>
                     <div className="flex flex-row gap-2">
                         <input
                             type="text"
@@ -246,8 +259,157 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             <option value="NOT_AWARDED">NOT_AWARDED</option>
                             <option value="CANCELED">CANCELED</option>
                         </select>
+
+                        {/* PDF Report Section */}
+                        <div className="flex flex-row gap-2 items-center">
+                            <select
+                                className="input-normal w-36"
+                                value={reportMonth ?? ""}
+                                onChange={(e) => setReportMonth(Number(e.target.value))}
+                            >
+                                <option value="0">All</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+
+                            <Button
+                                label={requestPDFReportMutation.isLoading ? "Requesting..." : "Request PDF"}
+                                size="sm"
+                                theme="primary"
+                                disabled={!reportMonth}
+                                onClick={() =>
+                                    requestPDFReportMutation.mutate({
+                                        groupId,
+                                        month: reportMonth!,
+                                    })
+                                }
+                            />
+
+                        </div>
+
                     </div>
                     <button onClick={handleCloseModal} className="text-red-500">Close</button>
+                </div>
+
+                <div className="border-b border-zinc-200 text-sm  pb-5">
+
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 w-full">
+
+                            {/* Total */}
+                            <div className="bg-white border border-gray-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-gray-100 text-gray-600">
+                                        <IconListNumbers size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                            Total
+                                        </p>
+                                        <p className="text-md font-bold text-gray-800">
+                                            {applicationList?.summary?.total ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Requests */}
+                            <div className="bg-white border border-blue-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-purple-100 text-purple-600">
+                                        <IconFileText size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                            Requests
+                                        </p>
+                                        <p className="text-md font-bold text-gray-800">
+                                            {applicationList?.summary?.request ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* on progress */}
+                            <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                                        <IconLoader size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                            On progress
+                                        </p>
+                                        <p className="text-md font-bold text-gray-800">
+                                            {applicationList?.summary?.open ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Submitted */}
+                            <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-green-100 text-green-600">
+                                        <IconSend size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                            Submitted
+                                        </p>
+                                        <p className="text-md font-bold text-gray-800">
+                                            {applicationList?.summary?.submitted ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Awarded */}
+                            <div className="bg-white border border-emerald-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-emerald-100 text-emerald-600">
+                                        <IconAward size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                            Awarded
+                                        </p>
+                                        <p className="text-md font-bold text-gray-800">
+                                            {applicationList?.summary?.awarded ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Cancelled */}
+                            <div className="bg-white border border-red-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-red-100 text-red-600">
+                                        <IconX size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                            Cancelled
+                                        </p>
+                                        <p className="text-md font-bold text-gray-800">
+                                            {applicationList?.summary?.canceled ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
 

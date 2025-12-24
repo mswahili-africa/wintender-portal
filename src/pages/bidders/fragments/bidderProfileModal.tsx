@@ -354,7 +354,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
                             </div>

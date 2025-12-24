@@ -304,10 +304,15 @@ interface IBiddersSummary {
   active: number;
 }
 
+interface IPaymentSummary {
+  totalAmount: number;
+  thisMonth: number;
+}
+
 export interface ISummaryReport {
   bidders: IBiddersSummary;
   tenders: ITendersSummary;
-  payments: number;
+  payments: IPaymentSummary;
   procurementEntities: IProcurementEntities;
   requests: IRequests;
   messageBalance: IMessageBalance;

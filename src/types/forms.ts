@@ -79,6 +79,11 @@ export interface IConsultation {
     reference: string
 }
 
+export interface IApplicationPDFReport {
+    groupId: string
+    month: number
+}
+
 export interface IConsultationApplication {
     id: string
     reference: string

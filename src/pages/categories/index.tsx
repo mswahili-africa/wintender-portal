@@ -88,7 +88,7 @@ export default function CategoryList() {
                     isLoading={isLoading}
                     hasSelection={false}
                     onSorting={handleSorting}
-                    hasActions={["PUBLISHER","SUPERVISOR"].includes(userData?.role || "") }
+                    hasActions={["ADMINISTRATOR", "PUBLISHER", "SUPERVISOR"].includes(userData?.role || "")}
                     actionSlot={
                         (content: any) => {
                             return (

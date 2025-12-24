@@ -1,6 +1,6 @@
 import http from "@/http";
 import { IQueryParams, ITenderCategory, IlistResponse } from "@/types";
-import { IAssignBidder, IConsultation, IConsultationApplication } from "@/types/forms";
+import { IApplicationPDFReport, IAssignBidder, IConsultation } from "@/types/forms";
 
 
 // JCM TENDER
@@ -247,5 +247,10 @@ export async function reviewApplication(id: string, status: string) {
 export async function deleteApplication(id: string) {
     const response = await http.delete<any>(`/applications/application/${id}/delete`);
 
+    return response.data
+}
+
+export async function requestApplicationPDFReport(payload: IApplicationPDFReport) {
+    const response = await http.post<any>("/reports/pdf/dfm", payload)
     return response.data
 }

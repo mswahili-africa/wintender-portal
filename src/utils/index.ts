@@ -17,3 +17,11 @@ export const getUserRole = (): UserRole => {
     const userInfo = JSON.parse(localStorage.getItem("sr-dash-client") || "{}");
     return userInfo?.role; // Default to "BIDDER" if no role found
 };
+
+const formatMoney = (value: number) =>
+  new Intl.NumberFormat("en-TZ", {
+    style: "currency",
+    currency: "TZS",
+    minimumFractionDigits: 0,
+  }).format(value ?? 0);
+export { formatMoney };
