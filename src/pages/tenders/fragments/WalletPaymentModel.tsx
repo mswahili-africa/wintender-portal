@@ -65,8 +65,8 @@ export default function WalletPaymentModal({
         mutationFn: async (paymentData: IWalletTopUp) => {
 
             // Step 1: Send initial payment request
-            if (paymentData.amount < 10000) {
-                setWarningMessage("Amount should be greater than 10000");
+            if (paymentData.amount < 1000) {
+                setWarningMessage("Amount should be greater than 1000");
                 throw new Error("Amount should be greater than 1000");
             }
             const response = await USSDPushWalletRequest(paymentData);
