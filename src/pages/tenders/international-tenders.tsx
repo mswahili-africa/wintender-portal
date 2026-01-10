@@ -14,7 +14,7 @@ import TenderViewModal from "./fragments/tenderViewModelNew";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "./fragments/PaymentModel";
+import PaymentModal from "../payments/fragments/PaymentModel";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
@@ -339,15 +339,16 @@ export default function InternationalTenders() {
                                     <IconEye size={20} />
                                 </button>
                                 {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
-                                    <><Fragment>
+                                    <>
+                                        <Fragment>
 
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => setOpenModal({ type: "update", tender: content })}
-                                        >
-                                            <IconEdit size={20} />
-                                        </button>
-                                    </Fragment>
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                onClick={() => setOpenModal({ type: "update", tender: content })}
+                                            >
+                                                <IconEdit size={20} />
+                                            </button>
+                                        </Fragment>
                                         <Fragment>
 
                                             <button
@@ -356,7 +357,8 @@ export default function InternationalTenders() {
                                             >
                                                 <IconTrash size={20} />
                                             </button>
-                                        </Fragment></>
+                                        </Fragment>
+                                    </>
                                 )}
                             </div>
                         );

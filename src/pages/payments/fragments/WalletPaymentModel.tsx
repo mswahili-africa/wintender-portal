@@ -69,6 +69,10 @@ export default function WalletPaymentModal({
                 setWarningMessage("Amount should be greater than 1000");
                 throw new Error("Amount should be greater than 1000");
             }
+            if(paymentData.mno===""){
+                setWarningMessage("Select payment provider (MNO) is required.");
+                throw new Error("Select payment provider (MNO) is required.");
+            }
             const response = await USSDPushWalletRequest(paymentData);
 
             if (response.code !== "SUCCESS") {
@@ -168,7 +172,6 @@ export default function WalletPaymentModal({
                         </div>
 
                         {
-                            userData?.paymentMode === "AZAM_PAY" &&
                             !paymentMutation.isPending && (
                                 <>
                                     <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">

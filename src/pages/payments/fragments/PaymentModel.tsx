@@ -84,6 +84,11 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
             return;
         }
 
+        if(type === "MOBILE" && !updatedDetails.mno) {
+            setWarningMessage("Select payment provider (MNO) is required.");
+            return;
+        }
+
         if (type === "WALLET" && userData) {
             if (userData?.walletAmount < (updatedDetails.period * 10000)) {
                 setWarningMessage("Insufficient wallet balance. Please top up your wallet or choose a different payment method.");
@@ -153,7 +158,6 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
                         {/* payment providers */}
                         {
-                            userData?.paymentMode === "AZAM_PAY" &&
                             !(paymentMutation.isPending || isProcessing) && <>
                                 <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
                                     Choose payment method:

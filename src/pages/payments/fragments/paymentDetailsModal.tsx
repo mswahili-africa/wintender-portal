@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, IPayment } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconMessage, IconWallet } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -14,19 +13,9 @@ import { Table } from "@/components/widgets/table/Table";
 import Pagination from "@/components/widgets/table/Pagination";
 import paymentsColumns from "./paymentsColumns"
 import dummyLogo from "@/assets/images/bidder-dummy-logo.png"
-import { getCategories } from "@/services/tenders";
 import { getUserPayments } from "@/hooks/usePayments";
 import useApplicationsList from "@/hooks/useApplicationsList";
-import usePopup from "@/hooks/usePopup";
 import Chip from "@/components/chip/Chip";
-import Button from "@/components/button/Button";
-import Select from "react-select";
-import { updateBidderCategories } from "@/services/user";
-import { IconX } from "@tabler/icons-react";
-import { useUserData } from "@/hooks/useUserData";
-import { IconEdit } from "@tabler/icons-react";
-import UserProfile from "@/pages/users/_username";
-import { WalletButton } from "@/components/button/WalletButton";
 import paymentListColumns from "./paymentListColumns";
 import SMSModal from "@/pages/bidders/fragments/sms-model";
 
@@ -37,11 +26,6 @@ interface IProps {
     onClose: () => void; // Add this to handle closing the modal from parent
 }
 
-// JCM user edit props
-interface UserProfileProps {
-    payment: IPayment | null;
-    loading: boolean;
-}
 
 const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
     const [page, setPage] = useState<number>(0);
@@ -73,10 +57,6 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
         filter: undefined,
     });
 
-    const SendSingleSMS = (user: ICompany) => {
-        setSelectedUser(user); // Set the selected user for the modal
-        setIsModalOpen(true); // Open the modal
-    };
 
     const handleSendSMS = () => {
         const phoneNumber = selectedUser?.phoneNumber || "0100000000"; // Default number for bulk
@@ -132,16 +112,9 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                     <Chip
                                         label={payment?.status}
                                         size="sm"
-                                        theme={payment?.status === "SUCCESSFUL" ? "success" : "danger"}
+                                        theme={payment?.status === "SUCCESSFUL" || payment?.status === "APPROVED" ? "success" : "danger"}
                                         variant="outline"
                                     />
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    {/* <WalletButton amount={user.walletAmount}/>
-
-                                    <button onClick={() => SendSingleSMS(user)}>
-                                        <IconMessage size={24} className="text-green-500" />
-                                    </button> */}
                                 </div>
                             </div>
                         </div>
@@ -158,7 +131,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                         <Chip
                                             label={payment?.status}
                                             size="sm"
-                                            theme={payment?.status === "SUCCESSFUL" ? "success" : "danger"}
+                                            theme={payment?.status === "SUCCESSFUL" || payment?.status === "APPROVED" ? "success" : "danger"}
                                             variant="outline"
                                         />
                                     </p>

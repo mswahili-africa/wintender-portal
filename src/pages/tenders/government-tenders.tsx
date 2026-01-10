@@ -14,7 +14,7 @@ import TenderViewModal from "./fragments/tenderViewModelNew";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "./fragments/PaymentModel";
+import PaymentModal from "../payments/fragments/PaymentModel";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";

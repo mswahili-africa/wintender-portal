@@ -15,7 +15,7 @@ import TenderViewModal from "./fragments/tenderViewModelNew";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "./fragments/PaymentModel";
+import PaymentModal from "../payments/fragments/PaymentModel";
 import { debounce, set } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
@@ -367,7 +367,6 @@ export default function PrivateTenders() {
                                             </Fragment>
                                         }
                                             <Fragment>
-
                                                 <button
                                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
                                                     onClick={() => handleDelete(content)}
