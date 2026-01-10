@@ -1,4 +1,4 @@
-import { IconEye, IconFilter, IconRefresh, IconListDetails, IconClockPlus } from "@tabler/icons-react";
+import { IconEye, IconFilter, IconRefresh, IconListDetails, IconClockPlus, IconEdit, IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -10,16 +10,15 @@ import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import Button from "@/components/button/Button";
-import TenderViewModal from "./fragments/tenderViewModel";
-import Chip from "@/components/chip/Chip";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "./fragments/PaymentModel";
+import PaymentModal from "../payments/fragments/PaymentModel";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
+import TenderViewModal from "./fragments/tenderViewModelNew";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -38,6 +37,10 @@ export default function PrivateTenders() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const navigate = useNavigate();
+
+    const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
+
+    const handleModalClose = () => setOpenModal({ type: null, tender: null });
 
 
 
@@ -174,9 +177,6 @@ export default function PrivateTenders() {
         [fetchEntities]
     );
 
-    const handleView = (content: ITenders) => {
-        setSelectedTender(content);
-    }
 
     // JCM Applicants List
     const openApplicantList = (content: ITenders) => {
@@ -304,10 +304,25 @@ export default function PrivateTenders() {
                             <div className="flex justify-center space-x-2">
                                 <button
                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(content)}
+                                    onClick={() => setOpenModal({ type: "view", tender: content })}
                                 >
                                     <IconEye size={20} />
                                 </button>
+
+                                {
+                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                        <>
+                                            {!(new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY") && (
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => setOpenModal({ type: "update", tender: content })}
+                                                >
+                                                    <IconEdit size={20} />
+                                                </button>
+                                            )}
+                                        </>
+                                    )
+                                }
 
                                 {/* JCM tender applicant list button */}
                                 {
@@ -341,104 +356,24 @@ export default function PrivateTenders() {
                 </div>
             </div>
 
-            {selectedTender && (
 
-                <TenderViewModal
-                    selfApply={selectedTender.selfApply}
-                    title={selectedTender.tenderNumber}
-                    tenderId={selectedTender.id}
-                    onClose={() => setSelectedTender(null)}
-                    isLoading={isDoItForMeLoading}
-                    onDoItForMeClick={handleDoItForMeClick}
-                >
-                    <div className="space-y-4">
-                        {/* Tender Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-gray-800">{selectedTender.title}</h3>
-                        </div>
+            <TenderViewModal
+                onClose={handleModalClose}
+                isLoading={isDoItForMeLoading}
+                onDoItForMeClick={handleDoItForMeClick}
+                isOpen={openModal.type === "view"}
+                tender={openModal.tender!}
+            />
 
-                        {/* Tender Details */}
-                        <div className="space-y-2">
-                            <div className="flex items-center">
-                                <p className="flex-1">{selectedTender.entityName}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Category:</strong>
-                                <p className="flex-1">{selectedTender.categoryName}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedTender.summary }}></p>
-                            </div>
-
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Status:</strong>
-                                <Chip label={(() => {
-                                    const currentDate = new Date().getTime();
-                                    const closeDate = selectedTender.closeDate;
-                                    const remainingTime = closeDate - currentDate;
-                                    const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
-
-                                    if (remainingDays < 0) {
-                                        return 'CLOSED';
-                                    } else if (remainingDays <= 2) {
-                                        return 'CLOSING';
-                                    } else {
-                                        return selectedTender.status;
-                                    }
-                                })()} size="sm" theme={(
-                                    () => {
-                                        const currentDate = new Date().getTime();
-                                        const closeDate = selectedTender.closeDate;
-                                        const remainingTime = closeDate - currentDate;
-                                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
-
-                                        if (remainingDays < 0) {
-                                            return 'danger';
-                                        } else if (remainingDays <= 2) {
-                                            return 'warning';
-                                        } else {
-                                            return 'success';
-                                        }
-                                    }
-                                )()}
-                                />
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Close Date:</strong>
-                                <p className="flex-1">{new Date(selectedTender.closeDate).toLocaleString()}</p>
-                            </div>
-                            {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
-                                <><div className="flex items-center">
-                                    <strong className="w-50 text-gray-600">Consultation Fee:</strong>
-                                    <p className="flex-1">
-                                        TZS {new Intl.NumberFormat().format(selectedTender.consultationFee)}
-                                    </p>
-                                </div></>
-
-                            )}
-                        </div>
-
-                        <hr></hr>
-
-                        {/* PDF Viewer */}
-                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                            <iframe
-                                src={selectedTender.filePath}
-                                width="100%"
-                                height="500px"
-                                title="Tender Document"
-                            ></iframe>
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="flex justify-end space-x-2 mt-6">
-                            <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedTender(null)} />
-                        </div>
-                    </div>
-                </TenderViewModal>
-            )
-            }
-
+            <TenderEdit
+                open={openModal.type === "update"}
+                initials={openModal.tender!}
+                onSuccess={() => {
+                    handleModalClose();
+                    refetch();
+                }}
+                onClose={handleModalClose}
+            />
         </div >
     )
 }
