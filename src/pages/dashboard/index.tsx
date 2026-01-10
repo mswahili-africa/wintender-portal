@@ -3,6 +3,7 @@ import {
     IconBrandWhatsapp,
     IconMail,
     IconMoneybag,
+    IconBuilding,
 } from "@tabler/icons-react";
 import { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -23,11 +24,12 @@ import AdminStats from "./fragments/stats/AdminStats";
 import BidderStats from "./fragments/stats/BidderStats";
 import PEStats from "./fragments/stats/PEStats";
 import { formatMoney } from "@/utils";
+import { Link } from "react-router-dom";
+import { IconListLetters } from "@tabler/icons-react";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
-    const userId = userData?.userId || "";
     const account = userData?.account || "00000000";
 
     const { showConfirmation } = usePopup();
@@ -165,7 +167,28 @@ export default function Dashboard() {
                             <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
                             <div className="flex flex-col sm:flex-row justify-between mb-6">
                                 <div className="text-gray-800 mb-2 w-fit">Welcome to your dashboard </div>
-                                <div className="text-gray-900 font-bold  w-fit text-xs">Account: {account}</div>
+                                <div className="flex flex-col justify-end text-end gap-1">
+                                    <div className="text-gray-900 font-bold  w-full text-end text-md sm:text-xs">Account: {account}</div>
+                                    {/* TWO BUTTONS */}
+                                    <div className="flex flex-col sm:flex-row gap-2">
+
+                                        <Link
+                                            to="/tenders"
+                                            className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700"
+                                        >
+                                            <IconListLetters size={20} />
+                                            Private Tenders
+                                        </Link>
+                                        <Link
+                                            to="/government-tenders"
+                                            className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
+                                        >
+                                            <IconBuilding size={20} />
+                                            Government Tenders
+                                        </Link>
+
+                                    </div>
+                                </div>
                             </div>
                         </>
                         )
