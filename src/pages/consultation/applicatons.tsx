@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
 import Button from "@/components/button/Button";
-import WalletPaymentModal from "../tenders/fragments/WalletPaymentModel";
+import WalletPaymentModal from "../payments/fragments/WalletPaymentModel";
 import { USSDPushWalletRequest } from "@/services/payments";
 
 export default function ConsultationApplication() {

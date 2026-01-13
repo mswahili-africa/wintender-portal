@@ -65,15 +65,14 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
 
       switch (row.status) {
-        case "SUCCESS":
-        case "SUBMITTED":
+        case "APPLIED":
           theme = "success";
           break;
-        case "COMPLETED":
-          theme = "success";
+        case "EXECUTED":
+          theme = "approved";
           break;
         case "REQUESTED":
           theme = "secondary";
@@ -82,9 +81,12 @@ const columns: IColumn[] = [
           theme = "warning";
           break;
         case "RETURNED":
-          theme = "danger";
+          theme = "warning";
           break;
         case "CANCELED":
+          theme = "danger";
+          break;
+        case "CLOSED":
           theme = "danger";
           break;
         default:

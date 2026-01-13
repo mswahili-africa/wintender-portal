@@ -277,8 +277,11 @@ export interface IRequests {
   request: number;
   open: number;
   awarded: number;
+  failed: number;
+  executed: number;
   canceled: number;
-  submitted: number;
+  applied: number;
+  notAwarded: number;
 }
 
 export interface ITendersSummary {

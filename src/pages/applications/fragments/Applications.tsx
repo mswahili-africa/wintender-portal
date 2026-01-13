@@ -19,6 +19,9 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
 import { IApplicationPDFReport } from "@/types/forms";
+import { request } from "http";
+import { DIFMStatusOptions } from "@/types/statuses";
+
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
@@ -251,13 +254,13 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             onChange={(e) => setStatus(e.target.value)}
                         >
                             <option value="">ALL</option>
-                            <option value="ON_PROGRESS">ON PROGRESS</option>
-                            <option value="SUBMITTED">SUBMITTED</option>
-                            <option value="REQUESTED">REQUESTED</option>
-                            <option value="RETURNED">RETURNED</option>
-                            <option value="AWARDED">AWARDED</option>
-                            <option value="NOT_AWARDED">NOT_AWARDED</option>
-                            <option value="CANCELED">CANCELED</option>
+                            {
+                                DIFMStatusOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))
+                            }
                         </select>
 
                         {/* PDF Report Section */}
@@ -365,10 +368,10 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Submitted
+                                            Applied
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.submitted ?? 0}
+                                            {applicationList?.summary?.applied ?? 0}
                                         </p>
                                     </div>
                                 </div>
@@ -382,7 +385,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Awarded
+                                            Win
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.awarded ?? 0}
@@ -478,12 +481,13 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                         }`}
                                     {...register("status", { required: true })}
                                 >
-                                    <option value="ON_PROGRESS">ON PROGRESS</option>
-                                    <option value="SUBMITTED">SUBMITTED</option>
-                                    <option value="RETURNED">RETURNED</option>
-                                    <option value="AWARDED">AWARDED</option>
-                                    <option value="NOT_AWARDED">NOT_AWARDED</option>
-                                    <option value="CANCELED">CANCELED</option>
+                                    {
+                                        DIFMStatusOptions.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))
+                                    }
                                 </select>
                                 <p className="text-xs text-red-500 mt-1 mx-0.5">
                                     {errors.status?.message?.toString()}

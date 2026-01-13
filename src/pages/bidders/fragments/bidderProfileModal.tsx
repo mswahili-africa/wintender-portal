@@ -261,7 +261,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Total
+                                                    A.W.E
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
                                                     {applicationList?.summary?.total ?? 0}
@@ -312,10 +312,10 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Submitted
+                                                    Applied
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.submitted ?? 0}
+                                                    {applicationList?.summary?.applied ?? 0}
                                                 </p>
                                             </div>
                                         </div>
@@ -329,7 +329,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Awarded
+                                                    Win
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
                                                     {applicationList?.summary?.awarded ?? 0}
