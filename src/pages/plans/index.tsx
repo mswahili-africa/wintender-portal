@@ -32,7 +32,7 @@ const userRole = userData?.role || "BIDDER";
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-semibold">Plans</h2>
-                {["MANAGER", "ADMINISTRATOR","SUPERVISOR"].includes(userRole) && (
+                {["ADMINISTRATOR","SUPERVISOR","PUBLISHER"].includes(userRole) && (
                     <ContractModal
                         onSuccess={() => {
                             refetch();
