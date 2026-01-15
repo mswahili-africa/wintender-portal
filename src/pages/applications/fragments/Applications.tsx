@@ -7,9 +7,9 @@ import usePopup from "@/hooks/usePopup";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IApplicationGroup, IApplications } from "@/types";
 import { deleteDoForMe, requestApplicationPDFReport, updatePrincipleAmount, updateStatus } from "@/services/tenders";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import { useMutation } from "@tanstack/react-query";
 import Button from "@/components/button/Button";
 import TenderViewModelDoItForMe from "./tenderViewModelDoItForMe";
@@ -19,8 +19,9 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
 import { IApplicationPDFReport } from "@/types/forms";
-import { request } from "http";
 import { DIFMStatusOptions } from "@/types/statuses";
+import TextInput from "@/components/widgets/forms/TextInput";
+import { filter } from "lodash";
 
 
 interface ApplicationsListProps {
@@ -57,12 +58,13 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
     const schema = object().shape({
         status: string().required("Status is required"),
+        quotationAmount: number().required("Quotation is required"),
         comments: string().required("Comment is required"),
     });
 
-    const { register, formState: { errors }, getValues } = useForm({
+    const { register, control, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
-        defaultValues: { status: "", comments: "" },
+        defaultValues: { status: "", quotationAmount: 0, comments: "" },
     });
 
     const requestPDFReportMutation = useMutation({
@@ -102,7 +104,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     });
 
     const updateStatusMutation = useMutation({
-        mutationFn: ({ id, comments, status }: { id: string, comments: string, status: string }) => updateStatus(id, comments, status),
+        mutationFn: ({ id, comments, quotationAmount, status }: { id: string, comments: string, quotationAmount: number, status: string }) => updateStatus(id, comments, quotationAmount, status),
         onSuccess: () => {
             toast.success("Status changed");
             refetch();
@@ -163,9 +165,9 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     };
 
     const handlStatusUpdate = () => {
-        const { status, comments } = getValues(); // Extract status and comments from the form
+        const { status, comments ,quotationAmount} = getValues(); // Extract status and comments from the form
 
-        if (selectedApplication && status && comments) {
+        if (selectedApplication && status && comments ) {
             setIsStatusModalOpen(false);
             showConfirmation({
                 theme: "warning", // Adjust the theme to fit status updates
@@ -176,6 +178,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         {
                             id: selectedApplication.id,
                             comments: comments,
+                            quotationAmount: quotationAmount ?? 0,
                             status: status
                         },
                         {
@@ -493,6 +496,42 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     {errors.status?.message?.toString()}
                                 </p>
                             </div>
+                            <div className="mb-2">
+                                <label htmlFor="quotation" className="block mb-2">
+                                    Bid Quotation
+                                </label>
+                                <Controller
+                                    name="quotationAmount"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field }) => (
+                                        <input
+                                            placeholder="Bid Quotation"
+                                            className={`${errors.quotationAmount?.type === "required"
+                                                ? "input-error"
+                                                : "input-normal"
+                                                }`}
+                                            type="text"
+                                            value={
+                                                field.value
+                                                    ? field.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                                    : ""
+                                            }
+                                            onChange={(e) => {
+                                                const rawValue = e.target.value.replace(/\D/g, "");
+                                                field.onChange(rawValue ? Number(rawValue) : 0);
+                                            }}
+                                        />
+                                    )}
+                                />
+
+                                <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                    {errors.quotationAmount?.message?.toString()}
+                                </p>
+                            </div>
+
+
+
                             <div className="mb-2">
                                 <label htmlFor="comments" className="block mb-2">
                                     Comments
