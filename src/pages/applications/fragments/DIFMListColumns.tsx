@@ -68,26 +68,34 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending"| "approved";
 
       switch (row.status) {
-        case "SUCCESS":
-        case "SUBMITTED":
-          theme = "success";
-          break;
-        case "COMPLETED":
-          theme = "success";
-          break;
         case "REQUESTED":
           theme = "secondary";
+          break;
+        case "APPLIED":
+          theme = "success";
           break;
         case "ON_PROGRESS":
           theme = "warning";
           break;
-        case "RETURNED":
+        case "WON":
+          theme = "success";
+          break;
+        case "NOT_WON":
           theme = "danger";
           break;
+        case "EXECUTED":
+          theme = "approved";
+          break;
+        case "RETURNED":
+          theme = "warning";
+          break;
         case "CANCELED":
+          theme = "danger";
+          break;
+        case "CLOSED":
           theme = "danger";
           break;
         default:

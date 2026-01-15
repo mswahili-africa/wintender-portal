@@ -5,7 +5,7 @@ const columns: IColumn[] = [
 
   {
     name: "tenderGroup",
-    label: "type",
+    label: "Type",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
@@ -18,7 +18,7 @@ const columns: IColumn[] = [
     },
   },
   {
-    name: "Entity",
+    name: "entity",
     label: "Entity",
     sortable: false,
     plainObject: true,
@@ -28,7 +28,7 @@ const columns: IColumn[] = [
   },
   {
     name: "tender",
-    label: "tender",
+    label: "Tender",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
@@ -68,17 +68,23 @@ const columns: IColumn[] = [
       let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
 
       switch (row.status) {
-        case "APPLIED":
-          theme = "success";
-          break;
-        case "EXECUTED":
-          theme = "approved";
-          break;
         case "REQUESTED":
           theme = "secondary";
           break;
+        case "APPLIED":
+          theme = "success";
+          break;
         case "ON_PROGRESS":
           theme = "warning";
+          break;
+        case "WON":
+          theme = "success";
+          break;
+        case "NOT_WON":
+          theme = "danger";
+          break;
+        case "EXECUTED":
+          theme = "approved";
           break;
         case "RETURNED":
           theme = "warning";
