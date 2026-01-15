@@ -4,6 +4,7 @@ import {
     IconMail,
     IconMoneybag,
     IconBuilding,
+    IconReportMoney,
 } from "@tabler/icons-react";
 import { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -218,7 +219,7 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR"].includes(userRole) && (
+            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR", "PUBLISHER"].includes(userRole) && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary!} />}
                 </div>
@@ -255,6 +256,26 @@ export default function Dashboard() {
                                         <IconMoneybag className="w-6 h-6 text-green-600" />
                                     </div>
                                     <h2 className="text-l font-semibold text-gray-800">Payments</h2>
+                                </div>
+
+                                <div className="space-y-2 text-gray-700">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="font-medium">All Time:</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.totalAmount ?? 0)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="font-medium">This Month:</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.thisMonth ?? 0)}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="bg-green-100 p-3 rounded-full">
+                                        <IconReportMoney  className="w-6 h-6 text-green-600" />
+                                    </div>
+                                    <h2 className="text-l font-semibold text-gray-800">Tender Quotations</h2>
                                 </div>
 
                                 <div className="space-y-2 text-gray-700">
