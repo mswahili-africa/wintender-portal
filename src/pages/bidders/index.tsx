@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconChevronDown, IconFilePlus, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconCalendar, IconChevronDown, IconFilePlus, IconFilter, IconMessage, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
@@ -7,10 +7,7 @@ import columns from "./fragments/bidder-columns";
 import { ICompany } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { changeUserStatus, deleteBidder } from "@/services/user";
-import { IMessage } from "@/types/forms";
-import { sendMessageSingle } from "@/services/commons";
-import { resetUser } from "@/services/auth";
+import { deleteBidder } from "@/services/user";
 import BidderProfileModal from "./fragments/bidderProfileModal";
 import useCategories from "@/hooks/useCategories";
 import React from "react";
@@ -36,14 +33,11 @@ export default function Bidders() {
     const [page, setPage] = useState<number>(0);
     const [sort, _] = useState<string>("createdAt,desc");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
-    const [message, setMessage] = useState<string>("");
-    const [isSending, setIsSending] = useState<boolean>(false);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const checkboxRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-
+    
     const [tempSearch, setTempSearch] = useState<string>("");
     const [tempSelectedRegion, setTempSelectedRegion] = useState<{ label: string, value: string } | null>(null);
     const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
@@ -51,11 +45,41 @@ export default function Bidders() {
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, user: ICompany | null }>(
         { type: null, user: null }
     );
+    
+    // subscription date state
+    const [open, setOpen] = useState(false);
+    const [filter, setFilter] = useState("");
+    const [subscriptionFilter, setSubscriptionFilter] = useState<string | undefined>("");
+
+    const formatDateTimeLocal = (date: Date) =>
+        date.toISOString().slice(0, 16);
+
+    // handle subscription filter select
+    const handleSelect = (value: string) => {
+        setFilter(value);
+
+        if (value === "3days") {
+            const d = new Date();
+            d.setDate(d.getDate() + 3);
+            setSubscriptionFilter(formatDateTimeLocal(d));
+            setOpen(false);
+        }
+
+        if (value === "1week") {
+            const d = new Date();
+            d.setDate(d.getDate() + 7);
+            setSubscriptionFilter(formatDateTimeLocal(d));
+            setOpen(false);
+        }
+
+        if (value === "custom") {
+            setSubscriptionFilter("");
+        }
+    };
+
 
     // JCM DELETE MODAL
     const { userData } = useUserData();
-
-    
 
     const deleteBidderMutation = useMutation({
         mutationKey: ["deleteBidder", openModal.user?.id],
@@ -75,10 +99,16 @@ export default function Bidders() {
         const addressParam = searchParams.get("address");
         const categoriesParam = searchParams.get("category");
         const searchParam = searchParams.get("search");
+        const subscriptionDate = searchParams.get("subscriptionDate");
+
 
         const categoryIds = categoriesParam
             ? categoriesParam.replace(/^\[|\]$/g, "").split(",").filter(id => id)
             : [];
+
+        if (subscriptionDate) {
+            setSubscriptionFilter(subscriptionDate);
+        }
 
         if (addressParam) {
             setTempSelectedRegion({ label: addressParam, value: addressParam });
@@ -95,6 +125,7 @@ export default function Bidders() {
         const categoriesParam = searchParams.get("category");
         const addressParam = searchParams.get("address");
         const searchParam = searchParams.get("search");
+        const subscriptionDate = searchParams.get("subscriptionDate");
 
         const parsedCategories = categoriesParam
             ? categoriesParam.replace(/^\[|\]$/g, "").split(",").filter(id => id)
@@ -110,6 +141,10 @@ export default function Bidders() {
 
         if (searchParam) {
             filter['search'] = searchParam;
+        }
+
+        if (subscriptionDate) {
+            filter['subscriptionDate'] = subscriptionDate;
         }
 
         return filter;
@@ -148,6 +183,9 @@ export default function Bidders() {
         if (tempSearch) {
             params.set("search", tempSearch);
         }
+        if (subscriptionFilter) {
+            params.set("subscriptionDate", subscriptionFilter);
+        }
 
         navigate(`?${params.toString()}`);
         setShowCheckboxes(false);
@@ -158,6 +196,7 @@ export default function Bidders() {
         setTempSelectedCategories([]);
         setTempSelectedRegion(null);
         setTempSearch("");
+        setSubscriptionFilter(undefined);
         navigate("");
         setPage(0);
     };
@@ -173,32 +212,8 @@ export default function Bidders() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-
-    const changeMutation = useMutation({
-        mutationFn: (userId: string) => changeUserStatus(userId),
-        onSuccess: () => {
-            toast.success("Changed successfully");
-            refetch();
-        },
-        onError: () => {
-            toast.error("Change failed");
-        },
-    });
-
-    const resetMutation = useMutation({
-        mutationFn: (userId: string) => resetUser(userId),
-        onSuccess: () => {
-            toast.success("Resetted successfully");
-            refetch();
-        },
-        onError: () => {
-            toast.error("Change failed");
-        },
-    });
-
     const openBulkSendModal = () => {
-        setSelectedUser(null);
-        setMessage("");
+        handleModalClose();
         setIsModalOpen(true);
     };
 
@@ -220,6 +235,64 @@ export default function Bidders() {
                         <IconMessage size={20} className="mr-2" />
                         Send Bulk
                     </button>
+                    <div className="relative w-64">
+                        {/* <label className="text-sm font-medium text-gray-600">
+                            Subscription
+                        </label> */}
+
+                        {/* Trigger */}
+                        <button
+                            onClick={() => setOpen(!open)}
+                            className="w-full mt-1 flex items-center justify-between rounded-lg border bg-white px-3 py-2 text-sm shadow-sm hover:border-green-500"
+                        >
+                            <span className="text-gray-700">
+                                {filter === "3days" && "Last 3 Days"}
+                                {filter === "1week" && "Last 1 Week"}
+                                {filter === "custom" && "Custom Date"}
+                                {!filter && "Subscription Filter"}
+                            </span>
+                            <IconChevronDown size={18} />
+                        </button>
+
+                        {/* Dropdown */}
+                        {open && (
+                            <div className="absolute z-50 mt-2 w-full rounded-xl border bg-white shadow-lg p-2 space-y-1">
+                                <button
+                                    onClick={() => handleSelect("3days")}
+                                    className="dropdown-item"
+                                >
+                                    3 Days
+                                </button>
+
+                                <button
+                                    onClick={() => handleSelect("1week")}
+                                    className="dropdown-item"
+                                >
+                                    1 Week
+                                </button>
+
+                                <button
+                                    onClick={() => handleSelect("custom")}
+                                    className="dropdown-item flex items-center gap-2"
+                                >
+                                    <IconCalendar size={16} />
+                                    Custom Date
+                                </button>
+
+                                {/* Custom Date Input */}
+                                {filter === "custom" && (
+                                    <div className="pt-2 border-t">
+                                        <input
+                                            type="datetime-local"
+                                            className="input-normal"
+                                            value={subscriptionFilter}
+                                            onChange={(e) => setSubscriptionFilter(e.target.value)}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="flex flex-col border-b py-3 gap-y-1 mb-1 border-slate-200">
@@ -292,6 +365,8 @@ export default function Bidders() {
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+
+
                         <Button
                             type="button"
                             label="Filter"
@@ -434,9 +509,6 @@ export default function Bidders() {
                     onClose={() => setIsModalOpen(false)}
                     title={""}
                 />
-
-                
-
 
                 <PrivateTenderRequestModal
                     onSuccess={refetch}

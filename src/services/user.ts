@@ -10,7 +10,7 @@ export async function getUsers(params: IQueryParams) {
     return response.data
 }
 
-export async function getBidders(params: IQueryParams) {
+export async function getBidders(params: any) {
     const queryParams = {
         ...params,
         ...(params.categories && { category: params.categories.join(",") })

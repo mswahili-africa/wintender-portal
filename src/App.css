@@ -162,3 +162,7 @@
   .confirmation-popup {
     z-index: 9999 !important;
   }
+
+  .dropdown-item {
+  @apply w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition;
+}
