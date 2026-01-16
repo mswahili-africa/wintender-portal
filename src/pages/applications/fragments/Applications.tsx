@@ -500,6 +500,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 <label htmlFor="quotation" className="block mb-2">
                                     Bid Quotation
                                 </label>
+                                
                                 <Controller
                                     name="quotationAmount"
                                     control={control}

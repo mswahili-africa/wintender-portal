@@ -6,9 +6,9 @@ import usePopup from "@/hooks/usePopup";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IApplicationGroup, IApplications } from "@/types";
 import { deleteDoForMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import { useMutation } from "@tanstack/react-query";
 import Button from "@/components/button/Button";
 import TenderViewModelDoItForMe from "./tenderViewModelDoItForMe";
@@ -18,6 +18,7 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
 import DIFMListColumns from "./DIFMListColumns";
+import { DIFMStatusOptions } from "@/types/statuses";
 
 
 export default function DIFMapplications() {
@@ -51,12 +52,13 @@ export default function DIFMapplications() {
 
     const schema = object().shape({
         status: string().required("Status is required"),
+        quotationAmount: number().required("Quotation is required"),
         comments: string().required("Comment is required"),
     });
 
-    const { register, formState: { errors }, getValues } = useForm({
+    const { register, control, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
-        defaultValues: { status: "", comments: "" },
+        defaultValues: { status: "", quotationAmount: 0, comments: "" },
     });
 
 
@@ -84,7 +86,7 @@ export default function DIFMapplications() {
     });
 
     const updateStatusMutation = useMutation({
-        mutationFn: ({ id, comments, status }: { id: string, comments: string, status: string }) => updateStatus(id, comments, status),
+        mutationFn: ({ id, quotationAmount, comments, status }: { id: string, quotationAmount: number, comments: string, status: string }) => updateStatus(id, comments,quotationAmount, status),
         onSuccess: () => {
             toast.success("Status changed");
             refetch();
@@ -156,6 +158,7 @@ export default function DIFMapplications() {
                         {
                             id: selectedApplication.id,
                             comments: comments,
+                            quotationAmount: getValues().quotationAmount ?? 0,
                             status: status
                         },
                         {
@@ -298,15 +301,55 @@ export default function DIFMapplications() {
                                     }`}
                                 {...register("status", { required: true })}
                             >
-                                <option value="ON_PROGRESS">ON PROGRESS</option>
-                                <option value="COMPLETED">COMPLETED</option>
-                                <option value="RETURNED">RETURNED</option>
-                                <option value="CANCELED">CANCELED</option>
+                                {
+                                    DIFMStatusOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))
+                                }
                             </select>
                             <p className="text-xs text-red-500 mt-1 mx-0.5">
                                 {errors.status?.message?.toString()}
                             </p>
                         </div>
+
+
+                        <div className="mb-2">
+                            <label htmlFor="quotation" className="block mb-2">
+                                Bid Quotation
+                            </label>
+                            <Controller
+                                name="quotationAmount"
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field }) => (
+                                    <input
+                                        placeholder="Bid Quotation"
+                                        className={`${errors.quotationAmount?.type === "required"
+                                            ? "input-error"
+                                            : "input-normal"
+                                            }`}
+                                        type="text"
+                                        value={
+                                            field.value
+                                                ? field.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                                : ""
+                                        }
+                                        onChange={(e) => {
+                                            const rawValue = e.target.value.replace(/\D/g, "");
+                                            field.onChange(rawValue ? Number(rawValue) : 0);
+                                        }}
+                                    />
+                                )}
+                            />
+
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.quotationAmount?.message?.toString()}
+                            </p>
+                        </div>
+
+
                         <div className="mb-2">
                             <label htmlFor="comments" className="block mb-2">
                                 Comments

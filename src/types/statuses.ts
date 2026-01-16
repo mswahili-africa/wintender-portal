@@ -6,5 +6,5 @@ export const DIFMStatusOptions = [
     { label: "AWARDED", value: "AWARDED" },
     { label: "NOT AWARDED", value: "NOT_AWARDED" },
     { label: "EXECUTED", value: "EXECUTED" },
-    { label: "CANCELLED", value: "CANCELLED" },
+    { label: "CANCELED", value: "CANCELED" },
 ];
