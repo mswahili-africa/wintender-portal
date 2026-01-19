@@ -86,7 +86,7 @@ export default function DIFMapplications() {
     });
 
     const updateStatusMutation = useMutation({
-        mutationFn: ({ id, quotationAmount, comments, status }: { id: string, quotationAmount: number, comments: string, status: string }) => updateStatus(id, comments,quotationAmount, status),
+        mutationFn: ({ id, quotationAmount, comments, status }: { id: string, quotationAmount: number, comments: string, status: string }) => updateStatus(id, comments, quotationAmount, status),
         onSuccess: () => {
             toast.success("Status changed");
             refetch();
@@ -224,13 +224,13 @@ export default function DIFMapplications() {
                         onChange={(e) => setStatus(e.target.value)}
                     >
                         <option value="">Status</option>
-                        <option value="ON_PROGRESS">ON PROGRESS</option>
-                        <option value="SUBMITTED">SUBMITTED</option>
-                        <option value="REQUESTED">REQUESTED</option>
-                        <option value="RETURNED">RETURNED</option>
-                        <option value="AWARDED">AWARDED</option>
-                        <option value="NOT_AWARDED">NOT_AWARDED</option>
-                        <option value="CANCELED">CANCELED</option>
+                        {
+                            DIFMStatusOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))
+                        }
                     </select>
                 </div>
             </div>
