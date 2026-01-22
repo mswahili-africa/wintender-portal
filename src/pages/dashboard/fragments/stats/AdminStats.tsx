@@ -36,10 +36,10 @@ export default function AdminStats({ summary }: IProps) {
           { label: "Requests", value: summary?.requests?.request ?? 0 },
           { label: "On progress", value: summary?.requests?.open ?? 0 },
           { label: "Applied", value: summary?.requests?.applied ?? 0 },
-          { label: "Awarded", value: summary?.requests?.awarded ?? 0 },
-          { label: "Not awarded", value: summary?.requests?.failed ?? 0 },
+          { label: "Won", value: summary?.requests?.awarded ?? 0 },
+          { label: "Not Won", value: summary?.requests?.failed ?? 0 },
           { label: "Executed", value: summary?.requests?.executed ?? 0 },
-          { label: "Cancelled", value: summary?.requests?.canceled ?? 0 },
+          { label: "Canceled", value: summary?.requests?.canceled ?? 0 },
         ]}
       />
 
