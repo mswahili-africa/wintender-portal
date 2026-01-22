@@ -316,6 +316,7 @@ export interface ISummaryReport {
   bidders: IBiddersSummary;
   tenders: ITendersSummary;
   payments: IPaymentSummary;
+  quotations: IPaymentSummary;
   procurementEntities: IProcurementEntities;
   requests: IRequests;
   messageBalance: IMessageBalance;

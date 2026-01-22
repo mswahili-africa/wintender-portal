@@ -281,11 +281,11 @@ export default function Dashboard() {
                                 <div className="space-y-2 text-gray-700">
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">All Time:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.totalAmount ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations.totalAmount ?? 0)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">This Month:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.thisMonth ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations.thisMonth ?? 0)}</span>
                                     </div>
                                 </div>
                             </div>
