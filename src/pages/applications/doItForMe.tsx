@@ -5,7 +5,7 @@ import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationGroupColumns";
 import ApplicationsList from "./fragments/Applications";
 import { IApplicationGroup } from "@/types";
-import { IconEye, IconFile } from "@tabler/icons-react";
+import { IconEye } from "@tabler/icons-react";
 import { getAllApplicationsGroup } from "@/hooks/useApplicationsGroup";
 import Tabs from "@/components/widgets/Tabs";
 import DIFMapplications from "./fragments/DIFMApplications";

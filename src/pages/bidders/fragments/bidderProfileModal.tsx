@@ -329,7 +329,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Win
+                                                    Won
                                                 </p>
                                                 <p className="text-md font-bold text-gray-800">
                                                     {applicationList?.summary?.awarded ?? 0}

@@ -1,10 +1,10 @@
 export const DIFMStatusOptions = [
+    { label: "REQUESTED", value: "REQUESTED" },
     { label: "ON PROGRESS", value: "ON_PROGRESS" },
     { label: "APPLIED", value: "APPLIED" },
-    { label: "REQUESTED", value: "REQUESTED" },
     { label: "RETURNED", value: "RETURNED" },
-    { label: "AWARDED", value: "AWARDED" },
-    { label: "NOT AWARDED", value: "NOT_AWARDED" },
+    { label: "WON", value: "WON" },
+    { label: "NOT WON", value: "NOT_WON" },
     { label: "EXECUTED", value: "EXECUTED" },
     { label: "CANCELED", value: "CANCELED" },
 ];

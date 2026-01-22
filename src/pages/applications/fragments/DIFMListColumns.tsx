@@ -95,9 +95,6 @@ const columns: IColumn[] = [
         case "CANCELED":
           theme = "danger";
           break;
-        case "CLOSED":
-          theme = "danger";
-          break;
         default:
           theme = "danger"; // Fallback for unknown statuses
       }
