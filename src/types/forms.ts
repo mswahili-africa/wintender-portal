@@ -51,6 +51,7 @@ export interface IUserData {
     userId: string;
     email: string;
     username: string;
+    companyName:string;
     name: string;
     phoneNumber: string;
     avatar: string;

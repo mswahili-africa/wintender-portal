@@ -1,0 +1,12 @@
+{
+    "auth-login-header": "Ingia katika mfumo",
+    "auth-login-username": "Jina",
+    "auth-login-password": "Nywila",
+    "auth-login-button":  "Ingia",
+    "auth-login-forgot-password-link":"Umesahau neno siri lako?",
+    "auth-login-create-account-button":"Jisajili",
+
+    "dashboard-welcome": "Karibu, {{name}}",
+    "dashboard-welcome-message": "Fahamika zaidi katika dashibodi yako",
+    "dashboard-account": "Akaunti: {{account}}"
+}

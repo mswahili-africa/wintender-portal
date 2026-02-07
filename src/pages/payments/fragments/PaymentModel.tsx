@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Puff } from "react-loader-spinner";
 import { useUserData } from "@/hooks/useUserData";
+import { paymentOptions } from "@/types/statuses";
 
 export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
     const [warningMessage, setWarningMessage] = useState("");
@@ -164,13 +165,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                                 </p>
                                 <div className="w-full flex flex-col mb-5 justify-center items-center">
                                     <div className="grid grid-cols-5 justify-between items-center gap-5">
-                                        {[
-                                            { name: "Mpesa", img: "/payment_logo/voda.png" },
-                                            { name: "Tigo", img: "/payment_logo/yas.png" },
-                                            { name: "Airtel", img: "/payment_logo/airtel.png" },
-                                            { name: "Halopesa", img: "/payment_logo/halopesa.png" },
-                                            { name: "Azampesa", img: "/payment_logo/azam.jpg" },
-                                        ].map((method) => (
+                                        {paymentOptions.map((method) => (
                                             <div
                                                 key={method.name}
                                                 onClick={() => { setPaymentMethod(method.name); setPaymentDetails((prev) => ({ ...prev, mno: method.name })) }}

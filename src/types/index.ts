@@ -309,6 +309,7 @@ interface IBiddersSummary {
 
 interface IPaymentSummary {
   totalAmount: number;
+  walletBalance:number;
   thisMonth: number;
 }
 

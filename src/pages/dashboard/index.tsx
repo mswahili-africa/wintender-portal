@@ -27,6 +27,7 @@ import PEStats from "./fragments/stats/PEStats";
 import { formatMoney } from "@/utils";
 import { Link } from "react-router-dom";
 import { IconListLetters } from "@tabler/icons-react";
+import { t } from "i18next";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -165,11 +166,11 @@ export default function Dashboard() {
                 userRole !== "PROCUREMENT_ENTITY" ? <>
                     {
                         userRole && userRole.includes("BIDDER") && (<>
-                            <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
+                            <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
                             <div className="flex flex-col sm:flex-row justify-between mb-6">
-                                <div className="text-gray-800 mb-2 w-fit">Welcome to your dashboard </div>
+                                <div className="text-gray-800 mb-2 w-fit">{t("dashboard-welcome-message")} </div>
                                 <div className="flex flex-col justify-end text-end gap-1">
-                                    <div className="text-gray-900 font-bold  w-full text-end text-md sm:text-xs">Account: {account}</div>
+                                    <div className="text-gray-900 font-bold  w-full text-end text-md sm:text-xs">{t("dashboard-account", { account: account })}</div>
                                     {/* TWO BUTTONS */}
                                     <div className="flex flex-col sm:flex-row gap-2">
 
@@ -267,13 +268,17 @@ export default function Dashboard() {
                                         <span className="font-medium">This Month:</span>
                                         <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.thisMonth ?? 0)}</span>
                                     </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="font-medium">Wallet:</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.walletBalance ?? 0)}</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
                                 <div className="flex items-center gap-4 mb-4">
                                     <div className="bg-green-100 p-3 rounded-full">
-                                        <IconReportMoney  className="w-6 h-6 text-green-600" />
+                                        <IconReportMoney className="w-6 h-6 text-green-600" />
                                     </div>
                                     <h2 className="text-l font-semibold text-gray-800">Tender Quotations</h2>
                                 </div>
@@ -312,7 +317,8 @@ export default function Dashboard() {
                                             <IconMail size={20} />
                                         </a>
                                     </div>
-                                )}
+                                )
+                            }
                         </div>
                     </>
                 )

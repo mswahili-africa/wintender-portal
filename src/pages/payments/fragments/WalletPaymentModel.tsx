@@ -8,6 +8,7 @@ import { IWalletTopUp } from "@/types";
 import { set } from "lodash";
 import { useUserData } from "@/hooks/useUserData";
 import { IconX } from "@tabler/icons-react";
+import { paymentOptions } from "@/types/statuses";
 
 export default function WalletPaymentModal({
     isOpen,
@@ -179,13 +180,7 @@ export default function WalletPaymentModal({
                                     </p>
                                     <div className="w-full flex flex-col justify-center items-center">
                                         <div className="grid grid-cols-5 justify-between items-center gap-5">
-                                            {[
-                                                { name: "Mpesa", img: "/payment_logo/voda.png" },
-                                                { name: "Tigo", img: "/payment_logo/yas.png" },
-                                                { name: "Airtel", img: "/payment_logo/airtel.png" },
-                                                { name: "Halopesa", img: "/payment_logo/halopesa.png" },
-                                                { name: "Azampesa", img: "/payment_logo/azam.jpg" },
-                                            ].map((method) => (
+                                            {paymentOptions.map((method) => (
                                                 <div
                                                     key={method.name}
                                                     onClick={() => { setPaymentMethod(method.name); setPaymentDetails((prev) => ({ ...prev, mno: method.name })); }}

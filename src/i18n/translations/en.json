@@ -1,0 +1,13 @@
+{
+    "auth-login-header": "Login",
+    "auth-login-username": "Username",
+    "auth-login-password": "Password",
+    "auth-login-button":  "Login",
+    "auth-login-forgot-password-link": "Forgot Password?",
+    "auth-login-create-account-button": "Register",
+
+    "dashboard-welcome": "Welcome, {{name}}",
+    "dashboard-welcome-message": "Welcome to your dashboard",
+    "dashboard-account": "Account: {{account}}"
+
+}

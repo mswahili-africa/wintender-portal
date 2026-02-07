@@ -11,6 +11,7 @@ import { login } from "@/services/auth";
 import { authStore } from "@/store/auth";
 import { ILoginForm } from "@/types/forms";
 import toast from "react-hot-toast";
+import { t } from "i18next";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -75,12 +76,12 @@ export default function Login() {
                     <Link to="/">
                         <img src={Logo} className="w-16 sm:w-20 mb-4 hover:cursor-pointer" alt="Logo" />
                     </Link>
-                    <h2 className="text-lg sm:text-xl font-semibold text-slate-700">Login</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-slate-700">{t("auth-login-header")}</h2>
                 </div>
 
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit(signIn)}>
                     <div>
-                        <label htmlFor="username" className="block mb-1 text-sm text-gray-700">Username</label>
+                        <label htmlFor="username" className="block mb-1 text-sm text-gray-700">{t("auth-login-username")}</label>
                         <input
                             type="text"
                             id="username"
@@ -91,7 +92,7 @@ export default function Login() {
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block mb-1 text-sm text-gray-700">Password</label>
+                        <label htmlFor="password" className="block mb-1 text-sm text-gray-700">{t("auth-login-password")}</label>
                         <div className="relative">
                             <input
                                 type={showPassword ? 'text' : 'password'}
@@ -111,19 +112,19 @@ export default function Login() {
 
                     <Button
                         type="submit"
-                        label="Login"
+                        label={t("auth-login-button")}
                         theme="primary"
                         size="md"
                         loading={isLoading}
                     />
 
                     <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-xs sm:text-sm">
-                        <Link to="/forgot" className="text-green-600 mb-2 sm:mb-0">Forgot password?</Link>
+                        <Link to="/forgot" className="text-green-600 mb-2 sm:mb-0">{t("auth-login-forgot-password-link")}</Link>
                         <span
                             className="text-blue-600 cursor-pointer"
                             onClick={() => setCreate(true)}
                         >
-                            Register
+                            {t("auth-login-create-account-button")}
                         </span>
                     </div>
                 </form>
