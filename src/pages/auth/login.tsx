@@ -72,7 +72,7 @@ export default function Login() {
                     <span>info@wintender.co.tz</span>
                 </a>
                 <a
-                    href="/guides/user-guide-en.pdf"
+                    href="/documents/Wintender-Supplier-Guide-opt.pdf"
                     download
                     target="_blank"
                     className="flex items-center px-4 flex-row rounded-md hover:bg-slate-100"

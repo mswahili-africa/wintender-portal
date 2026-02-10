@@ -25,7 +25,6 @@ export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
-    const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);

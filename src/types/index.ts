@@ -255,6 +255,7 @@ export interface ITenders {
   closeDate: number;
   tenderType: string;
   applicationFee: number;
+  clarificationCount: number;
   consultationFee: number;
   categoryName: string;
   categoryId: string

@@ -1,5 +1,5 @@
 import http from "@/http";
-import { IQueryParams, ITenderCategory, IlistResponse } from "@/types";
+import { IQueryParams, ITenderCategory, ITenders, IlistResponse } from "@/types";
 import { IApplicationPDFReport, IAssignBidder, IConsultation } from "@/types/forms";
 
 
@@ -15,7 +15,7 @@ export async function downloadTenderDocument(id: string) {
 }
 
 export async function getTendersPrivate(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC&region=PRIVATE", {
+    const response = await http.get<IlistResponse<ITenders>>("/tenders/tender/list?tenderGroup=PUBLIC&region=PRIVATE", {
         params: params
     })
 
@@ -23,7 +23,7 @@ export async function getTendersPrivate(params: IQueryParams) {
 }
 
 export async function getTendersGovernment(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC&region=GOVERNMENT", {
+    const response = await http.get<IlistResponse<ITenders>>("/tenders/tender/list?tenderGroup=PUBLIC&region=GOVERNMENT", {
         params: params
     })
 
@@ -31,7 +31,7 @@ export async function getTendersGovernment(params: IQueryParams) {
 }
 
 export async function getTendersInternational(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/tenders/tender/list?tenderGroup=PUBLIC&region=INTERNATIONAL", {
+    const response = await http.get<IlistResponse<ITenders>>("/tenders/tender/list?tenderGroup=PUBLIC&region=INTERNATIONAL", {
         params: params
     })
 
