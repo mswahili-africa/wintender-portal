@@ -4,7 +4,7 @@ import {
   IconBuilding,
   IconUsersGroup,
 } from "@tabler/icons-react";
-import StatGroupCard from "../StatGroupCard";
+import StatGroupCard from "../fragments/StatGroupCard";
 import { ISummaryReport } from "@/types";
 
 interface IProps {

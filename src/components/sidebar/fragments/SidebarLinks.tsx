@@ -5,10 +5,12 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { IRoute, getRoutesByRole } from "@/routes";  // Ensure the import path matches your project structure
 import { UserRole } from "@/utils";
 import { IconBrandWhatsapp, IconMail, IconPhoneCall } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 export default function SidebarLinks() {
     const location = useLocation();
     const { userData } = useUserDataContext();
+    const {t} = useTranslation();
 
     // Add a type guard to ensure the role is valid or fallback to "BIDDER"
     const isValidUserRole = (role: any): role is UserRole => {
@@ -26,12 +28,12 @@ export default function SidebarLinks() {
                 <div key={index}>
                     {item.subMenu && item.subMenu.length > 0 ? (
                         <div className="mt-4 mb-4">
-                            <div className="text-slate-800 text-xs font-medium uppercase mb-2">{item.label}</div>
+                            <div className="text-slate-800 text-xs font-medium uppercase mb-2">{t(item.labelKey)}</div>
                             {item.subMenu.map((subItem, subIndex) => (
                                 <Link to={subItem.path} key={subIndex}>
                                     <div className={`flex items-center px-4 py-3 rounded-md ${location.pathname === subItem.path ? 'bg-green-600 text-white' : 'hover:bg-slate-100'}`}>
                                         <div className="pr-3">{subItem.icon}</div>
-                                        <span>{subItem.label}</span>
+                                        <span>{t(subItem.labelKey)}</span>
                                     </div>
                                 </Link>
                             ))}
@@ -40,7 +42,7 @@ export default function SidebarLinks() {
                         <Link to={item.path} className="mb-4">
                             <div className={`flex items-center px-4 py-3 rounded-md ${location.pathname === item.path ? 'bg-green-600 text-white' : 'hover:bg-slate-100'}`}>
                                 <div className="pr-2">{item.icon}</div>
-                                <span>{item.label}</span>
+                                <span>{t(item.labelKey)}</span>
                             </div>
                         </Link>
                     )}

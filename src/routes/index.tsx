@@ -27,6 +27,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 export interface IRoute {
     path: string;
     label: string;
+    labelKey: string;
     icon?: React.ReactElement;
     permissions?: string[];
     subMenu?: IRoute[];
@@ -57,98 +58,110 @@ const useUserRole = (): UserRole => {
 const allMenus: IRoute[] = [
     {
         path: "/",
-        label: "Dashboard",
+        label:  "Dashboard",
+        labelKey:  "menu-dashboard",
         icon: <IconLayoutDashboard size={20} strokeWidth={1.5} />,
     },
     {
         path: "/tenders",
         label: "Tender",
+        labelKey: "menu-tender",
         icon: <IconReport size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/tenders", label: "Private Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/government-tenders", label: "Government Tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/categories", label: "Categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
-            { path: "/do-it-for-me", label: "Do It For Me", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
-            { path: "/tender-box", label: "Tender Box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
-            { path: "/submitted-application", label: "My Submissions", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/tenders", label: "Private Tenders",labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/government-tenders", label: "Government Tenders",labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/categories", label: "Categories",labelKey: "menu-categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
+            { path: "/do-it-for-me", label: "Do It For Me",labelKey: "menu-difm", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
+            { path: "/tender-box", label: "Tender Box",labelKey: "menu-tender-box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
+            { path: "/submitted-application", label: "My Submissions",labelKey: "menu-my-submissions", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/applications",
         label: "Consultation",
+        labelKey: "menu-consultation",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/consultation", label: "Billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> },
-            { path: "/consultation-application", label: "Consult Me", icon: <IconUserUp size={20} strokeWidth={1.5} /> }
+            { path: "/consultation", label: "Billboards",labelKey: "menu-billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> },
+            { path: "/consultation-application", label: "Consult Me",labelKey: "menu-consult-me", icon: <IconUserUp size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/finance",
         label: "Finance",
+        labelKey: "menu-finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/payments", label: "Transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
-            { path: "/company-plans", label: "Payment Plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
+            { path: "/payments", label: "Transactions",labelKey: "menu-transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
+            { path: "/company-plans", label: "Payment Plans",labelKey: "menu-payment-plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },
     {
         path: "/entities",
         label: "Entities",
+        labelKey: "menu-entities",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/bidders", label: "Bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
-            { path: "/entities", label: "PE", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
-            { path: "/entities-users", label: "PE Admins", icon: <IconMan size={20} strokeWidth={1.5} /> }
+            { path: "/bidders", label: "Bidders",labelKey: "menu-bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+            { path: "/entities", label: "PE",labelKey: "menu-pe", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
+            { path: "/entities-users", label: "PE Admins",labelKey: "menu-pe-admins", icon: <IconMan size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/compliance",
         label: "Compliance",
+        labelKey: "menu-compliance",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/company-documents", label: "Documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/company-documents", label: "Documents",labelKey: "menu-documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/users",
         label: "Internal",
+        labelKey: "menu-internal",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/users", label: "Staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
-            { path: "/roles", label: "Roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
+            { path: "/users", label: "Staff",labelKey: "menu-staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/roles", label: "Roles",labelKey: "menu-roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/inquiries",
         label: "Inquiries & Support",
+        labelKey: "menu-inquiries",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/messages", label: "Messages", icon: <IconMessages size={20} strokeWidth={1.5} /> },
+            { path: "/messages", label: "Messages",labelKey: "menu-messages", icon: <IconMessages size={20} strokeWidth={1.5} /> },
         ],
     },
     {
         path: "/reports/login-attempt",
         label: "Reports",
+        labelKey: "menu-reports",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/publisher-perfomance", label: "Publisher Perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
-            { path: "/login-attempt", label: "Login Attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
+            { path: "/publisher-perfomance", label: "Publisher Perfomance",labelKey: "menu-publisher-perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/login-attempt", label: "Login Attempts",labelKey: "menu-login-attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
 
         ],
     },
     {
         path: "/settings",
         label: "System",
+        labelKey: "menu-system",
         icon: <IconSettings className="duration-300 animate-spin" size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/settings", label: "Settings", icon: <IconSettings size={20} strokeWidth={1.5} /> },
+            { path: "/settings", label: "Settings",labelKey: "menu-settings", icon: <IconSettings size={20} strokeWidth={1.5} /> },
             {
                 label: "Logs",
+                labelKey: "menu-logs",
                 path: "/error-logs",
                 icon: <IconAlertTriangle size={20} strokeWidth={1.6} />,
             },
             {
                 label: "Health",
+                labelKey: "menu-health",
                 path: "/system-health",
                 icon: <IconHeartRateMonitor size={20} strokeWidth={1.6} />,
             }

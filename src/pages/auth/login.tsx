@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { useState } from "react";
-import { IconBrandWhatsapp, IconEye, IconEyeOff, IconMail, IconPhoneCall } from "@tabler/icons-react";
+import { IconBook, IconBrandWhatsapp, IconEye, IconEyeOff, IconMail, IconPhoneCall } from "@tabler/icons-react";
 import Logo from "@/assets/images/logo.png";
 import Button from "@/components/button/Button";
 import RegistrationModel from "./registrationModel";
@@ -11,13 +11,14 @@ import { login } from "@/services/auth";
 import { authStore } from "@/store/auth";
 import { ILoginForm } from "@/types/forms";
 import toast from "react-hot-toast";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
     const navigate = useNavigate();
     const store = useSnapshot(authStore);
     const [create, setCreate] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const { t } = useTranslation();
 
     const {
         register,
@@ -31,7 +32,7 @@ export default function Login() {
         }
     });
 
-    const { mutate, isLoading } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: (data: { username: string, password: string }) => login(data),
         onSuccess: (data) => {
             store.setCredentials(data);
@@ -70,6 +71,16 @@ export default function Login() {
                     <IconMail size={22} className="text-green-600 mr-3" stroke={2} />
                     <span>info@wintender.co.tz</span>
                 </a>
+                <a
+                    href="/guides/user-guide-en.pdf"
+                    download
+                    target="_blank"
+                    className="flex items-center px-4 flex-row rounded-md hover:bg-slate-100"
+                >
+                    <IconBook size={22} className="text-green-600 mr-3" stroke={2} />
+                    <span>{t("auth-user-guide")}</span>
+                </a>
+
             </div>
             <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-md shadow-sm">
                 <div className="flex flex-col items-center mb-6">
@@ -115,7 +126,7 @@ export default function Login() {
                         label={t("auth-login-button")}
                         theme="primary"
                         size="md"
-                        loading={isLoading}
+                        loading={isPending}
                     />
 
                     <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-xs sm:text-sm">

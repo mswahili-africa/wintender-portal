@@ -1,5 +1,5 @@
 
 
 export const DEFAULTS = {
-    locale : 'sw'
+    locale : 'sw' as  'en' | 'sw',
 }

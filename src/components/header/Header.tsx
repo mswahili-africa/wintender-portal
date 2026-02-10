@@ -2,6 +2,7 @@ import { Menu } from "@headlessui/react";
 import {
     IconBellFilled,
     IconBrandWhatsapp,
+    IconLanguage,
     IconMail,
     IconPhoneCall,
     IconPower,
@@ -17,6 +18,9 @@ import PaymentModal from "@/pages/payments/fragments/PaymentModel";
 import { WalletButton } from "../button/WalletButton";
 import { useContacts } from "@/hooks/notificationRepository";
 import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
+import Tooltip from "../tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
@@ -29,6 +33,13 @@ const Header = () => {
             object: null
         }
     );
+
+
+    const { t } = useTranslation();
+
+    const { language, changeLanguage } = useLanguage();
+
+
 
     const handleModalClose = () => {
         setHandleModal({
@@ -72,94 +83,124 @@ const Header = () => {
                 )
             }
             <div className="flex flex-row justify-between items-center ">
-                <div onClick={() => setIsPaymentModalOpen(true)} className="flex flex-row lg:gap-5 cursor-pointer">
-                    {typeof subscription === 'number' && (() => {
-                        if (subscription === 0) {
-                            return (
-                                <div className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span className="text-xs font-medium text-red-500">
-                                        Subscription Expired
-                                    </span>
-                                </div>
-                            );
-                        }
+                <Tooltip content={t("header-subscription-button")}>
+                    <div onClick={() => setIsPaymentModalOpen(true)} className="flex flex-row lg:gap-5 cursor-pointer">
+                        {typeof subscription === 'number' && (() => {
+                            if (subscription === 0) {
+                                return (
+                                    <div className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span className="text-xs font-medium text-red-500">
+                                            {t("header-subscription-expired")}
+                                        </span>
+                                    </div>
+                                );
+                            }
 
-                        if (subscription > 0) {
-                            const today = new Date();
-                            const expiryDate = new Date(today);
-                            expiryDate.setDate(today.getDate() + subscription);
+                            if (subscription > 0) {
+                                const today = new Date();
+                                const expiryDate = new Date(today);
+                                expiryDate.setDate(today.getDate() + subscription);
 
-                            const formattedDate = expiryDate.toLocaleDateString('en-GB', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric',
-                            });
+                                const formattedDate = expiryDate.toLocaleDateString('en-GB', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric',
+                                });
 
-                            return (
-                                <div title={`Your Subscription will expire on: ${formattedDate}`} className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
-                                        Subscription: {subscription} {subscription === 1 ? 'day' : 'days'}
-                                    </span>
-                                </div>
-                            );
-                        }
-                        return null;
-                    })()}
-                </div>
+                                return (
+                                    <div title={`Your Subscription will expire on: ${formattedDate}`} className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
+                                            {t("header-subscription-count", { count: subscription })}Subscription: {subscription} {subscription === 1 ? 'day' : 'days'}
+                                        </span>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })()}
+                    </div>
+                </Tooltip>
                 <div className="flex items-center gap-4 min-w-32">
                     <div className="flex flex-row items-center gap-4 w-full">
+
+
+                        {/* Toggle */}
+                        <div className="flex items-center bg-slate-100 rounded-full p-1 text-xs font-semibold transition-all duration-200 ease-in-out">
+                            <button
+                                onClick={() => changeLanguage("en")}
+                                className={`px-3 py-1 rounded-full transition
+            ${language === "en"
+                                        ? "bg-green-600 text-white shadow"
+                                        : "text-slate-600 hover:text-slate-800"
+                                    }
+          `}
+                            >
+                                EN
+                            </button>
+
+                            <button
+                                onClick={() => changeLanguage("sw")}
+                                className={`px-3 py-1 rounded-full transition
+            ${language === "sw"
+                                        ? "bg-green-600 text-white shadow"
+                                        : "text-slate-600 hover:text-slate-800"
+                                    }
+          `}
+                            >
+                                SW
+                            </button>
+                        </div>
                         {
                             !["BIDDER", "PROCUREMENT_ENTITY"].includes(user?.userData?.role as string) &&
-                                <Menu as="div" className="relative inline-block text-left">
-                                    <Menu.Button className="p-1.5 hover:bg-slate-100 rounded-md">
-                                        <div className="relative">
-                                            <IconBellFilled className="h-6 w-6 text-slate-600" />
-                                            <div className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
-                                                {contacts?.content && contacts?.content.filter((contact) => contact.status === "UNREAD").length}
-                                            </div>
+                            <Menu as="div" className="relative inline-block text-left">
+                                <Menu.Button className="p-1.5 hover:bg-slate-100 rounded-md">
+                                    <div className="relative">
+                                        <IconBellFilled className="h-6 w-6 text-slate-600" />
+                                        <div className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs">
+                                            {contacts?.content && contacts?.content.filter((contact) => contact.status === "UNREAD").length}
                                         </div>
-                                    </Menu.Button>
-                                    <Menu.Items className="absolute right-0 z-10 mt-2 w-72 origin-top-right overflow-hidden bg-white rounded-md shadow-lg focus:outline-none">
-                                        <div className="text-sm text-gray-500 p-3">Notifications</div>
-                                        {
-                                            contacts?.content && contacts?.content.length === 0 &&
-                                            <div className="p-4 w-full text-center text-sm text-slate-600">
-                                                No new notifications
-                                            </div>
-                                        }
+                                    </div>
+                                </Menu.Button>
+                                <Menu.Items className="absolute right-0 z-10 mt-2 w-72 origin-top-right overflow-hidden bg-white rounded-md shadow-lg focus:outline-none">
+                                    <div className="text-sm text-gray-500 p-3">Notifications</div>
+                                    {
+                                        contacts?.content && contacts?.content.length === 0 &&
+                                        <div className="p-4 w-full text-center text-sm text-slate-600">
+                                            No new notifications
+                                        </div>
+                                    }
 
-                                        {/* Array of notifications */}
-                                        {
-                                            contacts?.content && contacts?.content.length > 0 && contacts?.content.filter((contact) => contact.status === "UNREAD").map((contact) => (
-                                                <Menu.Item key={contact.phoneNumber} as={"div"} className="border-b border-slate-200 py-2 px-4 hover:bg-slate-50 hover:cursor-pointer">
-                                                    <div className="flex items-center gap-3" onClick={() => setHandleModal({ type: "view", object: contact })}>
-                                                        <IconBrandWhatsapp size={25} className="text-green-600" />
-                                                        <div className="flex flex-col">
-                                                            <span className="text-sm font-medium text-slate-600">{contact.name}</span>
-                                                            <span className="text-xs text-slate-400">{new Date(contact.updatedAt).toLocaleString()}</span>
-                                                        </div>
+                                    {/* Array of notifications */}
+                                    {
+                                        contacts?.content && contacts?.content.length > 0 && contacts?.content.filter((contact) => contact.status === "UNREAD").map((contact) => (
+                                            <Menu.Item key={contact.phoneNumber} as={"div"} className="border-b border-slate-200 py-2 px-4 hover:bg-slate-50 hover:cursor-pointer">
+                                                <div className="flex items-center gap-3" onClick={() => setHandleModal({ type: "view", object: contact })}>
+                                                    <IconBrandWhatsapp size={25} className="text-green-600" />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium text-slate-600">{contact.name}</span>
+                                                        <span className="text-xs text-slate-400">{new Date(contact.updatedAt).toLocaleString()}</span>
                                                     </div>
-                                                </Menu.Item>
-                                            ))
-                                        }
+                                                </div>
+                                            </Menu.Item>
+                                        ))
+                                    }
 
 
-                                        <Menu.Item>
-                                            <Link
-                                                to="/messages"
-                                                className="flex items-center justify-center border-t border-slate-200 hover:bg-slate-50 rounded-b-md font-medium py-2 px-3">
-                                                <span className="text-xs text-gray-400">View All</span>
-                                            </Link>
-                                        </Menu.Item>
+                                    <Menu.Item>
+                                        <Link
+                                            to="/messages"
+                                            className="flex items-center justify-center border-t border-slate-200 hover:bg-slate-50 rounded-b-md font-medium py-2 px-3">
+                                            <span className="text-xs text-gray-400">View All</span>
+                                        </Link>
+                                    </Menu.Item>
 
-                                    </Menu.Items>
-                                </Menu>
+                                </Menu.Items>
+                            </Menu>
                         }
 
                         {
@@ -184,11 +225,11 @@ const Header = () => {
                                         <div className="text-xs text-center text-white font-medium space-y-2">
 
                                             <div className="flex justify-between">
-                                                <span>Name</span>
+                                                <span>{t("header-username")}</span>
                                                 <span>{auth.user.displayName}</span>
                                             </div>
                                             <div className="flex justify-between">
-                                                <span>Mail</span>
+                                                <span>{t("header-email")}</span>
                                                 <span>{auth.user.email}</span>
                                             </div>
                                         </div>
@@ -200,16 +241,60 @@ const Header = () => {
                                                 to={`/users/${auth.user.id}`}
                                                 className="flex items-center border border-transparent hover:border-slate-200 hover:bg-slate-50 rounded-md font-medium py-2 px-3">
                                                 <IconUserCircle className="h-5 w-5 text-slate-600 mr-3" />
-                                                <span>Profile</span>
+                                                <span> {t("header-profile")}</span>
                                             </Link>
                                         </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <div
+                                                    className={`flex items-center justify-between rounded-md px-3 py-2 transition
+        ${active ? "bg-slate-50" : ""}
+      `}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <IconLanguage className="h-5 w-5 text-slate-600" />
+                                                        <span className="font-medium text-slate-700">
+                                                            {t("header-language")}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Toggle */}
+                                                    <div className="flex items-center bg-slate-100 rounded-full p-1 text-xs font-semibold transition-all duration-200 ease-in-out">
+                                                        <button
+                                                            onClick={() => changeLanguage("en")}
+                                                            className={`px-3 py-1 rounded-full transition
+            ${language === "en"
+                                                                    ? "bg-green-600 text-white shadow"
+                                                                    : "text-slate-600 hover:text-slate-800"
+                                                                }
+          `}
+                                                        >
+                                                            EN
+                                                        </button>
+
+                                                        <button
+                                                            onClick={() => changeLanguage("sw")}
+                                                            className={`px-3 py-1 rounded-full transition
+            ${language === "sw"
+                                                                    ? "bg-green-600 text-white shadow"
+                                                                    : "text-slate-600 hover:text-slate-800"
+                                                                }
+          `}
+                                                        >
+                                                            SW
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </Menu.Item>
+
                                         <Menu.Item>
                                             <Link
                                                 to="/"
                                                 className="flex items-center border border-transparent hover:border-slate-200 hover:bg-slate-50 rounded-md font-medium py-2 px-3"
                                                 onClick={() => auth.logout()}>
                                                 <IconPower className="h-5 w-5 text-slate-600 mr-3" />
-                                                <span>Logout</span>
+                                                <span> {t("header-logout")}</span>
                                             </Link>
                                         </Menu.Item>
                                     </div>

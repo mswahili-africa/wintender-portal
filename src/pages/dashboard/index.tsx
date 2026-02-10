@@ -21,18 +21,20 @@ import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
-import AdminStats from "./fragments/stats/AdminStats";
-import BidderStats from "./fragments/stats/BidderStats";
-import PEStats from "./fragments/stats/PEStats";
+import AdminStats from "./stats/AdminStats";
+import BidderStats from "./stats/BidderStats";
+import PEStats from "./stats/PEStats";
 import { formatMoney } from "@/utils";
 import { Link } from "react-router-dom";
 import { IconListLetters } from "@tabler/icons-react";
-import { t } from "i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
     const account = userData?.account || "00000000";
+    const {t} = useTranslation();
 
     const { showConfirmation } = usePopup();
     const [error, _] = useState<string | null>(null);
@@ -173,38 +175,40 @@ export default function Dashboard() {
                                     <div className="text-gray-900 font-bold  w-full text-end text-md sm:text-xs">{t("dashboard-account", { account: account })}</div>
                                     {/* TWO BUTTONS */}
                                     <div className="flex flex-col sm:flex-row gap-2">
-
-                                        <Link
-                                            to="/tenders"
-                                            className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700"
-                                        >
-                                            <IconListLetters size={20} />
-                                            Private Tenders
-                                        </Link>
-                                        <Link
-                                            to="/government-tenders"
-                                            className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
-                                        >
-                                            <IconBuilding size={20} />
-                                            Government Tenders
-                                        </Link>
-
+                                        <Tooltip content={t("dashboard-private-tenders-tooltip")}>
+                                            <Link
+                                                to="/tenders"
+                                                className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700"
+                                            >
+                                                <IconListLetters size={20} />
+                                                {t("dashboard-private-tenders-button")}
+                                            </Link>
+                                        </Tooltip>
+                                        <Tooltip content={t("dashboard-government-tenders-tooltip")}>
+                                            <Link
+                                                to="/government-tenders"
+                                                className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
+                                            >
+                                                <IconBuilding size={20} />
+                                                {t("dashboard-government-tenders-button")}
+                                            </Link>
+                                        </Tooltip>
                                     </div>
                                 </div>
                             </div>
                         </>
                         )
                     }
-                    <h2 className="text-xl font-bold mb-4">Billboards</h2>
+                    <h2 className="text-xl font-bold mb-4">{t("dashboard-billboards-title")}</h2>
                     <Billboards />
                 </> : <>
                     {/* <h2 className="text-xl font-bold mb-4">Dashboard</h2> */}
-                    <div className="text-3xl font-[200]">Hello, {userData?.name}</div>
-                    <div className="text-gray-600">Welcome to your dashboard</div>
+                    <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
+                    <div className="text-gray-600">{t("dashboard-welcome-message")}</div>
                 </>
             }
             <Modal isOpen={showModal} closeModal={closeModal} />
-            <h2 className="text-xl font-extralight my-4">Brief statistics</h2>
+            <h2 className="text-xl font-extralight my-4">{t("dashboard-brief-statistics-title")}</h2>
 
 
             {(userRole.includes("BIDDER")) && (
@@ -229,7 +233,7 @@ export default function Dashboard() {
             {
                 !["BIDDER", "PROCUREMENT_ENTITY", "PUBLISHER", "MANAGER"].includes(userRole) && (
                     <>
-                        <h2 className="text-xl font-extralight my-4">Reports</h2>
+                        <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
                             <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
                                 <div className="flex items-center gap-4 mb-4">
@@ -256,7 +260,7 @@ export default function Dashboard() {
                                     <div className="bg-green-100 p-3 rounded-full">
                                         <IconMoneybag className="w-6 h-6 text-green-600" />
                                     </div>
-                                    <h2 className="text-l font-semibold text-gray-800">Payments</h2>
+                                    <h2 className="text-l font-semibold text-gray-800">{t("dashboard-payments-title")} </h2>
                                 </div>
 
                                 <div className="space-y-2 text-gray-700">
