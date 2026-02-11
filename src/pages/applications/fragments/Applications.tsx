@@ -22,6 +22,8 @@ import { IApplicationPDFReport } from "@/types/forms";
 import { DIFMStatusOptions } from "@/types/statuses";
 import TextInput from "@/components/widgets/forms/TextInput";
 import { filter } from "lodash";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 
 interface ApplicationsListProps {
@@ -44,6 +46,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [status, setStatus] = useState<string>("");
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
@@ -165,9 +168,9 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     };
 
     const handlStatusUpdate = () => {
-        const { status, comments ,quotationAmount} = getValues(); // Extract status and comments from the form
+        const { status, comments, quotationAmount } = getValues(); // Extract status and comments from the form
 
-        if (selectedApplication && status && comments ) {
+        if (selectedApplication && status && comments) {
             setIsStatusModalOpen(false);
             showConfirmation({
                 theme: "warning", // Adjust the theme to fit status updates
@@ -288,18 +291,20 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 <option value="12">December</option>
                             </select>
 
-                            <Button
-                                label={requestPDFReportMutation.isLoading ? "Requesting..." : "Request PDF"}
-                                size="sm"
-                                theme="primary"
-                                disabled={!reportMonth}
-                                onClick={() =>
-                                    requestPDFReportMutation.mutate({
-                                        groupId,
-                                        month: reportMonth!,
-                                    })
-                                }
-                            />
+                            <Tooltip content={t("difm-request-pdf-report-button-tooltip")}>
+                                <Button
+                                    label={requestPDFReportMutation.isPending ? "Requesting..." : t("difm-request-pdf-report-button")}
+                                    size="sm"
+                                    theme="primary"
+                                    disabled={!reportMonth}
+                                    onClick={() =>
+                                        requestPDFReportMutation.mutate({
+                                            groupId,
+                                            month: reportMonth!,
+                                        })
+                                    }
+                                />
+                            </Tooltip>
 
                         </div>
 
@@ -320,7 +325,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Total
+                                            {t("difm-total-requests")}
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.total ?? 0}
@@ -337,7 +342,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Requests
+                                            {t("difm-requests")}
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.request ?? 0}
@@ -354,7 +359,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            On progress
+                                            {t("difm-on-progress")}
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.open ?? 0}
@@ -371,7 +376,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Applied
+                                            {t("difm-applied")}
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.applied ?? 0}
@@ -388,7 +393,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Won
+                                            {t("difm-won")}
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.awarded ?? 0}
@@ -405,7 +410,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            Cancelled
+                                            {t("difm-canceled")}
                                         </p>
                                         <p className="text-md font-bold text-gray-800">
                                             {applicationList?.summary?.canceled ?? 0}
@@ -431,36 +436,46 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         actionSlot={(applicationList: IApplications) => (
                             <div className="flex justify-center items-center space-x-3">
                                 {applicationList.tenderId != null && (
-                                    <button
-                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                        onClick={() => handleView(applicationList)}
-                                    >
-                                        <IconEye size={20} />
-                                    </button>
-                                )}
-                                {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
-                                    <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
-                                        <IconSquareRoundedMinus size={20} />
-                                    </button>
+                                    <Tooltip content={t("difm-application-view-button-tooltip")}>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                            onClick={() => handleView(applicationList)}
+                                        >
+                                            <IconEye size={20} />
+                                        </button>
+                                    </Tooltip>
                                 )}
                                 {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (
-                                    <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
-                                        <IconEdit size={20} />
-                                    </button>
+                                    <Tooltip content={t("difm-consultation-fee-update-button-tooltip")}>
+                                        <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
+                                            <IconEdit size={20} />
+                                        </button>
+                                    </Tooltip>
                                 )}
                                 {(userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (
-                                    <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(applicationList)}>
-                                        <IconCheckbox size={20} />
-                                    </button>
+                                    <Tooltip content={t("difm-application-status-update-button-tooltip")}>
+                                        <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(applicationList)}>
+                                            <IconCheckbox size={20} />
+                                        </button>
+                                    </Tooltip>
                                 )}
 
                                 {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && (
-                                    <button
-                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                        onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
-                                    >
-                                        <IconFile size={20} />
+                                    <Tooltip content={t("difm-application-invoice-generator-button-tooltip")}>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                            onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
+                                        >
+                                            <IconFile size={20} />
+                                        </button>
+                                    </Tooltip>
+                                )}
+                                {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
+                                    <Tooltip content={t("difm-application-delete-button-tooltip")}>
+                                    <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
+                                        <IconSquareRoundedMinus size={20} />
                                     </button>
+                                    </Tooltip>
                                 )}
                             </div>
                         )}
@@ -500,7 +515,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 <label htmlFor="quotation" className="block mb-2">
                                     Bid Quotation
                                 </label>
-                                
+
                                 <Controller
                                     name="quotationAmount"
                                     control={control}

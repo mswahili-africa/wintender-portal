@@ -96,5 +96,27 @@
     "tender-subscription-top-up-tooltip":"Ongezea usajili wako zaidi",
 
     "tender-wizard-pe-consent":"Kwa kutuma zabuni hii, unakubali na kuridhia kwamba itachapishwa ili wazabuni wanaostahili waweze kuiona na kuomba. Mara tu ikichapishwa, zabuni yako itapatikana kwa washiriki waliosajiliwa kwenye mfumo, na maombi yanaweza kupokelewa kulingana na mwongozo wa ununuzi.",
-    "tender-wizard-bidder-consent":"Ninakubali kwamba hati zilizowasilishwa ni za kweli na sahihi kadri nijuavyo."
+    "tender-wizard-bidder-consent":"Ninakubali kwamba hati zilizowasilishwa ni za kweli na sahihi kadri nijuavyo.",
+
+    "difm-header": "Maombi: Fanya kwa Niaba Yangu",
+    "difm-new-request-button": "Ombi Jipya",
+    "difm-tabs-per-bidder":"Kwa Mzabuni",
+    "difm-tabs-all-applications":"Maombi yote",
+    "difm-tabs-all-applications-header":"Maombi yote",
+    "difm-new-request-button-tooltip": "Unda ombi jipya",
+    "difm-view-button-tooltip": "Tazama maelezo kwa kina ya ombi",
+    "difm-request-pdf-report-button-tooltip":"Omba ripoti ya PDF ya maombi yako",
+    "difm-request-pdf-report-button":"Omba ripoti ya PDF",
+    "difm-total-requests":"Jumla ya maombi",
+    "difm-requests":"Maombi",
+    "difm-on-progress":"Katika mchakato",
+    "difm-applied":"Pokelewa",
+    "difm-won":"Shinda",
+    "difm-canceled":"Hairishwa",
+    "difm-application-view-button-tooltip": "Tazama maelezo ya maombi",
+    "difm-consultation-fee-update-button-tooltip": "Sasisha ada ya ushauri",
+    "difm-application-status-update-button-tooltip": "Sasisha hali ya maombi",
+    "difm-application-invoice-generator-button-tooltip": "Tengeneza ankara ya maombi",
+    "difm-application-delete-button-tooltip": "Futa ombi hili"
+
 }

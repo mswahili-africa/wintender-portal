@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
 import DIFMListColumns from "./DIFMListColumns";
 import { DIFMStatusOptions } from "@/types/statuses";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 
 export default function DIFMapplications() {
@@ -33,6 +35,7 @@ export default function DIFMapplications() {
     const [status, setStatus] = useState<string | undefined>(undefined);
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
@@ -210,7 +213,7 @@ export default function DIFMapplications() {
         // <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
         <div className="modal-content rounded-lg shadow-lg p-4 z-60"> {/* Set max height and overflow */}
             <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-lg">Requests</h3>
+                <h3 className="font-bold text-lg">{t("difm-tabs-all-applications-header")}</h3>
                 <div className="flex flex-col sm:flex-row gap-2 sm:w-1/2">
                     <input
                         type="text"
@@ -248,37 +251,36 @@ export default function DIFMapplications() {
                     actionSlot={(applicationList: IApplications) => (
                         <div className="flex justify-center items-center space-x-3">
                             {applicationList.tenderId != null && (
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => handleView(applicationList)}
-                                >
-                                    <IconEye size={20} />
-                                </button>
-                            )}
-                            {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
-                                <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
-                                    <IconSquareRoundedMinus size={20} />
-                                </button>
+                                <Tooltip content={t("difm-application-view-button-tooltip")}>
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                        onClick={() => handleView(applicationList)}
+                                    >
+                                        <IconEye size={20} />
+                                    </button>
+                                </Tooltip>
                             )}
                             {applicationList.tenderId != null && (userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (
-                                <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
-                                    <IconEdit size={20} />
-                                </button>
+                                <Tooltip content={t("difm-consultation-fee-update-button-tooltip")}>
+                                    <button className="hover:text-green-700" onClick={() => handleEdit(applicationList)}>
+                                        <IconEdit size={20} />
+                                    </button>
+                                </Tooltip>
                             )}
                             {(userRole === "MANAGER" || userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT" || userRole === "PUBLISHER") && (applicationList.status === "REQUESTED" || applicationList.status === "ON_PROGRESS") && (
-                                <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(applicationList)}>
-                                    <IconCheckbox size={20} />
-                                </button>
+                                <Tooltip content={t("difm-application-status-update-button-tooltip")}>
+                                    <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(applicationList)}>
+                                        <IconCheckbox size={20} />
+                                    </button>
+                                </Tooltip>
                             )}
-
-                            {/* {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && (
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                    onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
-                                >
-                                    <IconFile size={20} />
-                                </button>
-                            )} */}
+                            {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
+                                <Tooltip content={t("difm-application-delete-button-tooltip")}>
+                                    <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>
+                                        <IconSquareRoundedMinus size={20} />
+                                    </button>
+                                </Tooltip>
+                            )}
                         </div>
                     )}
                 />

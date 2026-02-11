@@ -10,6 +10,8 @@ import { getAllApplicationsGroup } from "@/hooks/useApplicationsGroup";
 import Tabs from "@/components/widgets/Tabs";
 import DIFMapplications from "./fragments/DIFMApplications";
 import PrivateTenderRequestButton from "./fragments/privateTenderRequestButton";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function ApplicationGroups() {
   const { userData } = useUserDataContext();
@@ -19,6 +21,7 @@ export default function ApplicationGroups() {
   const [sort, setSort] = useState<string>("updatedAt,desc");
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [selectedGroupList, setSelectedGroupList] = useState<IApplicationGroup | null>(null); // Track selected group
+  const { t } = useTranslation();
 
   // Fetch data using custom hook
   const { applicationGroupList, isLoading, refetch } = getAllApplicationsGroup({
@@ -42,7 +45,7 @@ export default function ApplicationGroups() {
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-bold">Application: Do it For Me</h2>
+        <h2 className="text-lg font-bold">{t("difm-header")}</h2>
         {!["PROCUREMENT_ENTITY"].includes(userRole) && (
           <PrivateTenderRequestButton onSuccess={refetch} />
         )}
@@ -69,9 +72,11 @@ export default function ApplicationGroups() {
             onSorting={handleSorting}
             actionSlot={(applicationGroup: IApplicationGroup) => (
               <div className="flex space-x-2">
-                <button onClick={() => handleViewApplications(applicationGroup)}>
-                  <IconEye size={20} />
-                </button>
+                <Tooltip content={t("difm-view-button-tooltip")}>
+                  <button onClick={() => handleViewApplications(applicationGroup)}>
+                    <IconEye size={20} />
+                  </button>
+                </Tooltip>
               </div>
             )}
           />
@@ -101,7 +106,7 @@ export default function ApplicationGroups() {
           </div>
         </div>
       ) : (
-        <Tabs panels={["Per bidder", "All applications"]}>
+        <Tabs panels={[t("difm-tabs-per-bidder"), t("difm-tabs-all-applications")]}>
           <>
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
               <div className="flex justify-between items-center p-4 border-b border-slate-200">
@@ -122,9 +127,11 @@ export default function ApplicationGroups() {
                 onSorting={handleSorting}
                 actionSlot={(applicationGroup: IApplicationGroup) => (
                   <div className="flex space-x-2">
-                    <button onClick={() => handleViewApplications(applicationGroup)}>
-                      <IconEye size={20} />
-                    </button>
+                    <Tooltip content={t("difm-view-button-tooltip")}>
+                      <button onClick={() => handleViewApplications(applicationGroup)}>
+                        <IconEye size={20} />
+                      </button>
+                    </Tooltip>
                   </div>
                 )}
               />

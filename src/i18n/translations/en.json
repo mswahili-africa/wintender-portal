@@ -42,7 +42,6 @@
     "menu-logs": "Logs",
     "menu-health": "Health",
 
-
     "auth-login-header": "Login",
     "auth-login-username": "Username",
     "auth-login-password": "Password",
@@ -50,7 +49,6 @@
     "auth-login-forgot-password-link": "Forgot Password?",
     "auth-login-create-account-button": "Register",
     "auth-user-guide": "User Guide",
-
 
     "dashboard-welcome": "Welcome, {{name}}",
     "dashboard-welcome-message": "Welcome to your dashboard",
@@ -99,6 +97,27 @@
     "tender-subscription-top-up-tooltip":"Top up subscription",
 
     "tender-wizard-pe-consent":"By submitting this tender, you acknowledge and consent that it will be published for eligible bidders to view and apply. Once published, your tender becomes accessible to registered participants in the system, and applications may be received in accordance with the procurement guidelines.",
-    "tender-wizard-bidder-consent":"By submitting your bid, you acknowledge and consent that it will be recorded and made available to the Procuring Entity for review and consideration."
+    "tender-wizard-bidder-consent":"By submitting your bid, you acknowledge and consent that it will be recorded and made available to the Procuring Entity for review and consideration.",
+
+    "difm-header":"Applications: Do it for Me",
+    "difm-new-request-button":"New Request",
+    "difm-tabs-per-bidder":"Per Bidder",
+    "difm-tabs-all-applications":"All Applications",
+    "difm-tabs-all-applications-header":"Requests",
+    "difm-new-request-button-tooltip":"Create new request",
+    "difm-view-button-tooltip":"View request details",
+    "difm-request-pdf-report-button-tooltip":"Request PDF report of your do it for me requests",
+    "difm-request-pdf-report-button":"Request PDF",
+    "difm-total-requests":"Total",
+    "difm-requests":"Requests",
+    "difm-on-progress":"On Progress",
+    "difm-applied":"Applied",
+    "difm-won":"Won",
+    "difm-canceled":"Canceled",
+    "difm-application-view-button-tooltip":"View application details",
+    "difm-consultation-fee-update-button-tooltip":"Update consultation fee",
+    "difm-application-status-update-button-tooltip":"Update application status",
+    "difm-application-invoice-generator-button-tooltip":"Generate application invoice",
+    "difm-application-delete-button-tooltip":"Delete this application"
 
 }
