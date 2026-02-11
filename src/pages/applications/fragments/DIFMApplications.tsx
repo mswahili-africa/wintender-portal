@@ -400,119 +400,12 @@ export default function DIFMapplications() {
                 </div>
             )}
 
-            {isTenderModalOpen && selectedApplication && (
-                <TenderViewModelDoItForMe
-                    tenderGroup={selectedApplication.tenderGroup}
-                    onClose={() => setSelectedApplication(null)}
-                >
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <strong className="w-32 text-gray-600">Bidder:</strong>
-                            {/* <h3 className="text-l font-semi-bold text-gray-800"><strong className="w-32 text-gray-600">{applicationGroup.bidderAccount}</strong> : {applicationGroup.bidderAccount}</h3> */}
-                        </div>
-                        <div className="flex items-center justify-between mb-4">
-                            <strong className="w-32 text-gray-600">Phone:</strong>
-                            {/* <a href={`tel:${applicationGroup.bidderCompanyPrimaryNumber}`} className="text-l font-semi-bold text-gray-800">
-                                {applicationGroup.bidderCompanyPrimaryNumber}
-                            </a> */}
-                        </div>
-                        <div className="flex items-center justify-between mb-4">
-                            <strong className="w-32 text-gray-600">Email:</strong>
-                            {/* <a href={`mailto:${applicationGroup.bidderCompanyEmail}`} className="text-l font-semi-bold text-gray-800">
-                                {applicationGroup.bidderCompanyEmail}
-                            </a> */}
-                        </div>
+            <TenderViewModelDoItForMe
+                open={isTenderModalOpen && selectedApplication!==null}
+                selectedApplication={selectedApplication!}
+                onClose={() => setSelectedApplication(null)}
+            />
 
-                    </div>
-
-                    <hr></hr>
-                    <br></br>
-
-                    <div className="space-y-4">
-                        {/* Tender Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <strong className="w-32 text-gray-600">Title:</strong>
-                            <h3 className="flex-1 font-bold text-gray-800">{selectedApplication.tenderNumber} : {selectedApplication.title}</h3>
-                        </div>
-
-                        {/* Tender Details */}
-                        <div className="space-y-2">
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">PE:</strong>
-                                <p className="flex-1 font-bold text-gray-800">{selectedApplication.entityName.toUpperCase()}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Category:</strong>
-                                <p className="flex-1">{selectedApplication.categoryName}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Summary:</strong>
-                                <p className="flex-1" dangerouslySetInnerHTML={{ __html: selectedApplication.summary }}></p>
-                            </div>
-
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Status:</strong>
-                                <Chip
-                                    label={(() => {
-                                        const currentDate = new Date().getTime();
-                                        const closeDate = selectedApplication.closeDate;
-                                        const remainingTime = closeDate - currentDate;
-                                        const remainingDays = remainingTime / (1000 * 60 * 60 * 24);
-
-                                        // Determine the label based on the remaining days
-                                        if (remainingDays < 0) {
-                                            return 'CLOSED';
-                                        } else if (remainingDays <= 2) {
-                                            return 'CLOSING';
-                                        } else {
-                                            return selectedApplication.status;
-                                        }
-                                    })()}
-                                    size="sm"
-                                    theme="success"
-                                />
-                            </div>
-
-                            <div className="flex items-center">
-                                <strong className="w-32 text-gray-600">Close Date:</strong>
-                                <p className="flex-1">{new Date(selectedApplication.closeDate).toLocaleString()}</p>
-                            </div>
-
-                            <br></br>
-                            {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
-                                <><hr></hr><div className="flex items-center">
-                                    <strong className="w-50 text-gray-600">Consultation Fee:</strong>
-                                    <p className="flex-1">
-                                        <strong className="w-40 text-gray-600">
-                                            TZS {new Intl.NumberFormat().format(selectedApplication.principleAmount)}
-                                        </strong>
-                                    </p>
-                                </div></>
-
-                            )}
-                        </div>
-
-                        <hr></hr>
-
-
-                        {/* PDF Viewer */}
-                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                            <iframe
-                                src={selectedApplication.filePath}
-                                width="100%"
-                                height="500px"
-                                // frameBorder="0"
-                                title="Tender Document"
-                            ></iframe>
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="flex justify-end space-x-2 mt-6">
-                            <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedApplication(null)} />
-                        </div>
-                    </div>
-                </TenderViewModelDoItForMe>
-            )}
 
             <div className="flex justify-between items-center p-4 lg:px-8">
                 {applicationList?.pageable && (

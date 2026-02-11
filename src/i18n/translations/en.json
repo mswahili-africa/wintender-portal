@@ -118,6 +118,16 @@
     "difm-consultation-fee-update-button-tooltip":"Update consultation fee",
     "difm-application-status-update-button-tooltip":"Update application status",
     "difm-application-invoice-generator-button-tooltip":"Generate application invoice",
-    "difm-application-delete-button-tooltip":"Delete this application"
+    "difm-application-delete-button-tooltip":"Delete this application",
+    "difm-application-modal-bidder":"Bidder",
+    "difm-application-modal-email":"Email",
+    "difm-application-modal-phone":"phone",
+    "difm-application-modal-title":"Title",
+    "difm-application-modal-category":"Category",
+    "difm-application-modal-summary":"Summary",
+    "difm-application-modal-status":"Status",
+    "difm-application-modal-close-date":"Close Date",
+    "difm-application-modal-consultation-fee":"Consultation Fee",
+    "difm-application-modal-assignor-name":"Assignor name"
 
 }

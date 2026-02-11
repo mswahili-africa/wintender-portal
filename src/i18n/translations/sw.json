@@ -117,6 +117,16 @@
     "difm-consultation-fee-update-button-tooltip": "Sasisha ada ya ushauri",
     "difm-application-status-update-button-tooltip": "Sasisha hali ya maombi",
     "difm-application-invoice-generator-button-tooltip": "Tengeneza ankara ya maombi",
-    "difm-application-delete-button-tooltip": "Futa ombi hili"
+    "difm-application-delete-button-tooltip": "Futa ombi hili",
+    "difm-application-modal-bidder": "Mzabuni",
+    "difm-application-modal-email": "Barua Pepe",
+    "difm-application-modal-phone": "Simu",
+    "difm-application-modal-title": "Kichwa",
+    "difm-application-modal-category": "Kundi",
+    "difm-application-modal-summary": "Muhtasari",
+    "difm-application-modal-status": "Hali",
+    "difm-application-modal-close-date": "Tarehe ya Kufunga",
+    "difm-application-modal-consultation-fee": "Ada ya Ushauri",
+    "difm-application-modal-assignor-name": "Jina la Mgawaji"
 
 }
