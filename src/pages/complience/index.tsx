@@ -14,6 +14,8 @@ import { useSnapshot } from "valtio";
 import DocumentUpload from "./fragments/uploadDocumentForm";
 import DocumentViewModal from "./fragments/documentViewModel";
 import Button from "@/components/button/Button";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function CompanyDocuments() {
 
@@ -27,6 +29,7 @@ export default function CompanyDocuments() {
   const [filter] = useState<any>();
   const { showConfirmation } = usePopup();
   const [selectedDocument, setSelectedDocument] = useState<ICompanyDocuments | null>(null);
+  const { t } = useTranslation();
 
   const { documents, isLoading, refetch } = useCompanyDocuments({
     page: page,
@@ -72,7 +75,7 @@ export default function CompanyDocuments() {
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-semibold">Documents</h2>
+        <h2 className="text-lg font-semibold">{t("documents-header")}</h2>
         <DocumentUpload
           onSuccess={() => {
             refetch();
@@ -100,19 +103,23 @@ export default function CompanyDocuments() {
           actionSlot={(content: ICompanyDocuments) => {
             return (
               <div className="flex justify-center items-center space-x-3">
-                <button
-                  className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                  onClick={() => handleView(content)}
-                >
-                  <IconEye size={20} />
-                </button>
-                <Fragment>
+                <Tooltip content={t("documents-view-button-tooltip")}>
                   <button
-                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                    onClick={() => reject(content)}
+                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                    onClick={() => handleView(content)}
                   >
-                    <IconSquareRoundedMinus size={20} />
+                    <IconEye size={20} />
                   </button>
+                </Tooltip>
+                <Fragment>
+                  <Tooltip content={t("documents-delete-button-tooltip")}>
+                    <button
+                      className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                      onClick={() => reject(content)}
+                    >
+                      <IconSquareRoundedMinus size={20} />
+                    </button>
+                  </Tooltip>
                 </Fragment>
               </div>
             );

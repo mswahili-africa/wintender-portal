@@ -12,6 +12,8 @@ import { uploadDocument } from "@/services/entities";
 
 // JCM import document from documents json
 import documents from "../data/documents.json";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 interface IProps {
     onSuccess: () => void;
@@ -27,6 +29,7 @@ const schema = object().shape({
 export default function DocumentUpload({ onSuccess }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [documentFile, setDocumentFile] = useState<string | any>();
+    const { t } = useTranslation();
     const {
         register,
         handleSubmit,
@@ -69,15 +72,16 @@ export default function DocumentUpload({ onSuccess }: IProps) {
 
     return (
         <div className="max-w-max">
-            <Button
-                type="button"
-                label="Document"
-                icon={<IconPlus size={18} />}
-                theme="primary"
-                size="md"
-                onClick={() => setOpen(true)}
-            />
-
+            <Tooltip content={t("documents-upload-button-tooltip")}>
+                <Button
+                    type="button"
+                    label={t("documents-upload-button")}
+                    icon={<IconPlus size={18} />}
+                    theme="primary"
+                    size="md"
+                    onClick={() => setOpen(true)}
+                />
+            </Tooltip>
             <Modal
                 size="sm"
                 title="Upload Document"
@@ -95,16 +99,16 @@ export default function DocumentUpload({ onSuccess }: IProps) {
                                 }`}
                             {...register("documentType", { required: true })}
                         >
-                             <option value="">Select Document Type</option>
+                            <option value="">Select Document Type</option>
 
-                                {/* JCM pull documents from json */}
-                             {
+                            {/* JCM pull documents from json */}
+                            {
                                 documents
-                                .sort((a: any, b: any) => a.label.localeCompare(b.label))
-                                .map((document: any, index: number) => (
-                                    <option key={index} value={document.value}>{document.label}</option>
-                                ))
-                             }
+                                    .sort((a: any, b: any) => a.label.localeCompare(b.label))
+                                    .map((document: any, index: number) => (
+                                        <option key={index} value={document.value}>{document.label}</option>
+                                    ))
+                            }
                             {/* <option value="BANK_STATEMENT">BANK STATEMENT</option>
                             <option value="BRELA_ANNUAL_RETURNS">BRELA ANNUAL RETURNS</option>
                             <option value="BRELA_SEARCH">BRELA SEARCH</option>

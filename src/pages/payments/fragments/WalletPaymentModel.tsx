@@ -9,6 +9,7 @@ import { set } from "lodash";
 import { useUserData } from "@/hooks/useUserData";
 import { IconX } from "@tabler/icons-react";
 import { paymentOptions } from "@/types/statuses";
+import { Trans, useTranslation } from "react-i18next";
 
 export default function WalletPaymentModal({
     isOpen,
@@ -30,6 +31,7 @@ export default function WalletPaymentModal({
         mno: ""
     }); // Initial payment details
     const [messages, setMessages] = useState('');
+    const { t } = useTranslation();
 
     const { userData } = useUserData(); // Fetch user data to check payment mode
 
@@ -70,7 +72,7 @@ export default function WalletPaymentModal({
                 setWarningMessage("Amount should be greater than 1000");
                 throw new Error("Amount should be greater than 1000");
             }
-            if(paymentData.mno===""){
+            if (paymentData.mno === "") {
                 setWarningMessage("Select payment provider (MNO) is required.");
                 throw new Error("Select payment provider (MNO) is required.");
             }
@@ -137,16 +139,16 @@ export default function WalletPaymentModal({
             <div className="bg-white rounded-lg p-6 w-[90%] sm:w-[60%] relative">
                 <button type="button" onClick={onClose} className="absolute text-red-600 top-5 right-5"><IconX /></button>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5">
-                    <h3 className="text-xl font-bold text-gray-800 col-span-full">Top up wallet amount</h3>
+                    <h3 className="text-xl font-bold text-gray-800 col-span-full">{t("wallet-modal-header")}</h3>
                     <div>
                         <div className="mt-4">
-                        <div className="text-green-600 font-bold text-lg mb-2">Pay direct from your mobile</div>
+                            <div className="text-green-600 font-bold text-lg mb-2">{t("wallet-modal-sub-header")}</div>
                             {warningMessage && (
                                 <div className="mt-2 text-red-500 text-sm w-full text-center mb-2">
                                     {warningMessage} {/* Display warning message */}
                                 </div>
                             )}
-                            <label className="block text-sm text-gray-600" htmlFor="phoneNumber">Phone Number</label>
+                            <label className="block text-sm text-gray-600" htmlFor="phoneNumber">{t("wallet-modal-phone-number")}</label>
                             <input
                                 type="text"
                                 id="phoneNumber"
@@ -158,7 +160,7 @@ export default function WalletPaymentModal({
                             />
                         </div>
                         <div className="mt-4">
-                            <label className="block text-sm text-gray-600" htmlFor="period">Amount</label>
+                            <label className="block text-sm text-gray-600" htmlFor="period">{t("wallet-modal-amount")}</label>
                             <input
                                 type="number"
                                 id="amount"
@@ -176,7 +178,7 @@ export default function WalletPaymentModal({
                             !paymentMutation.isPending && (
                                 <>
                                     <p className="text-green-600 text-center mt-5 mb-3 text-sm italic">
-                                        Choose payment method:
+                                        {t("wallet-modal-payment-method")}:
                                     </p>
                                     <div className="w-full flex flex-col justify-center items-center">
                                         <div className="grid grid-cols-5 justify-between items-center gap-5">
@@ -207,44 +209,61 @@ export default function WalletPaymentModal({
                         {paymentMutation.isPending && (
                             <div className="mt-4 text-center flex flex-col items-center text-green-600">
                                 <Loader />
-                                <p>payment name: <strong>"{userData?.paymentMode === "AZAM_PAY" ? "Azam Pay" : "Ewallet Africa"}"</strong></p>
+                                <p>
+                                    {t("subscription-modal-processing-notice", {
+                                        provider: userData?.paymentMode === "AZAM_PAY" ? "Azam Pay" : "Ewallet Africa",
+                                    })}
+                                </p>
                             </div>
                         )}
 
                         {/* Submit and Cancel buttons */}
                         {!paymentMutation.isPending && (
                             <div className="mt-10 flex justify-end space-x-2">
-                                <Button label="Cancel" theme="danger" onClick={onClose} />
-                                <Button label="Pay" theme="primary" onClick={handleSubmit} disabled={paymentMutation.isPending} />
+                                <Button label={t("wallet-modal-cancel-button")} theme="danger" onClick={onClose} />
+                                <Button label={t("wallet-modal-pay-button")} theme="primary" onClick={handleSubmit} disabled={paymentMutation.isPending} />
                             </div>
                         )}
                     </div>
                     <div className="p-5 sm:border-l-4 sm:border-green-600 ps-3 text-sm">
-                        <p className="text-sm"><span className="text-green-600 font-bold text-lg">Altenatively,</span><br /> you can pay with <span className="font-bold">LIPA NAMBA</span> below: </p>
+                        <p className="text-sm"><span className="text-green-600 font-bold text-lg">{t("payment-modal-alternatively")},</span> </p>
                         <div className="flex flex-col sm:flex-row gap-x-5 my-1 w-full justify-center sm:justify-between">
                             <div>
                                 <div className="flex flex-row gap-x-5 my-1 items-center">
                                     <img src="/payment_logo/voda.png" className="w-8 h-8 rounded-lg" alt="" />
                                     <p className="text-lg font-bold">58224582</p>
                                 </div>
-                                <p>Name: <span className="text-md font-bold">WINTENDER P SHOP</span></p>
+                                <p>{t("payment-modal-lipa-name")}: <span className="text-md font-bold">WINTENDER P SHOP</span></p>
                             </div>
                             <img className="object-fit  h-28 w-28 sm:h-20 sm:w-20 mx-auto" src='/payment_logo/wintender_lipa.png' alt="qr code" />
                         </div>
 
-                        <div className="font-bold text-green-600 text-md w-full sm:my-3 my-6">--------OR--------</div>
+                        <div className="font-bold text-green-600 text-md w-full sm:my-3 my-6">--------{t("payment-modal-or")}--------</div>
 
-                        <p className="text-sm mb-2">You can pay with <span className="font-bold">BANK ACCOUNT</span> details below: </p>
-                        <p>Bank name: <span className="text-md font-bold">CRDB Bank PLC</span></p>
-                        <p>Account Name: <span className="text-md font-bold">Hatuamoja Company Limited</span></p>
-                        <p>Account Number: <span className="text-md font-bold">0150388028500</span></p>
-                        <p>Branch: <span className="text-md font-bold">Goba</span></p>
-                        <p>SwiftCode: <span className="text-md font-bold">CORUTZTZ</span></p>
+                        <p className="text-sm mb-2">{t("payment-modal-you-can-pay-with")}: </p>
+                        <p>{t("payment-modal-bank-name")}: <span className="text-md font-bold">CRDB Bank PLC</span></p>
+                        <p>{t("payment-modal-account-name")}: <span className="text-md font-bold">Hatuamoja Company Limited</span></p>
+                        <p>{t("payment-modal-account-number")}: <span className="text-md font-bold">0150388028500</span></p>
+                        <p>{t("payment-modal-branch")}: <span className="text-md font-bold">Goba</span></p>
+                        <p>{t("payment-modal-swift-code")}: <span className="text-md font-bold">CORUTZTZ</span></p>
 
                         {/* General instructions with emphasis */}
-                        <div className="font-bold text-green-600 my-3">Important:</div>
+                        <div className="font-bold text-green-600 my-3">{t("payment-modal-instructions")}:</div>
                         <p className="text-center text-sm text-red-600">
-                            "Once payment is made via LIPA NAMBA or BANK ACCOUNT, share the receipt to email <a href="mailto:finance@wintender.tz" target="_blank" className="font-bold hover:underline">finance@wintender.tz</a>"
+                            <Trans
+                                i18nKey="payment-share-proof"
+                                components={{
+                                    email: <a href="mailto:finance@bantu.tz" className="font-semibold text-blue-600 hover:underline" />,
+                                    phone: (
+                                        <a href="https://wa.me/255755135201" className="font-semibold text-blue-600 hover:underline" />
+                                    ),
+                                }}
+                                values={{
+                                    email: "finance@bantu.tz",
+                                    phone: "+255755135201",
+                                }}
+                            />
+                            {/* "Once payment is made via LIPA NAMBA or BANK ACCOUNT, share the receipt to email <a href="mailto:finance@wintender.tz" target="_blank" className="font-bold hover:underline">finance@wintender.tz</a>" */}
                         </p>
                     </div>
                 </div>

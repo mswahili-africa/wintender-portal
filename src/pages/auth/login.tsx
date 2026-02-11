@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { useState } from "react";
-import { IconBook, IconBrandWhatsapp, IconEye, IconEyeOff, IconMail, IconPhoneCall } from "@tabler/icons-react";
+import { IconBrandWhatsapp, IconEye, IconEyeOff, IconMail, IconPhoneCall } from "@tabler/icons-react";
 import Logo from "@/assets/images/logo.png";
 import Button from "@/components/button/Button";
 import RegistrationModel from "./registrationModel";
@@ -71,7 +71,7 @@ export default function Login() {
                     <IconMail size={22} className="text-green-600 mr-3" stroke={2} />
                     <span>info@wintender.co.tz</span>
                 </a>
-                <a
+                {/* <a
                     href="/documents/Wintender-Supplier-Guide-opt.pdf"
                     download
                     target="_blank"
@@ -79,7 +79,7 @@ export default function Login() {
                 >
                     <IconBook size={22} className="text-green-600 mr-3" stroke={2} />
                     <span>{t("auth-user-guide")}</span>
-                </a>
+                </a> */}
 
             </div>
             <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-md shadow-sm">
@@ -139,9 +139,9 @@ export default function Login() {
                         </span>
                     </div>
 
-                    <div className="mt-4 text-sm">
+                    {/* <div className="mt-4 text-sm">
                         Dowmload Wintender user guide here: <a className="text-green-600" href="/documents/Wintender-Supplier-Guide-opt.pdf" download>Download</a>
-                    </div>
+                    </div> */}
                 </form>
             </div>
 

@@ -1,6 +1,7 @@
 import { Menu } from "@headlessui/react";
 import {
     IconBellFilled,
+    IconBook,
     IconBrandWhatsapp,
     IconLanguage,
     IconMail,
@@ -79,6 +80,15 @@ const Header = () => {
                             <IconMail size={22} className="text-green-600 mr-3" stroke={2} />
                             <span>info@wintender.co.tz</span>
                         </a>
+                        <a
+                            href="/documents/Wintender-Supplier-Guide-opt.pdf"
+                            download
+                            target="_blank"
+                            className="flex items-center px-4 flex-row rounded-md hover:bg-slate-100"
+                        >
+                            <IconBook size={22} className="text-green-600 mr-3" stroke={2} />
+                            <span>{t("auth-user-guide")}</span>
+                        </a>
                     </div>
                 )
             }
@@ -133,7 +143,7 @@ const Header = () => {
                         <div className="flex items-center bg-slate-100 rounded-full p-1 text-xs font-semibold transition-all duration-200 ease-in-out">
                             <button
                                 onClick={() => changeLanguage("en")}
-                                className={`px-3 py-1 rounded-full transition
+                                className={`px-3 py-1 rounded-full transition cursor-pointer 
             ${language === "en"
                                         ? "bg-green-600 text-white shadow"
                                         : "text-slate-600 hover:text-slate-800"
@@ -145,7 +155,7 @@ const Header = () => {
 
                             <button
                                 onClick={() => changeLanguage("sw")}
-                                className={`px-3 py-1 rounded-full transition
+                                className={`px-3 py-1 rounded-full transition cursor-pointer 
             ${language === "sw"
                                         ? "bg-green-600 text-white shadow"
                                         : "text-slate-600 hover:text-slate-800"

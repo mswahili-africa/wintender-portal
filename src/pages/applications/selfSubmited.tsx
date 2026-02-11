@@ -12,6 +12,8 @@ import usePopup from "@/hooks/usePopup";
 import toast from "react-hot-toast";
 import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
 import Select from "react-select";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
@@ -26,6 +28,7 @@ export default function SubmittedApplication() {
   const { userData } = useUserDataContext();  // Use the hook to get user data
   const userRole = userData?.role || "BIDDER";
   const { showConfirmation } = usePopup();
+  const { t } = useTranslation();
 
   // Fetch data using custom hook
   const { applications, isLoading, refetch } = useSubmittedApplication({
@@ -83,7 +86,7 @@ export default function SubmittedApplication() {
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-bold">Submissions</h2>
+        <h2 className="text-lg font-bold">{t("tender-submissions-header")}</h2>
         <Select
           options={[
             { value: "PENDING", label: "Pending" },
@@ -118,26 +121,30 @@ export default function SubmittedApplication() {
           actionSlot={(application: ISubmittedApplication) => {
             return (
               <div className="flex justify-center space-x-2">
-                <button
-                  className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                  onClick={() => handleTenderActions("view", application)}
-                >
-                  <IconEye size={20} />
-                </button>
+                <Tooltip content={t("tender-view-button-tooltip")}>
+                  <button
+                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                    onClick={() => handleTenderActions("view", application)}
+                  >
+                    <IconEye size={20} />
+                  </button>
+                </Tooltip>
                 {userRole === "BIDDER" && application.tenderCloseDate > Date.now() && (
                   <>
                     <Fragment>
-                      <button
-                        title={application.status === "SUBMITTED" ? "Recover Application" : "Delete Application"}
-                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                        onClick={() => handleDelete(application)}
-                      >
-                        {application.status === "SUBMITTED" ? (
-                          <IconRecycle size={20} />
-                        ) : (
-                          <IconTrash size={20} />
-                        )}
-                      </button>
+                      <Tooltip content={application.status === "SUBMITTED" ? t("tender-recover-application-button-tooltip") : t("tender-delete-application-button-tooltip")}>
+                        <button
+                          title={application.status === "SUBMITTED" ? "Recover Application" : "Delete Application"}
+                          className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                          onClick={() => handleDelete(application)}
+                        >
+                          {application.status === "SUBMITTED" ? (
+                            <IconRecycle size={20} />
+                          ) : (
+                            <IconTrash size={20} />
+                          )}
+                        </button>
+                      </Tooltip>
                     </Fragment>
                   </>
                 )}

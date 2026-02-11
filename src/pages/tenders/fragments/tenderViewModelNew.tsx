@@ -1,7 +1,7 @@
 import Button from "@/components/button/Button";
 import Spinner from "@/components/spinners/Spinner";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import React, { act, Fragment, Suspense, useRef, useState } from "react";
+import { Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
 import PETenderApplicationWizardModal from "./PETenderApplicationWizardModal";
 import { IconX } from "@tabler/icons-react";
@@ -10,7 +10,9 @@ import Chip from "@/components/chip/Chip";
 import { Countdown } from "@/components/countdown/Countdown";
 import { EligibleBidders } from "./eligibleBiddersList";
 import { Clarifications } from "./Clarifications";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 interface ModalProps {
     isOpen: boolean;
@@ -21,10 +23,10 @@ interface ModalProps {
 }
 
 const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen }: ModalProps) => {
-    const user = useUserDataContext();
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
     const [assignBidderModalOpen, setAssignBidderModalOpen] = useState(false);
+    const { t } = useTranslation();
 
     // JCM Tender Tabs
     const [activeTab, setActiveTab] = useState<"DETAILS" | "CLARIFICATION" | "ELIGIBLE">("DETAILS");
@@ -70,23 +72,27 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                             <div className="flex space-x-4">
                                 {
                                     tender?.region === "GOVERNMENT" && remainingTime > 0 &&
-                                    < Button
-                                        label="Go NeST"
-                                        size="sm"
-                                        theme="primary"
-                                        variant="outline"
-                                        onClick={() => window.open("https://nest.go.tz/")}
-                                    />
+                                    <Tooltip content={t("tender-view-modal-go-nest-tooltip")} placement="top">
+                                        < Button
+                                            label={t("tender-view-modal-go-nest-button")}
+                                            size="sm"
+                                            theme="primary"
+                                            variant="outline"
+                                            onClick={() => window.open("https://nest.go.tz/")}
+                                        />
+                                    </Tooltip>
                                 }
                                 {/* Conditionally render button or spinner */}
                                 {!["PROCUREMENT_ENTITY", "BIDDER"].includes(userRole) && remainingTime > 0 && (
                                     <div className="flex space-x-4">
-                                        <Button
-                                            label="Assign Bidder"
-                                            size="sm"
-                                            theme="secondary"
-                                            onClick={() => setAssignBidderModalOpen(true)}
-                                        />
+                                        <Tooltip content={t("tender-view-modal-assign-bidder-tooltip")}>
+                                            <Button
+                                                label={t("tender-view-modal-assign-bidder-button")}
+                                                size="sm"
+                                                theme="secondary"
+                                                onClick={() => setAssignBidderModalOpen(true)}
+                                            />
+                                        </Tooltip>
                                     </div>
                                 )}
                                 {userRole === "BIDDER" && remainingTime > 0 && (
@@ -95,21 +101,25 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                     ) : (
                                         <div className="flex space-x-4">
                                             {tender?.selfApply && (
-                                                <Button
-                                                    label="Apply"
-                                                    size="sm"
-                                                    theme="primary"
-                                                    onClick={handleTenderApplyModal}
-                                                />
+                                                <Tooltip content={t("tender-view-modal-apply-tooltip")}>
+                                                    <Button
+                                                        label={t("tender-view-modal-apply-button")}
+                                                        size="sm"
+                                                        theme="primary"
+                                                        onClick={handleTenderApplyModal}
+                                                    />
+                                                </Tooltip>
                                             )}
 
 
-                                            <Button
-                                                label="Request 'Do it for me'"
-                                                size="sm"
-                                                theme="primary"
-                                                onClick={onDoItForMeClick}
-                                            />
+                                            <Tooltip content={t("tender-view-modal-difm-tooltip")}>
+                                                <Button
+                                                    label={t("tender-view-modal-difm-button")}
+                                                    size="sm"
+                                                    theme="primary"
+                                                    onClick={onDoItForMeClick}
+                                                />
+                                            </Tooltip>
                                         </div>
                                     )
                                 )}
@@ -120,10 +130,10 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                         </div>
 
                         {/* {tender?.selfApply ||  ["ADMINISTRATOR","MANAGER","PUBLISHER","ACCOUNTANT","SUPERVISOR"].includes(userRole) && ( */}
-                        { new Date(tender?.closeDate!) > new Date() && (
+                        {new Date(tender?.closeDate!) > new Date() && (
                             <div className="flex w-full justify-center mb-4">
                                 <div className="flex flex-row w-full border-2 border-gray-400 rounded">
-                                    
+
                                     <button type="button" onClick={() => setActiveTab("DETAILS")} className={` uppercase w-full p-2 text-sm ${activeTab === "DETAILS" ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
 
                                     {tender?.selfApply && (
@@ -134,7 +144,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                     )}
                                 </div>
                             </div>
-                        )} 
+                        )}
                         <div className="mt-4 overflow-y-auto" style={{ minHeight: '40vh', maxHeight: '70vh' }}>
                             {
                                 activeTab === "DETAILS" && (
@@ -149,20 +159,20 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                         <div className="space-y-2">
                                             <div className="flex flex-col sm:flex-row w-full justify-between">
                                                 <div className="flex items-center">
-                                                    <strong className="w-24 sm:w-32 text-gray-600">Close Date:</strong>
+                                                    <strong className="w-24 sm:w-32 text-gray-600">{t("tender-view-modal-close-date")}:</strong>
                                                     <p className="flex-1">{new Date(tender?.closeDate!).toLocaleString()}</p>
                                                 </div>
                                                 <div className="flex flex-col px-4 gap-x-2 items-center">
-                                                    <p className="flex-1 text-xs">Remaining Time:</p>
+                                                    <p className="flex-1 text-xs">{t("tender-view-modal-remaining-time")}:</p>
                                                     <Countdown expirationTime={tender?.closeDate!} />
                                                 </div>
                                             </div>
                                             <div className="flex items-center">
-                                                <strong className="w-32 text-gray-600">Name:</strong>
+                                                <strong className="w-32 text-gray-600">{t("tender-view-modal-tender-name")}:</strong>
                                                 <p className="flex-1">{tender?.entityName}</p>
                                             </div>
                                             <div className="flex flex-col sm:flex-row items-start sm:items-center">
-                                                <strong className="w-32 text-gray-600">Category:</strong>
+                                                <strong className="w-32 text-gray-600">{t("tender-view-modal-category")}:</strong>
                                                 <p className="flex-1">{tender?.categoryName}</p>
                                             </div>
                                             <div className="flex">
@@ -171,7 +181,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                             </div>
 
                                             <div className="flex items-center">
-                                                <strong className="w-32 text-gray-600">Status:</strong>
+                                                <strong className="w-32 text-gray-600">{t("tender-view-modal-status")}:</strong>
                                                 <Chip
                                                     label={
                                                         (() => {
@@ -197,7 +207,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
 
                                             {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
                                                 <><div className="flex items-center">
-                                                    <strong className="w-50 text-gray-600">Consultation Fee:</strong>
+                                                    <strong className="w-50 text-gray-600">{t("tender-view-modal-consultation-fee")}:</strong>
                                                     <p className="flex-1">
                                                         TZS {new Intl.NumberFormat().format(tender?.consultationFee!)}
                                                     </p>

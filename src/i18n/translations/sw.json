@@ -43,7 +43,7 @@
     "menu-health": "Afya",
 
     "auth-login-header": "Ingia katika mfumo",
-    "auth-login-username": "Jina",
+    "auth-login-username": "Barua pepe",
     "auth-login-password": "Nywila",
     "auth-login-button":  "Ingia",
     "auth-login-forgot-password-link":"Umesahau neno siri lako?",
@@ -77,6 +77,40 @@
     "dashboard-this-month": "Mwezi Huu",
     "dashboard-categories": "Makundi",
 
+    "subscription-modal-header": "Sasisha Usajili Wako",
+    "subscription-modal-sub-header": "Lipa moja kwa moja kutoka kwenye pochi au simu yako",
+    "subscription-modal-phone": "Namba ya Simu",
+    "subscription-modal-phone-input-placeholder": "Ingiza namba yako ya simu",
+    "subscription-modal-period": "Kipindi cha Usajili",
+    "subscription-modal-months-count": "{{count}} mwezi/miezi",
+    "subscription-modal-total": "Jumla: {{amount}}",
+    "subscription-modal-payment-method": "Chagua njia ya malipo",
+    "subscription-modal-processing-notice": "Tafadhali subiri, malipo yako kupitia {{provider}} yanashughulikiwa...",
+    "subscription-modal-pay-with-mobile": "Lipa kwa Simu",
+    "subscription-modal-pay-with-wallet": "Lipa kwa Pochi",
+
+    "payment-modal-alternatively": "Mbadala",
+    "payment-share-proof": "Baada ya kukamilisha malipo, tuma ushahidi kwa <email>{{email}}</email> au WhatsApp <phone>{{phone}}</phone> kwa uthibitisho.",
+    "payment-modal-bank-name": "Jina la Benki",
+    "payment-modal-account-name": "Jina la Akaunti",
+    "payment-modal-lipa-name":"Jina",
+    "payment-modal-account-number":"Namba ya Akaunti",
+    "payment-modal-branch": "Tawi",
+    "payment-modal-swift-code": "Nambari ya Swift",
+    "payment-modal-you-can-pay-with": "Unaweza pia kulipa kwa AKAUNTI YA BENKI hapa chini",
+    "payment-modal-instructions":"Zingatia",
+    "payment-modal-or":"AU",
+
+    "wallet-modal-header": "Sasisha Mkoba wa Kielektroniki",
+    "wallet-modal-sub-header": "Lipa moja kwa moja kutoka kwenye simu yako",
+    "wallet-modal-description": "Weka namba yako ya simu na kiwango kusasisha mkoba wako wa kielektroniki",
+    "wallet-modal-phone-number": "Namba ya Simu",
+    "wallet-modal-amount": "Kiasi",
+    "wallet-modal-total-amount": "Jumla",
+    "wallet-modal-payment-method": "Chagua Njia ya Malipo",
+    "wallet-modal-pay-button": "Lipa",
+    "wallet-modal-cancel-button": "Ghairi",
+
     "tender-tabs-private":"Binafsi",
     "tender-tabs-international":"Kimataifa",
     "tender-new-tender-button-tooltip":"Tengeneza zabuni mpya",
@@ -96,6 +130,25 @@
     "tender-subscription-top-up-tooltip":"Ongezea usajili wako zaidi",
     "tender-applicant-view-button-tooltip":"Angalia orodha ya wazabuni",
     "tender-box-header":"Sanduku la Maombi ya Zabuni",
+    "tender-submissions-header":"Maombi yangu ya Zabuni",
+    "tender-recover-application-button-tooltip": "Rejesha ombi hili ulilofuta",
+    "tender-delete-application-button-tooltip": "Futa ombi hili uliloomba",
+
+    "tender-view-modal-go-nest-tooltip": "Nenda NEST kuona maelezo ya zabuni hii",
+    "tender-view-modal-go-nest-button":"Nenda NEST",
+    "tender-view-modal-assign-bidder-tooltip": "Mteue mzabuni kwa zabuni hii",
+    "tender-view-modal-assign-bidder-button": "Mteue Mzabuni",
+    "tender-view-modal-apply-tooltip": "Omba zabuni hii",
+    "tender-view-modal-apply-button": "Omba",
+    "tender-view-modal-difm-tooltip": "Omba zabuni hii kama 'Fanya kwa Niaba Yangu'",
+    "tender-view-modal-difm-button": "Omba 'Fanya kwa Niaba Yangu'",
+    "tender-view-modal-close-date": "Tarehe ya Kufunga",
+    "tender-view-modal-remaining-time": "Muda Uliobaki",
+    "tender-view-modal-tender-name": "Jina",
+    "tender-view-modal-category": "Kundi",
+    "tender-view-modal-status": "Hali",
+    "tender-view-modal-consultation-fee": "Ada ya Ushauri",
+
 
     "tender-wizard-pe-consent":"Kwa kutuma zabuni hii, unakubali na kuridhia kwamba itachapishwa ili wazabuni wanaostahili waweze kuiona na kuomba. Mara tu ikichapishwa, zabuni yako itapatikana kwa washiriki waliosajiliwa kwenye mfumo, na maombi yanaweza kupokelewa kulingana na mwongozo wa ununuzi.",
     "tender-wizard-bidder-consent":"Ninakubali kwamba hati zilizowasilishwa ni za kweli na sahihi kadri nijuavyo.",
@@ -129,6 +182,17 @@
     "difm-application-modal-status": "Hali",
     "difm-application-modal-close-date": "Tarehe ya Kufunga",
     "difm-application-modal-consultation-fee": "Ada ya Ushauri",
-    "difm-application-modal-assignor-name": "Jina la Mgawaji"
+    "difm-application-modal-assignor-name": "Jina la Mgawaji",
+
+    "consultation-application-header": "Maombi la Ushauri",
+    "consultation-application-delete-button-tooltip": "Futa ombi hili la ushauri",
+    "consultation-application-status-update-button-tooltip": "Sasisha hali ya ombi",
+
+    "documents-header": "Nyaraka mbalimbali",
+    "documents-upload-button": "Pakia",
+    "documents-upload-button-tooltip": "Pakia nyaraka mpya",
+    "documents-view-button-tooltip": "Tazama maelezo ya nyaraka",
+    "documents-delete-button-tooltip": "Futa nyaraka hii"
+
 
 }

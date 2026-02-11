@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/applicationColumns";
 import { IConsultationApplication } from "@/types/forms";
-import { IconCheckbox, IconTrash, IconCloudDollar  } from "@tabler/icons-react";
+import { IconCheckbox, IconTrash } from "@tabler/icons-react";
 import usePopup from "@/hooks/usePopup";
 import { useMutation } from "@tanstack/react-query";
 import { deleteConsultMe, updateConsultMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
@@ -18,6 +18,8 @@ import { object, string } from "yup";
 import Button from "@/components/button/Button";
 import WalletPaymentModal from "../payments/fragments/WalletPaymentModel";
 import { USSDPushWalletRequest } from "@/services/payments";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function ConsultationApplication() {
     const [selectedApplication, setSelectedApplication] = useState<IConsultationApplication | null>(null);
@@ -31,31 +33,9 @@ export default function ConsultationApplication() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-
-    // JCM wallet payment
-    const [paymentDetails, setPaymentDetails] = useState({
-        amount: 0,
-        phoneNumber: "",
-        paymentReason: "WALLET_IN"
-    });
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [isWalletLoading, setIsWalletLoading] = useState(false);
-
-    // JCM handle payment submission
-    const paymentMutation = useMutation({
-        mutationFn: (paymentData: { amount: number, phoneNumber: string, paymentReason: string }) => (
-            setIsWalletLoading(true),
-            USSDPushWalletRequest(paymentData)
-        ),
-        onSuccess: (data) => {
-            toast.success(data.message);
-            setIsWalletLoading(false);
-        },
-        onError: (error) => {
-            toast.error("Payment failed: " + error);
-            throw error;
-        }
-    });
     const handleClose = () => setOpen(false);
 
     const navigate = useNavigate();
@@ -123,13 +103,6 @@ export default function ConsultationApplication() {
     });
 
 
-    // Edit Principal Amount Handler
-    const handleEdit = (content: IConsultationApplication) => {
-        setEditAmount(content.principleAmount);
-        setSelectedApplication(content);
-        setIsEditModalOpen(true);
-    };
-
     // Edit Status Handler
     const handleStatusChange = (content: IConsultationApplication) => {
         setSelectedApplication(content);
@@ -191,16 +164,10 @@ export default function ConsultationApplication() {
     };
 
 
-    const viewProfomaInvoice = (applicationGroup: IConsultationApplication) => {
-        navigate(`/application-profoma-invoice`, {
-            state: { applicationGroupData: applicationGroup, applicationData: application }
-        });
-    };
-
     return (
         <div>
             <div className="flex flex-row justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Consultation Application</h2>
+                <h2 className="text-lg font-bold">{t("consultation-application-header")}</h2>
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -216,12 +183,14 @@ export default function ConsultationApplication() {
                             <div className="flex justify-center space-x-2">
 
                                 {userRole === "BIDDER" && (
-                                    <button
-                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                        onClick={() => handleDelete(content)}
-                                    >
-                                        <IconTrash size={20} />
-                                    </button>
+                                    <Tooltip content={t("consultation-application-delete-button-tooltip")}>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                            onClick={() => handleDelete(content)}
+                                        >
+                                            <IconTrash size={20} />
+                                        </button>
+                                    </Tooltip>
                                 )}
                                 {/* {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && content.status === "REQUESTED" && (
                                     <button className="hover:text-green-700" onClick={() => handleEdit(content)}>
@@ -229,9 +198,11 @@ export default function ConsultationApplication() {
                                     </button>
                                 )} */}
                                 {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (content.status === "REQUESTED" || content.status === "ON_PROGRESS") && (
-                                    <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(content)}>
-                                        <IconCheckbox size={20} />
-                                    </button>
+                                    <Tooltip content={t("consultation-application-status-update-button-tooltip")}>
+                                        <button className="text-xs xl:text-sm text-slate-600 hover:text-green-600" onClick={() => handleStatusChange(content)}>
+                                            <IconCheckbox size={20} />
+                                        </button>
+                                    </Tooltip>
                                 )}
 
                                 {/* {(content.status === "COMPLETED" || content.status === "ON_PROGRESS") && (
@@ -333,7 +304,7 @@ export default function ConsultationApplication() {
 
 
             {/* JCM wallet top up modal */}
-            <WalletPaymentModal isLoading={isWalletLoading}  setIsLoading={setIsWalletLoading} isOpen={open} onClose={handleClose}  children={undefined} />
+            <WalletPaymentModal isLoading={isWalletLoading} setIsLoading={setIsWalletLoading} isOpen={open} onClose={handleClose} children={undefined} />
         </div>
     );
 }
