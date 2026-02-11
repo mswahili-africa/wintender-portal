@@ -95,6 +95,8 @@
     "tender-update-button-tooltip":"Update tender details",
     "tender-delete-button-tooltip":"Delete this tender",
     "tender-subscription-top-up-tooltip":"Top up subscription",
+    "tender-applicant-view-button-tooltip":"View tender applications",
+    "tender-box-header":"Tender Box",
 
     "tender-wizard-pe-consent":"By submitting this tender, you acknowledge and consent that it will be published for eligible bidders to view and apply. Once published, your tender becomes accessible to registered participants in the system, and applications may be received in accordance with the procurement guidelines.",
     "tender-wizard-bidder-consent":"By submitting your bid, you acknowledge and consent that it will be recorded and made available to the Procuring Entity for review and consideration.",

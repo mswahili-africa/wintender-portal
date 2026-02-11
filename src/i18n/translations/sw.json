@@ -94,6 +94,8 @@
     "tender-update-button-tooltip":"Boresha taarifa za zabuni hii",
     "tender-delete-button-tooltip":"Futa zabuni hii",
     "tender-subscription-top-up-tooltip":"Ongezea usajili wako zaidi",
+    "tender-applicant-view-button-tooltip":"Angalia orodha ya wazabuni",
+    "tender-box-header":"Sanduku la Maombi ya Zabuni",
 
     "tender-wizard-pe-consent":"Kwa kutuma zabuni hii, unakubali na kuridhia kwamba itachapishwa ili wazabuni wanaostahili waweze kuiona na kuomba. Mara tu ikichapishwa, zabuni yako itapatikana kwa washiriki waliosajiliwa kwenye mfumo, na maombi yanaweza kupokelewa kulingana na mwongozo wa ununuzi.",
     "tender-wizard-bidder-consent":"Ninakubali kwamba hati zilizowasilishwa ni za kweli na sahihi kadri nijuavyo.",

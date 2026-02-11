@@ -19,6 +19,8 @@ import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import TenderViewModal from "./fragments/tenderViewModelNew";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -37,6 +39,7 @@ export default function PrivateTenders() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
 
@@ -201,7 +204,7 @@ export default function PrivateTenders() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Tender Box</h2>
+                <h2 className="text-lg font-bold">{t("tender-box-header")}</h2>
                 {(userRole === "BIDDER") && (
                     <button onClick={() => topUpSubscription()}>
                         <IconClockPlus size={30} className="text-green-600" />
@@ -269,22 +272,26 @@ export default function PrivateTenders() {
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                    <Button
-                        type="button"
-                        label="Filter"
-                        icon={<IconFilter size={18} />}
-                        theme="info"
-                        size="sm"
-                        onClick={handleSearch} // Triggers search
-                    />
-                    <Button
-                        type="button"
-                        label="Reset"
-                        icon={<IconRefresh size={18} />}
-                        theme="warning"
-                        size="sm"
-                        onClick={handleReset} // Resets filters
-                    />
+                    <Tooltip content={t("tender-filter-button-tooltip")}>
+                        <Button
+                            type="button"
+                            label={t("tender-filter-button")}
+                            icon={<IconFilter size={18} />}
+                            theme="info"
+                            size="sm"
+                            onClick={handleSearch} // Triggers search
+                        />
+                    </Tooltip>
+                    <Tooltip content={t("tender-search-reset-button-tooltip")}>
+                        <Button
+                            type="button"
+                            label={t("tender-search-reset-button")}
+                            icon={<IconRefresh size={18} />}
+                            theme="warning"
+                            size="sm"
+                            onClick={handleReset} // Resets filters
+                        />
+                    </Tooltip>
                 </div>
 
             </div>
@@ -302,23 +309,27 @@ export default function PrivateTenders() {
                     actionSlot={(content: ITenders) => {
                         return (
                             <div className="flex justify-center space-x-2">
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => setOpenModal({ type: "view", tender: content })}
-                                >
-                                    <IconEye size={20} />
-                                </button>
+                                <Tooltip content={t("tender-view-button-tooltip")}>
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                        onClick={() => setOpenModal({ type: "view", tender: content })}
+                                    >
+                                        <IconEye size={20} />
+                                    </button>
+                                </Tooltip>
 
                                 {
                                     ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
                                         <>
                                             {!(new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY") && (
-                                                <button
-                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                    onClick={() => setOpenModal({ type: "update", tender: content })}
-                                                >
-                                                    <IconEdit size={20} />
-                                                </button>
+                                                <Tooltip content={t("tender-update-button-tooltip")}>
+                                                    <button
+                                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-yellow-600"
+                                                        onClick={() => setOpenModal({ type: "update", tender: content })}
+                                                    >
+                                                        <IconEdit size={20} />
+                                                    </button>
+                                                </Tooltip>
                                             )}
                                         </>
                                     )
@@ -328,13 +339,14 @@ export default function PrivateTenders() {
                                 {
                                     userRole === "PROCUREMENT_ENTITY" && content.selfApply === true &&
                                     <Fragment>
-
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                            onClick={() => { openApplicantList(content) }}
-                                        >
-                                            <IconListDetails size={20} />
-                                        </button>
+                                        <Tooltip content={t("tender-applicant-view-button-tooltip")}>
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                                onClick={() => { openApplicantList(content) }}
+                                            >
+                                                <IconListDetails size={20} />
+                                            </button>
+                                        </Tooltip>
                                     </Fragment>
                                 }
                             </div>
