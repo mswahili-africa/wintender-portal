@@ -20,6 +20,8 @@ import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import PETenderCreateForm from "./fragments/PETenderCreateForm";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
@@ -39,6 +41,7 @@ export default function GovernmentTenders() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
+    const { t } = useTranslation();
 
     const handleSearch = () => {
         setSearchQuery(generateSearchQuery());
@@ -198,7 +201,7 @@ export default function GovernmentTenders() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Government Tenders</h2>
+                <h2 className="text-lg font-bold">{t("tender-government-header")}</h2>
                 {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
                     <PETenderCreateForm
                         onSuccess={() => {
@@ -285,31 +288,37 @@ export default function GovernmentTenders() {
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                    <Button
-                        type="button"
-                        label="Filter"
-                        icon={<IconFilter size={18} />}
-                        theme="info"
-                        size="sm"
-                        onClick={handleSearch} // Triggers search
-                    />
-                    <Button
-                        type="button"
-                        label="Reset"
-                        icon={<IconRefresh size={18} />}
-                        theme="warning"
-                        size="sm"
-                        onClick={handleReset} // Resets filters
-                    />
-                    {(userRole === "BIDDER") && (
+                    <Tooltip content={t("tender-filter-button-tooltip")}>
                         <Button
                             type="button"
-                            label="Elligible Tenders"
-                            icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
-                            theme={isEligible ? "secondary" : "info"}
+                            label={t("tender-filter-button")}
+                            icon={<IconFilter size={18} />}
+                            theme="info"
                             size="sm"
-                            onClick={() => setIsEligible(!isEligible)} // Resets filters
+                            onClick={handleSearch} // Triggers search
                         />
+                    </Tooltip>
+                    <Tooltip content={t("tender-search-reset-button-tooltip")}>
+                        <Button
+                            type="button"
+                            label={t("tender-search-reset-button")}
+                            icon={<IconRefresh size={18} />}
+                            theme="warning"
+                            size="sm"
+                            onClick={handleReset} // Resets filters
+                        />
+                    </Tooltip>
+                    {(userRole === "BIDDER") && (
+                        <Tooltip content={t("tender-eligible-button-tooltip")}>
+                            <Button
+                                type="button"
+                                label={t("tender-eligible-button")} // "Elligible Tenders"
+                                icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
+                                theme={isEligible ? "secondary" : "info"}
+                                size="sm"
+                                onClick={() => setIsEligible(!isEligible)} // Resets filters
+                            />
+                        </Tooltip>
                     )}
                 </div>
 
@@ -327,30 +336,34 @@ export default function GovernmentTenders() {
                     actionSlot={(content: ITenders) => {
                         return (
                             <div className="flex justify-center space-x-2">
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => setOpenModal({ type: "view", tender: content })}
-                                >
-                                    <IconEye size={20} />
-                                </button>
+                                <Tooltip content={t("tender-view-button-tooltip")}>
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                        onClick={() => setOpenModal({ type: "view", tender: content })}
+                                    >
+                                        <IconEye size={20} />
+                                    </button>
+                                </Tooltip>
                                 {(userRole === "ADMINISTRATOR" || userRole === "PUBLISHER") && (
                                     <><Fragment>
-
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                            onClick={() => setOpenModal({ type: "update", tender: content })}
-                                        >
-                                            <IconEdit size={20} />
-                                        </button>
+                                        <Tooltip content={t("tender-update-button-tooltip")}>
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-yellow-600"
+                                                onClick={() => setOpenModal({ type: "update", tender: content })}
+                                            >
+                                                <IconEdit size={20} />
+                                            </button>
+                                        </Tooltip>
                                     </Fragment>
                                         <Fragment>
-
-                                            <button
-                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                onClick={() => handleDelete(content)}
-                                            >
-                                                <IconTrash size={20} />
-                                            </button>
+                                            <Tooltip content={t("tender-delete-button-tooltip")}>
+                                                <button
+                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                    onClick={() => handleDelete(content)}
+                                                >
+                                                    <IconTrash size={20} />
+                                                </button>
+                                            </Tooltip>
                                         </Fragment></>
                                 )}
 

@@ -22,7 +22,7 @@
     "menu-consult-me": "Consult Me",
     "menu-finance": "Finance",
     "menu-transactions": "Transactions",
-    "menu-payments-plans": "Payments Plans",
+    "menu-payment-plans": "Payments Plans",
     "menu-entities": "Entities",
     "menu-bidders": "Bidders",
     "menu-pe": "PE",
@@ -35,7 +35,7 @@
     "menu-inquiries": "Inquiries & Support",
     "menu-messages": "messages",
     "menu-reports": "Reports",
-    "menu-publisher-performance": "Publisher Performance",
+    "menu-publisher-perfomance": "Publisher Performance",
     "menu-login-attempts": "Login Attempts",
     "menu-system": "System",
     "menu-settings": "Settings",
@@ -78,6 +78,27 @@
     "dashboard-total-published":"Total Published",
     "dashboard-open":"Open",
     "dashboard-this-month":"This Month",
-    "dashboard-categories":"Categories"
+    "dashboard-categories":"Categories",
+
+    "tender-tabs-private":"Private",
+    "tender-tabs-international":"International",
+    "tender-new-tender-button-tooltip":"Create new tender",
+    "tender-new-tender-button":"New tender",
+    "tender-private-header":"Private Tenders",
+    "tender-international-header":"International Tenders",
+    "tender-government-header":"Government Tenders",
+    "tender-filter-button":"Filter",
+    "tender-filter-button-tooltip":"Filter tenders list",
+    "tender-search-reset-button":"Reset",
+    "tender-search-reset-button-tooltip":"Reset search details",
+    "tender-eligible-button":"Eligible Tenders",
+    "tender-eligible-button-tooltip":"View eligible tenders list",
+    "tender-view-button-tooltip":"View tender details",
+    "tender-update-button-tooltip":"Update tender details",
+    "tender-delete-button-tooltip":"Delete this tender",
+    "tender-subscription-top-up-tooltip":"Top up subscription",
+
+    "tender-wizard-pe-consent":"By submitting this tender, you acknowledge and consent that it will be published for eligible bidders to view and apply. Once published, your tender becomes accessible to registered participants in the system, and applications may be received in accordance with the procurement guidelines.",
+    "tender-wizard-bidder-consent":"By submitting your bid, you acknowledge and consent that it will be recorded and made available to the Procuring Entity for review and consideration."
 
 }

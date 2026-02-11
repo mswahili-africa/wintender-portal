@@ -116,7 +116,7 @@ const Header = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
-                                            {t("header-subscription-count", { count: subscription })}Subscription: {subscription} {subscription === 1 ? 'day' : 'days'}
+                                            {t("header-subscription-count", { count: subscription })}
                                         </span>
                                     </div>
                                 );

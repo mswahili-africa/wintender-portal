@@ -20,6 +20,8 @@ import { debounce, set } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -39,19 +41,8 @@ export default function PrivateTenders() {
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const navigate = useNavigate();
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
+    const { t } = useTranslation();
 
-
-    const [isDetails, setIsDetails] = useState(true);
-    const [isClarification, setIsClarification] = useState(false);
-    const handleTabChange = (tab: string) => {
-        if (tab === "DETAILS") {
-            setIsDetails(true);
-            setIsClarification(false);
-        } else if (tab === "CLARIFICATION") {
-            setIsDetails(false);
-            setIsClarification(true);
-        }
-    }
 
     const handleSearch = () => {
         setSearchQuery(generateSearchQuery());
@@ -191,10 +182,6 @@ export default function PrivateTenders() {
         setOpenModal({ type: null, tender: null });
     }
 
-    // JCM Applicants List
-    const openApplicantList = (content: ITenders) => {
-        navigate(`/tenders/${content.id}/applicants`, { state: { tender: content } });
-    }
 
     const topUpSubscription = () => {
         setIsPaymentModalOpen(true);
@@ -204,7 +191,7 @@ export default function PrivateTenders() {
         if (openModal.tender) {
             setIsDoItForMeLoading(true);
             doItForMeMutation.mutate(openModal.tender.id, {
-                onSettled: () => { 
+                onSettled: () => {
                     setIsDoItForMeLoading(false);
                 },
             });
@@ -214,7 +201,7 @@ export default function PrivateTenders() {
     return (
         <div>
             <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold">Private Tenders</h2>
+                <h2 className="text-lg font-bold">{t("tender-private-header")}</h2>
                 {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
                     <PETenderCreateForm
                         onSuccess={() => {
@@ -301,31 +288,37 @@ export default function PrivateTenders() {
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                    <Button
-                        type="button"
-                        label="Filter"
-                        icon={<IconFilter size={18} />}
-                        theme="info"
-                        size="sm"
-                        onClick={handleSearch} // Triggers search
-                    />
-                    <Button
-                        type="button"
-                        label="Reset"
-                        icon={<IconRefresh size={18} />}
-                        theme="warning"
-                        size="sm"
-                        onClick={handleReset} // Resets filters
-                    />
-                    {(userRole === "BIDDER") && (
+                    <Tooltip content={t("tender-filter-button-tooltip")}>
                         <Button
                             type="button"
-                            label="Elligible Tenders"
-                            icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
-                            theme={isEligible ? "secondary" : "info"}
+                            label={t("tender-filter-button")}
+                            icon={<IconFilter size={18} />}
+                            theme="info"
                             size="sm"
-                            onClick={() => setIsEligible(!isEligible)} // Resets filters
+                            onClick={handleSearch} // Triggers search
                         />
+                    </Tooltip>
+                    <Tooltip content={t("tender-search-reset-button-tooltip")}>
+                        <Button
+                            type="button"
+                            label={t("tender-search-reset-button")}
+                            icon={<IconRefresh size={18} />}
+                            theme="warning"
+                            size="sm"
+                            onClick={handleReset} // Resets filters
+                        />
+                    </Tooltip>
+                    {(userRole === "BIDDER") && (
+                        <Tooltip content={t("tender-eligible-button-tooltip")}>
+                            <Button
+                                type="button"
+                                label={t("tender-eligible-button")} // "Elligible Tenders"
+                                icon={isEligible ? <IconSquareCheck size={18} /> : <IconSquare size={18} />}
+                                theme={isEligible ? "secondary" : "info"}
+                                size="sm"
+                                onClick={() => setIsEligible(!isEligible)} // Resets filters
+                            />
+                        </Tooltip>
                     )}
                 </div>
 
@@ -344,34 +337,40 @@ export default function PrivateTenders() {
                     actionSlot={(content: ITenders) => {
                         return (
                             <div className="flex justify-center space-x-2">
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                    onClick={() => setOpenModal({ type: "view", tender: content })}
-                                >
-                                    <IconEye size={20} />
-                                </button>
+                                <Tooltip content={t("tender-view-button-tooltip")}>
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                        onClick={() => setOpenModal({ type: "view", tender: content })}
+                                    >
+                                        <IconEye size={20} />
+                                    </button>
+                                </Tooltip>
                                 {
                                     ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
                                         <>
-                                        {
-                                            new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY" ?
-                                            "" :
+                                            {
+                                                new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY" ?
+                                                    "" :
+                                                    <Fragment>
+                                                        <Tooltip content={t("tender-update-button-tooltip")}>
+                                                            <button
+                                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-yellow-600"
+                                                                onClick={() => setOpenModal({ type: "update", tender: content })}
+                                                            >
+                                                                <IconEdit size={20} />
+                                                            </button>
+                                                        </Tooltip>
+                                                    </Fragment>
+                                            }
                                             <Fragment>
-                                                <button
-                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                    onClick={() => setOpenModal({ type: "update", tender: content })}
-                                                >
-                                                    <IconEdit size={20} />
-                                                </button>
-                                            </Fragment>
-                                        }
-                                            <Fragment>
-                                                <button
-                                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
-                                                    onClick={() => handleDelete(content)}
-                                                >
-                                                    <IconTrash size={20} />
-                                                </button>
+                                                <Tooltip content={t("tender-delete-button-tooltip")}>
+                                                    <button
+                                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                                        onClick={() => handleDelete(content)}
+                                                    >
+                                                        <IconTrash size={20} />
+                                                    </button>
+                                                </Tooltip>
                                             </Fragment>
 
                                         </>

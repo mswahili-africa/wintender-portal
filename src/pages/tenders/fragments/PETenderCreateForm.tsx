@@ -17,6 +17,8 @@ import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import Spinner from "@/components/spinners/Spinner";
 import { TextEditor } from "@/components/editor/TextEditor";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export enum RequirementStage {
     PRELIMINARY = "PRELIMINARY",
@@ -78,6 +80,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     const [loading, setLoading] = useState(false);
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER";
+    const { t } = useTranslation();
 
     const {
         register,
@@ -507,7 +510,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 <div>
                     <div className="mb-2">
                         <p className="text-sm">
-                            By submitting this application, I/we hereby acknowledge and agree to the terms and conditions outlined in the tender documents. I/we confirm that all information provided is accurate and complete to the best of our knowledge.
+                            {t("tender-wizard-pe-consent")}
                         </p>
                         <label className="flex items-center mt-2">
                             <input
@@ -580,15 +583,16 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
     return (
         <>
-            <Button
-                type="button"
-                label="New Tender"
-                icon={<IconNewSection size={18} />}
-                theme="secondary"
-                size="md"
-                onClick={() => setOpen(true)}
-            />
-
+            <Tooltip content={t("tender-new-tender-button-tooltip")}>
+                <Button
+                    type="button"
+                    label={t("tender-new-tender-button")}
+                    icon={<IconNewSection size={18} />}
+                    theme="secondary"
+                    size="md"
+                    onClick={() => setOpen(true)}
+                />
+            </Tooltip>
             {open && (
                 <Modal size="lg" isOpen={open} onClose={() => setOpen(false)} title="Upload New Tender">
                     <form onSubmit={handleSubmit(submit)} className="max-w-7xl mx-auto h-auto flex flex-col">

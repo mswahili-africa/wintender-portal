@@ -7,6 +7,8 @@ import { toast } from "react-hot-toast";
 import { IconFileText, IconAlertTriangle } from "@tabler/icons-react";
 import { reviewApplication, uploadApplicationDocument } from "@/services/tenders";
 import Chip from "@/components/chip/Chip";
+import { useUserDataContext } from "@/providers/userDataProvider";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   tender: ITenderDetails;
@@ -22,6 +24,8 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
   const [consentGiven, setConsentGiven] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [applicationId, setApplicationId] = useState<string | null>(null);
+  const { userData } = useUserDataContext();
+  const {t} = useTranslation();
 
   const stages = ["DETAILS",
     ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
@@ -250,7 +254,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
           // fieldName={req.fieldName}
           // required={req.required} */}
           {/* /> */}
-          <p className="mb-2">I agree that the documents submitted are true and correct to the best of my knowledge.</p>
+          <p className="mb-2">{userData?.role === "BIDDER" ? t("tender-wizard-bidder-consent") : t("tender-wizard-pe-consent")}</p>
           <label className="flex items-center">
             <input
               type="checkbox"

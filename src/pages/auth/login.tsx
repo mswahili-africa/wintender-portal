@@ -138,6 +138,10 @@ export default function Login() {
                             {t("auth-login-create-account-button")}
                         </span>
                     </div>
+
+                    <div className="mt-4 text-sm">
+                        Dowmload Wintender user guide here: <a className="text-green-600" href="/documents/Wintender-Supplier-Guide-opt.pdf" download>Download</a>
+                    </div>
                 </form>
             </div>
 
