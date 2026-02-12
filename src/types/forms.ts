@@ -106,7 +106,7 @@ export interface IUSSDPushRequest {
     planId: string
     phoneNumber: string
     period: number
-    paymentReason: string
+    reason: string
     mno: string
     source: string
 }
@@ -114,7 +114,7 @@ export interface IUSSDPushRequest {
 export interface IUSSDPushWalletRequest {
     amount: number
     phoneNumber: string
-    paymentReason: string
+    reason: string
 }
 
 export interface IPlan {

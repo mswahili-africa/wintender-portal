@@ -101,6 +101,9 @@
     "payment-modal-you-can-pay-with":"You can also pay with BANK ACCOUNT details below",
     "payment-modal-instructions":"Important",
     "payment-modal-or":"OR",
+    "payment-modal-phone-error":"Phone number is required!",
+    "payment-modal-mno-error":"Select payment provider (MNO) is required!",
+    "payment-modal-wallet-amount-error":"Insufficient wallet balance. Please top up your wallet or choose a different payment method.",
 
     "wallet-modal-header": "Top up wallet amount",
     "wallet-modal-sub-header": "Pay directly from your mobile",
@@ -111,6 +114,10 @@
     "wallet-modal-payment-method": "Choose Payment Method",
     "wallet-modal-pay-button": "Pay",
     "wallet-modal-cancel-button": "Cancel",
+    "wallet-modal-amount-error": "Amount should be at least 10000 TZS",
+    "wallet-modal-mno-error":"Select payment provider (MNO) is required.",
+    "wallet-modal-phone-error":"Phone number is required!",
+    "wallet-modal-empty-amount-error":"Amount is required!",
 
     "tender-tabs-private":"Private",
     "tender-tabs-international":"International",

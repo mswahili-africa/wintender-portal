@@ -100,6 +100,9 @@
     "payment-modal-you-can-pay-with": "Unaweza pia kulipa kwa AKAUNTI YA BENKI hapa chini",
     "payment-modal-instructions":"Zingatia",
     "payment-modal-or":"AU",
+    "payment-modal-phone-error": "Namba ya simu inahitajika!",
+    "payment-modal-mno-error": "Kuchagua mtoa huduma wa malipo (MNO) kunahitajika!",
+    "payment-modal-wallet-amount-error": "Salio la pochi halitoshi. Tafadhali ongeza salio lako au chagua njia nyingine ya malipo.",
 
     "wallet-modal-header": "Sasisha Mkoba wa Kielektroniki",
     "wallet-modal-sub-header": "Lipa moja kwa moja kutoka kwenye simu yako",
@@ -110,6 +113,11 @@
     "wallet-modal-payment-method": "Chagua Njia ya Malipo",
     "wallet-modal-pay-button": "Lipa",
     "wallet-modal-cancel-button": "Ghairi",
+    "wallet-modal-amount-errir": "Kiasi kinapaswa kuwa angalau TZS 10000",
+    "wallet-modal-mno-error": "Kuchagua mtoa huduma wa malipo (MNO) kunahitajika.",
+    "wallet-modal-phone-error": "Namba ya simu inahitajika!",
+    "wallet-modal-empty-amount-error": "Kiasi kinahitajika!",
+
 
     "tender-tabs-private":"Binafsi",
     "tender-tabs-international":"Kimataifa",

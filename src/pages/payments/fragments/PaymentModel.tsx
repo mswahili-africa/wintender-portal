@@ -24,7 +24,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
         phoneNumber: "",
         mno: "",
         source: "",
-        paymentReason: "SUBSCRIPTION"
+        reason: "SUBSCRIPTION"
     });
 
 
@@ -43,7 +43,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
 
     // paymentMutation for making the payment
     const paymentMutation = useMutation({
-        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, paymentReason: string, mno: string, source: string }) => USSDPushRequest(paymentData),
+        mutationFn: (paymentData: { planId: string, period: number, phoneNumber: string, reason: string, mno: string, source: string }) => USSDPushRequest(paymentData),
         onSuccess: (data) => {
             startEnquiry(data.id);  // Start the enquiry API calls
         },
@@ -83,18 +83,18 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
         const updatedDetails = { ...paymentDetails, source: type }; // Set source to WALLET for wallet payments
 
         if (!updatedDetails.phoneNumber) {
-            setWarningMessage("Phone number is required.");
+            setWarningMessage(t("payment-modal-phone-error"));
             return;
         }
 
         if (type === "MOBILE" && !updatedDetails.mno) {
-            setWarningMessage("Select payment provider (MNO) is required.");
+            setWarningMessage(t("payment-modal-mno-error"));
             return;
         }
 
         if (type === "WALLET" && userData) {
             if (userData?.walletAmount < (updatedDetails.period * 10000)) {
-                setWarningMessage("Insufficient wallet balance. Please top up your wallet or choose a different payment method.");
+                setWarningMessage(t("payment-modal-wallet-amount-error"));
                 return;
             }
         }

@@ -372,7 +372,7 @@ export interface IPayment {
 export interface IWalletTopUp {
   amount: number;
   phoneNumber: string;
-  paymentReason: string;
+  reason: string;
   mno?: string;
   source?: string;
 }

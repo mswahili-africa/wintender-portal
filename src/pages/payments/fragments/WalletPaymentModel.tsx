@@ -45,11 +45,11 @@ export default function WalletPaymentModal({
 
     const handleSubmit = async () => {
         if (!paymentDetails.phoneNumber) {
-            setWarningMessage("Phone number is required!"); // Show warning message
+            setWarningMessage(t("wallet-modal-phone-error")); 
             return; // Prevent submission if phone number is empty
         }
         if (!paymentDetails.amount) {
-            setWarningMessage("Amount is required!"); // Show warning message
+            setWarningMessage(t("wallet-modal-empty-amount-error"));
             return; // Prevent submission if AMOUNT is empty
         }
 
@@ -69,11 +69,11 @@ export default function WalletPaymentModal({
 
             // Step 1: Send initial payment request
             if (paymentData.amount < 1000) {
-                setWarningMessage("Amount should be greater than 1000");
+                setWarningMessage(t("wallet-modal-amount-error"));
                 throw new Error("Amount should be greater than 1000");
             }
             if (paymentData.mno === "") {
-                setWarningMessage("Select payment provider (MNO) is required.");
+                setWarningMessage(t("wallet-modal-mno-error"));
                 throw new Error("Select payment provider (MNO) is required.");
             }
             const response = await USSDPushWalletRequest(paymentData);
@@ -125,7 +125,7 @@ export default function WalletPaymentModal({
     const payload: IWalletTopUp = {
         amount: paymentDetails.amount,
         phoneNumber: paymentDetails.phoneNumber,
-        paymentReason: "WALLET_IN",
+        reason: "WALLET_IN",
         mno: paymentDetails.mno,
         source: "MOBILE"
     }

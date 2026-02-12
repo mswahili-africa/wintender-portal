@@ -41,14 +41,13 @@ export default function SystemLogs() {
         <div className="container py-10">
             <div className="flex justify-between items-center mb-10">
                 <h3 className="text-lg font-bold">System Logs</h3>
-
                 <Select
                     className="w-1/3" 
                     options={options}
                     onChange={(selectedOption : any) => {
                         setTempSearchType(selectedOption?.value);
                     }}
-                    value={tempSearchType}
+                    value={options.find((option) => option.value === tempSearchType)}
                 />
             </div>
 
