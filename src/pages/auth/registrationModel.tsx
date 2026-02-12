@@ -13,6 +13,7 @@ import * as yup from "yup";
 import Select from "react-select";
 import { ICategory } from "@/types";
 import { getCategories } from "@/services/tenders";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
     onSuccess: () => void;
@@ -59,30 +60,62 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
         value: region,
         label: region,
     }));
+    const { t } = useTranslation();
 
     const { showMessage, closePopup } = usePopup();
     const schema = yup.object().shape({
-        firstName: yup.string().required("First name is required"),
-        lastName: yup.string().required("Last name is required"),
-        email: yup.string().email("Email is invalid").required("Email is required"),
-        phoneNumber: yup.string().required("Phone number is required"),
+        firstName: yup
+            .string()
+            .required(t("registration-form-first-name-required")),
+
+        lastName: yup
+            .string()
+            .required(t("registration-form-last-name-required")),
+
+        email: yup
+            .string()
+            .email(t("registration-form-email-invalid"))
+            .required(t("registration-form-email-required")),
+
+        phoneNumber: yup
+            .string()
+            .required(t("registration-form-phone-required")),
+
         confirmPhoneNumber: yup
             .string()
-            .oneOf([yup.ref("phoneNumber")], "Phone numbers do not match") // Remove 'null'
-            .required("Phone number confirmation is required"),
+            .oneOf(
+                [yup.ref("phoneNumber")],
+                t("registration-form-phone-not-match")
+            )
+            .required(t("registration-form-confirm-phone-required")),
+
         tin: yup
             .string()
-            .required("TIN is required")
-            .matches(/^\d{3}-\d{3}-\d{3}$/, "TIN must be in ###-###-### format"),
-        companyName: yup.string().required("Company name is required"),
-        companyPhoneNumber: yup.string().required("Company Phone Number is required"),
-        companyAddress: yup.string().required("Company Address is required"),
+            .required(t("registration-form-tin-required"))
+            .matches(
+                /^\d{3}-\d{3}-\d{3}$/,
+                t("registration-form-tin-format")
+            ),
+
+        companyName: yup
+            .string()
+            .required(t("registration-form-company-name-required")),
+
+        companyPhoneNumber: yup
+            .string()
+            .required(t("registration-form-company-phone-required")),
+
+        companyAddress: yup
+            .string()
+            .required(t("registration-form-address-required")),
+
         categoryIds: yup
             .array()
             .of(yup.string().required())
-            .min(1, "At least one category must be selected")
-            .required("Category is required"),
+            .min(1, t("registration-form-category-min"))
+            .required(t("registration-form-category-required")),
     });
+
 
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
@@ -198,7 +231,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
     return (
         <Modal
             size="md"
-            title="Registration"
+            title={t("registration-form-title")}
             isOpen={isOpen}
             onClose={onClose}
         >
@@ -206,23 +239,23 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
                     <TextInput
                         type="text"
-                        label="First name"
-                        placeholder="e.g., Chambua"
+                        label={t("registration-form-first-name")}
+                        placeholder={t("registration-form-first-name-placeholder")}
                         hasError={!!errors.firstName}
                         error={errors.firstName?.message}
                         register={register("firstName")}
                     />
                     <TextInput
                         type="text"
-                        label="Last name"
-                        placeholder="e.g., Peter"
+                        label={t("registration-form-last-name")}
+                        placeholder={t("registration-form-last-name-placeholder")}
                         hasError={!!errors.lastName}
                         error={errors.lastName?.message}
                         register={register("lastName")}
                     />
                     <TextInput
                         type="text"
-                        label="Phone number"
+                        label={t("registration-form-phone")}
                         placeholder="e.g., 0710101010"
                         hasError={!!errors.phoneNumber}
                         error={errors.phoneNumber?.message}
@@ -231,7 +264,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
 
                     <TextInput
                         type="text"
-                        label="Confirm Phone Number"
+                        label={t("registration-form-confirm-phone")}
                         placeholder="e.g., 0710101010"
                         hasError={!!errors.confirmPhoneNumber}
                         error={errors.confirmPhoneNumber?.message}
@@ -239,20 +272,20 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                     />
                     <TextInput
                         type="email"
-                        label="Email"
-                        placeholder="e.g., info@mail.com"
+                        label={t("registration-form-email")}
+                        placeholder={t("registration-form-email-placeholder")}
                         hasError={!!errors.email}
                         error={errors.email?.message}
                         register={register("email")}
                     />
                 </div>
-                <span>Company Information</span>
+                <span>{t("registration-form-company-info")}</span>
                 <hr></hr>
                 <br></br>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
                     <TextInput
                         type="text"
-                        label="Company Name"
+                        label={t("registration-form-company-name")}
                         placeholder="e.g., Mswahili Limited"
                         hasError={!!errors.companyName}
                         error={errors.companyName?.message}
@@ -278,14 +311,14 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                     />
                     <TextInput
                         type="text"
-                        label="Phone Number"
+                        label={t("registration-form-phone")}
                         placeholder="e.g., 0710000000"
                         hasError={!!errors.companyPhoneNumber}
                         error={errors.companyPhoneNumber?.message}
                         register={register("companyPhoneNumber")}
                     />
                     <div className="flex flex-col">
-                        <label className="block mb-2">Address</label>
+                        <label className="block mb-2">{t("registration-form-company-address")}</label>
                         <Select
                             options={options}
                             onChange={(selectedOption) => setValue("companyAddress", selectedOption?.value || "")}
@@ -300,7 +333,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                     </div>
 
                 </div>
-                <span>Categories</span>
+                <span>{t("registration-form-categories")}</span>
                 <hr></hr>
                 <br></br>
                 <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 mb-6">
@@ -312,7 +345,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                                     const selected = categories.find((c) => c.id === selectedOption?.value);
                                     if (selected) addCategory(selected);
                                 }}
-                                placeholder="Search or select category"
+                                placeholder={t("registration-form-search-category")}
                                 className="w-full"
                                 classNamePrefix="react-select"
                                 styles={customStyles}
@@ -322,7 +355,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                             <div className="flex flex-col gap-2 mb-4">
                                 {selectedCategories.length === 0 ? (
                                     <span className="text-sm text-gray-400 my-10 w-full text-center">
-                                        At least one category must be selected
+                                        {t("registration-form-category-min")}
                                     </span>
                                 ) : (
                                     selectedCategories.map((category) => (
@@ -344,13 +377,13 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
 
                                 {selectedCategories.length > 0 && (
                                     <div className="flex justify-between items-center text-sm mb-2">
-                                        <span>{selectedCategories.length} category(ies) selected</span>
+                                        <span>{t("registration-form-category-selected", { count: selectedCategories.length })}</span>
                                         <button
                                             type="button"
                                             className="text-red-500 hover:underline"
                                             onClick={() => setSelectedCategories([])}
                                         >
-                                            Clear all
+                                            {t("registration-form-clear-all")}
                                         </button>
                                     </div>
                                 )}
@@ -360,10 +393,10 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                 </div>
                 <Button
                     type="submit"
-                    label="Register"
+                    label={t("registration-form-submit")}
                     theme="primary"
                     size="md"
-                    loading={createMutation.isLoading}
+                    loading={createMutation.isPending}
                 />
             </form>
         </Modal>

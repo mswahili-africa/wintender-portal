@@ -45,7 +45,7 @@ export default function WalletPaymentModal({
 
     const handleSubmit = async () => {
         if (!paymentDetails.phoneNumber) {
-            setWarningMessage(t("wallet-modal-phone-error")); 
+            setWarningMessage(t("wallet-modal-phone-error"));  
             return; // Prevent submission if phone number is empty
         }
         if (!paymentDetails.amount) {

@@ -12,6 +12,7 @@ import { authStore } from "@/store/auth";
 import { ILoginForm } from "@/types/forms";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Login() {
     const [create, setCreate] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const { t } = useTranslation();
+    const { changeLanguage, language } = useLanguage();
 
     const {
         register,
@@ -52,6 +54,32 @@ export default function Login() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-slate-50 px-4 relative">
             <div className="text-xs h-fit absolute bottom-2  sm:top-2 flex flex-col gap-y-2 sm:gap-y-0 sm:flex-row justify-end w-full mb-2">
+                {/* Toggle */}
+                <div className="flex items-center bg-slate-100 rounded-full p-1 text-xs font-semibold transition-all duration-200 ease-in-out">
+                    <button
+                        onClick={() => changeLanguage("en")}
+                        className={`px-3 py-1 rounded-full transition cursor-pointer 
+            ${language === "en"
+                                ? "bg-green-600 text-white shadow"
+                                : "text-slate-600 hover:text-slate-800"
+                            }
+          `}
+                    >
+                        EN
+                    </button>
+
+                    <button
+                        onClick={() => changeLanguage("sw")}
+                        className={`px-3 py-1 rounded-full transition cursor-pointer 
+            ${language === "sw"
+                                ? "bg-green-600 text-white shadow"
+                                : "text-slate-600 hover:text-slate-800"
+                            }
+          `}
+                    >
+                        SW
+                    </button>
+                </div>
                 <a href="tel:0747098558" target="_blank">
                     <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
                         <div className="pr-3"><IconPhoneCall size={22} className="text-green-600" stroke={2} /></div>
@@ -80,6 +108,8 @@ export default function Login() {
                     <IconBook size={22} className="text-green-600 mr-3" stroke={2} />
                     <span>{t("auth-user-guide")}</span>
                 </a> */}
+
+
 
             </div>
             <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-md shadow-sm">
