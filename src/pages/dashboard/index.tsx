@@ -231,7 +231,7 @@ export default function Dashboard() {
             )}
 
             {
-                !["BIDDER", "PROCUREMENT_ENTITY", "PUBLISHER", "MANAGER"].includes(userRole) && (
+                !["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
                     <>
                         <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">

@@ -444,6 +444,7 @@ export interface IApplications {
   paymentReason: string;
   principleAmount: number;
   paidAmount: number;
+  quotationAmount: number;
   paymentStatus: string;
   status: string;
   createdBy: string;

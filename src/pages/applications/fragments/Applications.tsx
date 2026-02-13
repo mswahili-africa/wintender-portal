@@ -1,5 +1,5 @@
 import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconListNumbers, IconLoader, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
 import toast from "react-hot-toast";
@@ -65,10 +65,23 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         comments: string().required("Comment is required"),
     });
 
-    const { register, control, formState: { errors }, getValues } = useForm({
+    const { register, reset, control, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
         defaultValues: { status: "", quotationAmount: 0, comments: "" },
     });
+
+    useEffect(() => {
+        if (selectedApplication) {
+            reset({
+                status: selectedApplication.status ?? "",
+                quotationAmount: selectedApplication.quotationAmount ?? 0,
+                comments: selectedApplication.comments ?? "",
+            });
+        }
+    }, [selectedApplication, reset]);
+
+
+
 
     const requestPDFReportMutation = useMutation({
         mutationFn: (payload: IApplicationPDFReport) =>
@@ -160,8 +173,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
     // View Tender Details
     const handleView = (application: IApplications) => {
-        console.log("application--" + application);
-
         setIsEditModalOpen(false);
         setSelectedApplication(application);
         setIsTenderModalOpen(true);  // Open tender view modal
@@ -186,6 +197,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         },
                         {
                             onSuccess: () => {
+                                reset(); // Reset form fields
                                 onRefetch(); // Trigger refetch for main group data
                             }
                         }
@@ -519,23 +531,28 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     render={({ field }) => (
                                         <input
                                             placeholder="Bid Quotation"
-                                            className={`${errors.quotationAmount?.type === "required"
-                                                ? "input-error"
-                                                : "input-normal"
-                                                }`}
+                                            className={
+                                                errors.quotationAmount
+                                                    ? "input-error"
+                                                    : "input-normal"
+                                            }
                                             type="text"
                                             value={
-                                                field.value
-                                                    ? field.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                                field.value !== undefined && field.value !== null
+                                                    ? field.value
+                                                        .toString()
+                                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                                                     : ""
                                             }
                                             onChange={(e) => {
-                                                const rawValue = e.target.value.replace(/\D/g, "");
-                                                field.onChange(rawValue ? Number(rawValue) : 0);
+                                                const raw = e.target.value.replace(/\D/g, "");
+                                                field.onChange(raw === "" ? 0 : Number(raw));
                                             }}
                                         />
                                     )}
                                 />
+
+
 
                                 <p className="text-xs text-red-500 mt-1 mx-0.5">
                                     {errors.quotationAmount?.message?.toString()}
