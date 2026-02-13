@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useState, useEffect, useCallback, Fragment } from "react";
+import { useState, useCallback, Fragment } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { mixed, number, object, string } from "yup";
 import { useMutation } from "@tanstack/react-query";
@@ -7,7 +7,6 @@ import { debounce } from "lodash";
 import Select from "react-select";
 import { toast } from "react-hot-toast";
 import { IconFileText } from "@tabler/icons-react";
-
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import { TextEditor } from "@/components/editor/TextEditor";
@@ -17,7 +16,7 @@ import { getUserRole } from "@/utils";
 import { ICompany, ITenders } from "@/types";
 import { ServiceAssigningForm } from "./ServiceAssigningForm";
 import Tabs from "@/components/widgets/Tabs";
-import { Tab } from "@headlessui/react";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
     open: boolean;
@@ -27,19 +26,7 @@ interface IProps {
     initials?: ITenders;
 }
 
-const schema = object().shape({
-    tenderFile: mixed().required("Document File is required"),
-    title: string().required("Title is required"),
-    tenderNumber: string().required("Tender number is required"),
-    region: string().required("Region is required"),
-    summary: string().required("Summary is required"),
-    tenderType: string().required("Type is required"),
-    categoryId: string().required("Category is required"),
-    entityId: string().required("Entity is required"),
-    openDate: string().required("Open Date is required"),
-    closeDate: string().required("Close Date is required"),
-    consultationFee: number().required("Consultation Fee is required"),
-});
+
 
 export default function PrivateTenderRequestModal({
     open,
@@ -53,6 +40,21 @@ export default function PrivateTenderRequestModal({
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
+
+    const schema = object().shape({
+        tenderFile: mixed().required(t("difm-form-document-file-required")),
+        title: string().required(t("difm-form-title-required")),
+        tenderNumber: string().required(t("difm-form-tender-number-required")),
+        region: string().required(t("difm-form-region-required")),
+        summary: string().required(t("difm-form-summary-required")),
+        tenderType: string().required(t("difm-form-type-required")),
+        categoryId: string().required(t("difm-form-category-required")),
+        entityId: string().required(t("difm-form-entity-required")),
+        openDate: string().required(t("difm-form-open-date-required")),
+        closeDate: string().required(t("difm-form-close-date-required")),
+        consultationFee: number().required(t("difm-form-consultation-fee-required")),
+    });
 
     const {
         register,
@@ -123,11 +125,11 @@ export default function PrivateTenderRequestModal({
             reset();
             setTenderFile(undefined);
             setOpen(false);
-            toast.success("Tender uploaded successfully");
+            toast.success(t("difm-form-tender-upload-success"));
             onSuccess();
         },
         onError: (error: any) => {
-            toast.error("Failed to upload tender " + error.message);
+            toast.error(t("difm-form-tender-upload-error", { error: error.message }));
         },
     });
 
@@ -154,29 +156,29 @@ export default function PrivateTenderRequestModal({
     return (
         <Modal
             size="sm"
-            title="Tender and Service Request"
+            title={t("difm-form-header")}
             isOpen={open}
             onClose={(v) => setOpen(v)}
         >
             {bidder && (
                 <>
                     <span className="text-sm text-green-500 mt-1 mx-0.5">
-                        Create private request or service for:
+                        {t("difm-form-sub-header")}
                     </span>
                     <h1 className="text-lg font-bold mb-5">{bidder?.companyName}</h1>
                 </>
             )}
-            <Tabs panels={["Tender Request", "Service Request"]}>
+            <Tabs panels={[t("difm-form-type-tender-request-tab"), t("difm-form-type-service-request-tab")]}>
 
                 <form className="flex flex-col gap-3" onSubmit={handleSubmit(submit)}>
 
                     {/* Region */}
                     <div>
-                        <label className="block mb-1">Region</label>
+                        <label className="block mb-1">{t("difm-form-region")}</label>
                         <select {...register("region")} className="input-normal">
-                            <option value="PRIVATE">PRIVATE</option>
-                            <option value="GOVERNMENT">GOVERNMENT</option>
-                            <option value="INTERNATIONAL">INTERNATIONAL</option>
+                            <option value="PRIVATE">{t("difm-form-region-private")}</option>
+                            <option value="GOVERNMENT">{t("difm-form-region-government")}</option>
+                            <option value="INTERNATIONAL">{t("difm-form-region-international")}</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.region?.message?.toString()}
@@ -186,14 +188,15 @@ export default function PrivateTenderRequestModal({
                     {/* Tender Type */}
                     <div className="mb-2">
                         <label htmlFor="tenderType" className="block mb-2">
-                            Type
+                            {t("difm-form-tender-type")}
                         </label>
 
                         <select
                             className={`${errors.tenderType?.type === "required" ? "input-error" : "input-normal"}`}
                             {...register("tenderType")}
                         >
-                            <option value="EXPRESSION_OF_INTEREST">EXPRESSION OF INTEREST (EI)</option>
+                            {/* 
+                            <option value="EXPRESSION_OF_INTEREST">{}EXPRESSION OF INTEREST (EI)</option>
                             <option value="REQUEST_OF_PROPOSAL">REQUEST OF PROPOSAL (RFP)</option>
                             <option value="REQUEST_FOR_QUOTATION">REQUEST FOR QUOTATION (RFQ)</option>
                             <option value="PRE_QUALIFICATION">PRE QUALIFICATION (PQ)</option>
@@ -201,7 +204,18 @@ export default function PrivateTenderRequestModal({
                             <option value="REQUEST_FOR_TENDER">REQUEST FOR TENDER (RFT)</option>
                             <option value="INVITATION_TO_TENDER">INVITATION TO TENDER (ITT)</option>
                             <option value="INVITATION_TO_BID">INVITATION TO BID (IFB)</option>
-                            <option value="⁠REQUEST_FOR_INFORMATION">⁠REQUEST FOR INFORMATION (RFI)</option>
+                            <option value="⁠REQUEST_FOR_INFORMATION">⁠REQUEST FOR INFORMATION (RFI)</option> 
+                            */}
+
+                            <option value="EXPRESSION_OF_INTEREST">{t("difm-form-tender-type-expression-of-interest")}</option>
+                            <option value="REQUEST_OF_PROPOSAL">{t("difm-form-tender-type-request-of-proposal")}</option>
+                            <option value="REQUEST_FOR_QUOTATION">{t("difm-form-tender-type-request-for-quotations")}</option>
+                            <option value="PRE_QUALIFICATION">{t("difm-form-tender-type-pre-qualification")}</option>
+                            <option value="REQUEST_FOR_BID">{t("difm-form-tender-type-request-for-bid")}</option>
+                            <option value="REQUEST_FOR_TENDER">{t("difm-form-tender-type-request-for-tender")}</option>
+                            <option value="INVITATION_TO_TENDER">{t("difm-form-tender-type-invitation-to-tender")}</option>
+                            <option value="INVITATION_TO_BID">{t("difm-form-tender-type-invitation-to-bid")}</option>
+                            <option value="⁠REQUEST_FOR_INFORMATION">{t("difm-form-tender-type-request-for-information")}</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.tenderType?.message?.toString()}
@@ -210,7 +224,7 @@ export default function PrivateTenderRequestModal({
 
                     {/* Category */}
                     <div>
-                        <label className="block mb-1">Category</label>
+                        <label className="block mb-1">{t("difm-form-category")}</label>
                         <Select
                             options={categories}
                             onInputChange={(inputValue) => debouncedFetchCategories(inputValue)}
@@ -225,7 +239,7 @@ export default function PrivateTenderRequestModal({
 
                     {/* Entity */}
                     <div>
-                        <label className="block mb-1">Entity</label>
+                        <label className="block mb-1">{t("difm-form-entity")}</label>
                         <Select
                             options={entities}
                             onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
@@ -237,7 +251,7 @@ export default function PrivateTenderRequestModal({
 
                     <div className="mb-2">
                         <label htmlFor="Number" className="block mb-2">
-                            Number
+                            {t("difm-form-tender-number")}
                         </label>
 
                         <input
@@ -255,7 +269,7 @@ export default function PrivateTenderRequestModal({
 
                     <div className="mb-2">
                         <label htmlFor="title" className="block mb-2">
-                            Title
+                            {t("difm-form-title")}
                         </label>
 
                         <input
@@ -273,7 +287,7 @@ export default function PrivateTenderRequestModal({
 
                     <div className="mb-2">
                         <label htmlFor="summary" className="block mb-2">
-                            Summary
+                            {t("difm-form-summary")}
                         </label>
 
 
@@ -289,7 +303,7 @@ export default function PrivateTenderRequestModal({
                         userRole !== "BIDDER" &&
                         <div className="mb-2">
                             <label htmlFor="consultationFee" className="block mb-2">
-                                Consultation Fee
+                                {t("difm-form-consultation-fee")}
                             </label>
 
                             <input
@@ -316,7 +330,7 @@ export default function PrivateTenderRequestModal({
                     }
 
                     <div>
-                        <label className="block mb-1">Tender Document</label>
+                        <label className="block mb-1">{t("difm-form-tender-document")}</label>
                         <label
                             htmlFor="tenderFile"
                             className="block p-6 text-center bg-slate-50 border border-dashed rounded-md cursor-pointer"
@@ -329,7 +343,7 @@ export default function PrivateTenderRequestModal({
                             ) : (
                                 <Fragment>
                                     <IconFileText className="mx-auto mb-2" />
-                                    <p>Add your tender document .pdf file here</p>
+                                    <p>{t("difm-form-add-tender-file-message")} </p>
                                 </Fragment>
                             )}
                             <input
@@ -355,7 +369,7 @@ export default function PrivateTenderRequestModal({
 
                     <div className="mb-2">
                         <label htmlFor="openDate" className="block mb-2">
-                            Open Date
+                            {t("difm-form-open-date")}
                         </label>
 
                         <input
@@ -374,7 +388,7 @@ export default function PrivateTenderRequestModal({
                     {openDate != "" && (
                         <div className="mb-2">
                             <label htmlFor="closeDate" className="block mb-2">
-                                Close Date
+                                {t("difm-form-close-date")}
                             </label>
 
                             <input
@@ -393,7 +407,7 @@ export default function PrivateTenderRequestModal({
 
                     <Button
                         type="submit"
-                        label="Submit"
+                        label={t("difm-form-submit-button")}
                         theme="primary"
                         size="md"
                         loading={uploadTenderMutation.isPending}
