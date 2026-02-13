@@ -67,9 +67,8 @@ export default function ChatModal({ onClose }: ChatModalProps) {
     <div
       style={{
         position: "fixed",
-        bottom: 24,
+        bottom: 90,
         right: 24,
-        width: 600,
         height: "70vh",
         background: "#fff",
         borderRadius: 12,
@@ -78,6 +77,7 @@ export default function ChatModal({ onClose }: ChatModalProps) {
         flexDirection: "column",
         zIndex: 1000,
       }}
+      className="w-[90%] sm:w-[600px]"
     >
       {/* Header */}
       <div
