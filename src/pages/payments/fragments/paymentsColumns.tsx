@@ -83,12 +83,12 @@ const columns: IColumn[] = [
       return <Chip label={value} size="sm" theme={theme} variant="outline" />;
     }
   },
-  {
-    name: "comments",
-    label: "comments",
-    sortable: false,
-    plainObject: false,
-  },
+  // {
+  //   name: "comments",
+  //   label: "comments",
+  //   sortable: false,
+  //   plainObject: false,
+  // },
   {
     name: "status",
     label: "Status",
