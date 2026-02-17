@@ -72,6 +72,13 @@ export default function Bidders() {
             setOpen(false);
         }
 
+        if (value === "1month") {
+            const d = new Date();
+            d.setDate(d.getDate() + 30);
+            setSubscriptionFilter(formatDateTimeLocal(d));
+            setOpen(false);
+        }
+
         if (value === "custom") {
             setSubscriptionFilter("");
         }
@@ -248,7 +255,8 @@ export default function Bidders() {
                             <span className="text-gray-700">
                                 {filter === "3days" && "Last 3 Days"}
                                 {filter === "1week" && "Last 1 Week"}
-                                {filter === "custom" && "Custom Date"}
+                                {filter === "1month" && "Last 1 Month"}
+                                {/* {filter === "custom" && "Custom Date"} */}
                                 {!filter && "Subscription Filter"}
                             </span>
                             <IconChevronDown size={18} />
@@ -272,15 +280,22 @@ export default function Bidders() {
                                 </button>
 
                                 <button
+                                    onClick={() => handleSelect("1month")}
+                                    className="dropdown-item"
+                                >
+                                    1 Month
+                                </button>
+
+                                {/* <button
                                     onClick={() => handleSelect("custom")}
                                     className="dropdown-item flex items-center gap-2"
                                 >
                                     <IconCalendar size={16} />
                                     Custom Date
-                                </button>
+                                </button> */}
 
                                 {/* Custom Date Input */}
-                                {filter === "custom" && (
+                                {/* {filter === "custom" && (
                                     <div className="pt-2 border-t">
                                         <input
                                             type="datetime-local"
@@ -289,7 +304,7 @@ export default function Bidders() {
                                             onChange={(e) => setSubscriptionFilter(e.target.value)}
                                         />
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         )}
                     </div>

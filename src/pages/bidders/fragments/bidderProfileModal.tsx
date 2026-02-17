@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import { ICategory, ICompany, IContacts, ITenders } from "@/types";
+import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -31,6 +31,12 @@ import useCategories from "@/hooks/useCategories";
 import Loader from "@/components/spinners/Loader";
 import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
+import documentColumns from "@/pages/complience/fragments/documentColumns";
+import useCompanyDocuments from "@/hooks/useCompanyDocuments";
+import Tooltip from "@/components/tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
+import { deleteDocument } from "@/services/entities";
+import DocumentViewModal from "@/pages/complience/fragments/documentViewModel";
 
 interface IProps {
     children?: React.ReactNode;
@@ -47,16 +53,21 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     const [isOpen, setIsOpen] = useState<boolean>(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
+    const [selectedDocument, setSelectedDocument] = useState<ICompanyDocuments | null>(null);
+
     // const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, _] = useState<string>("");
     const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | null, tender: ITenders | null }>({ type: null, tender: null });
 
-    const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible">("requests");
+    const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible" | "documents">("requests");
+
+    const { t } = useTranslation();
 
     const tabs = [
         { name: "Do it for me", value: "requests" },
         { name: "Payments", value: "payments" },
         { name: "Eligible Tenders", value: "eligible" },
+        { name: "Documents", value: "documents" },
     ];
 
 
@@ -108,6 +119,44 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         sort,
         filter: undefined,
     });
+
+
+    // documents
+    const { documents, isLoading: documentLoading, refetch } = useCompanyDocuments({
+        page: page,
+        // search: search,
+        sort: sort,
+        account: user.account,
+    });
+
+    const deteleMutation = useMutation({
+        mutationFn: (documentId: string) => deleteDocument(documentId),
+        onSuccess: (res) => {
+            toast.success("Deleted successful");
+            refetch();
+        },
+        onError: (error: any) => {
+            toast.error("Delete failed");
+        },
+    });
+
+    const reject = (payload: ICompanyDocuments) => {
+        showConfirmation({
+            theme: "danger",
+            title: "Delete this document?",
+            message:
+                "This action cannot be undone. Please verify that you want to delete.",
+            onConfirm: () => {
+                deteleMutation.mutate(payload.id);
+                refetch();
+            },
+            onCancel: () => { },
+        });
+    };
+
+    const handleView = (content: ICompanyDocuments) => {
+        setSelectedDocument(content);
+    }
 
 
     const SendSingleSMS = (user: ICompany) => {
@@ -525,6 +574,89 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                             </div>
                         </div>
                     }
+                    {/* DOCUMENTS */}
+                    {activeTab === "documents" &&
+                        <div className="container">
+                            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                                <Table
+                                    columns={documentColumns}
+                                    data={documents ? documents.content : []}
+                                    isLoading={documentLoading}
+                                    hasSelection={false}
+                                    hasActions={true}
+                                    actionSlot={(content: ICompanyDocuments) => {
+                                        return (
+                                            <div className="flex justify-center items-center space-x-3">
+                                                <Tooltip content={t("documents-view-button-tooltip")}>
+                                                    <button
+                                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                                        onClick={() => handleView(content)}
+                                                    >
+                                                        <IconEye size={20} />
+                                                    </button>
+                                                </Tooltip>
+                                                <Fragment>
+                                                    {
+                                                        userData?.role === "SUPERVISOR" &&
+                                                        <Tooltip content={t("documents-delete-button-tooltip")}>
+                                                            <button
+                                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                                                onClick={() => reject(content)}
+                                                            >
+                                                                <IconSquareRoundedMinus size={20} />
+                                                            </button>
+                                                        </Tooltip>
+                                                    }
+                                                </Fragment>
+                                            </div>
+                                        );
+                                    }}
+                                />
+
+                                <div className="flex justify-between items-center p-4 lg:px-8">
+                                    <div></div>
+
+                                    {
+                                        getTenders?.pageable &&
+                                        <Pagination
+                                            currentPage={page}
+                                            setCurrentPage={setPage}
+                                            pageCount={getTenders.totalPages}
+                                        />
+                                    }
+                                </div>
+                                {selectedDocument && (
+                                    <DocumentViewModal
+                                        documentType={selectedDocument.documentType}
+                                        onClose={() => setSelectedDocument(null)}
+                                    >
+                                        <div className="space-y-4">
+                                            {/* Tender Header */}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h3 className="text-xl font-bold text-gray-800">{selectedDocument.documentNumber}</h3>
+                                            </div>
+
+                                            {/* PDF Viewer */}
+                                            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                                <iframe
+                                                    src={selectedDocument.filePath}
+                                                    width="100%"
+                                                    height="500px"
+                                                    frameBorder="0"
+                                                    title="Tender Document"
+                                                ></iframe>
+                                            </div>
+
+                                            {/* Modal Footer */}
+                                            <div className="flex justify-end space-x-2 mt-6">
+                                                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedDocument(null)} />
+                                            </div>
+                                        </div>
+                                    </DocumentViewModal>
+                                )}
+                            </div>
+                        </div>
+                    }
 
                 </div>
 
@@ -565,3 +697,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 };
 
 export default BidderProfileModal;
+function showConfirmation(arg0: { theme: string; title: string; message: string; onConfirm: () => void; onCancel: () => void; }) {
+    throw new Error("Function not implemented.");
+}
+
