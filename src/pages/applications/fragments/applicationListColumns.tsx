@@ -11,52 +11,35 @@ const columns: IColumn[] = [
     element: (row: any) => {
       const tenderGroup = row?.tenderGroup;
 
-      const theme: "primary" | "warning" =
-        tenderGroup === "PRIVATE" ? "primary" : "warning";
+      const theme: "primary" | "warning" = tenderGroup === "PRIVATE" ? "primary" : "warning";
 
       return <Chip label={tenderGroup} size="sm" theme={theme} variant="outline" />;
     },
   },
-  {
-    name: "entity",
-    label: "Entity",
-    sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row.entityName;
-    },
-  },
-  {
-    name: "tender",
+   {
+    name: "Tender",
     label: "Tender",
     sortable: false,
     plainObject: true,
-    element: (row: any) => {
-      return row.title;
-    },
+    element: (row?: any) => (
+      <div className="flex flex-col">
+        <span className="text-xs text-black-500"><strong>{row?.entityName?.toUpperCase()}</strong></span>
+        <span className="text-xs text-black-500">{row?.title}</span>
+      </div>
+    ),
   },
   {
-    name: "assignorName",
-    label: "Assignor",
+    name: "quotationAmount",
+    label: "Qutation(TZS)",
     sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      return row.assignorName || '-';
-    },
-  },
-  {
-    name: "Fees",
-    label: "Fees",
-    sortable: false,
-    plainObject: true,
-    element: (row: any) => {
-      const amount = row.principleAmount;
-      const formattedAmount = new Intl.NumberFormat('en-TZ', {
-        style: 'currency',
-        currency: 'TZS',
-      }).format(amount);
+    plainObject: false,
+    element: (value: number) => {
+      const formattedAmount = value.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      });
 
-      return formattedAmount
+      return <span>{formattedAmount}</span>;
     },
   },
   {
