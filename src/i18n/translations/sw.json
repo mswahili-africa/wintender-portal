@@ -112,6 +112,7 @@
     "dashboard-open": "Wazi",
     "dashboard-this-month": "Mwezi Huu",
     "dashboard-categories": "Makundi",
+    "dashboard-difm-title":"Fanya kwa niaba yangu",
 
     "subscription-modal-header": "Sasisha Usajili Wako",
     "subscription-modal-sub-header": "Lipa moja kwa moja kutoka kwenye pochi au simu yako",
@@ -133,6 +134,7 @@
     "payment-modal-account-number":"Namba ya Akaunti",
     "payment-modal-branch": "Tawi",
     "payment-modal-swift-code": "Nambari ya Swift",
+    "payment-modal-you-can-pay-with-lipa":"Unaweza pia kulipa kwa LIPA NAMBA hapa chini",
     "payment-modal-you-can-pay-with": "Unaweza pia kulipa kwa AKAUNTI YA BENKI hapa chini",
     "payment-modal-instructions":"Zingatia",
     "payment-modal-or":"AU",
@@ -154,12 +156,11 @@
     "wallet-modal-phone-error": "Namba ya simu inahitajika!",
     "wallet-modal-empty-amount-error": "Kiasi kinahitajika!",
 
-
     "tender-tabs-private":"Binafsi",
     "tender-tabs-international":"Kimataifa",
     "tender-new-tender-button-tooltip":"Tengeneza zabuni mpya",
     "tender-new-tender-button":"Zabuni mpya",
-    "tender-private-header":"Zabuni binafsi",
+    "tender-private-header":"Zabuni Binafsi",
     "tender-international-header":"Zabuni za Kimataifa",
     "tender-government-header":"Zabuni za Serikali",
     "tender-filter-button":"Tafuta",
@@ -192,7 +193,6 @@
     "tender-view-modal-category": "Kundi",
     "tender-view-modal-status": "Hali",
     "tender-view-modal-consultation-fee": "Ada ya Ushauri",
-
 
     "tender-wizard-pe-consent":"Kwa kutuma zabuni hii, unakubali na kuridhia kwamba itachapishwa ili wazabuni wanaostahili waweze kuiona na kuomba. Mara tu ikichapishwa, zabuni yako itapatikana kwa washiriki waliosajiliwa kwenye mfumo, na maombi yanaweza kupokelewa kulingana na mwongozo wa ununuzi.",
     "tender-wizard-bidder-consent":"Ninakubali kwamba hati zilizowasilishwa ni za kweli na sahihi kadri nijuavyo.",
@@ -271,7 +271,7 @@
     "difm-form-tender-upload-success": "Zabuni imepakiwa kwa mafanikio",
     "difm-form-tender-upload-error": "Imeshindikana kupakia zabuni: {{error}}",
 
-    "consultation-application-header": "Maombi la Ushauri",
+    "consultation-application-header": "Maombi ya Ushauri",
     "consultation-application-delete-button-tooltip": "Futa ombi hili la ushauri",
     "consultation-application-status-update-button-tooltip": "Sasisha hali ya ombi",
 
@@ -279,7 +279,24 @@
     "documents-upload-button": "Pakia",
     "documents-upload-button-tooltip": "Pakia nyaraka mpya",
     "documents-view-button-tooltip": "Tazama maelezo ya nyaraka",
-    "documents-delete-button-tooltip": "Futa nyaraka hii"
+    "documents-delete-button-tooltip": "Futa nyaraka hii",
 
+    "payments-header":"Malipo",
+    "payments-view-button-tooltip":"Tazama maelezo ya malipo",
+    "payments-approve-button-tooltip":"Kubali malipo haya",
+    "payments-reject-button-tooltip":"Kataa malipo haya",
+
+    "transaction-modal-header": "Maelezo ya Muamala",
+    "transaction-modal-reference-no": "Nambari ya Rejeleo",
+    "transaction-modal-amount": "Kiasi",
+    "transaction-modal-status": "Hali",
+    "transaction-modal-date": "Tarehe",
+    "transaction-modal-reason": "Sababu",
+    "transaction-modal-payer": "Mlipaji",
+    "transaction-modal-phone": "Simu",
+    "transaction-modal-company": "Kampuni",
+    "transaction-modal-company-name": "Jina",
+    "transaction-modal-request-tab": "Maombi",
+    "transaction-modal-payments-tab": "Malipo"
 
 }

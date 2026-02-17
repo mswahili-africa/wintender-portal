@@ -16,6 +16,8 @@ import { ExportXLSX } from "@/components/widgets/Excel";
 import excelColumns from "./fragments/excelPaymentColumns";
 import Button from "@/components/button/Button";
 import PaymentDetailsModal from "./fragments/paymentDetailsModal";
+import { useTranslation } from "react-i18next";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function () {
   const [page, setPage] = useState<number>(0);
@@ -23,6 +25,7 @@ export default function () {
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [filter] = useState<any>();
   const { showConfirmation } = usePopup();
+  const { t } = useTranslation();
 
   const [selectedPayment, setSelectedPayment] = useState<IPayment | null>(null);
 
@@ -94,7 +97,7 @@ export default function () {
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-lg font-semibold">Payments</h2>
+        <h2 className="text-lg font-semibold">{t("payments-header")}</h2>
         <div className="flex flex-row gap-4">
           {(userRole === "ACCOUNTANT" || userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "SUPERVISOR") && (
             <>
@@ -145,27 +148,33 @@ export default function () {
           actionSlot={(content: IPayment) => {
             return (
               <div className="flex justify-center items-center space-x-3">
-                <button
-                  className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                  onClick={() => { setSelectedPayment(content); }}
-                >
-                  <IconSearch size={20} />
-                </button>
+                <Tooltip content={t("payments-view-button-tooltip")}>
+                  <button
+                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                    onClick={() => { setSelectedPayment(content); }}
+                  >
+                    <IconSearch size={20} />
+                  </button>
+                </Tooltip>
                 {(userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT") &&
                   content.status == "PENDING" && (
                     <Fragment>
-                      <button
-                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                        onClick={() => handleApprove(content)}
-                      >
-                        <IconChecklist size={20} />
-                      </button>
-                      <button
-                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                        onClick={() => reject(content)}
-                      >
-                        <IconSquareRoundedMinus size={20} />
-                      </button>
+                      <Tooltip content={t("payments-approve-button-tooltip")}>
+                        <button
+                          className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                          onClick={() => handleApprove(content)}
+                        >
+                          <IconChecklist size={20} />
+                        </button>
+                      </Tooltip>
+                      <Tooltip content={t("payments-reject-button-tooltip")}>
+                        <button
+                          className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                          onClick={() => reject(content)}
+                        >
+                          <IconSquareRoundedMinus size={20} />
+                        </button>
+                      </Tooltip>
                     </Fragment>
                   )}
               </div>
@@ -173,7 +182,7 @@ export default function () {
           }}
         />
 
-        <div className="flex justify-between items-center p-4 lg:px-8">
+        <div className="flex justify-end items-center p-4 lg:px-8">
           {payments?.pageable && (
             <Pagination
               currentPage={page}
@@ -181,17 +190,17 @@ export default function () {
               pageCount={payments.totalPages}
             />
           )}
-
-          {/* payment details */}
-          {
-            selectedPayment && <PaymentDetailsModal
-              payment={selectedPayment}
-              loading={false}
-              onClose={() =>
-                setSelectedPayment(null)
-              } />
-          }
         </div>
+
+        {/* payment details */}
+        {
+          selectedPayment && <PaymentDetailsModal
+            payment={selectedPayment}
+            loading={false}
+            onClose={() =>
+              setSelectedPayment(null)
+            } />
+        }
       </div>
     </div>
   );

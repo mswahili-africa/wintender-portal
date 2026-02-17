@@ -28,7 +28,7 @@ export default function BidderStats({ summary }: IProps) {
         ]}
       />
       <StatGroupCard
-        title="Do it for me"
+        title={t("dashboard-difm-title")}
         icon={<IconGitPullRequest size={20} />}
         items={[
           { label: t("dashboard-total-difm"), value: summary?.requests?.total ?? 0 },

@@ -18,6 +18,7 @@ import useApplicationsList from "@/hooks/useApplicationsList";
 import Chip from "@/components/chip/Chip";
 import paymentListColumns from "./paymentListColumns";
 import SMSModal from "@/pages/bidders/fragments/sms-model";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
     children?: React.ReactNode;
@@ -38,6 +39,8 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
     const [message, setMessage] = useState<string>("");
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
+
+    const {t}=useTranslation();
 
     const [searchParams, _] = useSearchParams();
 
@@ -124,27 +127,28 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {/* Left Column - User, Shop, and Status Info */}
                                 <div className="space-y-4">
-                                    <strong>Transaction Details</strong>
-                                    <p><strong>Reference no:</strong> {payment?.transactionReference}</p>
-                                    <p><strong>Amount:</strong> {payment?.amount}</p>
-                                    <p className="flex flex-row me-4 gap-x-2"><strong>Status:</strong>
+                                    <strong>{t("transaction-modal-header")}</strong>
+                                    <p><strong>{t("transaction-modal-reference-no")}:</strong> {payment?.transactionReference}</p>
+                                    <p><strong>{t("transaction-modal-amount")}:</strong> {payment?.amount}</p>
+                                    <div className="flex flex-row me-4 gap-x-2">
+                                    <strong>{t("transaction-modal-status")}:</strong>
                                         <Chip
                                             label={payment?.status}
                                             size="sm"
                                             theme={payment?.status === "SUCCESSFUL" || payment?.status === "APPROVED" ? "success" : "danger"}
                                             variant="outline"
                                         />
-                                    </p>
-                                    <p><strong>Date:</strong> {payment?.createdAt}</p>
-                                    <p><strong>Reason:</strong> {payment?.paymentReason}</p>
-                                    <p><strong>Payer:</strong> {payment?.userName}</p>
-                                    <p><strong>Phone:</strong> {payment.phoneNumber}</p>
+                                    </div>
+                                    <p><strong>{t("transaction-modal-date")}:</strong> {payment?.createdAt}</p>
+                                    <p><strong>{t("transaction-modal-reason")}:</strong> {payment?.paymentReason}</p>
+                                    <p><strong>{t("transaction-modal-payer")}:</strong> {payment?.userName}</p>
+                                    <p><strong>{t("transaction-modal-phone")}:</strong> {payment.phoneNumber}</p>
                                 </div>
 
                                 {/* Right Column - Location Info */}
                                 <div className="space-y-4">
-                                    <strong>Company</strong>
-                                    {payment?.company && <p><strong>Name:</strong> {payment?.company}</p>}
+                                    <strong>{t("transaction-modal-company")}</strong>
+                                    {payment?.company && <p><strong>{t("transaction-modal-company-name")}:</strong> {payment?.company}</p>}
                                 </div>
 
                             </div>
@@ -158,7 +162,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                 {/* Toggle Button */}
                 < div className="flex flex-col items-center justify-center overflow-hidden" >
                     <label className="flex items-center cursor-pointer">
-                        <span className="mr-2">Requests</span>
+                        <span className="mr-2">{t("transaction-modal-request-tab")}</span>
                         <div className="relative">
                             <input
                                 type="checkbox"
@@ -173,7 +177,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                             ></div>
                         </div>
 
-                        <span className="ml-2">Payments</span>
+                        <span className="ml-2">{t("transaction-modal-payments-tab")}</span>
                     </label>
 
                     {/* Tab Content */}

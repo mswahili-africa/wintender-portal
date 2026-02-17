@@ -113,6 +113,7 @@
     "dashboard-open":"Open",
     "dashboard-this-month":"This Month",
     "dashboard-categories":"Categories",
+    "dashboard-difm-title":"Do it for me",
 
     "subscription-modal-header":"Renew Your Subscription",
     "subscription-modal-sub-header":"Pay direct from your wallet or mobile",
@@ -134,6 +135,7 @@
     "payment-modal-account-number":"Account Number",
     "payment-modal-branch":"Branch",
     "payment-modal-swift-code":"Swift Code",
+    "payment-modal-you-can-pay-with-lipa":"You can also pay with LIPA NAMBA details below",
     "payment-modal-you-can-pay-with":"You can also pay with BANK ACCOUNT details below",
     "payment-modal-instructions":"Important",
     "payment-modal-or":"OR",
@@ -278,6 +280,24 @@
     "documents-upload-button":"Upload",
     "documents-upload-button-tooltip":"Upload new document",
     "documents-view-button-tooltip":"View document details",
-    "documents-delete-button-tooltip":"Delete this document"
+    "documents-delete-button-tooltip":"Delete this document",
+
+    "payments-header":"Payments",
+    "payments-view-button-tooltip":"View payment details",
+    "payments-approve-button-tooltip":"Approve this payment",
+    "payments-reject-button-tooltip":"Reject this payment",
+
+    "transaction-modal-header":"Transaction Details",
+    "transaction-modal-reference-no":"Reference No",
+    "transaction-modal-amount":"Amount",
+    "transaction-modal-status":"Status",
+    "transaction-modal-date":"Date",
+    "transaction-modal-reason":"Reason",
+    "transaction-modal-payer":"Payer",
+    "transaction-modal-phone":"Phone",
+    "transaction-modal-company":"Company",
+    "transaction-modal-company-name":"Name",
+    "transaction-modal-request-tab":"Requests",
+    "transaction-modal-payments-tab":"Payments"
 
 }
