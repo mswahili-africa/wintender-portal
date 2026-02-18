@@ -14,7 +14,7 @@ import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModelNew";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PaymentModal from "../payments/fragments/PaymentModel";
 import { debounce, set } from "lodash";
 import { getEntities } from "@/services/entities";
@@ -22,6 +22,7 @@ import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import PETenderCreatePage from "./PETenderCreatePageModal12";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -202,18 +203,30 @@ export default function PrivateTenders() {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">{t("tender-private-header")}</h2>
-                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
-                    <PETenderCreateForm
-                        onSuccess={() => {
-                            refetch();
-                        }}
-                    />
-                )}
-                {(userRole === "BIDDER") && (
-                    <button onClick={() => topUpSubscription()}>
-                        <IconClockPlus size={30} className="text-green-600" />
-                    </button>
-                )}
+                <div className="flex flex-row gap-2">
+                    {/* {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
+                        <Link to="/tenders/create-tender" className="p-2 flex flex-row items-center justify-center bg-green-600 text-white hover:bg-green-700 rounded-md text-sm">
+                            {t("tender-create-button")}
+                        </Link>
+                    )} */}
+                    {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
+                        // <PETenderCreateForm
+                        //     onSuccess={() => {
+                        //         refetch();
+                        //     }}
+                        // />
+                        <PETenderCreatePage
+                            onSuccess={() => {
+                                refetch();
+                            }}
+                        />
+                    )}
+                    {(userRole === "BIDDER") && (
+                        <button onClick={() => topUpSubscription()}>
+                            <IconClockPlus size={30} className="text-green-600" />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {isPaymentModalOpen && (

@@ -6,6 +6,7 @@ import { ITenderDetails } from "@/types";
 import PETenderApplicationWizard from "./PETenderApplicationWizard";
 import PETenderApplicationPayment from "./PETenderApplicationPayment";
 import { Countdown } from "@/components/countdown/Countdown";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isOpen: boolean;
@@ -23,6 +24,8 @@ export default function PETenderApplicationWizardModal({
   const [loading, setLoading] = useState(true);
   const [tender, setTender] = useState<ITenderDetails | null>(null);
   const [closedate, setClosedate] = useState<number | null>(null);
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!tenderId) return;
@@ -55,7 +58,7 @@ export default function PETenderApplicationWizardModal({
           <Spinner size="md" />
         </div>
       ) : !tender ? (
-        <div className="text-center py-12 text-red-600 font-semibold">Failed to load tender details.</div>
+        <div className="text-center py-12 text-red-600 font-semibold">{t("application-wizard-modal-error")}</div>
       ) : tender.applicationStatus === "NOT_FOUND" ? (
         <PETenderApplicationPayment tender={tender} onClose={onClose} onSuccess={onSuccess} />
       ) : (

@@ -8,7 +8,7 @@ import { IconFileText, IconAlertTriangle } from "@tabler/icons-react";
 import { reviewApplication, uploadApplicationDocument } from "@/services/tenders";
 import Chip from "@/components/chip/Chip";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 interface Props {
   tender: ITenderDetails;
@@ -132,7 +132,21 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
                 className="w-full h-64 border rounded"
                 aria-label="PDF Preview"
               >
-                <p>PDF preview is not available. <a href={previewURL} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">Click to open</a></p>
+                {/* <p>PDF preview is not available. <a href={previewURL} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">Click to open</a></p> */}
+                <p>
+                  <Trans i18nKey="application-wizard-pdf-previewNotAvailable">
+                    PDF preview is not available..
+                    <a
+                      href={previewURL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      Click to open
+                    </a>
+                  </Trans>
+
+                </p>
               </object>
             ) : (
               <IconFileText size={32} strokeWidth={1.5} className="mx-auto mb-4" />
@@ -156,7 +170,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
             className="absolute top-2 right-2 text-xs text-red-600 underline"
             onClick={() => handleRemoveFile(stage, fieldName)}
           >
-            Remove
+            {t("application-wizard-remove")}
           </button>
         )}
 
@@ -164,7 +178,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
         {isUploading && (
           <div className="text-xs text-blue-500 mt-1 italic flex items-center gap-1">
             <span className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin inline-block"></span>
-            Uploading...
+            {t("application-wizard-uploading")}
           </div>
         )}
       </div>
@@ -176,7 +190,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       <div className="flex flex-col items-center justify-center p-10 text-center">
         <IconAlertTriangle size={64} className="text-yellow-500 mb-4" />
         <p className="text-lg font-semibold text-yellow-700">
-          You have already submitted an application for this tender.
+          {t("application-wizard-already-submitted")}
         </p>
       </div>
     );
@@ -196,19 +210,19 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return (
         <div>
           <h3 className="text-lg font-bold py-2">{tender.title}</h3>
-          <p><strong>Summary:</strong> {tender.summary}</p>
+          <p><strong>{t("application-wizard-summary")}:</strong> {tender.summary}</p>
 
           <div className="flex items-center py-2">
-            <strong className="w-32 text-gray-600">Close Date:</strong>
+            <strong className="w-32 text-gray-600">{t("application-wizard-close-date")}:</strong>
             <p className="flex-1">{new Date(tender.closeDate).toLocaleString()}</p>
           </div>
           <div className="flex items-center py-2">
-            <strong className="w-50 text-gray-600">PE Application Fee:</strong>
+            <strong className="w-50 text-gray-600">{t("application-wizard-consultation-fee")}</strong>
             <p className="flex-1">TZS {new Intl.NumberFormat().format(tender.consultationFee)}</p>
           </div>
 
           <div className="flex items-center py-2">
-            <strong className="w-32 text-gray-600">Status:</strong>
+            <strong className="w-32 text-gray-600">{t("application-wizard-status")}:</strong>
             <Chip label={(() => {
               const currentDate = new Date().getTime();
               const closeDate = tender?.closeDate;
@@ -221,7 +235,8 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
           </div>
 
           <div className="text-xs text-red-500 mt-4 italic">
-            Please prepare all required documents for each stage:
+              {t("application-wizard-instructions")}:
+           
             <ul className="mt-2 list-disc pl-5 space-y-1">
               <li><strong>PAYMENT:</strong> PROOF OF PAYMENT</li>
               {Object.entries(grouped).map(([stage, fields]) => (
@@ -240,7 +255,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL"].includes(step)) {
       const stageRequirements = tender.requirements.filter((r) => r.stage === step);
       return stageRequirements.length === 0 ? (
-        <p>No requirements for this stage.</p>
+        <p>{t("application-wizard-no-requirements")}</p>
       ) : (
         <div className="space-y-4">
           {stageRequirements.map((req) => (
@@ -274,7 +289,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
               onChange={(e) => setConsentGiven(e.target.checked)}
               className="mr-2"
             />
-            I agree to the terms and conditions
+            {t("tender-wizard-bidder-consent")}
           </label>
         </div>
       );

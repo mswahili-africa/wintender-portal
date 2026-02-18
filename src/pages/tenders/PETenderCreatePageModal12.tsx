@@ -3,22 +3,25 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { createTender, getCategories } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IconFileText, IconNewSection } from "@tabler/icons-react";
+import { IconFileText, IconNewSection, IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { mixed, number, object, string } from "yup";
 import requirementOptions from "@/pages/complience/data/documents.json";
 import Select from "react-select";
 import { getEntities } from "@/services/entities";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import Button from "@/components/button/Button";
-import Modal from "@/components/widgets/Modal";
 import { TextEditor } from "@/components/editor/TextEditor";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import { motion } from "framer-motion";
 import { RequirementStage, RequirementItem } from "@/types/tenderWizard";
+import Modal from "@/components/widgets/Modal";
+
+
 
 interface IProps {
     onSuccess: () => void;
@@ -39,7 +42,7 @@ const schema = object().shape({
     consultationFee: number().required("Consultation Fee is required"),
 });
 
-export default function PETenderUpload({ onSuccess }: IProps) {
+export default function PETenderCreatePage({ onSuccess }: IProps) {
     const [requirements, setRequirements] = useState<Record<RequirementStage, RequirementItem[]>>({
         [RequirementStage.PRELIMINARY]: [],
         [RequirementStage.TECHNICAL]: [],
@@ -68,6 +71,22 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER";
     const { t } = useTranslation();
+
+    const [marks, setMarks] = useState<number>(100);
+    const [totalPercentage, setTotalPercentage] = useState<number>(0);
+
+    // Function to calculate marks based on the percentage values of requirements items marks should not exceed 100
+
+
+    useEffect(() => {
+        // Recalculate total percentage and marks whenever requirements change
+        const newTotal = Object.values(requirements)
+            .flat()
+            .reduce((sum, req) => sum + (Number(req.percentage) || 0), 0);
+
+        setTotalPercentage(newTotal);
+        setMarks(100 - newTotal);
+    }, [requirements]);
 
     const {
         register,
@@ -166,7 +185,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     const addRequirement = (stage: RequirementStage) => {
         setRequirements((prev) => ({
             ...prev,
-            [stage]: [...prev[stage], { fieldName: "", required: true, description: "", percentage: 0 }],
+            [stage]: [...prev[stage], { fieldName: "", required: true, percentage: 0, description: "" }],
         }));
     };
 
@@ -215,6 +234,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         },
     });
 
+
     const handleCompleteStep = (index: number) => {
         if (!completedSteps.includes(index)) {
             setCompletedSteps([...completedSteps, index]);
@@ -223,10 +243,15 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     };
 
     const submit = (data: Record<string, any>) => {
-        console.log(data);
+
         if (!consentGiven) {
             toast.error("You must agree to the terms and conditions.");
             return;
+        }
+
+        // Check if there is any requirement item and marks is not equal to 0 then show error
+        if (Object.values(requirements).flat().length > 0 && marks !== 0) {
+            toast.error("Percentage distribution error, make sure you distribute percentage correctly accross requirement items")
         }
 
         const formData = new FormData();
@@ -252,11 +277,10 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 stage,
                 fieldName: item.fieldName,
                 required: item.required,
-                description: item.description,
                 percentage: item.percentage,
+                description: item.description
             }))
         );
-
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
@@ -268,11 +292,12 @@ export default function PETenderUpload({ onSuccess }: IProps) {
         if (currentStep === 0) {
             return (
                 <>
+
                     <div className="mb-2">
                         {(userRole !== "PROCUREMENT_ENTITY") && (
                             <>
                                 <label htmlFor="com" className="block mb-2">
-                                    Entity
+                                    {t("tender-wizard-form-entity")}
                                 </label>
                                 <Select
                                     options={entities}
@@ -288,66 +313,69 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         )}
 
                     </div>
-                    <div className="mb-2">
-                        <label htmlFor="category" className="block mb-2">
-                            Category
-                        </label>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                        <div className="mb-2 w-full">
+                            <label htmlFor="category" className="block mb-2">
+                                {t("tender-wizard-form-category")}
+                            </label>
 
-                        <Select
-                            options={categories}
-                            onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
-                            onChange={(selectedOption) => setValue("categoryId", selectedOption?.value)}
-                            isLoading={loading}
-                            placeholder="Search for a category"
-                        />
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.category?.message?.toString()}
-                        </p>
-                    </div>
-                    {/* Region */}
-                    <div className="mb-2">
-                        <label htmlFor="region" className="block mb-2">
-                            Region
-                        </label>
+                            <Select
+                                options={categories}
+                                onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
+                                onChange={(selectedOption) => setValue("categoryId", selectedOption?.value)}
+                                isLoading={loading}
+                                placeholder="Search for a category"
+                            />
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.category?.message?.toString()}
+                            </p>
+                        </div>
+                        {/* Region */}
+                        <div className="mb-2 w-full">
+                            <label htmlFor="region" className="block mb-2">
+                                {t("tender-wizard-form-region")}
+                            </label>
 
-                        <select
-                            className={`${errors.region?.type === "required" ? "input-error" : "input-normal"}`}
-                            {...register("region", { required: true })}
-                        >
-                            <option value="PRIVATE">PRIVATE</option>
-                            <option value="GOVERNMENT">GOVERNMENT</option>
-                            <option value="INTERNATIONAL">INTERNATIONAL</option>
-                        </select>
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.region?.message?.toString()}
-                        </p>
+                            <select
+                                className={`${errors.region?.type === "required" ? "input-error" : "input-normal"}`}
+                                {...register("region", { required: true })}
+                            >
+                                <option value="PRIVATE">{t("difm-form-region-private")}</option>
+                                <option value="GOVERNMENT">{t("difm-form-region-government")}</option>
+                                <option value="INTERNATIONAL">{t("difm-form-region-international")}</option>
+                            </select>
+                            <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                {errors.region?.message?.toString()}
+                            </p>
+                        </div>
                     </div>
                     {/* Tender Type */}
                     <div className="mb-2">
                         <label htmlFor="tenderType" className="block mb-2">
-                            Type
+                            {t("tender-wizard-form-tender-type")}
                         </label>
 
                         <select
                             className={`${errors.tenderType?.type === "required" ? "input-error" : "input-normal"}`}
                             {...register("tenderType", { required: true })}
                         >
-                            <option value="EXPRESSION_OF_INTEREST">EXPRESSION OF INTEREST (EI)</option>
-                            <option value="REQUEST_OF_PROPOSAL">REQUEST OF PROPOSAL (RFP)</option>
-                            <option value="REQUEST_FOR_QUOTATION">REQUEST FOR QUOTATION (RFQ)</option>
-                            <option value="PRE_QUALIFICATION">PRE QUALIFICATION (PQ)</option>
-                            <option value="REQUEST_FOR_BID">REQUEST FOR BID (RFB)</option>
-                            <option value="REQUEST_FOR_TENDER">REQUEST FOR TENDER (RFT)</option>
-                            <option value="INVITATION_TO_TENDER">INVITATION TO TENDER (ITT)</option>
-                            <option value="INVITATION_TO_BID">INVITATION TO BID (IFB)</option>
-                            <option value="⁠REQUEST_FOR_INFORMATION">⁠REQUEST FOR INFORMATION (RFI)</option>
+
+                            <option value="EXPRESSION_OF_INTEREST">{t("tender-wizard-form-tender-type-expression-of-interest")}</option>
+                            <option value="REQUEST_OF_PROPOSAL">{t("tender-wizard-form-tender-type-request-of-proposal")}</option>
+                            <option value="REQUEST_FOR_QUOTATION">{t("tender-wizard-form-tender-type-request-for-quotations")}</option>
+                            <option value="PRE_QUALIFICATION">{t("tender-wizard-form-tender-type-pre-qualification")}</option>
+                            <option value="REQUEST_FOR_BID">{t("tender-wizard-form-tender-type-request-for-bid")}</option>
+                            <option value="REQUEST_FOR_TENDER">{t("tender-wizard-form-tender-type-request-for-tender")}</option>
+                            <option value="INVITATION_TO_TENDER">{t("tender-wizard-form-tender-type-invitation-to-tender")}</option>
+                            <option value="INVITATION_TO_BID">{t("tender-wizard-form-tender-type-invitation-to-bid")}</option>
+                            <option value="⁠REQUEST_FOR_INFORMATION">{t("tender-wizard-form-tender-type-request-for-information")}</option>
                         </select>
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.tenderType?.message?.toString()}
                         </p>
                     </div>
                     <div className="mb-2">
-                        <label className="block mb-2">Title</label>
+                        <label className="block mb-2">{t("tender-wizard-form-title")}</label>
                         <input className="input-normal" {...register("title")} />
                         <p className="text-xs text-red-500">
                             {typeof errors.title?.message === "string" ? errors.title.message : ""}
@@ -355,28 +383,28 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                     </div>
 
                     <div className="mb-2">
-                        <label className="block mb-2">Tender Number</label>
+                        <label className="block mb-2">{t("tender-wizard-form-tender-number")}</label>
                         <input className="input-normal" {...register("tenderNumber")} />
                         <p className="text-xs text-red-500">
                             {typeof errors.tenderNumber?.message === "string" ? errors.tenderNumber.message : ""}
                         </p>
                     </div>
                     <div className="mb-2">
-                        <label className="block mb-2">Summary</label>
+                        <label className="block mb-2">{t("tender-wizard-form-summary")}</label>
                         <TextEditor name="summary" control={control} />
                         <p className="text-xs text-red-500">
                             {typeof errors.summary?.message === "string" ? errors.summary.message : ""}
                         </p>
                     </div>
                     <div className="mb-2">
-                        <label className="block mb-2">Tender Document</label>
+                        <label className="block mb-2">{t("tender-wizard-form-tender-document")}</label>
                         <label
                             htmlFor="tenderFile"
                             className="label block py-6 bg-slate-50 border border-dashed rounded-md cursor-pointer"
                         >
                             <div className="text-center">
                                 <IconFileText size={28} className="mx-auto mb-2" />
-                                {tenderFile ? <span>{tenderFile}</span> : <span>Click to upload PDF</span>}
+                                {tenderFile ? <span>{tenderFile}</span> : <span>{t("tender-wizard-form-tender-document-upload")}</span>}
                             </div>
                             <input
                                 type="file"
@@ -390,55 +418,58 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                             {typeof errors.tenderFile?.message === "string" ? errors.tenderFile.message : ""}
                         </p>
                     </div>
-                    <div className="mb-2">
-                        <label htmlFor="openDate" className="block mb-2">
-                            Open Date
-                        </label>
 
-                        <input
-                            type="datetime-local"
-                            className={`${errors.openDate?.type === "required"
-                                ? "input-error"
-                                : "input-normal"
-                                }`}
-                            {...register("openDate", { required: true })}
-                        />
-                        <p className="text-xs text-red-500 mt-1 mx-0.5">
-                            {errors.openDate?.message?.toString()}
-                        </p>
-                    </div>
-
-                    {openDate != "" && (
-                        <div className="mb-2">
-                            <label htmlFor="closeDate" className="block mb-2">
-                                Close Date
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                        <div className="mb-2 w-full">
+                            <label htmlFor="openDate" className="block mb-2">
+                                {t("tender-wizard-form-open-date")}
                             </label>
 
                             <input
                                 type="datetime-local"
-                                className={`${errors.closeDate?.type === "required"
+                                className={`${errors.openDate?.type === "required"
                                     ? "input-error"
                                     : "input-normal"
                                     }`}
-                                {...register("closeDate", { required: true })}
+                                {...register("openDate", { required: true })}
                             />
                             <p className="text-xs text-red-500 mt-1 mx-0.5">
-                                {errors.closeDate?.message?.toString()}
+                                {errors.openDate?.message?.toString()}
                             </p>
                         </div>
-                    )}
+
+                        {openDate != "" && (
+                            <div className="mb-2 w-full">
+                                <label htmlFor="closeDate" className="block mb-2">
+                                    {t("tender-wizard-form-close-date")}
+                                </label>
+
+                                <input
+                                    type="datetime-local"
+                                    className={`${errors.closeDate?.type === "required"
+                                        ? "input-error"
+                                        : "input-normal"
+                                        }`}
+                                    {...register("closeDate", { required: true })}
+                                />
+                                <p className="text-xs text-red-500 mt-1 mx-0.5">
+                                    {errors.closeDate?.message?.toString()}
+                                </p>
+                            </div>
+                        )}
+                    </div>
 
                     {/* JCM Application fee input */}
                     <div className="mb-2">
                         <label htmlFor="applicationFee" className="block mb-2">
-                            Application Fee
+                            {t("tender-wizard-form-application-fee")}
                         </label>
 
                         <input
                             type="text"
                             id="applicationFee"
                             inputMode="decimal"
-                            className={`${errors.consultationFee?.type ? "input-error" : "input-normal"}`}
+                            className={`${errors.applicationFee?.type ? "input-error" : "input-normal"}`}
                             {...register("applicationFee", {
                                 required: true,
                                 pattern: {
@@ -462,7 +493,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                         userRole !== "PROCUREMENT_ENTITY" &&
                         <div className="mb-2">
                             <label htmlFor="consultationFee" className="block mb-2">
-                                Consultation Fee
+                                {t("tender-wizard-form-consultation-fee")}
                             </label>
 
                             <input
@@ -520,84 +551,143 @@ export default function PETenderUpload({ onSuccess }: IProps) {
             <div>
                 {requirements[stage].map((req, idx) => {
                     const filteredStageOptions = stageOptions.filter(
-                        (opt) => !selectedValues.includes(opt.value) || opt.value === req.fieldName
+                        (opt) =>
+                            !selectedValues.includes(opt.value) ||
+                            opt.value === req.fieldName
                     );
 
                     return (
-                        <div key={idx} className="flex items-center gap-2 mb-2">
-                            <select
-                                className={`input-normal flex-1 ${!req.fieldName ? "border-red-500" : ""}`}
-                                value={req.fieldName}
-                                onChange={(e) => updateRequirement(stage, idx, "fieldName", e.target.value)}
-                            >
-                                <option value="">Select Requirement</option>
-                                {filteredStageOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
+                        <motion.div
+                            layout
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -12 }}
+                            key={idx}
+                            className="group relative rounded-2xl border border-slate-200 bg-white p-5 mb-5 shadow-sm hover:shadow-lg transition-all"
+                        >
+                            {/* HEADER */}
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+                                        {idx + 1}
+                                    </span>
+                                    <h4 className="text-sm font-semibold text-slate-800">
+                                        {filteredStageOptions.find((opt) => opt.value === req.fieldName)?.label || req.fieldName}
+                                    </h4>
+                                </div>
 
-                            <textarea
-                                placeholder="Description (optional)"
-                                className="input-normal flex-1"
-                                value={req.description || ""}
-                                onChange={(e) => updateRequirement(stage, idx, "description", e.target.value)}
-                            />
+                                {/* Remove */}
+                                <Tooltip content={t("tender-wizard-remove-tooltip")}>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeRequirement(stage, idx)}
+                                        className="transition text-red-400 hover:text-red-600 flex flex-row items-center"
+                                    >
+                                        <IconX size={18} /> {t("tender-wizard-remove-button")}
+                                    </button>
+                                </Tooltip>
+                            </div>
 
-                            <input
-                                type="number"
-                                placeholder="%"
-                                className="input-normal w-20"
-                                value={req.percentage}
-                                min={0}
-                                max={100}
-                                onChange={(e) => {
-                                    let value = Number(e.target.value);
+                            {/* MAIN GRID */}
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                {/* Requirement Select */}
+                                <div className="lg:col-span-6">
+                                    <label className="label">{t("tender-wizard-form-requirement")}</label>
+                                    <select
+                                        className={`input-normal w-full ${!req.fieldName ? "border-red-500" : ""
+                                            }`}
+                                        value={req.fieldName}
+                                        onChange={(e) =>
+                                            updateRequirement(stage, idx, "fieldName", e.target.value)
+                                        }
+                                    >
+                                        <option value="">{t("tender-wizard-form-select-requirement")}</option>
+                                        {filteredStageOptions.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
-                                    // Calculate total across all stages
-                                    const totalPercentage = Object.values(requirements).flat().reduce(
-                                        (sum, r, i) => (r === req ? sum + value : sum + r.percentage),
-                                        0
-                                    );
+                                {/* Marks */}
+                                <div className="lg:col-span-3 flex flex-col">
+                                    <label className="label">{t("tender-wizard-form-percentage")} (%)</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        max={100}
+                                        className="input-normal w-full"
+                                        value={req.percentage}
+                                        onChange={(e) => {
+                                            let value = Number(e.target.value);
 
-                                    if (totalPercentage > 100) {
-                                        value = Math.max(0, value - (totalPercentage - 100)); // limit to 100
-                                        toast.error("Total percentage for the tender cannot exceed 100");
+                                            // Calculate total across all stages
+                                            const totalPercentage = Object.values(requirements).flat().reduce(
+                                                (sum, r, i) => (r === req ? sum + value : sum + r.percentage),
+                                                0
+                                            );
+
+                                            if (totalPercentage > 100) {
+                                                value = Math.max(0, value - (totalPercentage - 100)); // limit to 100
+                                                toast.error("Total percentage for the tender cannot exceed 100");
+                                            }
+
+                                            updateRequirement(stage, idx, "percentage", value);
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Required Toggle */}
+                                <div className="lg:col-span-3 flex items-end">
+                                    <label className="flex items-center gap-3 cursor-pointer select-none">
+                                        {/* <div className="relative">
+                                            <input
+                                                type="checkbox"
+                                                checked={req.required}
+                                                onChange={(e) =>
+                                                    updateRequirement(stage, idx, "required", e.target.checked)
+                                                }
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-10 h-5 bg-slate-300 rounded-full peer-checked:bg-green-500 transition" />
+                                            <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-5" />
+                                        </div> */}
+                                        <input
+                                            type="checkbox"
+                                            className="mr-1"
+                                            checked={req.required}
+                                            onChange={(e) => updateRequirement(stage, idx, "required", e.target.checked)}
+                                        />
+                                        <span className="text-sm text-slate-700">{t("tender-wizard-required")}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* NOTES */}
+                            <div className="mt-4">
+                                <label className="label">{t("tender-wizard-form-notes")}</label>
+                                <textarea
+                                    rows={2}
+                                    className="input-normal w-full resize-none"
+                                    placeholder={t("tender-wizard-form-notes-placeholder")}
+                                    onChange={(e) =>
+                                        updateRequirement(stage, idx, "description", e.target.value)
                                     }
-
-                                    updateRequirement(stage, idx, "percentage", value);
-                                }}
-                            />
-
-
-                            <label className="text-xs whitespace-nowrap">
-                                <input
-                                    type="checkbox"
-                                    className="mr-1"
-                                    checked={req.required}
-                                    onChange={(e) => updateRequirement(stage, idx, "required", e.target.checked)}
                                 />
-                                Required
-                            </label>
+                            </div>
+                        </motion.div>
 
-                            <button
-                                type="button"
-                                onClick={() => removeRequirement(stage, idx)}
-                                className="text-red-500 text-xs underline ml-2"
-                            >
-                                X
-                            </button>
-                        </div>
                     );
                 })}
+
 
                 <button
                     type="button"
                     onClick={() => addRequirement(stage)}
                     className="text-blue-500 text-xs underline"
                 >
-                    + Add {stage} Requirement
+                    {t("tender-wizard-add-requirement-button", { stage: stage })}
                 </button>
             </div>
         );
@@ -616,15 +706,28 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 />
             </Tooltip>
             {open && (
-                <Modal size="lg" isOpen={open} onClose={() => setOpen(false)} title="Upload New Tender">
+                <Modal size="xl" isOpen={open} onClose={() => setOpen(false)} title="Upload New Tender">
+
+                    {/* <div className="-mt-10"> */}
+                    {/* <div className="flex justify-between items-center mb-10">
+                <h2 className="text-lg font-bold uppercase">{t("tender-wizard-header")}</h2>
+            </div> */}
                     <form onSubmit={handleSubmit(submit)} className="max-w-7xl mx-auto h-auto flex flex-col">
-                        <div className="text-sm mb-2 font-medium">Creating Progress</div>
+
+                        {/* PROGRESS BAR */}
+                        <div className="flex flex-row justify-between">
+                            <div className="text-sm mb-2 font-medium">{t("tender-wizard-progress")}</div>
+                            {marks > 0 && <span className="text-xs text-green-500 ml-2">({t("tender-wizard-marks-left", { marks: marks })})</span>}
+                        </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
                             <div
                                 className="bg-green-600 h-2 rounded-full transition-all"
                                 style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
                             />
                         </div>
+
+
+                        {/* MAPPING STEPS */}
                         <div className="flex flex-nowrap gap-2 overflow-x-auto mb-4">
                             {steps.map((title, index) => {
                                 const isActive = currentStep === index;
@@ -651,40 +754,48 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                             })}
                         </div>
 
+                        {/* CONTENT */}
                         <div className="bg-white p-6 rounded-md shadow overflow-y-auto flex-grow">
                             {renderStepContent()}
                         </div>
 
                         <div className="mt-6 flex justify-between">
                             {currentStep > 0 && (
-                                <Button
-                                    size="md"
-                                    type="button"
-                                    label="Back"
-                                    theme="secondary"
-                                    onClick={() => setCurrentStep((prev) => prev - 1)}
-                                />
+                                <Tooltip content={t("tender-wizard-back-tooltip")}>
+                                    <Button
+                                        size="md"
+                                        type="button"
+                                        label={t("tender-wizard-back-button")}
+                                        theme="secondary"
+                                        onClick={() => setCurrentStep((prev) => prev - 1)}
+                                    />
+                                </Tooltip>
                             )}
                             {currentStep < steps.length - 1 ? (
-                                <Button
-                                    size="md"
-                                    type="button"
-                                    label="Next"
-                                    theme="primary"
-                                    onClick={() => handleCompleteStep(currentStep)}
-                                />
+                                <Tooltip content={t("tender-wizard-next-tooltip")}>
+                                    <Button
+                                        size="md"
+                                        type="button"
+                                        label={t("tender-wizard-next-button")}
+                                        theme="primary"
+                                        onClick={() => handleCompleteStep(currentStep)}
+                                    />
+                                </Tooltip>
                             ) : (
-                                <Button
-                                    size="md"
-                                    type="submit"
-                                    label="Publish Tender"
-                                    theme="primary"
-                                    loading={uploadTenderMutation.isPending}
-                                />
+                                <Tooltip content={t("tender-wizard-publish-tooltip")}>
+                                    <Button
+                                        size="md"
+                                        type="submit"
+                                        label={t("tender-wizard-publish-button")}
+                                        theme="primary"
+                                        loading={uploadTenderMutation.isPending}
+                                    />
+                                </Tooltip>
                             )
                             }
                         </div>
                     </form>
+                    {/* </div> */}
                 </Modal>
             )}
         </>

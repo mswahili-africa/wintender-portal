@@ -642,7 +642,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                                     src={selectedDocument.filePath}
                                                     width="100%"
                                                     height="500px"
-                                                    frameBorder="0"
                                                     title="Tender Document"
                                                 ></iframe>
                                             </div>
