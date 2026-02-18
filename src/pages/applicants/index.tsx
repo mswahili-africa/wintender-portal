@@ -11,7 +11,6 @@ import { RequirementStage } from "@/types/tenderWizard";
 import Tooltip from "@/components/tooltip/Tooltip";
 import Button from "@/components/button/Button";
 import { useTranslation } from "react-i18next";
-import { useUserData } from "@/hooks/useUserData";
 import { useUserDataContext } from "@/providers/userDataProvider";
 
 export const ApplicantsList = () => {
@@ -20,13 +19,22 @@ export const ApplicantsList = () => {
     const [tenderDetails, setTenderDetails] = useState<any>(null);
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
-    const [reviewStage, setReviewStage] = useState<string>('INITIAL');
+    const [reviewStage, setReviewStage] = useState<string>('PRELIMINARY');
     const [status, setStatus] = useState<string>("SUBMITTED");
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
     const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
     const { t } = useTranslation();
     const { userData } = useUserDataContext();
+    const steps = [
+        "INITIAL",
+        RequirementStage.PRELIMINARY,
+        RequirementStage.TECHNICAL,
+        RequirementStage.FINANCIAL,
+        RequirementStage.COMMERCIAL,
+        "NEGOTIATION",
+        "AWARDED"
+    ];
 
     // JCM getting tender details
     // Reset state when navigation state changes
@@ -64,9 +72,15 @@ export const ApplicantsList = () => {
     };
 
     const handleFilteringChange = (stage: string, currentIndexStep: number) => {
-        setReviewStage(stage);
+        if(stage !== "AWARDED") {
+        setReviewStage(steps[currentIndexStep+1]);
         setStatus("SUBMITTED");
-        handleCompleteStep(currentIndexStep);
+        handleCompleteStep(currentIndexStep-1);
+        }else{
+            setReviewStage(stage);
+            setStatus("AWARDED");
+            handleCompleteStep(currentIndexStep-1);
+        }
     };
 
 
@@ -74,16 +88,7 @@ export const ApplicantsList = () => {
     // JCM Tender Tabs
     const [completedSteps, setCompletedSteps] = useState<number[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
-    const steps = [
-        "INITIAL",
-        RequirementStage.PRELIMINARY,
-        RequirementStage.TECHNICAL,
-        RequirementStage.COMMERCIAL,
-        RequirementStage.FINANCIAL,
-        RequirementStage.CONSENT,
-        "NEGOTIATION",
-        "AWARD"
-    ];
+
 
     const handleCompleteStep = (index: number) => {
         if (!completedSteps.includes(index)) {
@@ -98,11 +103,11 @@ export const ApplicantsList = () => {
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
                 <div className="flex justify-between items-center p-4 border-b border-slate-200">
                     <input
-                            type="text"
-                            placeholder="Search"
-                            className="input-normal py-2 w-1/2 lg:w-1/4"
-                            onChange={(e) => setSearch(e.target.value)} // Update search query
-                        />
+                        type="text"
+                        placeholder="Search"
+                        className="input-normal py-2 w-1/2 lg:w-1/4"
+                        onChange={(e) => setSearch(e.target.value)} // Update search query
+                    />
                 </div>
 
                 {/* Render the main table with applicants list*/}
@@ -163,7 +168,7 @@ export const ApplicantsList = () => {
                             key={title.toString()}
                             type="button"
                             onClick={() => {
-                                handleFilteringChange(title, index - 1);
+                                handleFilteringChange(title, index);
                             }}
                             className={`flex-1 whitespace-nowrap px-4 py-3 rounded-md text-sm font-medium transition-all ${isActive
                                 ? "bg-green-600 text-white"
