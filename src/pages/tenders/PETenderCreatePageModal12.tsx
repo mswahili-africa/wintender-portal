@@ -669,6 +669,7 @@ export default function PETenderCreatePage({ onSuccess }: IProps) {
                                 <label className="label">{t("tender-wizard-form-notes")}</label>
                                 <textarea
                                     rows={2}
+                                    value={req.description}
                                     className="input-normal w-full resize-none"
                                     placeholder={t("tender-wizard-form-notes-placeholder")}
                                     onChange={(e) =>
