@@ -18,7 +18,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 interface IProps {
   onSuccess: () => void;
   initials?: IUser | null;
-  roles: IlistResponse<IRole> | undefined 
+  roles: IlistResponse<IRole> | undefined
 }
 
 const schema = object().shape({
@@ -37,7 +37,7 @@ const updateSchema = object().shape({
   status: string().required("Status is required"),
 });
 
-export default function UserForm({ onSuccess, initials, roles }: IProps ) {
+export default function UserForm({ onSuccess, initials, roles }: IProps) {
   const auth = useSnapshot(authStore);
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -194,25 +194,24 @@ export default function UserForm({ onSuccess, initials, roles }: IProps ) {
                 <option value=""></option>
                 {roles?.content
                   .filter((item: IRole) => {
-
-                    // For any role which is not ADMINISTRATOR, don't show any options
-                    if (!["ADMINISTRATOR", "MANAGER"].includes(userRole)) {
-                      return false;
+                    if (userRole === "PROCUREMENT_ENTITY") {
+                      return [
+                        "PROCUREMENT_ENTITY_REVIEWER",
+                        "PROCUREMENT_ENTITY_CHAIRMAN",
+                      ].includes(item.role);
                     }
 
-                    // For ADMINISTRATOR, show everything (no filter needed)
-                    return true;
+                    if (["ADMINISTRATOR", "MANAGER"].includes(userRole)) {
+                      return true; // they see everything
+                    }
+
+                    return false; // everyone else sees nothing
                   })
                   .map((item: IRole) => (
-                    <option
-                      selected={item.id === initials?.roleId}
-                      value={item.id}
-                      key={item.id}
-                    >
+                    <option key={item.id} value={item.id}>
                       {item.role}
                     </option>
                   ))}
-
               </select>
             </div>
 
@@ -220,7 +219,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps ) {
 
           <Button
             type="submit"
-            label="Save"
+            label="Create"
             theme="primary"
             size="md"
             loading={createMutation.isPending}
@@ -236,7 +235,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps ) {
           updateReset();
           setUpdate(false);
           onSuccess();
-          updateReset(); 
+          updateReset();
         }}
       >
         <form
@@ -266,22 +265,27 @@ export default function UserForm({ onSuccess, initials, roles }: IProps ) {
               defaultValue={initials?.roleDetails?.id ?? ""}
             >
               <option value="">Select a role</option>
-              {
-                roles?.content
-                  .filter((item: IRole) => {
-                    // For any role which is not ADMINISTRATOR, filter
-                    if (["ADMINISTRATOR", "MANAGER"].includes(userRole)) {
-                      return !["ADMINISTRATOR", "PROCUREMENT_ENTITY", "BIDDER", "SYSTEM"].includes(item.role);
-                    }
-                    // ADMINISTRATOR sees everything
-                    return true;
-                  })
-                  .map((item: IRole) => (
-                    <option key={item.id} value={item.id}>
-                      {item.role}
-                    </option>
-                  ))
-              }
+              {roles?.content
+                .filter((item: IRole) => {
+                  if (userRole === "PROCUREMENT_ENTITY") {
+                    return [
+                      "PROCUREMENT_ENTITY_REVIEWER",
+                      "PROCUREMENT_ENTITY_CHAIRMAN",
+                    ].includes(item.role);
+                  }
+
+                  if (["ADMINISTRATOR", "MANAGER"].includes(userRole)) {
+                    return true; // they see everything
+                  }
+
+                  return false; // everyone else sees nothing
+                })
+                .map((item: IRole) => (
+                  <option key={item.id} value={item.id}>
+                    {item.role}
+                  </option>
+                ))}
+
             </select>
           </div>
 
