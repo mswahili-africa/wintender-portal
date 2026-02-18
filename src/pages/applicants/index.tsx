@@ -27,7 +27,7 @@ export const ApplicantsList = () => {
     const { t } = useTranslation();
     const { userData } = useUserDataContext();
     const steps = [
-        "INITIAL",
+        "OPEN",
         RequirementStage.PRELIMINARY,
         RequirementStage.TECHNICAL,
         RequirementStage.FINANCIAL,
@@ -51,7 +51,7 @@ export const ApplicantsList = () => {
 
     // Fetch data using custom hook
     const { applicantList } = getApplications({
-        tenderId: tenderId ?? "",
+        tenderId: tenderId!,
         page,
         search,
         sort,

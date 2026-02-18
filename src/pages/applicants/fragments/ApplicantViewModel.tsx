@@ -40,8 +40,8 @@ export default function ApplicantViewModal({
     } | null>(null);
 
     const reviewMutation = useMutation({
-        mutationFn: ({ id, status,comment }: { id: string; status: string; comment?: string }) =>
-            reviewApplication(id, status,comment),
+        mutationFn: ({ id, status, comment }: { id: string; status: string; comment?: string }) =>
+            reviewApplication(id, status, comment),
         onSuccess: (res: any) => {
             toast.success(res?.message || "Application reviewed");
             setConfirmOpen(false);
@@ -89,7 +89,7 @@ export default function ApplicantViewModal({
                         {applicant.comment || applicant.status}
                     </span>
 
-                    {userData?.role === "PROCUREMENT_ENTITY" &&
+                    {['PROCUREMENT_ENTITY_REVIEWER', 'PROCUREMENT_ENTITY_CHAIRPERSON'].includes(userData?.role || "") &&
                         applicant.status === "SUBMITTED" && (
                             <div className="flex gap-2">
                                 <Button
@@ -182,8 +182,8 @@ export default function ApplicantViewModal({
                     <IconAlertTriangle
                         size={42}
                         className={`mx-auto mb-3 ${decision?.status === "ACCEPTED"
-                                ? "text-green-500"
-                                : "text-red-500"
+                            ? "text-green-500"
+                            : "text-red-500"
                             }`}
                     />
                     <h3 className="text-lg font-semibold">
@@ -193,7 +193,7 @@ export default function ApplicantViewModal({
                     {/* <p className="text-sm text-slate-600 mt-2">
                         This action cannot be undone.
                     </p> */}
-                    { decision?.status === "REJECTED" && ( <div className="flex flex-col items-center mt-4 gap-2"> <strong className="text-gray-600">Comment</strong> <textarea onChange={(e)=>setDecision({...decision,comment:e.target.value})}  className="w-full p-2 border rounded input-normal" ></textarea> </div> ) }
+                    {decision?.status === "REJECTED" && (<div className="flex flex-col items-center mt-4 gap-2"> <strong className="text-gray-600">Comment</strong> <textarea onChange={(e) => setDecision({ ...decision, comment: e.target.value })} className="w-full p-2 border rounded input-normal" ></textarea> </div>)}
 
                     <div className="mt-6 flex justify-center gap-3">
                         <Button
@@ -210,7 +210,7 @@ export default function ApplicantViewModal({
                                 reviewMutation.mutate({
                                     id: decision.id,
                                     status: decision.status,
-                                    comment:""
+                                    comment: ""
                                 })
                             }
                         />
