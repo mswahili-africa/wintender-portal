@@ -25,7 +25,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const { userData } = useUserDataContext();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const stages = ["DETAILS",
     ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
@@ -97,6 +97,18 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return newPreviews;
     });
     setUploading((prev) => ({ ...prev, [key]: false }));
+  };
+
+  const getUploadedPercentage = () => {
+    if (!tender.requirements || tender.requirements.length === 0) return 0;
+
+    const total = tender.requirements.reduce((sum, req) => {
+      const key = `${req.stage}-${req.fieldName}`;
+      const uploaded = uploadedDocs[key];
+      return uploaded ? sum + (req.percentage || 0) : sum;
+    }, 0);
+
+    return Math.min(100, total); // cap at 100
   };
 
   const FileUploadField = ({ stage, fieldName, required }: { stage: string; fieldName: string; required?: boolean }) => {
@@ -332,7 +344,8 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     }
   };
 
-  const progressPercentage = ((currentStep + 1) / stages.length) * 100;
+  const progressPercentage = getUploadedPercentage();
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
@@ -342,8 +355,11 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
           <div
             className="bg-green-500 h-2 p-1 text-center min-w-fit rounded-full"
             style={{ width: `${progressPercentage}%`, transition: "width 0.3s ease" }}
-          >{progressPercentage}%</div>
+          >
+            {progressPercentage.toFixed(0)}%
+          </div>
         </div>
+
       </div>
 
       <div className="mb-6">{renderStepContent()}</div>

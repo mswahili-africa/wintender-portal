@@ -15,7 +15,6 @@ import { getEntities } from "@/services/entities";
 import { debounce } from "lodash";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
-import Spinner from "@/components/spinners/Spinner";
 import { TextEditor } from "@/components/editor/TextEditor";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
@@ -31,6 +30,8 @@ export enum RequirementStage {
 export interface RequirementItem {
     fieldName: string;
     required: boolean;
+    description?: string; //  optional
+    percentage: number;
 }
 
 interface IProps {
@@ -179,7 +180,7 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     const addRequirement = (stage: RequirementStage) => {
         setRequirements((prev) => ({
             ...prev,
-            [stage]: [...prev[stage], { fieldName: "", required: true }],
+            [stage]: [...prev[stage], { fieldName: "", required: true, description: "", percentage: 0 }],
         }));
     };
 
@@ -265,8 +266,11 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 stage,
                 fieldName: item.fieldName,
                 required: item.required,
+                description: item.description,
+                percentage: item.percentage,
             }))
         );
+
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
@@ -548,6 +552,39 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                 ))}
                             </select>
 
+                            <textarea
+                                placeholder="Description (optional)"
+                                className="input-normal flex-1"
+                                value={req.description || ""}
+                                onChange={(e) => updateRequirement(stage, idx, "description", e.target.value)}
+                            />
+
+                            <input
+                                type="number"
+                                placeholder="%"
+                                className="input-normal w-20"
+                                value={req.percentage}
+                                min={0}
+                                max={100}
+                                onChange={(e) => {
+                                    let value = Number(e.target.value);
+
+                                    // Calculate total across all stages
+                                    const totalPercentage = Object.values(requirements).flat().reduce(
+                                        (sum, r, i) => (r === req ? sum + value : sum + r.percentage),
+                                        0
+                                    );
+
+                                    if (totalPercentage > 100) {
+                                        value = Math.max(0, value - (totalPercentage - 100)); // limit to 100
+                                        toast.error("Total percentage for the tender cannot exceed 100");
+                                    }
+
+                                    updateRequirement(stage, idx, "percentage", value);
+                                }}
+                            />
+
+
                             <label className="text-xs whitespace-nowrap">
                                 <input
                                     type="checkbox"
@@ -558,7 +595,6 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                 Required
                             </label>
 
-                            {/* Remove button */}
                             <button
                                 type="button"
                                 onClick={() => removeRequirement(stage, idx)}

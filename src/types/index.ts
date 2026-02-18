@@ -498,6 +498,8 @@ export interface ITenderDetails {
 export interface IRequirement {
   stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "CONSENT";
   fieldName: string;
+  description: string;
+  percentage: number;
   required: boolean;
 }
 

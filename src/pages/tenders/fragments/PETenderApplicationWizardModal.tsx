@@ -6,7 +6,6 @@ import { ITenderDetails } from "@/types";
 import PETenderApplicationWizard from "./PETenderApplicationWizard";
 import PETenderApplicationPayment from "./PETenderApplicationPayment";
 import { Countdown } from "@/components/countdown/Countdown";
-import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   isOpen: boolean;

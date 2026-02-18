@@ -11,11 +11,11 @@ const toSentenceCase = (text: string) => {
 const columns: IColumn[] = [
     {
         name: "entityName",
-        label: "Procurement entity",
+        label: "entity",
         sortable: false,
         plainObject: true,
         element: (row: { entityName: string; entityLogoFilePath: string, selfApply: boolean, clarificationCount: number }) => (
-            <div className="flex flex-col">
+            <div className="flex items-center">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img
                         src={row.entityLogoFilePath}
@@ -29,7 +29,6 @@ const columns: IColumn[] = [
                         }}
                     />
                     <div className="flex flex-col">
-                        <span>{row.entityName ? row.entityName.toUpperCase() : row.entityName}</span>
                         {
                             row?.selfApply &&
                             <div className="text-xs flex flex-row items-center gap-x-2">
@@ -42,20 +41,19 @@ const columns: IColumn[] = [
             </div>
         ),
     },
-    {
-        name: "title",
-        label: "Title",
-        sortable: false,
-        plainObject: true,
-        element: (row: any) => toSentenceCase(row.title) // Convert title to sentence case
-    },
-    {
-        name: "categoryName",
-        label: "Category",
-        sortable: false,
-        plainObject: true,
-        element: (row: any) => toSentenceCase(row.categoryName) // Convert category to sentence case
-    },
+     {
+    name: "Tender",
+    label: "Tender",
+    sortable: false,
+    plainObject: true,
+    element: (row?: any) => (
+      <div className="flex flex-col">
+        <span className="text-xs text-gray-500"><strong>{row?.entityName?.toUpperCase()}</strong></span>
+        <span className="text-xs text-black-500"><strong>{row?.categoryName?.toUpperCase()}</strong></span>
+        <span className="text-md text-black-500">{row?.title}</span>
+      </div>
+    ),
+  },
     {
         name: "status",
         label: "Deadline",
