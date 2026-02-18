@@ -165,7 +165,7 @@ export default function Dashboard() {
     return (
         <div className="p-2 min-h-screen relative">
             {
-                userRole !== "PROCUREMENT_ENTITY" ? <>
+                !["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) ? <>
                     {
                         userRole && userRole.includes("BIDDER") && (<>
                             <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
@@ -231,7 +231,7 @@ export default function Dashboard() {
             )}
 
             {
-                !["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && (
                     <>
                         <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
@@ -303,7 +303,7 @@ export default function Dashboard() {
 
                             {/* JCM CONTACTS  */}
                             {
-                                ["BIDDER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                ["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && (
                                     <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
                                         <a
                                             href="https://wa.me/+255766028558"
