@@ -7,6 +7,7 @@ import useUsers from "@/hooks/useUsers";
 import columns from "./fragments/userColumns";
 import { IUser } from "@/types";
 import useRoles from "@/hooks/useRoles";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 
 export default function () {
@@ -14,7 +15,8 @@ export default function () {
     const [search, setSearch] = useState<string>();
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filterUsers] = useState<any>();
-    const [update, setUpdate] = useState<IUser| null>(null);
+    const [update, setUpdate] = useState<IUser | null>(null);
+    const { userData } = useUserDataContext();  // Use the hook to get user data
 
     const { users, isLoading, refetch } = useUsers({
         page: page,
@@ -38,15 +40,17 @@ export default function () {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Internal Users</h2>
-
-                <UserForm
-                    onSuccess={() => {
-                        setUpdate(null);
-                        refetch();
-                    }}
-                    initials={update}
-                    roles={roles }
-                />
+                {
+                    ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role!) &&
+                    <UserForm
+                        onSuccess={() => {
+                            setUpdate(null);
+                            refetch();
+                        }}
+                        initials={update}
+                        roles={roles}
+                    />
+                }
             </div>
 
             <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -70,13 +74,17 @@ export default function () {
                     actionSlot={(content: any) => {
                         return (
                             <div className="flex justify-center space-x-3">
-                                <button
-                                    className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                    onClick={() => setUpdate(content)}>
-                                    <IconBallpen size={20} />
-                                </button>
+                                {
+                                    ["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role!) &&
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                        onClick={() => setUpdate(content)}>
+                                        <IconBallpen size={20} />
+                                    </button>
+                                }
                             </div>
                         )
+
                     }} />
 
                 <div className="flex justify-between items-center p-4 lg:px-8">
