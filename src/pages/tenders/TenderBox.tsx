@@ -337,7 +337,7 @@ export default function PrivateTenders() {
 
                                 {/* JCM tender applicant list button */}
                                 {
-                                    userRole === "PROCUREMENT_ENTITY" && content.selfApply === true &&
+                                    ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && content.selfApply === true &&
                                     <Fragment>
                                         <Tooltip content={t("tender-applicant-view-button-tooltip")}>
                                             <button
