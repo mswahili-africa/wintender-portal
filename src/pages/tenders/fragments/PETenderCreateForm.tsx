@@ -103,6 +103,13 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
     const openDate = watch("openDate");
 
+    const getTotalPercentage = () => {
+        return Object.values(requirements)
+            .flat()
+            .reduce((sum, r) => sum + Number(r.percentage || 0), 0);
+    };
+
+
     const fetchEntities = useCallback(async (search = "") => {
         if (!search) {
             setEntities([]);
@@ -223,7 +230,6 @@ export default function PETenderUpload({ onSuccess }: IProps) {
     };
 
     const submit = (data: Record<string, any>) => {
-        console.log(data);
         if (!consentGiven) {
             toast.error("You must agree to the terms and conditions.");
             return;
@@ -253,9 +259,31 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                 fieldName: item.fieldName,
                 required: item.required,
                 description: item.description,
-                percentage: item.percentage,
+                percentage: item.percentage ?? 0,
             }))
         );
+
+        // If requirements exist, enforce 100%
+        if (requirementList.length > 0) {
+            const totalPercentage = requirementList.reduce(
+                (sum, r) => sum + (Number(r.percentage) || 0),
+                0
+            );
+
+            if (totalPercentage < 100) {
+                toast.error(
+                    `Total requirement percentage is ${totalPercentage}%. It must be exactly 100%.`
+                );
+                return;
+            }
+
+            if (totalPercentage > 100) {
+                toast.error(
+                    `Total requirement percentage exceeds 100%. Please adjust the values.`
+                );
+                return;
+            }
+        }
 
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
@@ -518,6 +546,11 @@ export default function PETenderUpload({ onSuccess }: IProps) {
 
         return (
             <div>
+                <div className="mb-2 text-sm font-medium text-right">
+                    Total : {getTotalPercentage()}%
+                </div>
+
+
                 {requirements[stage].map((req, idx) => {
                     const filteredStageOptions = stageOptions.filter(
                         (opt) => !selectedValues.includes(opt.value) || opt.value === req.fieldName
@@ -562,14 +595,13 @@ export default function PETenderUpload({ onSuccess }: IProps) {
                                     );
 
                                     if (totalPercentage > 100) {
-                                        value = Math.max(0, value - (totalPercentage - 100)); // limit to 100
+                                        value = Math.max(0, value - (totalPercentage - 100));
                                         toast.error("Total percentage for the tender cannot exceed 100");
                                     }
 
                                     updateRequirement(stage, idx, "percentage", value);
                                 }}
                             />
-
 
                             <label className="text-xs whitespace-nowrap">
                                 <input

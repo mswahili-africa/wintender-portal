@@ -29,12 +29,11 @@ const ApplicantsColumns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      let theme: "primary" | "danger";
+      let theme: "primary" | "danger" | "warning";
 
-      switch (row.readStatus) {
-        case "IN_REVIEW":
+      switch (row.status) {
         case "SUBMITTED":
-          theme = "primary";
+          theme = "warning";
           break;
         case "COMPLETED":
           theme = "primary";

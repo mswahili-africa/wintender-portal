@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/submittedColumsColumns";
-import { ISubmittedApplication } from "@/types";
 import { IconEye, IconRecycle, IconTrash } from "@tabler/icons-react";
 import { useSubmittedApplication } from "@/hooks/useSubmittedApplications";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -14,6 +13,7 @@ import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import { IApplicationInterface } from "@/types/tenderWizard";
 
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
@@ -24,7 +24,7 @@ export default function SubmittedApplication() {
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [filter] = useState<any>();
-  const [selectedApplication, setSelectedApplication] = useState<ISubmittedApplication | null>(null);
+  const [selectedApplication, setSelectedApplication] = useState<IApplicationInterface | null>(null);
   const { userData } = useUserDataContext();  // Use the hook to get user data
   const userRole = userData?.role || "BIDDER";
   const { showConfirmation } = usePopup();
@@ -41,7 +41,7 @@ export default function SubmittedApplication() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (data: ISubmittedApplication) => deleteApplication(data.id),
+    mutationFn: (data: IApplicationInterface) => deleteApplication(data.id),
     onSuccess: () => {
       refetch();
       toast.success("Tender deleted successfully");
@@ -55,7 +55,7 @@ export default function SubmittedApplication() {
     setSort(`${field},${direction.toLowerCase()}`);
   }
 
-  const handleDelete = (content: ISubmittedApplication) => {
+  const handleDelete = (content: IApplicationInterface) => {
     showConfirmation({
       theme: "danger",
       title: "Delete Application",
@@ -66,7 +66,7 @@ export default function SubmittedApplication() {
   }
 
   // JCM handle view &&
-  const handleTenderActions = (action: "view" | "edit", content: ISubmittedApplication) => {
+  const handleTenderActions = (action: "view" | "edit", content: IApplicationInterface) => {
     if (action === "view") {
       setSelectedApplication(content);
       setViewOpen(true);
@@ -118,7 +118,7 @@ export default function SubmittedApplication() {
           hasSelection={false}
           hasActions={true}
           onSorting={handleSorting}
-          actionSlot={(application: ISubmittedApplication) => {
+          actionSlot={(application: IApplicationInterface) => {
             return (
               <div className="flex justify-center space-x-2">
                 <Tooltip content={t("tender-view-button-tooltip")}>
@@ -129,7 +129,7 @@ export default function SubmittedApplication() {
                     <IconEye size={20} />
                   </button>
                 </Tooltip>
-                {userRole === "BIDDER" && application.tenderCloseDate > Date.now() && (
+                {userRole === "BIDDER" && new Date(application.tenderCloseDate) > new Date() && (
                   <>
                     <Fragment>
                       <Tooltip content={application.status === "SUBMITTED" ? t("tender-recover-application-button-tooltip") : t("tender-delete-application-button-tooltip")}>
@@ -170,7 +170,6 @@ export default function SubmittedApplication() {
             applicant={selectedApplication}
             title="View Application"
             onClose={() => setViewOpen(false)}
-            isLoading={false}
           />
         )}
       </div>

@@ -131,7 +131,6 @@ export const ApplicantsList = () => {
                     onClose={() => setIsApplicationModalOpen(false)}
                     applicant={selectedApplicant}
                     title="Applicant details"
-                    isLoading={false}
                 />
             )}
         </div>

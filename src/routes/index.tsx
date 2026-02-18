@@ -42,6 +42,8 @@ type UserRole =
     | "MANAGER"
     | "SUPERVISOR"
     | "PROCUREMENT_ENTITY"
+    | "PROCUREMENT_ENTITY_REVIEWER"
+    | "PROCUREMENT_ENTITY_CHAIRPERSON"
     | "LEGAL";
 
 const isValidUserRole = (role: any): role is UserRole => {
@@ -58,8 +60,8 @@ const useUserRole = (): UserRole => {
 const allMenus: IRoute[] = [
     {
         path: "/",
-        label:  "Dashboard",
-        labelKey:  "menu-dashboard",
+        label: "Dashboard",
+        labelKey: "menu-dashboard",
         icon: <IconLayoutDashboard size={20} strokeWidth={1.5} />,
     },
     {
@@ -68,12 +70,12 @@ const allMenus: IRoute[] = [
         labelKey: "menu-tender",
         icon: <IconReport size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/tenders", label: "Private Tenders",labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/government-tenders", label: "Government Tenders",labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/categories", label: "Categories",labelKey: "menu-categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
-            { path: "/do-it-for-me", label: "Do It For Me",labelKey: "menu-difm", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
-            { path: "/tender-box", label: "Tender Box",labelKey: "menu-tender-box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
-            { path: "/submitted-application", label: "My Submissions",labelKey: "menu-my-submissions", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/tenders", label: "Private Tenders", labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/government-tenders", label: "Government Tenders", labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/categories", label: "Categories", labelKey: "menu-categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
+            { path: "/do-it-for-me", label: "Do It For Me", labelKey: "menu-difm", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
+            { path: "/tender-box", label: "Tender Box", labelKey: "menu-tender-box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
+            { path: "/submitted-application", label: "My Submissions", labelKey: "menu-my-submissions", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -82,8 +84,8 @@ const allMenus: IRoute[] = [
         labelKey: "menu-consultation",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/consultation", label: "Billboards",labelKey: "menu-billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> },
-            { path: "/consultation-application", label: "Consult Me",labelKey: "menu-consult-me", icon: <IconUserUp size={20} strokeWidth={1.5} /> }
+            { path: "/consultation", label: "Billboards", labelKey: "menu-billboards", icon: <IconSpeakerphone size={20} strokeWidth={1.5} /> },
+            { path: "/consultation-application", label: "Consult Me", labelKey: "menu-consult-me", icon: <IconUserUp size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -92,8 +94,8 @@ const allMenus: IRoute[] = [
         labelKey: "menu-finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/payments", label: "Transactions",labelKey: "menu-transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
-            { path: "/company-plans", label: "Payment Plans",labelKey: "menu-payment-plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
+            { path: "/payments", label: "Transactions", labelKey: "menu-transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
+            { path: "/company-plans", label: "Payment Plans", labelKey: "menu-payment-plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },
     {
@@ -102,9 +104,9 @@ const allMenus: IRoute[] = [
         labelKey: "menu-entities",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/bidders", label: "Bidders",labelKey: "menu-bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
-            { path: "/entities", label: "PE",labelKey: "menu-pe", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
-            { path: "/entities-users", label: "PE Admins",labelKey: "menu-pe-admins", icon: <IconMan size={20} strokeWidth={1.5} /> }
+            { path: "/bidders", label: "Bidders", labelKey: "menu-bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+            { path: "/entities", label: "PE", labelKey: "menu-pe", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
+            { path: "/entities-users", label: "PE Admins", labelKey: "menu-pe-admins", icon: <IconMan size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -113,7 +115,7 @@ const allMenus: IRoute[] = [
         labelKey: "menu-compliance",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/company-documents", label: "Documents",labelKey: "menu-documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/company-documents", label: "Documents", labelKey: "menu-documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -122,8 +124,8 @@ const allMenus: IRoute[] = [
         labelKey: "menu-internal",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/users", label: "Staff",labelKey: "menu-staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
-            { path: "/roles", label: "Roles",labelKey: "menu-roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
+            { path: "/users", label: "Staff", labelKey: "menu-staff", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/roles", label: "Roles", labelKey: "menu-roles", icon: <IconShieldLock size={20} strokeWidth={1.5} /> }
         ],
     },
     {
@@ -132,7 +134,7 @@ const allMenus: IRoute[] = [
         labelKey: "menu-inquiries",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/messages", label: "Messages",labelKey: "menu-messages", icon: <IconMessages size={20} strokeWidth={1.5} /> },
+            { path: "/messages", label: "Messages", labelKey: "menu-messages", icon: <IconMessages size={20} strokeWidth={1.5} /> },
         ],
     },
     {
@@ -141,8 +143,8 @@ const allMenus: IRoute[] = [
         labelKey: "menu-reports",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/publisher-perfomance", label: "Publisher Perfomance",labelKey: "menu-publisher-perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
-            { path: "/login-attempt", label: "Login Attempts",labelKey: "menu-login-attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
+            { path: "/publisher-perfomance", label: "Publisher Perfomance", labelKey: "menu-publisher-perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/login-attempt", label: "Login Attempts", labelKey: "menu-login-attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
 
         ],
     },
@@ -152,7 +154,7 @@ const allMenus: IRoute[] = [
         labelKey: "menu-system",
         icon: <IconSettings className="duration-300 animate-spin" size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/settings", label: "Settings",labelKey: "menu-settings", icon: <IconSettings size={20} strokeWidth={1.5} /> },
+            { path: "/settings", label: "Settings", labelKey: "menu-settings", icon: <IconSettings size={20} strokeWidth={1.5} /> },
             {
                 label: "Logs",
                 labelKey: "menu-logs",
@@ -173,7 +175,7 @@ const allMenus: IRoute[] = [
 const visibilityRules: Record<UserRole, () => IRoute[]> = {
     ADMINISTRATOR: () => allMenus,
     MANAGER: () => allMenus
-    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
+        .filter(menu => ["Tender", "Dashboard", "Consultation", "Entities", "Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -184,9 +186,9 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "Setting"), // Exclude Logs and Health sub-menus
             } : menu
 
-    ),
+        ),
     ACCOUNTANT: () => allMenus
-    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Finance","System","Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
+        .filter(menu => ["Tender", "Dashboard", "Consultation", "Entities", "Finance", "System", "Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -197,10 +199,10 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "Setting"), // Exclude Logs and Health sub-menus
             } : menu
 
-    ),
+        ),
 
     PUBLISHER: () => allMenus
-    .filter(menu => ["Tender", "Dashboard","Consultation","Entities","Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
+        .filter(menu => ["Tender", "Dashboard", "Consultation", "Entities", "Inquiries & Support"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,
@@ -211,9 +213,9 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "Setting"), // Exclude Logs and Health sub-menus
             } : menu
 
-    ),
+        ),
     SUPERVISOR: () => allMenus
-        .filter(menu =>!["Internal", "Compliance"].includes(menu.label)) // Exclude Internal and Compliance menus
+        .filter(menu => !["Internal", "Compliance"].includes(menu.label)) // Exclude Internal and Compliance menus
         .map(menu => menu.label === "Entities"
             ? {
                 ...menu,
@@ -223,18 +225,40 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
                 ...menu,
                 subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
             }
-            : menu.label === "Consultation" ? {
+                : menu.label === "Consultation" ? {
+                    ...menu,
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
+                }
+                    : menu.label === "System" ? {
+                        ...menu,
+                        subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
+                    }
+                        : menu
+        ),
+    PROCUREMENT_ENTITY: () => allMenus
+        .filter(menu => ["Tender", "Dashboard", "Internal"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
+            ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions" && sub.label !== "Government Tenders"), // Exclude Categories sub-menu
             }
-            : menu.label === "System" ? {
+            : menu.label === "Internal"
+                ? {
+                    ...menu,
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"), // Exclude Roles sub-menu
+                } : menu
+        ),
+    PROCUREMENT_ENTITY_REVIEWER: () => allMenus
+        .filter(menu => ["Tender", "Dashboard", "Internal"].includes(menu.label)) // Only show the allowed menus
+        .map(menu => menu.label === "Tender"
+            ? {
                 ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
+                subMenu: menu.subMenu?.filter(sub => sub.label !== "Categories" && sub.label !== "Billboards" && sub.label !== "Do It For Me" && sub.label !== "My Submissions" && sub.label !== "Government Tenders"), // Exclude Categories sub-menu
             }
             : menu
         ),
-    PROCUREMENT_ENTITY: () => allMenus
-        .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
+    PROCUREMENT_ENTITY_CHAIRPERSON: () => allMenus
+        .filter(menu => ["Tender", "Dashboard", "Internal"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {
                 ...menu,

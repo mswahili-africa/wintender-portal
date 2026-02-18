@@ -2,225 +2,222 @@ import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
-import { IconAlertTriangle, IconFileDownload, IconX } from "@tabler/icons-react";
+import { IApplicationInterface, IFiles } from "@/types/tenderWizard";
+import {
+    IconAlertTriangle,
+    IconFileDownload,
+    IconX,
+} from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
-    applicant: any;
-    title: string;
+    applicant: IApplicationInterface;
+    title?: string;
     onClose: () => void;
-    isLoading: boolean;
 }
 
-const ApplicantViewModal = ({ applicant, title, onClose }: ModalProps) => {
+const InfoRow = ({ label, value }: { label: string; value?: string }) => (
+    <div className="flex justify-between text-sm">
+        <span className="text-slate-500">{label}</span>
+        <span className="font-medium text-slate-800">{value || "-"}</span>
+    </div>
+);
+
+export default function ApplicantViewModal({
+    applicant,
+    title,
+    onClose,
+}: ModalProps) {
     const { userData } = useUserDataContext();
-    const navigate = useNavigate();
 
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-    const [data, setData] = useState({ id: "", status: "" });
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [decision, setDecision] = useState<{
+        id: string;
+        status: "ACCEPTED" | "REJECTED";
+        comment?: string;
+    } | null>(null);
 
-    const applicationReviewMutation = useMutation({
-        mutationFn: async (data: { id: string, status: string }) => {
-            return await reviewApplication(data.id, data.status);
+    const reviewMutation = useMutation({
+        mutationFn: ({ id, status,comment }: { id: string; status: string; comment?: string }) =>
+            reviewApplication(id, status,comment),
+        onSuccess: (res: any) => {
+            toast.success(res?.message || "Application reviewed");
+            setConfirmOpen(false);
+            onClose();
         },
-        onSuccess: (response: any) => {
-            toast.success(response?.message || "Request sent successfully");
-            navigate("/tender-box");
-        },
-        onError: (response: any) => {
-            toast.error(response?.message || "Failed to submit request.");
-        },
+        onError: () => toast.error("Failed to review application"),
     });
 
-    const handleConfirmation = (status: string, id: string) => {
-        setData({ id, status });
-        setIsConfirmationModalOpen(true);
+    const openConfirm = (status: "ACCEPTED" | "REJECTED") => {
+        setDecision({ id: applicant.id, status });
+        setConfirmOpen(true);
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 p-4">
-            <div className="bg-green-100 rounded-lg shadow-lg max-w-4xl w-full p-6 overflow-y-auto max-h-[95vh]">
-                {/* Header */}
-                <div className="flex justify-between items-center border-b pb-4 mb-4">
-                    <h2 className="text-xl font-bold text-gray-800">{title || applicant.reference}</h2>
-                    <button onClick={onClose} className="text-red-600 hover:text-red-800">
-                        <IconX size={26} />
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden shadow-xl flex flex-col">
+                <div className="flex items-center justify-between px-6 py-4 border-b">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-800">
+                            {title || "Application Review"}
+                        </h2>
+                        <p className="text-xs text-slate-500">
+                            Ref: {applicant.reference}
+                        </p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-full hover:bg-slate-100"
+                    >
+                        <IconX />
                     </button>
                 </div>
 
-                {/*JCM Status Buttons */}
-                <div className="mb-6">
-                    {["PROCUREMENT_ENTITY"].includes(userData?.role || "") &&
-                        applicant.status === "SUBMITTED" &&
-                        applicant.comment === "SUBMITTED" && (
-                            <div className="flex gap-3">
+                {/* STATUS AND ACTIONS */}
+                <div className="px-6 py-3 border-b bg-slate-50 flex justify-between items-center">
+                    <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold
+              ${applicant.comment === "ACCEPTED"
+                                ? "bg-green-100 text-green-700"
+                                : applicant.comment === "REJECTED"
+                                    ? "bg-red-100 text-red-700"
+                                    : "bg-blue-100 text-blue-700"
+                            }`}
+                    >
+                        {applicant.comment || applicant.status}
+                    </span>
+
+                    {userData?.role === "PROCUREMENT_ENTITY" &&
+                        applicant.status === "SUBMITTED" && (
+                            <div className="flex gap-2">
                                 <Button
                                     label="Accept"
                                     size="sm"
                                     theme="primary"
-                                    disabled={applicationReviewMutation.isPending}
-                                    onClick={() => handleConfirmation("ACCEPTED", applicant.id)}
+                                    onClick={() => openConfirm("ACCEPTED")}
                                 />
                                 <Button
                                     label="Reject"
                                     size="sm"
                                     theme="danger"
-                                    disabled={applicationReviewMutation.isLoading}
-                                    onClick={() => handleConfirmation("REJECTED", applicant.id)}
+                                    onClick={() => openConfirm("REJECTED")}
                                 />
                             </div>
                         )}
-
-                    {["ADMINISTRATOR", "MANAGER", "PROCUREMENT_ENTITY"].includes(userData?.role || "") &&
-                        applicant.status === "CLOSED" && (
-                            <div className={`rounded-lg px-4 py-2 inline-block text-sm font-medium ${applicant.comment === "ACCEPTED"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                                }`}>
-                                {applicant.comment}
-                            </div>
-                        )}
                 </div>
 
-                {/* Bidder Info Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                        <div className="flex items-center">
-                            <strong className="w-32 text-gray-600">Bidder:</strong>
-                            <span className="text-gray-800">{applicant?.companyName}</span>
-                        </div>
-                        <div className="flex items-center">
-                            <strong className="w-32 text-gray-600">Phone:</strong>
-                            <a href={`tel:${applicant.companyPrimaryNumber}`} className="text-blue-600 hover:underline">
-                                {applicant.companyPrimaryNumber}
-                            </a>
-                        </div>
-                        <div className="flex items-center">
-                            <strong className="w-32 text-gray-600">Email:</strong>
-                            <a href={`mailto:${applicant.companyEmail}`} className="text-blue-600 hover:underline">
-                                {applicant.companyEmail}
-                            </a>
-                        </div>
-                        <div className="flex items-center">
-                            <strong className="w-32 text-gray-600">Application Date:</strong>
-                            <span>{new Date(applicant.createdAt).toLocaleString()}</span>
-                        </div>
+                {/* CONTENT */}
+                <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* BIDDER */}
+                    <div className="border rounded-xl p-4 space-y-3">
+                        <h3 className="text-sm font-semibold text-slate-700">
+                            Bidder Information
+                        </h3>
+                        <InfoRow label="Company" value={applicant.companyName} />
+                        <InfoRow label="Phone" value={applicant.companyPrimaryNumber} />
+                        <InfoRow label="Email" value={applicant.companyEmail} />
+                        <InfoRow
+                            label="Submitted At"
+                            value={new Date(applicant.createdAt).toLocaleString()}
+                        />
                     </div>
-                    <div className="space-y-4">
-                        <div className="flex">
-                            <strong className="w-32 text-gray-600">Tender:</strong>
-                            <span className="text-gray-800">{applicant?.tenderIdTitle}</span>
-                        </div>
-                        <div className="flex items-center">
-                            <strong className="w-32 text-gray-600">Closing Date:</strong>
-                            <span>{new Date(Number(applicant.tenderCloseDate)).toLocaleString()}</span>
-                        </div>
-                        <div>
-                            <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href={applicant.tenderFilePath}
-                                className="flex items-center gap-2 p-4 bg-green-100 border-2 border-green-400 rounded-md text-green-800 hover:bg-green-200 transition"
-                            >
-                                <IconFileDownload size={32} />
-                                <span className="font-semibold">View Tender Document</span>
-                            </a>
+
+                    {/* TENDER */}
+                    <div className="border rounded-xl p-4 space-y-3">
+                        <h3 className="text-sm font-semibold text-slate-700">
+                            Tender Information
+                        </h3>
+                        <InfoRow label="Title" value={applicant.tenderIdTitle} />
+                        <InfoRow label="Tender No." value={applicant.tenderNumber} />
+                        <InfoRow
+                            label="Closing Date"
+                            value={new Date(+applicant.tenderCloseDate).toLocaleString()}
+                        />
+
+                        <a
+                            href={applicant.tenderFilePath}
+                            target="_blank"
+                            className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline mt-2"
+                        >
+                            <IconFileDownload size={18} />
+                            View Tender Document
+                        </a>
+                    </div>
+
+                    {/* DOCUMENTS */}
+                    <div className="md:col-span-2">
+                        <h3 className="text-sm font-semibold text-slate-700 mb-3">
+                            {applicant?.reviewStage ?? "Review Documents"} - ({applicant.files?.length || 0})
+                        </h3>
+
+                        <div className="space-y-4">
+                            {applicant.files?.map((file: IFiles, idx: number) => (
+                                <details
+                                    key={idx}
+                                    className="border rounded-lg overflow-hidden"
+                                >
+                                    <summary className="cursor-pointer px-4 py-2 bg-slate-50 text-sm font-medium">
+                                        {file.documentType}
+                                    </summary>
+                                    <iframe
+                                        src={file.filePath}
+                                        className="w-full h-[500px]"
+                                    />
+                                </details>
+                            ))}
                         </div>
                     </div>
                 </div>
-
-                {/* PDF Files */}
-                <div className="mt-8">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                        Application Package ({applicant.files?.length ?? 0})
-                    </h3>
-                    <ul className="text-sm italic text-red-600 space-y-1 mb-4">
-                        {applicant.files?.map((file: any, index: number) => (
-                            <li key={index}>- <a href={`#${file.stage}`}>{file.stage}</a></li>
-                        ))}
-                    </ul>
-                    {applicant.files?.map((file: any, index: number) => (
-                        <div key={index} id={file.stage} className="mb-6">
-                            <h4 className="text-base font-bold mb-2">{file.stage}</h4>
-                            <div className="border rounded overflow-hidden">
-                                <iframe
-                                    src={file.filePath}
-                                    width="100%"
-                                    height="500px"
-                                    title={file.stage}
-                                ></iframe>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Confirmation Modal */}
-                <Modal
-                    isOpen={isConfirmationModalOpen}
-                    onClose={() => setIsConfirmationModalOpen(false)}
-                    size="sm"
-                    zIndex={50}
-                    closeIcon={true}
-                >
-                    <div className="p-6 text-center">
-                        <div className="flex justify-center mb-4">
-                            <IconAlertTriangle
-                                size={40}
-                                className={
-                                    data.status === "ACCEPTED" ? "text-green-500" : "text-red-500"
-                                }
-                            />
-                        </div>
-                        <h3 className="text-lg font-bold mb-2">Confirm {data.status === "ACCEPTED" ? "Acceptance" : "Rejection"}</h3>
-                        <p className="text-sm text-gray-600">
-                            Are you sure you want to {" "}
-                            <span className={`font-semibold text-${data.status === "ACCEPTED" ? "green" : "red"
-                                }-600`}>
-                                {data.status === "ACCEPTED" ? "accept" : "reject"}
-                            </span>{" "}
-                            this application? This action cannot be undone.
-                        </p>
-                        {
-                            data.status === "REJECTED" && (
-                                <div className="flex flex-col items-center mt-4 gap-2">
-                                    <strong className="text-gray-600">Comment</strong>
-                                    <textarea
-                                        className="w-full p-2 border rounded"
-                                    ></textarea>
-                                </div>
-                            )
-                        }
-                        <div className="mt-6 flex justify-center gap-4">
-                            {
-                                !applicationReviewMutation.isPending &&
-                                <Button
-                                    label="Cancel"
-                                    theme="secondary"
-                                    onClick={() => setIsConfirmationModalOpen(false)}
-                                />
-                            }
-                            <Button
-                                label={`I confirm ${data.status === "ACCEPTED" ? "Acceptance" : "Rejection"}`}
-                                theme={data.status === "ACCEPTED" ? "primary" : "danger"}
-                                loading={applicationReviewMutation.isPending}
-                                onClick={() => {
-                                    applicationReviewMutation.mutate({
-                                        id: data.id,
-                                        status: data.status,
-                                    });
-                                    setIsConfirmationModalOpen(false);
-                                    onClose();
-                                }}
-                            />
-                        </div>
-                    </div>
-                </Modal>
             </div>
+            {/* CONFIRM MODAL */}
+            <Modal
+                isOpen={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+                size="sm"
+                zIndex={50}
+            >
+                <div className="p-6 text-center">
+                    <IconAlertTriangle
+                        size={42}
+                        className={`mx-auto mb-3 ${decision?.status === "ACCEPTED"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                    />
+                    <h3 className="text-lg font-semibold">
+                        Confirm {decision?.status === "ACCEPTED" ? "Acceptance" : "Rejection"}
+                    </h3>
+
+                    {/* <p className="text-sm text-slate-600 mt-2">
+                        This action cannot be undone.
+                    </p> */}
+                    { decision?.status === "REJECTED" && ( <div className="flex flex-col items-center mt-4 gap-2"> <strong className="text-gray-600">Comment</strong> <textarea onChange={(e)=>setDecision({...decision,comment:e.target.value})}  className="w-full p-2 border rounded input-normal" ></textarea> </div> ) }
+
+                    <div className="mt-6 flex justify-center gap-3">
+                        <Button
+                            label="Cancel"
+                            theme="secondary"
+                            onClick={() => setConfirmOpen(false)}
+                        />
+                        <Button
+                            label="Confirm"
+                            theme={decision?.status === "ACCEPTED" ? "primary" : "danger"}
+                            loading={reviewMutation.isPending}
+                            onClick={() =>
+                                decision &&
+                                reviewMutation.mutate({
+                                    id: decision.id,
+                                    status: decision.status,
+                                    comment:""
+                                })
+                            }
+                        />
+                    </div>
+                </div>
+            </Modal>
+
         </div>
     );
-};
-
-export default ApplicantViewModal;
+}
