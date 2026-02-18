@@ -27,6 +27,10 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
   const { userData } = useUserDataContext();
   const { t } = useTranslation();
 
+  const uploadTenderMutation = useMutation({
+    mutationFn: (data: FormData) => uploadApplicationDocument(data),
+  });
+
   const stages = ["DETAILS",
     ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
     "PRELIMINARY", "TECHNICAL", "COMMERCIAL", "CONSENT"
@@ -61,6 +65,12 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
         setApplicationId(result.applicationId);
       }
 
+      // mark as uploaded ONLY after success
+      setUploadedDocs((prev) => ({
+        ...prev,
+        [key]: file,
+      }));
+
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error("Upload failed", error);
@@ -70,16 +80,10 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     }
   };
 
-  const uploadTenderMutation = useMutation({
-    mutationFn: (data: FormData) => uploadApplicationDocument(data),
-  });
 
   const handleFileUpload = (stage: string, fieldName: string, file: File) => {
     const key = `${stage}-${fieldName}`;
-    setUploadedDocs((prev) => ({
-      ...prev,
-      [key]: file
-    }));
+
     setPreviewURLs((prev) => ({
       ...prev,
       [key]: URL.createObjectURL(file)
@@ -111,7 +115,19 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     return Math.min(100, total); // cap at 100
   };
 
-  const FileUploadField = ({ stage, fieldName, required }: { stage: string; fieldName: string; required?: boolean }) => {
+  const FileUploadField = ({
+    stage,
+    fieldName,
+    required,
+    description,
+    percentage,
+  }: {
+    stage: string;
+    fieldName: string;
+    required?: boolean;
+    description?: string;
+    percentage?: number;
+  }) => {
     const fileKey = `${stage}-${fieldName}`;
     const file = uploadedDocs[fileKey];
     const isUploading = uploading[fileKey];
@@ -119,7 +135,17 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
     return (
       <div className="mb-6 relative">
-        <label className="block font-medium mb-2">{fieldName}</label>
+        <label className="block font-medium mb-1">{fieldName.replace("_", " ")}</label>
+
+        {description && (
+          <p className="text-xs text-slate-500 mb-2">
+            {description}
+            {percentage !== undefined && (
+              <span className="ml-2 text-slate-400">({percentage}%)</span>
+            )}
+          </p>
+        )}
+
         <label
           htmlFor={fileKey}
           className="label block py-6 px-4 bg-slate-50 border border-dashed border-slate-200 rounded-md cursor-pointer transition hover:bg-slate-100"
@@ -221,11 +247,11 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
           </div>
 
           <div className="text-xs text-red-500 mt-4 italic">
-            Please prepare all required documents for each stage:
+            Please prepare all required documents for each stage, Please note, all documents must be in PDF format and the file size should not exceed 5MB. <br></br><u>Application should be completed at once, you cannot save and continue later.</u>
             <ul className="mt-2 list-disc pl-5 space-y-1">
               <li><strong>PAYMENT:</strong> PROOF OF PAYMENT</li>
               {Object.entries(grouped).map(([stage, fields]) => (
-                <li key={stage}><strong>{stage}</strong>: {fields.join(", ")}</li>
+                <li key={stage}><strong>{stage}</strong>: {fields.map(f => f.replace("_", " ")).join(", ")}</li>
               ))}
             </ul>
           </div>
@@ -245,11 +271,13 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
         <div className="space-y-4">
           {stageRequirements.map((req) => (
             <FileUploadField
-              key={`${step}-${req.fieldName}`}
               stage={step}
               fieldName={req.fieldName}
               required={req.required}
+              description={req.description}
+              percentage={req.percentage}
             />
+
           ))}
         </div>
       );
@@ -326,6 +354,13 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return;
     }
 
+    const uploadedPercent = getUploadedPercentage();
+    if (uploadedPercent < 100) {
+      setIsLoading(false);
+      toast.error("You cannot submit until all documents are uploaded (100%).");
+      return;
+    }
+
     if (!applicationId || applicationId === null) {
       setIsLoading(false);
       toast.error("Application ID not found. Please upload documents first.");
@@ -346,7 +381,6 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
   const progressPercentage = getUploadedPercentage();
 
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
       <div className="mb-4">
@@ -366,12 +400,12 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
       <div className="flex justify-between">
         {currentStep > 0 && (
-          <Button label="Back" type="button" onClick={handleBack} />
+          <Button theme="warning" size="sm"  label="Back" type="button" onClick={handleBack} />
         )}
         {currentStep < stages.length - 1 ? (
-          <Button label="Next" type="button" onClick={handleNext} disabled={!canProceed()} />
+          <Button theme="success" size="sm" label="Next" type="button" onClick={handleNext} disabled={!canProceed()} />
         ) : (
-          <Button loading={uploadTenderMutation.isPending || isLoading} label="Submit Application" type="submit" />
+          <Button theme="primary" size="sm" loading={uploadTenderMutation.isPending || isLoading} label="Submit" type="submit" />
         )}
       </div>
     </form>
