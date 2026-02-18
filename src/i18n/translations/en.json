@@ -11,8 +11,8 @@
 
     "menu-dashboard": "Dashboard",
     "menu-tender": "Tenders",
-    "menu-private-tenders": "Private Tenders",
-    "menu-government-tenders": "Government Tenders",
+    "menu-private-tenders": "Private",
+    "menu-government-tenders": "Government",
     "menu-categories": "Categories",
     "menu-difm": "Do it for Me",
     "menu-tender-box": "Tender Box",

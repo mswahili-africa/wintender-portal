@@ -68,8 +68,8 @@ const allMenus: IRoute[] = [
         labelKey: "menu-tender",
         icon: <IconReport size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/tenders", label: "Private Tenders",labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/government-tenders", label: "Government Tenders",labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/tenders", label: "Private",labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/government-tenders", label: "Government",labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
             { path: "/categories", label: "Categories",labelKey: "menu-categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
             { path: "/do-it-for-me", label: "Do It For Me",labelKey: "menu-difm", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
             { path: "/tender-box", label: "Tender Box",labelKey: "menu-tender-box", icon: <IconFiles size={20} strokeWidth={1.5} /> },

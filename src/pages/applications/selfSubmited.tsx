@@ -37,7 +37,7 @@ export default function SubmittedApplication() {
     sort: sort,
     filter: filter,
     status: status,
-    comment: comment?.value
+    // comment: comment?.value
   });
 
   const deleteMutation = useMutation({
