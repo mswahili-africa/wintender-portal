@@ -33,7 +33,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
   const stages = ["DETAILS",
     ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
-    "PRELIMINARY", "TECHNICAL", "COMMERCIAL", "CONSENT"
+    "PRELIMINARY", "TECHNICAL", "COMMERCIAL","FINANCIAL","CONSENT"
   ];
 
   useEffect(() => {
@@ -263,7 +263,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return <FileUploadField stage="PAYMENT" fieldName="PROOF_OF_PAYMENT" required={true} />;
     }
 
-    if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL"].includes(step)) {
+    if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL", "FINANCIAL"].includes(step)) {
       const stageRequirements = tender.requirements.filter((r) => r.stage === step);
       return stageRequirements.length === 0 ? (
         <p>No requirements for this stage.</p>
@@ -319,7 +319,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return !!uploadedDocs[key] && !uploading[key];
     }
 
-    if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL"].includes(step)) {
+    if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL", "FINANCIAL"].includes(step)) {
       const requiredFields = tender.requirements.filter((r) => r.stage === step && r.required);
       return requiredFields.every((r) => {
         const key = `${step}-${r.fieldName}`;
