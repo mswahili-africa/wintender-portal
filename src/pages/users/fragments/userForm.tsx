@@ -209,7 +209,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
                   })
                   .map((item: IRole) => (
                     <option key={item.id} value={item.id}>
-                      {item.role}
+                       {item.role.replace("_", " ")}
                     </option>
                   ))}
               </select>
@@ -282,7 +282,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
                 })
                 .map((item: IRole) => (
                   <option key={item.id} value={item.id}>
-                    {item.role}
+                    {item.role.replace("_", " ")}
                   </option>
                 ))}
 
