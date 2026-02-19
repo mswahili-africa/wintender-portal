@@ -44,3 +44,72 @@ export interface IApplicationInterface {
     reviewStage?: string;
     reviewStatus?: boolean; 
 }
+
+
+
+
+export interface IRequirement {
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+  tenderId: string;
+  stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "FINANCIAL";
+  fieldName: string;
+  description: string;
+  percentage: number;
+  required: boolean;
+}
+
+export interface ITender {
+  selfApply: boolean;
+  tenderId: string;
+  tenderNumber: string;
+  region: string;
+  title: string;
+  summary: string;
+  filePath: string;
+  openDate: string;
+  closeDate: string;
+  tenderType: string;
+  tenderGroup: string;
+  consultationFee: number;
+  applicationFee: number;
+  status: string;
+  categoryName: string;
+  entityName: string;
+  entityLogoFilePath: string;
+  applicationStatus: string;
+  requirements: IRequirement[];
+}
+
+export interface IBidder {
+  companyName: string;
+  companyAddress: string;
+  contactPerson: string;
+  contactPhoneNumber: string;
+  companyPhoneNumber: string;
+}
+
+export interface IFile {
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+  id: string;
+  applicationId: string;
+  stage: string;
+  documentType: string;
+  filePath: string;
+}
+
+export interface ITenderApplication {
+  reference: string;
+  tender: ITender;
+  reviewStage: string;
+  stage: string;
+  bidder: IBidder;
+  files: IFile[];
+  reviewStatus: boolean;
+  status: string;
+}

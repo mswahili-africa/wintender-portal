@@ -248,6 +248,7 @@
     "application-wizard-summary":"Summary",
     "application-wizard-close-date":"Close Date",
     "application-wizard-pe-application-fee":"PE Application Fee",
+    "application-wizard-consultation-fee":"Consultation Fee",
     "application-wizard-status":"Status",
     "application-wizard-instructions":"Please prepare all required documents for each stage",
     "application-wizard-no-requirements":"No requirements for this stage.",

@@ -35,12 +35,16 @@ export const ApplicantsList = () => {
         "NEGOTIATION",
         "AWARDED"
     ];
+    const [isApplicantLoading, setIsApplicantLoading] = useState(false);
 
     // JCM getting tender details
     // Reset state when navigation state changes
     useEffect(() => {
-        setTenderDetails(null);
-    }, [location.state.tender]);
+        if (location.state?.tender) {
+            setTenderDetails(location.state.tender);
+        }
+    }, [location.state]);
+
 
     useEffect(() => {
 
@@ -67,19 +71,27 @@ export const ApplicantsList = () => {
 
     // Handle opening the ApplicationsList modal
     const handleViewDetails = (content: any) => {
-        setSelectedApplicant(content);
-        setIsApplicationModalOpen(true);
+        setIsApplicantLoading(true);
+        setSelectedApplicant(null);
+
+        // simulate async safety (even if local)
+        requestAnimationFrame(() => {
+            setSelectedApplicant(content);
+            setIsApplicantLoading(false);
+            setIsApplicationModalOpen(true);
+        });
     };
 
+
     const handleFilteringChange = (stage: string, currentIndexStep: number) => {
-        if(stage !== "AWARDED") {
-        setReviewStage(steps[currentIndexStep+1]);
-        setStatus("SUBMITTED");
-        handleCompleteStep(currentIndexStep-1);
-        }else{
+        if (stage !== "AWARDED") {
+            setReviewStage(steps[currentIndexStep + 1]);
+            setStatus("SUBMITTED");
+            handleCompleteStep(currentIndexStep - 1);
+        } else {
             setReviewStage(stage);
             setStatus("AWARDED");
-            handleCompleteStep(currentIndexStep-1);
+            handleCompleteStep(currentIndexStep - 1);
         }
     };
 
@@ -241,12 +253,22 @@ export const ApplicantsList = () => {
 
             {/* JCM  Modal to display Applicants details */}
             {isApplicationModalOpen && (
-                <ApplicantViewModal
-                    onClose={() => setIsApplicationModalOpen(false)}
-                    applicant={selectedApplicant}
-                    title="Applicant details"
-                />
+                selectedApplicant ? (
+                    <ApplicantViewModal
+                        onClose={() => setIsApplicationModalOpen(false)}
+                        applicant={selectedApplicant}
+                        title="Applicant details"
+                    />
+                ) : (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+                        <div className="bg-white p-6 rounded-lg text-sm">
+                            Loading application…
+                        </div>
+                    </div>
+                )
             )}
+
+
         </div>
     )
 }

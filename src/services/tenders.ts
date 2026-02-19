@@ -1,7 +1,7 @@
 import http from "@/http";
 import { IQueryParams, ITenderCategory, ITenders, IlistResponse } from "@/types";
 import { IApplicationPDFReport, IAssignBidder, IConsultation } from "@/types/forms";
-import { IApplicationInterface } from "@/types/tenderWizard";
+import { IApplicationInterface, ITender, ITenderApplication } from "@/types/tenderWizard";
 
 
 // JCM TENDER
@@ -237,6 +237,12 @@ export async function listAllSubmittedApplication(params: {}) {
     })
 
     return response.data
+}
+
+export async function getTenderApplicationDetails(id: string) {
+    const response = await http.get<ITenderApplication>(`/applications/application/${id}/view`);
+
+    return response.data;
 }
 
 export async function reviewApplication(id: string, status: string, comment?: any) {
