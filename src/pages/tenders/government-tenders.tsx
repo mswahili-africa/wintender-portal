@@ -19,9 +19,9 @@ import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
-import PETenderCreateForm from "./fragments/PETenderCreateForm";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
@@ -203,7 +203,7 @@ export default function GovernmentTenders() {
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">{t("tender-government-header")}</h2>
                 {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
-                    <PETenderCreateForm
+                    <PETenderCreateFormModal
                         onSuccess={() => {
                             refetch();
                         }}

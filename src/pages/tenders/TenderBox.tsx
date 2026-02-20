@@ -319,7 +319,7 @@ export default function PrivateTenders() {
                                 </Tooltip>
 
                                 {
-                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && (
                                         <>
                                             {!(new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY") && (
                                                 <Tooltip content={t("tender-update-button-tooltip")}>
@@ -339,7 +339,7 @@ export default function PrivateTenders() {
                                 {
                                     ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && content.selfApply === true &&
                                     <Fragment>
-                                        <Tooltip content={t("tender-applicant-view-button-tooltip")}>
+                                        <Tooltip content={t("tender-applicant-view-button-tooltip")} position="bottom">
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
                                                 onClick={() => { openApplicantList(content) }}

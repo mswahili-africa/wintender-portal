@@ -22,10 +22,14 @@ export const ApplicantsList = () => {
     const [reviewStage, setReviewStage] = useState<string>('PRELIMINARY');
     const [status, setStatus] = useState<string>("SUBMITTED");
     const [sort, setSort] = useState<string>("updatedAt,desc");
-    const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
-    const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
     const { t } = useTranslation();
     const { userData } = useUserDataContext();
+    const [handleModal, setHandleModal] = useState<{ type: "viewApplication" | null, object: any }>({ type: null, object: null });
+
+    const handleModalClose = () => {
+        setHandleModal({ type: null, object: null });
+    }
+
     const steps = [
         "OPEN",
         RequirementStage.PRELIMINARY,
@@ -67,19 +71,6 @@ export const ApplicantsList = () => {
     // Handle sorting of table columns
     const handleSorting = (field: string, direction: SortDirection) => {
         setSort(`${field},${direction.toLowerCase()}`);
-    };
-
-    // Handle opening the ApplicationsList modal
-    const handleViewDetails = (content: any) => {
-        setIsApplicantLoading(true);
-        setSelectedApplicant(null);
-
-        // simulate async safety (even if local)
-        requestAnimationFrame(() => {
-            setSelectedApplicant(content);
-            setIsApplicantLoading(false);
-            setIsApplicationModalOpen(true);
-        });
     };
 
 
@@ -134,7 +125,7 @@ export const ApplicantsList = () => {
                             {
                                 userData?.role !== "PROCUREMENT_ENTITY" &&
                                 <Tooltip content="Review application details">
-                                    <button onClick={() => handleViewDetails(selectedApplicant)}>
+                                    <button onClick={() => setHandleModal({ type: "viewApplication", object: selectedApplicant })}>
                                         <IconEye size={20} />
                                     </button>
                                 </Tooltip>
@@ -188,21 +179,6 @@ export const ApplicantsList = () => {
                         >
                             {typeof title === "string" ? title : title}
                         </button>
-                        // <button
-                        //     key={title.toString()}
-                        //     type="button"
-                        //     onClick={() => {
-                        //         if (isClickable) setCurrentStep(index);
-                        //     }}
-                        //     className={`flex-1 whitespace-nowrap px-4 py-2 rounded-md text-sm font-medium transition-all ${isActive
-                        //         ? "bg-green-600 text-white"
-                        //         : isClickable
-                        //             ? "bg-green-100 text-gray-700 hover:bg-green-200"
-                        //             : "bg-gray-50 text-gray-400 cursor-not-allowed"
-                        //         }`}
-                        // >
-                        //     {typeof title === "string" ? title : title}
-                        // </button>
                     );
 
                 })}
@@ -252,21 +228,14 @@ export const ApplicantsList = () => {
 
 
             {/* JCM  Modal to display Applicants details */}
-            {isApplicationModalOpen && (
-                selectedApplicant ? (
-                    <ApplicantViewModal
-                        onClose={() => setIsApplicationModalOpen(false)}
-                        applicant={selectedApplicant}
-                        title="Applicant details"
-                    />
-                ) : (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-                        <div className="bg-white p-6 rounded-lg text-sm">
-                            Loading application…
-                        </div>
-                    </div>
-                )
-            )}
+            {
+                handleModal.type === "viewApplication" && handleModal.object &&
+                <ApplicantViewModal
+                    onClose={handleModalClose}
+                    applicant={handleModal.object}
+                    title="Applicant details"
+                />
+            }
 
 
         </div>

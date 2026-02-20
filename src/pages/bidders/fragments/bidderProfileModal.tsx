@@ -275,7 +275,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     <strong>Contact Person</strong>
                                     <p><strong>Person:</strong> {user.name}</p>
                                     <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
-                                    <p><strong>Email:</strong> {user.companyEmail}</p>
+                                    <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>
                                     <p><strong>Plan:</strong> {user.currentPlanId}</p>
                                 </div>
 
@@ -285,7 +285,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
                                     {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
                                     {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
-                                    {user.companyEmail && <p><strong>Email:</strong> {user.companyEmail}</p>}
+                                    {user.companyEmail && <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>}
                                     {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
                                     {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
                                 </div>

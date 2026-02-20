@@ -1,5 +1,6 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
+import Loader from "@/components/spinners/Loader";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
@@ -55,7 +56,38 @@ export default function ApplicantViewModal({
     applicationDetails,
     isLoading,
     isError,
-  } = useTenderApplicationDetails({ id: applicant.id });
+  } = useTenderApplicationDetails({ id: applicant?.id });
+
+  /* ----------------------------- SAFETY ----------------------------- */
+  if (isLoading) return <SkeletonLoader />;
+
+  if (isError || !applicationDetails) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black/40">
+        <div className="bg-white p-6 rounded-lg text-red-500 w-full max-w-6xl h-[65vh]">
+          {/* HEADER */}
+          <div className=" bg-white flex items-center justify-between px-6 py-4 border-b">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-800">
+                {title || "Application Review"}
+              </h2>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-slate-100"
+            >
+              <IconX />
+            </button>
+          </div>
+          <div className="flex items-center justify-center">
+            Failed to load application
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const application = applicationDetails as ITenderApplication;
 
   /* ----------------------------- MUTATION ----------------------------- */
   const reviewMutation = useMutation({
@@ -81,28 +113,7 @@ export default function ApplicantViewModal({
     setConfirmOpen(true);
   };
 
-  /* ----------------------------- SAFETY ----------------------------- */
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-        <div className="bg-white p-6 rounded-lg">
-          Loading application…
-        </div>
-      </div>
-    );
-  }
 
-  if (isError || !applicationDetails) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-        <div className="bg-white p-6 rounded-lg text-red-500">
-          Failed to load application
-        </div>
-      </div>
-    );
-  }
-
-  const application = applicationDetails as ITenderApplication;
 
   /* ----------------------------- UI ----------------------------- */
   return (
@@ -110,7 +121,7 @@ export default function ApplicantViewModal({
       <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden shadow-xl flex flex-col">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
+        <div className=" bg-white flex items-center justify-between px-6 py-4 border-b">
           <div>
             <h2 className="text-lg font-semibold text-slate-800">
               {title || "Application Review"}
@@ -134,8 +145,8 @@ export default function ApplicantViewModal({
               ${application.status === "ACCEPTED"
                 ? "bg-green-100 text-green-700"
                 : application.status === "REJECTED"
-                ? "bg-red-100 text-red-700"
-                : "bg-blue-100 text-blue-700"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-blue-100 text-blue-700"
               }`}
           >
             {application.status}
@@ -236,6 +247,7 @@ export default function ApplicantViewModal({
             </div>
           </div>
         </div>
+
       </div>
 
       {/* CONFIRM MODAL */}
@@ -248,11 +260,10 @@ export default function ApplicantViewModal({
         <div className="p-6 text-center">
           <IconAlertTriangle
             size={42}
-            className={`mx-auto mb-3 ${
-              decision?.status === "ACCEPTED"
-                ? "text-green-500"
-                : "text-red-500"
-            }`}
+            className={`mx-auto mb-3 ${decision?.status === "ACCEPTED"
+              ? "text-green-500"
+              : "text-red-500"
+              }`}
           />
           <h3 className="text-lg font-semibold">
             Confirm {decision?.status}
@@ -293,3 +304,51 @@ export default function ApplicantViewModal({
     </div>
   );
 }
+
+const Skeleton = ({ className = "" }) => (
+  <div
+    className={`animate-pulse bg-slate-200 rounded ${className}`}
+  />
+);
+
+const InfoSkeleton = () => (
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-1/3" />
+    <Skeleton className="h-4 w-2/3" />
+  </div>
+);
+
+const SkeletonLoader = () => (
+  <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl w-full max-w-6xl h-[75vh] overflow-hidden shadow-xl flex flex-col">
+
+      {/* Sticky Header Skeleton */}
+      <div className="sticky top-0 z-10 bg-white border-b px-6 py-4 flex justify-between items-center">
+        <Skeleton className="h-5 w-48" />
+        <Skeleton className="h-8 w-8 rounded-full" />
+      </div>
+
+      {/* Content Skeleton */}
+      <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="border rounded-xl p-4 space-y-4">
+          <Skeleton className="h-4 w-40" />
+          <InfoSkeleton />
+          <InfoSkeleton />
+          <InfoSkeleton />
+        </div>
+
+        <div className="border rounded-xl p-4 space-y-4">
+          <Skeleton className="h-4 w-40" />
+          <InfoSkeleton />
+          <InfoSkeleton />
+          <Skeleton className="h-4 w-32" />
+        </div>
+
+        <div className="md:col-span-2 border rounded-xl p-4 space-y-4">
+          <Skeleton className="h-4 w-48" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+      </div>
+    </div>
+  </div>
+);

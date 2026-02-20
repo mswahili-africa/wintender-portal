@@ -19,11 +19,12 @@ import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { motion } from "framer-motion";
 import { RequirementStage, RequirementItem } from "@/types/tenderWizard";
+import Modal from "@/components/widgets/Modal";
 
 
 
 interface IProps {
-    onSuccess?: () => void;
+    onSuccess: () => void;
     initials?: ITenders;
 }
 
@@ -41,7 +42,7 @@ const schema = object().shape({
     consultationFee: number().required("Consultation Fee is required"),
 });
 
-export default function PETenderCreatePage({ }: IProps) {
+export default function PETenderCreateFormModal({ onSuccess }: IProps) {
     const [requirements, setRequirements] = useState<Record<RequirementStage, RequirementItem[]>>({
         [RequirementStage.PRELIMINARY]: [],
         [RequirementStage.TECHNICAL]: [],
@@ -218,7 +219,7 @@ export default function PETenderCreatePage({ }: IProps) {
             setTenderFile(undefined);
             setOpen(false);
             toast.success("Tender uploaded successfully");
-            // onSuccess();
+            onSuccess();
             setCurrentStep(0);
             setRequirements({
                 [RequirementStage.PRELIMINARY]: [],
@@ -610,7 +611,7 @@ export default function PETenderCreatePage({ }: IProps) {
                                 </div>
 
                                 {/* Marks */}
-                                <div className="lg:col-span-2 flex flex-col">
+                                <div className="lg:col-span-3 flex flex-col">
                                     <label className="label">{t("tender-wizard-form-percentage")} (%)</label>
                                     <input
                                         type="number"
@@ -638,9 +639,9 @@ export default function PETenderCreatePage({ }: IProps) {
                                 </div>
 
                                 {/* Required Toggle */}
-                                <div className="lg:col-span-4 flex items-end">
+                                <div className="lg:col-span-3 flex items-end">
                                     <label className="flex items-center gap-3 cursor-pointer select-none">
-                                        <div className="relative">
+                                        {/* <div className="relative">
                                             <input
                                                 type="checkbox"
                                                 checked={req.required}
@@ -651,7 +652,13 @@ export default function PETenderCreatePage({ }: IProps) {
                                             />
                                             <div className="w-10 h-5 bg-slate-300 rounded-full peer-checked:bg-green-500 transition" />
                                             <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-5" />
-                                        </div>
+                                        </div> */}
+                                        <input
+                                            type="checkbox"
+                                            className="mr-1"
+                                            checked={req.required}
+                                            onChange={(e) => updateRequirement(stage, idx, "required", e.target.checked)}
+                                        />
                                         <span className="text-sm text-slate-700">{t("tender-wizard-required")}</span>
                                     </label>
                                 </div>
@@ -662,6 +669,7 @@ export default function PETenderCreatePage({ }: IProps) {
                                 <label className="label">{t("tender-wizard-form-notes")}</label>
                                 <textarea
                                     rows={2}
+                                    value={req.description}
                                     className="input-normal w-full resize-none"
                                     placeholder={t("tender-wizard-form-notes-placeholder")}
                                     onChange={(e) =>
@@ -687,93 +695,110 @@ export default function PETenderCreatePage({ }: IProps) {
     };
 
     return (
-        <div className="-mt-10">
-            <div className="flex justify-between items-center mb-10">
+        <>
+            <Tooltip content={t("tender-new-tender-button-tooltip")}>
+                <Button
+                    type="button"
+                    label={t("tender-new-tender-button")}
+                    icon={<IconNewSection size={18} />}
+                    theme="secondary"
+                    size="md"
+                    onClick={() => setOpen(true)}
+                />
+            </Tooltip>
+            {open && (
+                <Modal size="xl" isOpen={open} onClose={() => setOpen(false)} title="Upload New Tender">
+
+                    {/* <div className="-mt-10"> */}
+                    {/* <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold uppercase">{t("tender-wizard-header")}</h2>
-            </div>
-            <form onSubmit={handleSubmit(submit)} className="max-w-7xl mx-auto h-auto flex flex-col">
+            </div> */}
+                    <form onSubmit={handleSubmit(submit)} className="max-w-7xl mx-auto h-auto flex flex-col">
 
-                {/* PROGRESS BAR */}
-                <div className="flex flex-row justify-between">
-                    <div className="text-sm mb-2 font-medium">{t("tender-wizard-progress")}</div>
-                    {marks > 0 && <span className="text-xs text-green-500 ml-2">({t("tender-wizard-marks-left", { marks: marks })})</span>}
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                    <div
-                        className="bg-green-600 h-2 rounded-full transition-all"
-                        style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-                    />
-                </div>
-
-
-                {/* MAPPING STEPS */}
-                <div className="flex flex-nowrap gap-2 overflow-x-auto mb-4">
-                    {steps.map((title, index) => {
-                        const isActive = currentStep === index;
-                        const isClickable = index === 0 || completedSteps.includes(index - 1);
-
-                        return (
-                            <button
-                                key={title.toString()}
-                                type="button"
-                                onClick={() => {
-                                    if (isClickable) setCurrentStep(index);
-                                }}
-                                className={`flex-1 whitespace-nowrap px-4 py-2 rounded-md text-sm font-medium transition-all ${isActive
-                                    ? "bg-green-600 text-white"
-                                    : isClickable
-                                        ? "bg-green-100 text-gray-700 hover:bg-green-200"
-                                        : "bg-gray-50 text-gray-400 cursor-not-allowed"
-                                    }`}
-                            >
-                                {typeof title === "string" ? title : title}
-                            </button>
-                        );
-
-                    })}
-                </div>
-
-                {/* CONTENT */}
-                <div className="bg-white p-6 rounded-md shadow overflow-y-auto flex-grow">
-                    {renderStepContent()}
-                </div>
-
-                <div className="mt-6 flex justify-between">
-                    {currentStep > 0 && (
-                        <Tooltip content={t("tender-wizard-back-tooltip")}>
-                            <Button
-                                size="md"
-                                type="button"
-                                label={t("tender-wizard-back-button")}
-                                theme="secondary"
-                                onClick={() => setCurrentStep((prev) => prev - 1)}
+                        {/* PROGRESS BAR */}
+                        <div className="flex flex-row justify-between">
+                            <div className="text-sm mb-2 font-medium">{t("tender-wizard-progress")}</div>
+                            {marks > 0 && <span className="text-xs text-green-500 ml-2">({t("tender-wizard-marks-left", { marks: marks })})</span>}
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                            <div
+                                className="bg-green-600 h-2 rounded-full transition-all"
+                                style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
                             />
-                        </Tooltip>
-                    )}
-                    {currentStep < steps.length - 1 ? (
-                        <Tooltip content={t("tender-wizard-next-tooltip")}>
-                            <Button
-                                size="md"
-                                type="button"
-                                label={t("tender-wizard-next-button")}
-                                theme="primary"
-                                onClick={() => handleCompleteStep(currentStep)}
-                            />
-                        </Tooltip>
-                    ) : (
-                        <Tooltip content={t("tender-wizard-publish-tooltip")}>
-                            <Button
-                                size="md"
-                                type="submit"
-                                label={t("tender-wizard-publish-button")}
-                                theme="primary"
-                                loading={uploadTenderMutation.isPending}
-                            />
-                        </Tooltip>
-                    )
-                    }
-                </div>
-            </form>
-        </div>
+                        </div>
+
+
+                        {/* MAPPING STEPS */}
+                        <div className="flex flex-nowrap gap-2 overflow-x-auto mb-4">
+                            {steps.map((title, index) => {
+                                const isActive = currentStep === index;
+                                const isClickable = index === 0 || completedSteps.includes(index - 1);
+
+                                return (
+                                    <button
+                                        key={title.toString()}
+                                        type="button"
+                                        onClick={() => {
+                                            if (isClickable) setCurrentStep(index);
+                                        }}
+                                        className={`flex-1 whitespace-nowrap px-4 py-2 rounded-md text-sm font-medium transition-all ${isActive
+                                            ? "bg-green-600 text-white"
+                                            : isClickable
+                                                ? "bg-green-100 text-gray-700 hover:bg-green-200"
+                                                : "bg-gray-50 text-gray-400 cursor-not-allowed"
+                                            }`}
+                                    >
+                                        {typeof title === "string" ? title : title}
+                                    </button>
+                                );
+
+                            })}
+                        </div>
+
+                        {/* CONTENT */}
+                        <div className="bg-white p-6 rounded-md shadow overflow-y-auto flex-grow">
+                            {renderStepContent()}
+                        </div>
+
+                        <div className="mt-6 flex justify-between">
+                            {currentStep > 0 && (
+                                <Tooltip content={t("tender-wizard-back-tooltip")}>
+                                    <Button
+                                        size="md"
+                                        type="button"
+                                        label={t("tender-wizard-back-button")}
+                                        theme="secondary"
+                                        onClick={() => setCurrentStep((prev) => prev - 1)}
+                                    />
+                                </Tooltip>
+                            )}
+                            {currentStep < steps.length - 1 ? (
+                                <Tooltip content={t("tender-wizard-next-tooltip")}>
+                                    <Button
+                                        size="md"
+                                        type="button"
+                                        label={t("tender-wizard-next-button")}
+                                        theme="primary"
+                                        onClick={() => handleCompleteStep(currentStep)}
+                                    />
+                                </Tooltip>
+                            ) : (
+                                <Tooltip content={t("tender-wizard-publish-tooltip")}>
+                                    <Button
+                                        size="md"
+                                        type="submit"
+                                        label={t("tender-wizard-publish-button")}
+                                        theme="primary"
+                                        loading={uploadTenderMutation.isPending}
+                                    />
+                                </Tooltip>
+                            )
+                            }
+                        </div>
+                    </form>
+                    {/* </div> */}
+                </Modal>
+            )}
+        </>
     );
 }

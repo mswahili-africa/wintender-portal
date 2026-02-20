@@ -40,7 +40,6 @@ import SystemHealth from "./pages/system-health";
 import SystemLogs from "./pages/system-health/System-logs";
 import Messages from "./pages/messages";
 import FloatingChatButton from "./ai/components/FloatingChatButton";
-import PETenderCreatePage from "./pages/tenders/PETenderCreatePage12";
 
 export const queryClient = new QueryClient({});
 
@@ -75,7 +74,6 @@ function App() {
                                 <Route path="tenders" element={<TenderList />} />
                                 <Route path="government-tenders" element={<GovernmentTenders />} />
                                 <Route path="tender-box" element={<TenderBox />} />
-                                <Route path="/tenders/create-tender" element={<PETenderCreatePage />} />
                                 <Route path="/tenders/:tenderId/applicants" element={<ApplicantsList />} />
 
                                 <Route path="payments" element={<Payments />} />
