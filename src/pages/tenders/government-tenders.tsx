@@ -202,7 +202,8 @@ export default function GovernmentTenders() {
         <div>
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">{t("tender-government-header")}</h2>
-                {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR") && (
+                {   ["PUBLISHER", "ADMINISTRATOR", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
+
                     <PETenderCreateFormModal
                         onSuccess={() => {
                             refetch();

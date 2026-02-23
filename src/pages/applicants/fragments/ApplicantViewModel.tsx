@@ -152,7 +152,7 @@ export default function ApplicantViewModal({
             {application.status}
           </span>
 
-          {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(
+          {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(
             userData?.role || ""
           ) &&
             application.status === "SUBMITTED" && (

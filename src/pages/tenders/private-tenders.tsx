@@ -203,7 +203,8 @@ export default function PrivateTenders() {
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">{t("tender-private-header")}</h2>
                 <div className="flex flex-row gap-2">
-                    {(userRole === "PUBLISHER" || userRole === "ADMINISTRATOR" || userRole === "PROCUREMENT_ENTITY") && (
+                    {
+                    ["PUBLISHER", "ADMINISTRATOR", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
                         <PETenderCreateFormModal
                             onSuccess={() => {
                                 refetch();

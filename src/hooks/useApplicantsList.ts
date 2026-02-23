@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
 import { listApplication } from "@/services/tenders";
@@ -29,12 +28,10 @@ export default function getApplications({tenderId,...props}: IProps) {
             reviewStage: props.reviewStage
         }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000
+        refetchInterval: 300000,
+        refetchOnWindowFocus: false,
+        staleTime:  60 * 1000,
     }); 
-
-    // useEffect(() => {
-    //     refetch();
-    // }, [props.filter, props.page, props.search, props.sort,props.comment,props.status,props.reviewStage])
 
     return {
         isLoading,

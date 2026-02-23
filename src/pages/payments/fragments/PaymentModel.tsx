@@ -5,10 +5,10 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Puff } from "react-loader-spinner";
-import { useUserData } from "@/hooks/useUserData";
 import { paymentOptions } from "@/types/statuses";
 import { Trans, useTranslation } from "react-i18next";
 import { AlternativePaymentSection } from "./AlternativePaymentSection";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
     const [warningMessage, setWarningMessage] = useState("");
@@ -17,7 +17,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
-    const { userData } = useUserData();
+    const { userData } = useUserDataContext();
 
     const [paymentDetails, setPaymentDetails] = useState({
         planId: "66698e3f39cbe2504dd54c57",

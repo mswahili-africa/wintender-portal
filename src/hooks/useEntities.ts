@@ -18,12 +18,11 @@ export function useEntities({...props}: IProps) {
         queryKey: ["getVendors", props.page, props.sort, props?.search, , props?.filter],
         queryFn: () => getEntities({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000
+        refetchInterval: 300000,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
 
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,
@@ -40,12 +39,10 @@ export function usePEUsers({...props}: IProps) {
         queryKey: ["usePEUsers", props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getPEUsers({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000
+        refetchInterval: 300000,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,

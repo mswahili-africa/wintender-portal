@@ -6,7 +6,6 @@ import { useState } from "react";
 import columns from "./fragments/entityColumns";
 import VendorForm from "./fragments/entityForm";
 import { useEntities } from "@/hooks/useEntities";
-import { useUserData } from "@/hooks/useUserData";
 import Modal from "@/components/Modal";
 import Button from "@/components/button/Button";
 

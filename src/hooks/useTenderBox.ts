@@ -12,18 +12,17 @@ interface IProps {
     filter?: Record<string, any>
 }
 
-export default function({...props}: IProps) {
+export default function ({ ...props }: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["getTenderBox", props.page, props.sort, props?.search, props?.filter],
-        queryFn: () => getTenderBox({page: props.page, size: 30, sort: props.sort, search: props.search}),
+        queryFn: () => getTenderBox({ page: props.page, size: 30, sort: props.sort, search: props.search }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 600000 // 10 minutes
-    });
+        refetchInterval: 600000, // 10 minutes
 
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
+        refetchOnWindowFocus: false,
+        staleTime: 5*60*1000,
+    });
 
     return {
         isLoading,

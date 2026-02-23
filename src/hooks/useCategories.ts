@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
 import { getCategories } from "@/services/tenders";
 import useErrorHandler from "./useErrorHandler";
-import { ICategory } from "@/types";
 
 interface IProps {
     page: number
@@ -20,11 +18,9 @@ export default function({...props}: IProps) {
         queryKey: ["getCategories", props.page, props.sort, props?.search ,props?.categories, props?.filter],
         queryFn: () => getCategories({page: props.page, size: props.size, sort: props.sort, search: props.search, categories: props.categories, filter: props.filter}), // Added categories as an array
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,

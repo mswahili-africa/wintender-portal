@@ -21,11 +21,9 @@ export default function({...props}: IProps) {
         queryKey: ["getTendersGovernment", props.page, props.sort, props?.search, props?.filter,props?.eligibility,props?.categories,props?.bidderId],
         queryFn: () => getTenders({page: props.page, size: 10, sort: props.sort, search: props.search,eligibility:props.eligibility,categories:props.categories,bidderId:props.bidderId}),
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 2 * 60 * 1000,
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort, props.eligibility, props.categories, props.bidderId]);
 
     return {
         isLoading,

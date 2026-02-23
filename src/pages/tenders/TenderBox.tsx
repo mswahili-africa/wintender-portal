@@ -319,7 +319,7 @@ export default function PrivateTenders() {
                                 </Tooltip>
 
                                 {
-                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && (
+                                    (["ADMINISTRATOR", "PUBLISHER"].includes(userRole) || (["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && content.selfApply === true)) && (
                                         <>
                                             {!(new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY") && (
                                                 <Tooltip content={t("tender-update-button-tooltip")}>
@@ -337,7 +337,7 @@ export default function PrivateTenders() {
 
                                 {/* JCM tender applicant list button */}
                                 {
-                                    ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && content.selfApply === true &&
+                                    ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && content.selfApply === true &&
                                     <Fragment>
                                         <Tooltip content={t("tender-applicant-view-button-tooltip")} position="bottom">
                                             <button

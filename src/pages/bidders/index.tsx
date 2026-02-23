@@ -14,12 +14,12 @@ import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import Button from "@/components/button/Button";
-import { useUserData } from "@/hooks/useUserData";
 import Modal from "@/components/Modal";
 import { ExportXLSX } from "@/components/widgets/Excel";
 import bidderExcelColumns from "./fragments/bidderExcelColumns";
 import PrivateTenderRequestModal from "../applications/fragments/privateTenderRequestModal";
 import GeneralSMSModal from "../messages/fragments/GeneralSmsModal";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 const tanzaniaRegions = [
     "Arusha", "Dar es Salaam", "Dodoma", "Geita", "Iringa", "Kagera", "Katavi", "Kigoma",
@@ -86,7 +86,7 @@ export default function Bidders() {
 
 
     // JCM DELETE MODAL
-    const { userData } = useUserData();
+    const { userData } = useUserDataContext();
 
     const deleteBidderMutation = useMutation({
         mutationKey: ["deleteBidder", openModal.user?.id],

@@ -18,11 +18,10 @@ export default function({...props}: IProps) {
         queryKey: ["getRoles", props.page, props.sort, props?.search, , props?.filter],
         queryFn: () => getRoles({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
+        refetchInterval: 300000,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, 
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,

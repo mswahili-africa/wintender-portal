@@ -119,6 +119,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
 
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
+    const [agreeTerms, setAgreeTerms] = useState(false);
 
     const {
         register,
@@ -172,6 +173,10 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
     });
 
     const submit = (data: IBidderRegisterForm) => {
+        if (!agreeTerms) {
+            toast.error("Please agree to terms and conditions");
+            return;
+        }
         const categoryIds = selectedCategories.map((c) => c.id);
 
         const cleanTIN = data.tin.replace(/-/g, ""); // remove dashes before submit
@@ -389,6 +394,23 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                                 )}
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-row items-center gap-4 mb-6">
+                    {/* Terms and Conditions */}
+                    <div className="flex flex-row items-center">
+                        <input
+                            type="checkbox"
+                            id="terms"
+                            checked={agreeTerms}
+                            onChange={(e) => setAgreeTerms(e.target.checked)}
+                            required
+                            className="mr-2"
+                        />
+                        <label htmlFor="terms" className="text-sm gap-1">
+                             {t("registration-form-agree")} <a href="#" target="_blank" className="text-green-600 hover:underline hover:text-green-700">{t("registration-form-terms")}</a>
+                        </label>
                     </div>
                 </div>
                 <Button

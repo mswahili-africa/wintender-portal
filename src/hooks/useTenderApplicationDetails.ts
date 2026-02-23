@@ -16,11 +16,9 @@ export default function({...props}: IProps) {
         queryFn: () => getTenderApplicationDetails(props.id),
         enabled: !!props.id,
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 60 * 1000
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.id]);
 
     return {
         isLoading,

@@ -23,11 +23,10 @@ export default function usePublisherPerformance({ month, ...props }: IProps) {
             search: props.search
         }),
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
 
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort, month]); // Add month to refetch
 
     return {
         isLoading,

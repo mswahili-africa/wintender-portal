@@ -5,6 +5,9 @@ import {
     IconMoneybag,
     IconBuilding,
     IconReportMoney,
+    IconFolderOpen,
+    IconFileText,
+    IconFiles,
 } from "@tabler/icons-react";
 import { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -29,12 +32,13 @@ import { Link } from "react-router-dom";
 import { IconListLetters } from "@tabler/icons-react";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
+import StatGroupCard from "./fragments/StatGroupCard";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
     const account = userData?.account || "00000000";
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const { showConfirmation } = usePopup();
     const [error, _] = useState<string | null>(null);
@@ -77,6 +81,18 @@ export default function Dashboard() {
             ))}
         </div>
     );
+
+    const SkeletonBillboardCard = () => (
+        <div className="animate-pulse bg-green-50 shadow-md rounded-xl w-full h-32 sm:h-40 md:h-48 lg:h-56">
+            <div className="flex justify-between">
+                <div className="flex flex-col p-4 sm:p-5 gap-2 w-full">
+                    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                </div>
+            </div>
+        </div>
+    );
+
 
     const Billboards = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -162,10 +178,27 @@ export default function Dashboard() {
         );
     };
 
+    if (isLoading) {
+        return (
+            <div className="p-2 min-h-screen flex flex-col">
+                <div className="flex flex-col p-4 gap-2 w-full sm:w-1/2 mb-5">
+                    <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                </div>
+                <div className="flex flex-row gap-4 mb-5">
+                    {Array(3).fill(0).map((_, i) => (
+                        <SkeletonBillboardCard key={i} />
+                    ))}
+                </div>
+                <SkeletonLoader />
+            </div>
+        )
+    }
+
     return (
         <div className="p-2 min-h-screen relative">
             {
-                !["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) ? <>
+                !["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) ? <>
                     {
                         userRole && userRole.includes("BIDDER") && (<>
                             <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
@@ -210,6 +243,36 @@ export default function Dashboard() {
             <Modal isOpen={showModal} closeModal={closeModal} />
             <h2 className="text-xl font-extralight my-4">{t("dashboard-brief-statistics-title")}</h2>
 
+            {
+                ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
+                    <div className="bg-white p-6 rounded-xl w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                            <Link to="/tenders">
+                                <StatGroupCard
+                                    title={t("dashboard-my-tenders-title")}
+                                    icon={<IconFiles size={20} />}
+                                    items={[{ label: t("dashboard-my-tenders-total-published"), value: summary?.tenders?.total ?? 0 },]}
+                                />
+                            </Link>
+                            <Link to="/tender-box">
+                                <StatGroupCard
+                                    title={t("dashboard-my-tender-box")}
+                                    icon={<IconFolderOpen size={20} />}
+                                    items={[{ label: t("dashboard-my-tender-box"), value: summary?.applications ?? 0 },]}
+                                />
+                            </Link>
+                            <Link to="/tender-box">
+                                <StatGroupCard
+                                    title={t("dashboard-tender-awarded-title")}
+                                    icon={<IconFolderOpen size={20} />}
+                                    items={[{ label: t("dashboard-tender-awarded"), value: 0 },]}
+                                />
+                            </Link>
+                        </div>
+                    </div>
+                )
+            }
+
 
             {(userRole.includes("BIDDER")) && (
                 <div className="mt-6">
@@ -218,11 +281,11 @@ export default function Dashboard() {
             )}
 
             {/* JCM pe stats*/}
-            {userRole.includes("PROCUREMENT_ENTITY") && (
+            {/* {userRole.includes("PROCUREMENT_ENTITY") && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <PEStats summary={summary!} />}
                 </div>
-            )}
+            )} */}
 
             {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR", "PUBLISHER"].includes(userRole) && (
                 <div className="mt-6">
@@ -231,7 +294,7 @@ export default function Dashboard() {
             )}
 
             {
-                !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && (
+                !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
                     <>
                         <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
@@ -266,15 +329,15 @@ export default function Dashboard() {
                                 <div className="space-y-2 text-gray-700">
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">All Time:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.totalAmount ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.totalAmount ?? 0)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">This Month:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.thisMonth ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.thisMonth ?? 0)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">Wallet:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments.walletBalance ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.walletBalance ?? 0)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -290,11 +353,11 @@ export default function Dashboard() {
                                 <div className="space-y-2 text-gray-700">
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">All Time:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations.totalAmount ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations?.totalAmount ?? 0)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="font-medium">This Month:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations.thisMonth ?? 0)}</span>
+                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations?.thisMonth ?? 0)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -303,7 +366,7 @@ export default function Dashboard() {
 
                             {/* JCM CONTACTS  */}
                             {
-                                ["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON"].includes(userRole) && (
+                                ["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
                                     <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
                                         <a
                                             href="https://wa.me/+255766028558"

@@ -85,6 +85,8 @@
     "registration-form-success-title": "Usajili umefanikiwa",
     "registration-form-success-message": "Nenosiri la muda limetumwa kwenye Barua Pepe na SMS. Unaweza kulibadilisha wakati wowote kwenye wasifu wako.",
     "registration-form-error": "Usajili umeshindikana",
+    "registration-form-terms": "masharti na vigezo",
+    "registration-form-agree": "Nakubali ",
 
     "dashboard-welcome": "Karibu, {{name}}",
     "dashboard-welcome-message": "Fahamika zaidi katika dashibodi yako",
@@ -99,6 +101,7 @@
     "dashboard-payments-title":"Malipo",
     "dashboard-my-tenders-title":"Tenda zangu",
     "dashboard-my-tenders-total-published":"Tender zilizo chapishwa",
+    "dashboard-my-tender-box":"Sanduku la zabuni",
     "dashboard-total-difm":"Fanya kwa niaba yangu",
     "dashboard-difm-requests":"Maombi",
     "dashboard-difm-on-progress":"Katika mchakato",
@@ -113,6 +116,8 @@
     "dashboard-this-month": "Mwezi Huu",
     "dashboard-categories": "Makundi",
     "dashboard-difm-title":"Fanya kwa niaba yangu",
+    "dashboard-tender-awarded-title":"Wazabuni walioteuliwa",
+    "dashboard-tender-awarded":"Jumla ya Wazabuni walioteuliwa",
 
     "subscription-modal-header": "Sasisha Usajili Wako",
     "subscription-modal-sub-header": "Lipa moja kwa moja kutoka kwenye pochi au simu yako",

@@ -9,7 +9,9 @@ export default function() {
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["getSettings"],
         queryFn: () => getSettings(),
-        onError: (error: AxiosError) => handleError(error)
+        onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 10 * 60 * 1000
     });
  
     return {

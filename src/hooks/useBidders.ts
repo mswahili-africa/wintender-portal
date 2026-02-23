@@ -21,11 +21,9 @@ export default function({...props}: IProps) {
         queryKey: ["getBidders", props.page, props.sort, props.search,props.address, props.categories?.join(","), props.filter, props.subscriptionDate],
         queryFn: () => getBidders({page: props.page, size: 10, sort: props.sort, search: props.search, address: props.address, categories: props.categories, subscriptionDate: props.subscriptionDate}),
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 2 * 60 * 1000
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search,props.address, props.categories, props.sort, props.subscriptionDate]);
 
     return {
         isLoading,

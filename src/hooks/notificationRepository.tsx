@@ -25,6 +25,8 @@ export function useContacts(props: IQueryParams) {
         ...props.filter,
       }),
     refetchInterval: 300000, // 5 minutes
+    refetchOnWindowFocus: false,
+    staleTime: 1 * 60 * 1000,
   });
 
   return { isLoading, isError, contacts: data, refetch };
@@ -43,6 +45,8 @@ export function useMessages(props: IQueryParams) {
         ...props.filter,
       }),
     refetchInterval: 30000, // 30 seconds
+    refetchOnWindowFocus: false,
+    staleTime: 1 * 60 * 1000,
   });
 
   return { isLoading, isError, messages: data, refetch };

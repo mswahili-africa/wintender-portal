@@ -2,8 +2,8 @@ export enum RequirementStage {
     PRELIMINARY = "PRELIMINARY",
     TECHNICAL = "TECHNICAL",
     COMMERCIAL = "COMMERCIAL",
-    CONSENT = "CONSENT",
     FINANCIAL = "FINANCIAL",
+    CONSENT = "CONSENT",
 }
 
 export interface RequirementItem {
@@ -44,8 +44,6 @@ export interface IApplicationInterface {
     reviewStage?: string;
     reviewStatus?: boolean; 
 }
-
-
 
 
 export interface IRequirement {

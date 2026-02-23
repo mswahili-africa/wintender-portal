@@ -166,7 +166,7 @@ const Header = () => {
                             </button>
                         </div>
                         {
-                            !["BIDDER", "PROCUREMENT_ENTITY"].includes(user?.userData?.role as string) &&
+                            !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(user?.userData?.role as string) &&
                             <Menu as="div" className="relative inline-block text-left">
                                 <Menu.Button className="p-1.5 hover:bg-slate-100 rounded-md">
                                     <div className="relative">

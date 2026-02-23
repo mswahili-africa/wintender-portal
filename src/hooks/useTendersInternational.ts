@@ -18,11 +18,9 @@ export default function({...props}: IProps) {
         queryKey: ["getTendersInternational", props.page, props.sort, props?.search, props?.filter,props?.eligibility],
         queryFn: () => getTendersInternational({page: props.page, size: 30, sort: props.sort, search: props.search,eligibility:props.eligibility}),
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 2*60 * 1000,
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort, props.eligibility]);
 
     return {
         isLoading,

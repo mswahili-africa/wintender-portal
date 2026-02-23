@@ -20,11 +20,9 @@ export function useSubmittedApplication({...props}: IProps) {
           queryFn: () => listAllSubmittedApplication({page: props.page, size: 10, sort: props.sort, search: props.search, comment: props.comment || null,status:props.status}),
           onError: (error: AxiosError) => handleError(error),
           refetchInterval: 300000,
+          refetchOnWindowFocus: false,
+          staleTime: 5 * 60 * 1000, // 5 minutes
       });
-  
-      useEffect(() => {
-          refetch();
-      }, [props.filter, props.page, props.search, props.sort, props.comment,props.status])
   
       return {
           isLoading,

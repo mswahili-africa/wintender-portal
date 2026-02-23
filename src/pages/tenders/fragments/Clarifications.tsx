@@ -6,7 +6,7 @@ import Spinner from "@/components/spinners/Spinner";
 import { useMutation } from "@tanstack/react-query";
 import { addClarification, replyClarification } from "@/services/clarifications";
 import Button from "@/components/button/Button";
-import { useUserData } from "@/hooks/useUserData";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 type ClarificationsProps = {
     tender: ITenders;
@@ -18,7 +18,7 @@ export const Clarifications = ({ tender }: ClarificationsProps) => {
     const [newClarification, setNewClarification] = useState("");
 
     const { clarifications, isLoading, refetch } = useClarifications({ id: tender.id });
-    const user = useUserData()
+    const user = useUserDataContext()
 
     //Add new clarification
     //   mutation

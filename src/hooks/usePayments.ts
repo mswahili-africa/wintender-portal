@@ -42,12 +42,10 @@ export function getAllPayments({
           filter, // Pass the filter
         }),
       onError: (error: AxiosError) => handleError(error),
-      refetchInterval: 120000 // 2 minutes
+      refetchInterval: 120000,// 2 minutes
+      refetchOnWindowFocus: false,
+      staleTime: 1 * 60 * 1000
     });
-  
-    useEffect(() => {
-      refetch(); // Refetch when filter, page, search, or sort change
-    }, [filter, page, search, sort, refetch]);
   
     return {
       isLoading,
@@ -73,11 +71,9 @@ export function getUserPayments({ userId, ...props }: IProps) { // userId is des
                 filter: props.filter,
             }),
         onError: (error: AxiosError) => handleError(error),
+        staleTime: 1 * 60 * 1000, // 1 minute
+        refetchOnWindowFocus: false,
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort, userId]); // Include userId as a dependency
 
     return {
         isLoading,

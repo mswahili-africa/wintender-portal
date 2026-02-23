@@ -20,11 +20,9 @@ export default function({...props}: IProps) {
         queryKey: ["getTendersPrivate", props.page, props.sort, props?.search, props?.filter,props?.eligibility],
         queryFn: () => getTendersPrivate({page: props.page, size: 30, sort: props.sort, search: props.search,categories:props.categories,eligibility:props.eligibility}),
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 1 * 60 * 1000,
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort, props.eligibility]);
 
     return {
         isLoading,

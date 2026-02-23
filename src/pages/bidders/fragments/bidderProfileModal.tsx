@@ -20,7 +20,6 @@ import useApplicationsList from "@/hooks/useApplicationsList";
 import Chip from "@/components/chip/Chip";
 import Button from "@/components/button/Button";
 import { IconX } from "@tabler/icons-react";
-import { useUserData } from "@/hooks/useUserData";
 import { IconEdit } from "@tabler/icons-react";
 import UserProfile from "@/pages/users/_username";
 import { WalletButton } from "@/components/button/WalletButton";
@@ -37,6 +36,7 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
 import { deleteDocument } from "@/services/entities";
 import DocumentViewModal from "@/pages/complience/fragments/documentViewModel";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 interface IProps {
     children?: React.ReactNode;
@@ -79,7 +79,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     });
 
     // JCM  edit details
-    const { userData } = useUserData();
+    const { userData } = useUserDataContext();
     const [editDetails, setEditDetails] = useState<boolean>(false);
 
     // JCM category

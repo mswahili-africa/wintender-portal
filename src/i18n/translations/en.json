@@ -85,6 +85,8 @@
     "registration-form-success-title": "Registration successful",
     "registration-form-success-message": "Temporary password has been sent to your Email and SMS. You can change it anytime in your profile.",
     "registration-form-error": "Registration failed",
+    "registration-form-terms": "terms and conditions",
+    "registration-form-agree": "I agree to the ",
 
     "dashboard-welcome": "Welcome, {{name}}",
     "dashboard-welcome-message": "Welcome to your dashboard",
@@ -114,6 +116,8 @@
     "dashboard-this-month":"This Month",
     "dashboard-categories":"Categories",
     "dashboard-difm-title":"Do it for me",
+    "dashboard-tender-awarded-title":"Bidders awarded",
+    "dashboard-tender-awarded":"Total Bidders Awarded",
 
     "subscription-modal-header":"Renew Your Subscription",
     "subscription-modal-sub-header":"Pay direct from your wallet or mobile",

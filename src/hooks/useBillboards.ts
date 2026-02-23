@@ -17,11 +17,10 @@ export const useBillboards = ({...props}: IProps) =>{
         queryKey: ["getBillboards",props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getBillboards(),
         onError: (error: AxiosError) => handleError(error),
-    }); 
+        refetchOnWindowFocus: false,
+        staleTime: 6 * 60 * 1000,
 
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
+    }); 
 
     return {
         isLoading,

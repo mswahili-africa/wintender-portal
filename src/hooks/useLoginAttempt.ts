@@ -18,11 +18,9 @@ export default function({...props}: IProps) {
         queryFn: () => getLoginAttempts({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 300000, 
+        refetchOnWindowFocus: false,
+        staleTime: 1 * 60 * 1000
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,

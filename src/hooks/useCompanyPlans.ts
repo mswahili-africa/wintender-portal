@@ -19,11 +19,9 @@ export default function({...props}: IProps) {
         queryKey: ["getCompanyPlans", props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getCompanyPlans({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,

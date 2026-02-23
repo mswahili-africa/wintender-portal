@@ -4,7 +4,6 @@ import { IconEye } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import columns from "./fragments/ApplicantColumns";
-import Chip from "@/components/chip/Chip";
 import getApplications from "@/hooks/useApplicantsList";
 import ApplicantViewModal from "./fragments/ApplicantViewModel";
 import { RequirementStage } from "@/types/tenderWizard";
@@ -39,7 +38,6 @@ export const ApplicantsList = () => {
         "NEGOTIATION",
         "AWARDED"
     ];
-    const [isApplicantLoading, setIsApplicantLoading] = useState(false);
 
     // JCM getting tender details
     // Reset state when navigation state changes

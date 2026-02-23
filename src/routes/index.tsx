@@ -43,11 +43,11 @@ type UserRole =
     | "SUPERVISOR"
     | "PROCUREMENT_ENTITY"
     | "PROCUREMENT_ENTITY_REVIEWER"
-    | "PROCUREMENT_ENTITY_CHAIRPERSON"
+    | "PROCUREMENT_ENTITY_CHAIRMAN"
     | "LEGAL";
 
 const isValidUserRole = (role: any): role is UserRole => {
-    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRPERSON", "SUPERVISOR"].includes(role);
+    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN", "SUPERVISOR"].includes(role);
 };
 
 const useUserRole = (): UserRole => {
@@ -257,7 +257,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             }
             : menu
         ),
-    PROCUREMENT_ENTITY_CHAIRPERSON: () => allMenus
+    PROCUREMENT_ENTITY_CHAIRMAN: () => allMenus
         .filter(menu => ["Tender", "Dashboard"].includes(menu.label)) // Only show the allowed menus
         .map(menu => menu.label === "Tender"
             ? {

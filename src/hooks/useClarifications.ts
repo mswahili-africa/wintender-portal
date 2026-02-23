@@ -14,12 +14,10 @@ export default function({...props}: IProps) {
         queryKey: ["getClarifications",props.id],
         queryFn: () => getClarifications(props.id), 
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000
+        refetchInterval: 300000,
+        refetchOnWindowFocus: false,
+        staleTime: 3 * 60 * 1000
     });
-
-    useEffect(() => {
-        refetch();
-    }, [props.id])
 
     return {
         isLoading,

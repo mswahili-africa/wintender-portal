@@ -17,12 +17,10 @@ export default function({...props}: IProps) {
         queryKey: [props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getConsultMe({page: props.page, size: 10, sort: props.sort, search: props.search}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 1200000 
+        refetchInterval: 1200000,
+        refetchOnWindowFocus: false,
+        staleTime:   60 * 1000
     }); 
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort])
 
     return {
         isLoading,

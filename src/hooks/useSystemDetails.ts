@@ -60,6 +60,8 @@ export function useSummary() {
         queryFn: () => getSummaryReport(),
 
         refetchInterval: 3000000, 
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000
     });
 
     return {

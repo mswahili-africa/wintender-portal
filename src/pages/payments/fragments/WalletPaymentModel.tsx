@@ -6,11 +6,11 @@ import toast from "react-hot-toast";
 import Loader from "@/components/spinners/Loader";
 import { IWalletTopUp } from "@/types";
 import { set } from "lodash";
-import { useUserData } from "@/hooks/useUserData";
 import { IconX } from "@tabler/icons-react";
 import { paymentOptions } from "@/types/statuses";
 import { Trans, useTranslation } from "react-i18next";
 import { AlternativePaymentSection } from "./AlternativePaymentSection";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 export default function WalletPaymentModal({
     isOpen,
@@ -34,7 +34,7 @@ export default function WalletPaymentModal({
     const [messages, setMessages] = useState('');
     const { t } = useTranslation();
 
-    const { userData } = useUserData(); // Fetch user data to check payment mode
+    const { userData } = useUserDataContext(); // Fetch user data to check payment mode
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

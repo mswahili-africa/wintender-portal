@@ -42,12 +42,10 @@ export function getAllApplicationsGroup({
                 filter, // Pass the filter
             }),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000, // Adjust this interval as needed
+        refetchInterval: 300000, 
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
-
-    useEffect(() => {
-        refetch(); // Refetch when filter, page, search, or sort change
-    }, [filter, page, search, sort,status, refetch]);
 
     return {
         isLoading,

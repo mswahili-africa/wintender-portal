@@ -19,15 +19,12 @@ interface IProps {
 export default function({groupId,...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: [props.applicationGroup?.id, props.page,props.status, props.sort, props?.search, props?.filter,props?.visibility],
+        queryKey: ["getDIFMApplications",props.applicationGroup?.id, props.page,props.status, props.sort, props?.search, props?.filter,props?.visibility],
         queryFn: () => getDoForMeApplication(groupId ,{page: props.page, size: 10, sort: props.sort,visibility:props.visibility, search: props.search, status: props.status, ...props.filter}),
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 600000,
+        refetchOnWindowFocus: false,
+        staleTime: 2 * 60 * 1000, 
     }); 
-
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort,props.status, props.visibility]);
 
     return {
         isLoading,

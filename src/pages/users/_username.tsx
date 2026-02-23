@@ -13,7 +13,7 @@ import { IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/spinners/Spinner";
 import useCategories from "@/hooks/useCategories";
-import { useUserData } from "@/hooks/useUserData";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 // JCM props interface
 interface UserProfileProps {
@@ -32,7 +32,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
 
     const { categories } = useCategories({ page: 0, size: 1000, search: "", filter: {} });
-    const { userData, loading } = useUserData();
+    const { userData, loading } = useUserDataContext();
 
 
     const accountOwner = (): boolean => {

@@ -17,7 +17,8 @@ export function useUserData() {
     const {data} = useQuery({
         queryKey: ["userData"],
         queryFn: () => tokenInfo(),
-
+        refetchOnWindowFocus: false,
+        staleTime: 10 * 60 * 1000,
         
     });
      useEffect(() => {
@@ -44,7 +45,7 @@ export function useUserData() {
         }
 
         
-    }, []);
+    }, [userDataCache.fetched, isAuthenticated()]);
 
     return { userData, loading, error };
 }

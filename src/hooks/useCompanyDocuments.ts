@@ -20,13 +20,9 @@ export default function({ account, ...props }: IProps) {
         queryFn: () => getDocuments(account,{ page: props.page, size: 10, sort: props.sort, search: props.search }),
         onError: (error: AxiosError) => handleError(error),
         enabled: !!account, 
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000
     });
-
-    useEffect(() => {
-        if (account) {
-            refetch();
-        }
-    }, [account, props.filter, props.page, props.search, props.sort]);
 
     return {
         isLoading,
