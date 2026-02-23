@@ -349,7 +349,7 @@ export default function PrivateTenders() {
                                     </button>
                                 </Tooltip>
                                 {
-                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY"].includes(userRole) && (
+                                    ["ADMINISTRATOR", "PUBLISHER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
                                         <>
                                             {
                                                 new Date(content?.closeDate) < new Date() && userRole === "PROCUREMENT_ENTITY" ?

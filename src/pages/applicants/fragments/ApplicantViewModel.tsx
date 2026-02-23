@@ -58,6 +58,26 @@ export default function ApplicantViewModal({
     isError,
   } = useTenderApplicationDetails({ id: applicant?.id });
 
+
+  /* ----------------------------- MUTATION ----------------------------- */
+  const reviewMutation = useMutation({
+    mutationFn: ({
+      id,
+      status,
+      comment,
+    }: {
+      id: string;
+      status: string;
+      comment?: string;
+    }) => reviewApplication(id, status, comment),
+    onSuccess: (res: any) => {
+      toast.success(res?.message || "Application reviewed");
+      setConfirmOpen(false);
+      onClose();
+    },
+    onError: () => toast.error("Failed to review application"),
+  });
+
   /* ----------------------------- SAFETY ----------------------------- */
   if (isLoading) return <SkeletonLoader />;
 
@@ -89,24 +109,7 @@ export default function ApplicantViewModal({
 
   const application = applicationDetails as ITenderApplication;
 
-  /* ----------------------------- MUTATION ----------------------------- */
-  const reviewMutation = useMutation({
-    mutationFn: ({
-      id,
-      status,
-      comment,
-    }: {
-      id: string;
-      status: string;
-      comment?: string;
-    }) => reviewApplication(id, status, comment),
-    onSuccess: (res: any) => {
-      toast.success(res?.message || "Application reviewed");
-      setConfirmOpen(false);
-      onClose();
-    },
-    onError: () => toast.error("Failed to review application"),
-  });
+  
 
   const openConfirm = (status: "ACCEPTED" | "REJECTED") => {
     setDecision({ id: applicant.id, status });
