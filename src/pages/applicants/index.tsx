@@ -45,18 +45,11 @@ export const ApplicantsList = () => {
         if (location.state?.tender) {
             setTenderDetails(location.state.tender);
         }
-    }, [location.state]);
-
-
-    useEffect(() => {
-
-        if (location.state?.tender) {
-            setTenderDetails(location.state.tender);
-        }
     }, [location.state.tender]);
 
+
     // Fetch data using custom hook
-    const { applicantList } = getApplications({
+    const { applicantList,refetch,isLoading } = getApplications({
         tenderId: tenderId!,
         page,
         search,
@@ -116,6 +109,7 @@ export const ApplicantsList = () => {
                     columns={columns}
                     data={applicantList?.content || []}
                     hasSelection={false}
+                    isLoading={isLoading}
                     hasActions={true}
                     onSorting={handleSorting}
                     actionSlot={(selectedApplicant: any) => (
@@ -232,6 +226,7 @@ export const ApplicantsList = () => {
                     onClose={handleModalClose}
                     applicant={handleModal.object}
                     title="Applicant details"
+                    refetch={refetch}
                 />
             }
 

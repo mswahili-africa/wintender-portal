@@ -18,7 +18,7 @@ import { IApplicationInterface } from "@/types/tenderWizard";
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
-  const [status, setStatus] = useState<any>("SUBMITTED");
+  const [status, setStatus] = useState<any>("PENDING");
   const [comment, setComment] = useState<any>({ value: "PENDING", label: "PENDING" });
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [viewOpen, setViewOpen] = useState<boolean>(false);
@@ -76,7 +76,7 @@ export default function SubmittedApplication() {
   }
 
   const handleSubmissions = (comment: any) => {
-    setStatus(comment?.value === "ACCEPTED" ? "CLOSED" : "SUBMITTED");
+    setStatus(comment?.value );
     setComment(comment);
 
   }
@@ -88,7 +88,7 @@ export default function SubmittedApplication() {
         <h2 className="text-lg font-bold">{t("tender-submissions-header")}</h2>
         <Select
           options={[
-            // { value: "PENDING", label: "Pending" },
+            { value: "PENDING", label: "Pending" },
             { value: "SUBMITTED", label: "Submitted" },
             { value: "REJECTED", label: "Evaluated" },
             { value: "AWARDED", label: "Awarded" },

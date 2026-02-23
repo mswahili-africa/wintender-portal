@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { listAllSubmittedApplication } from "@/services/tenders";
 
@@ -21,7 +20,6 @@ export function useSubmittedApplication({...props}: IProps) {
           onError: (error: AxiosError) => handleError(error),
           refetchInterval: 300000,
           refetchOnWindowFocus: false,
-          staleTime: 5 * 60 * 1000, // 5 minutes
       });
   
       return {

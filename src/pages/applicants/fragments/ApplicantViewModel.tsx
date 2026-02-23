@@ -19,6 +19,7 @@ interface ModalProps {
   applicant: { id: string };
   title?: string;
   onClose: () => void;
+  refetch?: () => void;
 }
 
 const InfoRow = ({
@@ -41,6 +42,7 @@ export default function ApplicantViewModal({
   applicant,
   title,
   onClose,
+  refetch
 }: ModalProps) {
   const { userData } = useUserDataContext();
 
@@ -73,6 +75,7 @@ export default function ApplicantViewModal({
     onSuccess: (res: any) => {
       toast.success(res?.message || "Application reviewed");
       setConfirmOpen(false);
+      refetch && refetch();
       onClose();
     },
     onError: () => toast.error("Failed to review application"),
