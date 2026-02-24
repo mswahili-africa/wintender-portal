@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { deleteBidder } from "@/services/user";
 import BidderProfileModal from "./fragments/bidderProfileModal";
-import useCategories from "@/hooks/useCategories";
+import {useSearchCategories} from "@/hooks/categoriesRepository";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
@@ -164,10 +164,11 @@ export default function Bidders() {
         ...appliedFilters
     });
 
-    const { categories: allCategories } = useCategories({
+    const { categories: allCategories } = useSearchCategories({
         page: 0,
         size: 1000,
         sort: "name,asc",
+        search: categorySearchTerm
     });
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {

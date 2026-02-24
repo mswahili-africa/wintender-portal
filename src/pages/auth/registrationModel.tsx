@@ -14,6 +14,8 @@ import Select from "react-select";
 import { ICategory } from "@/types";
 import { getCategories } from "@/services/tenders";
 import { useTranslation } from "react-i18next";
+import { useDebounce } from "@/hooks/useDebounce";
+import {useSearchCategories} from "@/hooks/categoriesRepository";
 
 interface IProps {
     onSuccess: () => void;
@@ -23,7 +25,7 @@ interface IProps {
     openDocuments?: () => void;
 }
 
-export default function RegistrationModel({ onSuccess, isOpen, onClose,openDocuments }: IProps) {
+export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocuments }: IProps) {
     const tanzaniaRegions = [
         "Arusha",
         "Dar es Salaam",
@@ -121,6 +123,8 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose,openDocum
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [agreeTerms, setAgreeTerms] = useState(false);
+    const [searchCategory, setSearchCategory] = useState<string>("");
+    const debouncedSearch = useDebounce(searchCategory, 500);
 
     const {
         register,
@@ -132,23 +136,17 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose,openDocum
         resolver: yupResolver(schema),
     });
 
-    useEffect(() => {
-        async function fetchCategories() {
-            try {
-                const data = await getCategories({
-                    page: 0,
-                    size: 1000,
-                    search: "",
-                    filter: {},
-                });
-                setCategories(data.content);
-            } catch (error) {
-                console.error("Failed to fetch categories", error);
-            }
-        }
+    const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
+        page: 0,
+        size: 5,
+        search: debouncedSearch
+    });
 
-        fetchCategories();
-    }, []);
+    useEffect(() => {
+        if (categoryList) {
+            setCategories(categoryList.content);
+        }
+    }, [categoryList]);
 
     useEffect(() => {
         const categoryIds = selectedCategories.map((c) => c.id);
@@ -347,12 +345,14 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose,openDocum
                         <div className="flex flex-row items-center justify-between">
                             <Select
                                 options={availableOptions}
+                                onInputChange={(inputValue)=>setSearchCategory(inputValue)}
                                 onChange={(selectedOption) => {
                                     const selected = categories.find((c) => c.id === selectedOption?.value);
                                     if (selected) addCategory(selected);
                                 }}
                                 placeholder={t("registration-form-search-category")}
                                 className="w-full"
+                                isLoading={categoryLoading}
                                 classNamePrefix="react-select"
                                 styles={customStyles}
                             />
@@ -410,7 +410,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose,openDocum
                             className="mr-2"
                         />
                         <label htmlFor="terms" className="text-sm gap-1" onClick={openDocuments}>
-                             {t("registration-form-agree")} <span  className="text-green-600 hover:underline hover:text-green-700">{t("registration-form-terms")}</span>
+                            {t("registration-form-agree")} <span className="text-green-600 hover:underline hover:text-green-700">{t("registration-form-terms")}</span>
                         </label>
                     </div>
                 </div>

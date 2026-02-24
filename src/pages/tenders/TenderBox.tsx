@@ -21,6 +21,9 @@ import useApiMutation from "@/hooks/useApiMutation";
 import TenderViewModal from "./fragments/tenderViewModelNew";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import { useDebounce } from "@/hooks/useDebounce";
+import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useEntities, useSearchEntities } from "@/hooks/entitiesRepository";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -40,6 +43,10 @@ export default function PrivateTenders() {
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [searchCategory, setSearchCategory] = useState<string>("");
+    const [searchEntity, setSearchEntity] = useState<string>("");
+    const debouncedSearch = useDebounce(searchCategory, 500);
+    const debouncedSearchEntity = useDebounce(searchEntity, 500);
 
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
 
@@ -114,71 +121,29 @@ export default function PrivateTenders() {
         setSort(`${field},${direction.toLowerCase()}`);
     }
 
-    const handleDelete = (content: ITenders) => {
-        showConfirmation({
-            theme: "danger",
-            title: "Delete Tender",
-            message: "This action cannot be undone. Please verify that you want to delete.",
-            onConfirm: () => deleteMutation.mutate(content),
-            onCancel: () => { }
-        })
-    }
+    const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
+        page: 0,
+        size: 5,
+        search: debouncedSearch
+    });
 
-    const fetchCategories = useCallback(async (search = "") => {
-        if (!search) {
-            setCategories([]);
-            return;
+    useEffect(() => {
+        if (categoryList) {
+            setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
         }
+    }, [categoryList]);
 
-        setLoading(true);
-        try {
-            const allEntities = await getCategories({ page: 0, size: 5, search });
-            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch categories", error);
-        } finally {
-            setLoading(false);
+    const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
+        page: 0,
+        size: 5,
+        search: debouncedSearchEntity
+    });
+
+    useEffect(() => {
+        if (entityList) {
+            setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
         }
-    }, []);
-
-    const debouncedFetchCategory = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchCategories(inputValue);
-            } else {
-                setCategories([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchCategories]
-    );
-
-    const fetchEntities = useCallback(async (search = "") => {
-        if (!search) {
-            setEntities([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const allEntities = await getEntities({ page: 0, size: 5, search });
-            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch entities", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const debouncedFetchEntities = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchEntities(inputValue);
-            } else {
-                setEntities([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchEntities]
-    );
+    }, [entityList]);
 
 
     // JCM Applicants List
@@ -239,9 +204,9 @@ export default function PrivateTenders() {
                         <div className="mb-2">
                             <Select
                                 options={entities}
-                                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                                onInputChange={(inputValue) => setSearchEntity(inputValue)}
                                 onChange={(selectedOption) => setTempSelectedEntity(selectedOption?.value)}
-                                isLoading={loading}
+                                isLoading={entityLoading}
                                 placeholder="Type..."
                             />
                         </div>
@@ -251,9 +216,9 @@ export default function PrivateTenders() {
                         <div className="mb-2">
                             <Select
                                 options={categories}
-                                onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
+                                onInputChange={(inputValue) => setSearchCategory(inputValue)}
                                 onChange={(selectedOption) => setTempSelectedCategory(selectedOption?.value)}
-                                isLoading={loading}
+                                isLoading={categoryLoading}
                                 placeholder="Type..."
                             />
                         </div>

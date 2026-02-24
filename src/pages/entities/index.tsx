@@ -5,7 +5,7 @@ import { IconAlertTriangle, IconBallpen, IconTrash, IconX } from "@tabler/icons-
 import { useState } from "react";
 import columns from "./fragments/entityColumns";
 import VendorForm from "./fragments/entityForm";
-import { useEntities } from "@/hooks/useEntities";
+import { useEntities } from "@/hooks/entitiesRepository";
 import Modal from "@/components/Modal";
 import Button from "@/components/button/Button";
 

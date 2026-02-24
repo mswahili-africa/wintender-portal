@@ -7,7 +7,7 @@ import Modal from "@/components/Modal";
 import Button from "@/components/button/Button";
 import { IconSend, IconX } from "@tabler/icons-react";
 import Loader from "@/components/spinners/Loader";
-import { useMessages } from "@/hooks/notificationRepository";
+import { useWhatsappMessages } from "@/hooks/notificationRepository";
 import { IContacts } from "@/types";
 import { IMessage } from "@/types/forms";
 import toast from "react-hot-toast";
@@ -23,7 +23,7 @@ export const ConversationModal = ({ open, onClose, contact }: TModal) => {
   const phoneNumber = contact?.phoneNumber;
   const queryClient = useQueryClient();
 
-  const { messages, isLoading, refetch } = useMessages({
+  const { messages, isLoading, refetch } = useWhatsappMessages({
     page: 0,
     size: 50,
     phoneNumber,

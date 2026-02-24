@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useCategories from "@/hooks/useCategories";
+import {useCategories} from "@/hooks/categoriesRepository";
 import columns from "./fragments/categoryColumns";
 import CategoryCreate from "./fragments/categoryCreateForm";
 import { IconAlertTriangle, IconTrash, IconX } from "@tabler/icons-react";

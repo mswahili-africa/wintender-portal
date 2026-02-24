@@ -22,6 +22,9 @@ import useApiMutation from "@/hooks/useApiMutation";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
+import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchEntities } from "@/hooks/entitiesRepository";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function InternationalTenders() {
     const [page, setPage] = useState<number>(0);
@@ -41,7 +44,10 @@ export default function InternationalTenders() {
     const [isDoItForMeLoading, setIsDoItForMeLoading] = useState(false);
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, tender: ITenders | null }>({ type: null, tender: null });
     const { t } = useTranslation();
-
+    const [searchCategory, setSearchCategory] = useState<string>("");
+    const [searchEntity, setSearchEntity] = useState<string>("");
+    const debouncedSearch = useDebounce(searchCategory, 500);
+    const debouncedSearchEntity = useDebounce(searchEntity, 500);
 
 
     const handleSearch = () => {
@@ -122,61 +128,29 @@ export default function InternationalTenders() {
         })
     }
 
-    const fetchCategories = useCallback(async (search = "") => {
-        if (!search) {
-            setCategories([]);
-            return;
+    const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
+        page: 0,
+        size: 5,
+        search: debouncedSearch
+    });
+
+    useEffect(() => {
+        if (categoryList) {
+            setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
         }
+    }, [categoryList]);
 
-        setLoading(true);
-        try {
-            const allEntities = await getCategories({ page: 0, size: 5, search });
-            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch categories", error);
-        } finally {
-            setLoading(false);
+    const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
+        page: 0,
+        size: 5,
+        search: debouncedSearchEntity
+    });
+
+    useEffect(() => {
+        if (entityList) {
+            setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
         }
-    }, []);
-
-    const debouncedFetchCategory = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchCategories(inputValue);
-            } else {
-                setCategories([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchCategories]
-    );
-
-    const fetchEntities = useCallback(async (search = "") => {
-        if (!search) {
-            setEntities([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const allEntities = await getEntities({ page: 0, size: 5, search });
-            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch entities", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const debouncedFetchEntities = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchEntities(inputValue);
-            } else {
-                setEntities([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchEntities]
-    );
+    }, [entityList]);
 
     const handleCloseModal = () => {
         setOpenModal({ type: null, tender: null });
@@ -208,12 +182,12 @@ export default function InternationalTenders() {
                 <h2 className="text-lg font-bold">{t("tender-international-header")}</h2>
                 {
                     ["PUBLISHER", "ADMINISTRATOR", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
-                    <PETenderCreateFormModal
-                        onSuccess={() => {
-                            refetch();
-                        }}
-                    />
-                )}
+                        <PETenderCreateFormModal
+                            onSuccess={() => {
+                                refetch();
+                            }}
+                        />
+                    )}
                 {(userRole === "BIDDER") && (
                     <Tooltip
                         content={t("tender-subscription-top-up-tooltip")}
@@ -261,9 +235,9 @@ export default function InternationalTenders() {
                         <div className="mb-2">
                             <Select
                                 options={entities}
-                                onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                                onInputChange={(inputValue) => setSearchEntity(inputValue)}
                                 onChange={(selectedOption) => setTempSelectedEntity(selectedOption?.value)}
-                                isLoading={loading}
+                                isLoading={entityLoading}
                                 placeholder="Type..."
                                 className="w-full sm:w-[300px]"
                             />
@@ -274,9 +248,9 @@ export default function InternationalTenders() {
                         <div className="mb-2">
                             <Select
                                 options={categories}
-                                onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
+                                onInputChange={(inputValue) => setSearchCategory(inputValue)}
                                 onChange={(selectedOption) => setTempSelectedCategory(selectedOption?.value)}
-                                isLoading={loading}
+                                isLoading={categoryLoading}
                                 placeholder="Type..."
                                 className="w-full sm:w-[300px]"
                             />

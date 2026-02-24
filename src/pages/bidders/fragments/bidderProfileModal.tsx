@@ -26,7 +26,7 @@ import { WalletButton } from "@/components/button/WalletButton";
 import columns from "@/pages/tenders/fragments/tenderColumns";
 import useTenders from "@/hooks/useTenders";
 import TenderViewModal from "@/pages/tenders/fragments/tenderViewModelNew";
-import useCategories from "@/hooks/useCategories";
+import {useCategories} from "@/hooks/categoriesRepository";
 import Loader from "@/components/spinners/Loader";
 import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";

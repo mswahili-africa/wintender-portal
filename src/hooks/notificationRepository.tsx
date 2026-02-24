@@ -1,4 +1,4 @@
-import { getContacts, getMessages } from "@/services/notificationServices";
+import { getContacts, getWhatsappMessages } from "@/services/notificationServices";
 import { useQuery } from "@tanstack/react-query";
 interface IQueryParams {
   page: number;
@@ -32,11 +32,11 @@ export function useContacts(props: IQueryParams) {
   return { isLoading, isError, contacts: data, refetch };
 }
 
-export function useMessages(props: IQueryParams) {
+export function useWhatsappMessages(props: IQueryParams) {
   const { isLoading, isError, data, refetch } = useQuery({
-    queryKey: ["getMessages", props.page, props.sort, props?.search, props?.filter, props?.phoneNumber],
+    queryKey: ["getWhatsappMessages", props.page, props.sort, props?.search, props?.filter, props?.phoneNumber],
     queryFn: () =>
-      getMessages({
+      getWhatsappMessages({
         page: props.page,
         size: props.size ?? 5,
         sort: props.sort,
@@ -44,7 +44,7 @@ export function useMessages(props: IQueryParams) {
         phoneNumber: props.phoneNumber,
         ...props.filter,
       }),
-    refetchInterval: 30000, // 30 seconds
+    refetchInterval: 120000, // 2 minutes
     refetchOnWindowFocus: false,
     staleTime: 1 * 60 * 1000,
   });

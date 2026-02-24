@@ -12,7 +12,7 @@ import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/spinners/Spinner";
-import useCategories from "@/hooks/useCategories";
+import {useCategories} from "@/hooks/categoriesRepository";
 import { useUserDataContext } from "@/providers/userDataProvider";
 
 // JCM props interface

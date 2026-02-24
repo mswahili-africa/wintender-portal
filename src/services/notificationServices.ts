@@ -11,7 +11,7 @@ export async function getContacts(params: IQueryParams) {
   return response.data;
 }
 
-export async function getMessages(params: IQueryParams) {
+export async function getWhatsappMessages(params: IQueryParams) {
   const response = await http.get<IlistResponse<IMessages>>(`commons/message/whatsapp/messages`, {
     params: {
       ...params,

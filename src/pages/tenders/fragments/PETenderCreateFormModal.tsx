@@ -20,6 +20,9 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import { motion } from "framer-motion";
 import { RequirementStage, RequirementItem } from "@/types/tenderWizard";
 import Modal from "@/components/widgets/Modal";
+import { useDebounce } from "@/hooks/useDebounce";
+import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchEntities } from "@/hooks/entitiesRepository";
 
 
 
@@ -71,6 +74,10 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER";
     const { t } = useTranslation();
+    const [searchCategory, setSearchCategory] = useState<string>("");
+    const [searchEntity, setSearchEntity] = useState<string>("");
+    const debouncedSearch = useDebounce(searchCategory, 500);
+    const debouncedSearchEntity = useDebounce(searchEntity, 500);
 
     const [marks, setMarks] = useState<number>(100);
     const [totalPercentage, setTotalPercentage] = useState<number>(0);
@@ -122,65 +129,29 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
     const openDate = watch("openDate");
 
-    const fetchEntities = useCallback(async (search = "") => {
-        if (!search) {
-            setEntities([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const allEntities = await getEntities({ page: 0, size: 5, search });
-            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch entities", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-
-    // Debounce the fetchEntities function
-    const debouncedFetchEntities = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 3 or more characters
-                fetchEntities(inputValue);
-            } else {
-                setEntities([]); // Clear entities if less than 3 characters
+    const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
+            page: 0,
+            size: 5,
+            search: debouncedSearch
+        });
+    
+        useEffect(() => {
+            if (categoryList) {
+                setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
             }
-        }, 5),
-        [fetchEntities]
-    );
-
-    // Fetch categories
-
-    const fetchCategories = useCallback(async (search = "") => {
-        if (!search) {
-            setCategories([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const allEntities = await getCategories({ page: 0, size: 5, search });
-            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch categories", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const debouncedFetchCategory = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchCategories(inputValue);
-            } else {
-                setCategories([]); // Clear entities if less than 5 characters
+        }, [categoryList]);
+    
+        const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
+            page: 0,
+            size: 5,
+            search: debouncedSearchEntity
+        });
+    
+        useEffect(() => {
+            if (entityList) {
+                setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
             }
-        }, 5),
-        [fetchCategories]
-    );
+        }, [entityList]);
 
     const addRequirement = (stage: RequirementStage) => {
         setRequirements((prev) => ({
@@ -301,9 +272,9 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                                 </label>
                                 <Select
                                     options={entities}
-                                    onInputChange={(inputValue) => debouncedFetchEntities(inputValue)} // Debounced fetch
+                                    onInputChange={(inputValue) => setSearchEntity(inputValue)} // Debounced fetch
                                     onChange={(selectedOption) => setValue("entityId", selectedOption?.value)}
-                                    isLoading={loading}
+                                    isLoading={entityLoading}
                                     placeholder="Search for a entity"
                                 />
                                 <p className="text-xs text-red-500 mt-1 mx-0.5">
@@ -321,9 +292,9 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
                             <Select
                                 options={categories}
-                                onInputChange={(inputValue) => debouncedFetchCategory(inputValue)} // Debounced fetch
+                                onInputChange={(inputValue) => setSearchCategory(inputValue)} // Debounced fetch
                                 onChange={(selectedOption) => setValue("categoryId", selectedOption?.value)}
-                                isLoading={loading}
+                                isLoading={categoryLoading}
                                 placeholder="Search for a category"
                             />
                             <p className="text-xs text-red-500 mt-1 mx-0.5">

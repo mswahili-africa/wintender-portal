@@ -28,7 +28,12 @@ export const UserDataProvider: React.FC<UserDataProviderProps> = ({ children }) 
         fetched: false,
     });
 
+    const hasFetchedRef = useRef(false);
+
     useEffect(() => {
+        if (hasFetchedRef.current) return;
+        hasFetchedRef.current = true;
+
         if (!isAuthenticated()) {
             setUserData(null);
             setLoading(false);
@@ -36,7 +41,7 @@ export const UserDataProvider: React.FC<UserDataProviderProps> = ({ children }) 
             return;
         }
 
-        // If data is already fetched from cache, update state without making an API call
+        // Serve from cache if available
         if (userDataCache.current.fetched) {
             setUserData(userDataCache.current.data);
             setLoading(false);
@@ -46,17 +51,17 @@ export const UserDataProvider: React.FC<UserDataProviderProps> = ({ children }) 
         const fetchUserData = async () => {
             try {
                 setLoading(true);
-                const data = await tokenInfo(); // Fetch data from API
+                const data = await tokenInfo();
 
-                userDataCache.current.data = data; // Store in cache
-                userDataCache.current.fetched = true;
-                setUserData(data); // Update state with the fetched data
+                userDataCache.current = {
+                    fetched: true,
+                    data,
+                };
+
+                setUserData(data);
             } catch (err) {
-
                 toast.error("Unauthorized. Please log in.");
-
                 authStore.logout();
-
             } finally {
                 setLoading(false);
             }

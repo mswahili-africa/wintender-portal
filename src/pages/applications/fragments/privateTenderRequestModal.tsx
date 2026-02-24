@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useState, useCallback, Fragment } from "react";
+import { useState, useCallback, Fragment, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { mixed, number, object, string } from "yup";
 import { useMutation } from "@tanstack/react-query";
@@ -17,6 +17,9 @@ import { ICompany, ITenders } from "@/types";
 import { ServiceAssigningForm } from "./ServiceAssigningForm";
 import Tabs from "@/components/widgets/Tabs";
 import { useTranslation } from "react-i18next";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useSearchEntities } from "@/hooks/entitiesRepository";
+import {useSearchCategories} from "@/hooks/categoriesRepository";
 
 interface IProps {
     open: boolean;
@@ -41,6 +44,10 @@ export default function PrivateTenderRequestModal({
     const [entities, setEntities] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
+    const [searchCategory, setSearchCategory] = useState<string>("");
+    const [searchEntity, setSearchEntity] = useState<string>("");
+    const debouncedSearch = useDebounce(searchCategory, 500);
+    const debouncedSearchEntity = useDebounce(searchEntity, 500);
 
     const schema = object().shape({
         tenderFile: mixed().required(t("difm-form-document-file-required")),
@@ -70,54 +77,29 @@ export default function PrivateTenderRequestModal({
 
     const openDate = watch("openDate");
 
-    // Fetch categories based on user input
-    const fetchCategories = useCallback(async (search: string) => {
-        if (!search || typeof search !== "string") return setCategories([]);
-        setLoading(true);
-        try {
-            const allCategories = await getCategories({ page: 0, size: 5, search });
-            setCategories(
-                allCategories.content.map((e: any) => ({
-                    value: e.id,
-                    label: e.name?.toUpperCase() || "UNKNOWN",
-                }))
-            );
-        } finally {
-            setLoading(false);
+    const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
+        page: 0,
+        size: 5,
+        search: debouncedSearch
+    });
+
+    useEffect(() => {
+        if (categoryList) {
+            setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
         }
-    }, []);
+    }, [categoryList]);
 
-    // Fetch entities based on user input
-    const fetchEntities = useCallback(async (search: string) => {
-        if (!search || typeof search !== "string") return setEntities([]);
-        setLoading(true);
-        try {
-            const allEntities = await getEntities({ page: 0, size: 5, search });
-            setEntities(
-                allEntities.content.map((e: any) => ({
-                    value: e.id,
-                    label: e.name?.toUpperCase() || "UNKNOWN",
-                }))
-            );
-        } finally {
-            setLoading(false);
+    const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
+        page: 0,
+        size: 5,
+        search: debouncedSearchEntity
+    });
+
+    useEffect(() => {
+        if (entityList) {
+            setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
         }
-    }, []);
-
-    // Debounce category and entity fetch calls
-    const debouncedFetchCategories = useCallback(
-        debounce((inputValue: string) => {
-            if (typeof inputValue === "string") fetchCategories(inputValue);
-        }, 300),
-        [fetchCategories]
-    );
-
-    const debouncedFetchEntities = useCallback(
-        debounce((inputValue: string) => {
-            if (typeof inputValue === "string") fetchEntities(inputValue);
-        }, 300),
-        [fetchEntities]
-    );
+    }, [entityList]);
 
     const uploadTenderMutation = useMutation({
         mutationFn: (data: FormData) => createTender(data),
@@ -227,9 +209,9 @@ export default function PrivateTenderRequestModal({
                         <label className="block mb-1">{t("difm-form-category")}</label>
                         <Select
                             options={categories}
-                            onInputChange={(inputValue) => debouncedFetchCategories(inputValue)}
+                            onInputChange={(inputValue) => setSearchCategory(inputValue)}
                             onChange={(opt) => setValue("categoryId", opt?.value)}
-                            isLoading={loading}
+                            isLoading={categoryLoading}
                             placeholder="Search categories..."
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
@@ -242,9 +224,9 @@ export default function PrivateTenderRequestModal({
                         <label className="block mb-1">{t("difm-form-entity")}</label>
                         <Select
                             options={entities}
-                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                            onInputChange={(inputValue) => setSearchEntity(inputValue)}
                             onChange={(opt) => setValue("entityId", opt?.value)}
-                            isLoading={loading}
+                            isLoading={entityLoading}
                             placeholder="Search entities..."
                         />
                     </div>

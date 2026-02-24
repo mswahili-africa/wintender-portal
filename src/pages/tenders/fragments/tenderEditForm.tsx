@@ -6,14 +6,16 @@ import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { number, object, string } from "yup";
+import {  object, string } from "yup";
 import Select from "react-select";
-import { debounce } from "lodash";
 import { TextEditor } from "@/components/editor/TextEditor";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import  {useSearchCategories}  from "@/hooks/categoriesRepository";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useSearchEntities } from "@/hooks/entitiesRepository";
 
 interface IProps {
     open: boolean;
@@ -39,9 +41,12 @@ export default function TenderEdit({ onSuccess, initials, onClose, open = false 
     const [tenderFile, setTenderFile] = useState<string | any>();
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
     const { userData } = useUserDataContext();
     const userRole = userData?.role || "BIDDER";
+    const [searchCategory, setSearchCategory] = useState<string>("");
+    const [searchEntity, setSearchEntity] = useState<string>("");
+    const debouncedSearch = useDebounce(searchCategory, 500);
+    const debouncedSearchEntity = useDebounce(searchEntity, 500);
 
 
     const {
@@ -124,62 +129,31 @@ export default function TenderEdit({ onSuccess, initials, onClose, open = false 
         }
     });
 
-    const fetchEntities = useCallback(async (search = "") => {
-        if (!search) {
-            setEntities([]);
-            return;
+    const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
+        page: 0,
+        size: 5,
+        search: debouncedSearch
+    });
+
+    useEffect(() => {
+        if (categoryList) {
+            setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
         }
+    }, [categoryList]);
 
-        setLoading(true);
-        try {
-            const allEntities = await getEntities({ page: 0, size: 5, search });
-            setEntities(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch entities", error);
-        } finally {
-            setLoading(false);
+    const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
+        page: 0,
+        size: 5,
+        search: debouncedSearchEntity
+    });
+
+    useEffect(() => {
+        if (entityList) {
+            setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
         }
-    }, []);
+    }, [entityList]);
 
-    const debouncedFetchEntities = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchEntities(inputValue);
-            } else {
-                setEntities([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchEntities]
-    );
-
-
-    const fetchCategories = useCallback(async (search = "") => {
-        if (!search) {
-            setCategories([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const allEntities = await getCategories({ page: 0, size: 5, search });
-            setCategories(allEntities.content.map(e => ({ value: e.id, label: e.name.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch categories", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const debouncedFetchCategory = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchCategories(inputValue);
-            } else {
-                setCategories([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchCategories]
-    );
+    
 
     // Handle form submission
     const submit = (data: Record<string, any>) => {
@@ -197,7 +171,7 @@ export default function TenderEdit({ onSuccess, initials, onClose, open = false 
         formData.append("tenderType", data.tenderType);
         if (data.categoryId !== null) {
             formData.append("categoryId", data.categoryId?.value || "");
-        }else {
+        } else {
             return toast.error("Please select a category");
         }
         formData.append(
@@ -290,9 +264,9 @@ export default function TenderEdit({ onSuccess, initials, onClose, open = false 
                         <Select
                             options={entities}
                             value={watch("entityId") || null}   // expects object
-                            onInputChange={(inputValue) => debouncedFetchEntities(inputValue)}
+                            onInputChange={(inputValue) => setSearchEntity(inputValue)}
                             onChange={(selectedOption) => setValue("entityId", selectedOption)} // store object
-                            isLoading={loading}
+                            isLoading={entityLoading}
                             placeholder="Search for an entity"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
@@ -311,9 +285,9 @@ export default function TenderEdit({ onSuccess, initials, onClose, open = false 
                     <Select
                         options={categories}
                         value={watch("categoryId") || null} // expects object
-                        onInputChange={(inputValue) => debouncedFetchCategory(inputValue)}
+                        onInputChange={(inputValue) => setSearchCategory(inputValue)}
                         onChange={(selectedOption) => setValue("categoryId", selectedOption)} // store object
-                        isLoading={loading}
+                        isLoading={categoryLoading}
                         placeholder="Search for a category"
                     />
 

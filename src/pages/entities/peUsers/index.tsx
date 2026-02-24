@@ -12,7 +12,7 @@ import SMSModal from "./fragments/smsModel";
 import { sendMessageSingle } from "@/services/commons";
 import { resetUser } from "@/services/auth";
 import BidderProfileModal from "./fragments/peModal";
-import { usePEUsers } from "@/hooks/useEntities";
+import { usePEUsers } from "@/hooks/entitiesRepository";
 import UserForm from "./fragments/userForm";
 
 export default function ProcurementEntities() {
