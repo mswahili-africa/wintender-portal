@@ -20,9 +20,10 @@ interface IProps {
     initials?: any;
     isOpen: boolean;
     onClose: () => void;
+    openDocuments?: () => void;
 }
 
-export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps) {
+export default function RegistrationModel({ onSuccess, isOpen, onClose,openDocuments }: IProps) {
     const tanzaniaRegions = [
         "Arusha",
         "Dar es Salaam",
@@ -408,8 +409,8 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose }: IProps
                             required
                             className="mr-2"
                         />
-                        <label htmlFor="terms" className="text-sm gap-1">
-                             {t("registration-form-agree")} <a href="#" target="_blank" className="text-green-600 hover:underline hover:text-green-700">{t("registration-form-terms")}</a>
+                        <label htmlFor="terms" className="text-sm gap-1" onClick={openDocuments}>
+                             {t("registration-form-agree")} <span  className="text-green-600 hover:underline hover:text-green-700">{t("registration-form-terms")}</span>
                         </label>
                     </div>
                 </div>

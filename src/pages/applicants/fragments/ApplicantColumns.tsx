@@ -35,7 +35,7 @@ const ApplicantsColumns: IColumn[] = [
         case "SUBMITTED":
           theme = "warning";
           break;
-        case "COMPLETED":
+        case "AWARDED":
           theme = "primary";
           break;
         default:

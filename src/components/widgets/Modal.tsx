@@ -4,7 +4,7 @@ import { Fragment, ReactNode } from "react";
 
 type TProps = {
     isOpen: boolean
-    size: "xs" | "sm" | "md" | "lg" | "xl"
+    size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl"
     title: string
     zIndex?: number
     children: ReactNode
@@ -26,6 +26,10 @@ export default function({...props}: TProps) {
                 return "w-full md:max-w-2xl xl:max-w-3xl"
             case "xl":
                 return "w-full max-w-3xl xl:max-w-5xl"
+            case "2xl":
+                return "w-full max-w-4xl xl:max-w-6xl"
+            case "3xl":
+                return "w-full max-w-5xl xl:max-w-7xl"
             default:
                 return "w-full max-w-md"
         }

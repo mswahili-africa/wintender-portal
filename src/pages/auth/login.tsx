@@ -13,6 +13,8 @@ import { ILoginForm } from "@/types/forms";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import CompanyDocumentsModal from "./CompanyDocumentsModal";
+import { set } from "lodash";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -21,6 +23,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const { t } = useTranslation();
     const { changeLanguage, language } = useLanguage();
+    const [openDocumentModal, setOpenDocumentModal] = useState<boolean>(false);
 
     const {
         register,
@@ -53,53 +56,60 @@ export default function Login() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-slate-50 px-4 relative">
-            <div className="text-xs h-fit absolute bottom-2  sm:top-2 flex flex-col gap-y-2 sm:gap-y-0 sm:flex-row justify-end w-full mb-2">
-                {/* Toggle */}
-                <div className="flex items-center bg-slate-100 rounded-full p-1 text-xs font-semibold transition-all duration-200 ease-in-out">
-                    <button
-                        onClick={() => changeLanguage("en")}
-                        className={`px-3 py-1 rounded-full transition cursor-pointer 
+            <div className="text-xs px-3 h-fit absolute bottom-2  sm:top-2 flex flex-col gap-y-2 sm:gap-y-0 sm:flex-row justify-between w-full mb-2">
+                <Button
+                    label={t("auth-documents")}
+                    theme="secondary"
+                    size="sm"
+                    onClick={() => setOpenDocumentModal(true)}
+                />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    {/* Toggle */}
+                    <div className="flex items-center bg-slate-100 rounded-full p-1 text-xs font-semibold transition-all duration-200 ease-in-out">
+                        <button
+                            onClick={() => changeLanguage("en")}
+                            className={`px-3 py-1 rounded-full transition cursor-pointer 
             ${language === "en"
-                                ? "bg-green-600 text-white shadow"
-                                : "text-slate-600 hover:text-slate-800"
-                            }
+                                    ? "bg-green-600 text-white shadow"
+                                    : "text-slate-600 hover:text-slate-800"
+                                }
           `}
-                    >
-                        EN
-                    </button>
+                        >
+                            EN
+                        </button>
 
-                    <button
-                        onClick={() => changeLanguage("sw")}
-                        className={`px-3 py-1 rounded-full transition cursor-pointer 
+                        <button
+                            onClick={() => changeLanguage("sw")}
+                            className={`px-3 py-1 rounded-full transition cursor-pointer 
             ${language === "sw"
-                                ? "bg-green-600 text-white shadow"
-                                : "text-slate-600 hover:text-slate-800"
-                            }
+                                    ? "bg-green-600 text-white shadow"
+                                    : "text-slate-600 hover:text-slate-800"
+                                }
           `}
+                        >
+                            SW
+                        </button>
+                    </div>
+                    <a href="tel:0747098558" target="_blank">
+                        <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
+                            <div className="pr-3"><IconPhoneCall size={22} className="text-green-600" stroke={2} /></div>
+                            <span>+255 747 098 558</span>
+                        </div>
+                    </a>
+                    <a href="https://wa.me/+255766028558" target="_blank">
+                        <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
+                            <div className="pr-3"><IconBrandWhatsapp size={22} className="text-green-600" stroke={2} /></div>
+                            <span>WhatsApp</span>
+                        </div>
+                    </a>
+                    <a target="_blank"
+                        href="mailto:info@wintender.co.tz"
+                        className="flex items-center px-4 flex-row rounded-md hover:bg-slate-100"
                     >
-                        SW
-                    </button>
-                </div>
-                <a href="tel:0747098558" target="_blank">
-                    <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
-                        <div className="pr-3"><IconPhoneCall size={22} className="text-green-600" stroke={2} /></div>
-                        <span>+255 747 098 558</span>
-                    </div>
-                </a>
-                <a href="https://wa.me/+255766028558" target="_blank">
-                    <div className={`flex items-center px-4 flex-row rounded-md hover:bg-slate-100`}>
-                        <div className="pr-3"><IconBrandWhatsapp size={22} className="text-green-600" stroke={2} /></div>
-                        <span>WhatsApp</span>
-                    </div>
-                </a>
-                <a target="_blank"
-                    href="mailto:info@wintender.co.tz"
-                    className="flex items-center px-4 flex-row rounded-md hover:bg-slate-100"
-                >
-                    <IconMail size={22} className="text-green-600 mr-3" stroke={2} />
-                    <span>info@wintender.co.tz</span>
-                </a>
-                {/* <a
+                        <IconMail size={22} className="text-green-600 mr-3" stroke={2} />
+                        <span>info@wintender.co.tz</span>
+                    </a>
+                    {/* <a
                     href="/documents/Wintender-Supplier-Guide-opt.pdf"
                     download
                     target="_blank"
@@ -109,7 +119,7 @@ export default function Login() {
                     <span>{t("auth-user-guide")}</span>
                 </a> */}
 
-
+                </div>
 
             </div>
             <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-md shadow-sm">
@@ -181,7 +191,14 @@ export default function Login() {
                 initials={null}
                 isOpen={create}
                 onClose={() => setCreate(false)}
+                openDocuments={() => {
+                    setCreate(false);
+                    setOpenDocumentModal(true);
+                }
+                }
             />
+
+            <CompanyDocumentsModal isOpen={openDocumentModal} onClose={() => setOpenDocumentModal(false)} />
         </div>
     );
 }

@@ -148,7 +148,7 @@ export default function ApplicantViewModal({
         <div className="px-6 py-3 border-b bg-slate-50 flex justify-between items-center">
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold
-              ${application.status === "ACCEPTED"
+              ${application.status === "AWARDED"
                 ? "bg-green-100 text-green-700"
                 : application.status === "REJECTED"
                   ? "bg-red-100 text-red-700"

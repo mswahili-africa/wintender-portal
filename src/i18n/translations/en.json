@@ -49,6 +49,8 @@
     "auth-login-forgot-password-link": "Forgot Password?",
     "auth-login-create-account-button": "Register",
     "auth-user-guide": "User Guide",
+    "auth-documents": "Documents",
+    "auth-guide-documents": "Guide & Documents",
 
     "registration-form-title": "Registration",
     "registration-form-company-address": "Company Address",
