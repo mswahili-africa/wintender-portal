@@ -55,17 +55,17 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: false,
     element: (value: string) => {
-      let theme: 'success' | 'warning' | 'primary' | 'danger' | 'approved';
+      let theme: 'success' | 'warning' | 'primary' | 'danger' | 'approved'|"pending";
 
       switch (value) {
         case 'AWARDED':
           theme = 'approved';
           break;
         case 'PENDING':
-          theme = 'warning';
+          theme = 'pending';
           break;
         case 'SUBMITTED':
-          theme = 'primary';
+          theme = 'success';
           break;
         case 'REJECTED':
           theme = 'danger';
@@ -79,7 +79,7 @@ const columns: IColumn[] = [
           label={value}
           size="sm"
           theme={theme}
-          variant="outline"
+          variant="pastel"
         />
       );
     }

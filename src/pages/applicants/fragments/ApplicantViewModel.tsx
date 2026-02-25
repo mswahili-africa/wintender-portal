@@ -150,7 +150,9 @@ export default function ApplicantViewModal({
             className={`px-3 py-1 rounded-full text-xs font-semibold
               ${application.status === "AWARDED"
                 ? "bg-green-100 text-green-700"
-                : application.status === "REJECTED"
+                : application.status === "CLOSED"
+                ? "bg-orange-100 text-orange-700"
+                : ["REJECTED"].includes(application.status) 
                   ? "bg-red-100 text-red-700"
                   : "bg-blue-100 text-blue-700"
               }`}

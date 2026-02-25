@@ -1,9 +1,10 @@
 import { IconX } from "@tabler/icons-react";
+import _ from "lodash";
 import React, { Fragment } from "react";
 
 type ChipProps = {
     theme?: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
-    variant?: "outline" | "lighter"
+    variant?: "outline" | "lighter" | "pastel";
     size?: string;
     label: string;
     avatar?: string | JSX.Element;
@@ -55,21 +56,25 @@ const Chip: React.FC<ChipProps> = ({
             case "danger":
                 return "red-600";
             case "approved":
-                    return "blue-600";
+                return "blue-600";
             default:
                 return "slate-200";
         }
     }
 
+    
     const computeVariant = () => {
         let _theme = computeTheme();
-        
-        if(_theme) {
+        let pastelBg = _theme != 'slate-200' ? _theme.replace("600", "100") : 'slate-50';
+
+        if (_theme) {
             switch (variant) {
                 case "outline":
                     return `text-${_theme} border border-${_theme} bg-white`
                 case "lighter":
                     return `text-${_theme} border border-${_theme} bg-${_theme} bg-opacity-10`
+                case "pastel":
+                    return `text-${_theme} bg-${pastelBg} font-extrabold`
                 default:
                     return `text-white border border-${_theme} bg-${_theme}`
             }
@@ -92,7 +97,7 @@ const Chip: React.FC<ChipProps> = ({
 
     return (
         <Fragment>
-            { 
+            {
                 computeVariant() &&
                 <div
                     className={`max-w-max flex flex-row whitespace-nowrap justify-center items-center px-3 py-1 rounded-lg font-medium uppercase ${computeVariant()} ${computeSize()}`}
@@ -103,7 +108,7 @@ const Chip: React.FC<ChipProps> = ({
                     {
                         isDeletable &&
                         <button onClick={handleDelete} className="ml-2 p-px rounded-full focus:outline-none">
-                            <IconX className="h-3 w-3"/>
+                            <IconX className="h-3 w-3" />
                         </button>
                     }
                 </div>
