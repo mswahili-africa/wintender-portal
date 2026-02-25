@@ -18,8 +18,8 @@ import { IApplicationInterface } from "@/types/tenderWizard";
 export default function SubmittedApplication() {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>();
-  const [status, setStatus] = useState<any>("PENDING");
-  const [comment, setComment] = useState<any>({ value: "PENDING", label: "PENDING" });
+  const [status, setStatus] = useState<any>("");
+  const [comment, setComment] = useState<any>({ value: "", label: "ALL" });
   const [sort, setSort] = useState<string>("createdAt,desc");
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -36,7 +36,7 @@ export default function SubmittedApplication() {
     search: search,
     sort: sort,
     filter: filter,
-    status: status,
+    status: status ? status : null,
   });
 
   const deleteMutation = useMutation({
@@ -88,6 +88,7 @@ export default function SubmittedApplication() {
         <h2 className="text-lg font-bold">{t("tender-submissions-header")}</h2>
         <Select
           options={[
+            { value: "", label: "All" },
             { value: "PENDING", label: "Pending" },
             { value: "SUBMITTED", label: "Submitted" },
             { value: "REJECTED", label: "Evaluated" },
@@ -95,6 +96,7 @@ export default function SubmittedApplication() {
           ]}
           onChange={(e) => handleSubmissions({ value: e?.value, label: e?.label })}
           placeholder="Filter by"
+          className="w-52"
           value={comment}
         />
       </div>
