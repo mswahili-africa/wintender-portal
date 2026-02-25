@@ -19,7 +19,10 @@ export default function({...props}: IProps) {
         queryFn: () => getTendersInternational({page: props.page, size: 30, sort: props.sort, search: props.search,eligibility:props.eligibility}),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,
-        staleTime: 2*60 * 1000,
+        refetchOnMount: false,
+        retry: 1,
+        cacheTime: 10 * 60 * 1000,
+        staleTime: 5*60 * 1000,
     });
 
     return {

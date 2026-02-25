@@ -14,9 +14,13 @@ export default function({...props}: IProps) {
         queryKey: ["getClarifications",props.id],
         queryFn: () => getClarifications(props.id), 
         onError: (error: AxiosError) => handleError(error),
-        refetchInterval: 300000,
+        refetchInterval: 1500000,
         refetchOnWindowFocus: false,
-        staleTime: 3 * 60 * 1000
+        refetchOnReconnect: false,
+        refetchOnMount: false,
+        retry: 1,
+        cacheTime: 30 * 60 * 1000,
+        staleTime: 5 * 60 * 1000
     });
 
     return {

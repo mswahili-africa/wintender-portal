@@ -32,7 +32,6 @@ export function useEntities(props: IProps) {
                 sort: props.sort,
                 search: props.search,
             }),
-        enabled: typeof props.search === "string" ? props.search.length >= 3 : true,
         staleTime: 5 * 60 * 1000,
         refetchInterval: 300000,
         refetchOnWindowFocus: false,

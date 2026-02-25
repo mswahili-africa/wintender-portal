@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { getTendersPrivate } from "@/services/tenders";
 
@@ -20,8 +19,12 @@ export default function({...props}: IProps) {
         queryKey: ["getTendersPrivate", props.page, props.sort, props?.search, props?.filter,props?.eligibility],
         queryFn: () => getTendersPrivate({page: props.page, size: 30, sort: props.sort, search: props.search,categories:props.categories,eligibility:props.eligibility}),
         onError: (error: AxiosError) => handleError(error),
+        refetchInterval: 600000,
         refetchOnWindowFocus: false,
-        staleTime: 1 * 60 * 1000,
+        refetchOnMount: false,
+        retry:1,
+        cacheTime: 10 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
     });
 
     return {

@@ -18,8 +18,9 @@ export function useUserData() {
         queryKey: ["userData"],
         queryFn: () => tokenInfo(),
         refetchOnWindowFocus: false,
-        staleTime: 10 * 60 * 1000,
-        
+        refetchOnMount: false,
+        cacheTime: 30 * 60 * 1000,
+        staleTime: 15 * 60 * 1000,
     });
      useEffect(() => {
         if(data){

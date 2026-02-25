@@ -44,6 +44,7 @@ export function getAllPayments({
       onError: (error: AxiosError) => handleError(error),
       refetchInterval: 120000,// 2 minutes
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
       staleTime: 1 * 60 * 1000
     });
   
@@ -71,8 +72,10 @@ export function getUserPayments({ userId, ...props }: IProps) { // userId is des
                 filter: props.filter,
             }),
         onError: (error: AxiosError) => handleError(error),
-        staleTime: 1 * 60 * 1000, // 1 minute
+        staleTime: 5 * 60 * 1000, // 1 minute
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchOnMount: false,
     });
 
     return {

@@ -18,6 +18,9 @@ export const useBillboards = ({...props}: IProps) =>{
         queryFn: () => getBillboards(),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        retry: 1,
         staleTime: 6 * 60 * 1000,
 
     }); 

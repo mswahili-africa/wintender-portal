@@ -12,9 +12,9 @@ interface IQueryParams {
 }
 
 
-export function useContacts(props: IQueryParams) {
+export function useWhatsappContacts(props: IQueryParams, options?: { enabled?: boolean }) {
   const { isLoading, isError, data, refetch } = useQuery({
-    queryKey: ["getContacts", props.page, props.sort, props?.search, props?.filter, props?.phoneNumber],
+    queryKey: ["getWhatsappContacts", props.page, props.sort, props?.search, props?.filter, props?.phoneNumber],
     queryFn: () =>
       getContacts({
         page: props.page,
@@ -25,6 +25,7 @@ export function useContacts(props: IQueryParams) {
         ...props.filter,
       }),
     refetchInterval: 300000, // 5 minutes
+    enabled: options?.enabled ?? true,
     refetchOnWindowFocus: false,
     staleTime: 1 * 60 * 1000,
   });
@@ -32,7 +33,7 @@ export function useContacts(props: IQueryParams) {
   return { isLoading, isError, contacts: data, refetch };
 }
 
-export function useWhatsappMessages(props: IQueryParams) {
+export function useWhatsappMessages(props: IQueryParams, options?: { enabled?: boolean }) {
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: ["getWhatsappMessages", props.page, props.sort, props?.search, props?.filter, props?.phoneNumber],
     queryFn: () =>
@@ -46,6 +47,7 @@ export function useWhatsappMessages(props: IQueryParams) {
       }),
     refetchInterval: 120000, // 2 minutes
     refetchOnWindowFocus: false,
+    enabled: options?.enabled ?? true,
     staleTime: 1 * 60 * 1000,
   });
 

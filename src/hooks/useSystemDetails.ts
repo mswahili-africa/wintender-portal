@@ -25,10 +25,6 @@ export function useSystemLogs({ ...props }: IProps) {
 
     });
 
-    useEffect(() => {
-        refetch();
-    }, [props.filter, props.page, props.search, props.sort]);
-
     return {
         isLoading,
         isError,
@@ -56,7 +52,7 @@ export function useSystemHealth() {
 
 export function useSummary() {
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getSystemHealth"],
+        queryKey: ["getSummaryReport"],
         queryFn: () => getSummaryReport(),
 
         refetchInterval: 3000000, 

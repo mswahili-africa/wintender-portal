@@ -22,6 +22,8 @@ export default function({...props}: IProps) {
         queryFn: () => getBidders({page: props.page, size: 10, sort: props.sort, search: props.search, address: props.address, categories: props.categories, subscriptionDate: props.subscriptionDate}),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        cacheTime: 5 * 60 * 1000,
         staleTime: 2 * 60 * 1000
     });
 

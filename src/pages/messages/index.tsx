@@ -4,7 +4,7 @@ import columns from "./fragments/columns";
 import { IconMessage, IconRefresh } from "@tabler/icons-react";
 import { useState } from "react";
 import { ConversationModal } from "./fragments/ConversationModal";
-import { useContacts } from "@/hooks/notificationRepository";
+import { useWhatsappContacts } from "@/hooks/notificationRepository";
 import { IContacts } from "@/types";
 import Button from "@/components/button/Button";
 import Pagination from "@/components/widgets/table/Pagination";
@@ -25,7 +25,7 @@ export default function Messages() {
         });
     }
 
-    const { contacts, refetch, isLoading } = useContacts({ page: page, size: 10 });
+    const { contacts, refetch, isLoading } = useWhatsappContacts({ page: page, size: 10 });
 
     return (
         <div>

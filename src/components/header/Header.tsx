@@ -17,7 +17,7 @@ import WalletPaymentModal from "@/pages/payments/fragments/WalletPaymentModel";
 import { useState } from "react";
 import PaymentModal from "@/pages/payments/fragments/PaymentModel";
 import { WalletButton } from "../button/WalletButton";
-import { useContacts } from "@/hooks/notificationRepository";
+import { useWhatsappContacts } from "@/hooks/notificationRepository";
 import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
 import Tooltip from "../tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
@@ -52,7 +52,10 @@ const Header = () => {
     const walletBalance = user?.userData?.walletAmount;
     const subscription = user?.userData?.subscription;
 
-    const { contacts } = useContacts({ page: 0, size: 10 });
+    const { contacts } = useWhatsappContacts(
+        { page: 0, size: 10 },
+        { enabled: !["BIDDER", "PROCUREMENT_ENTITY","PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(user?.userData?.role as string) }
+    );
 
 
     return (
