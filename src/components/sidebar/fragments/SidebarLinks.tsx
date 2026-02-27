@@ -7,7 +7,7 @@ import { UserRole } from "@/utils";
 import { IconBook, IconBrandWhatsapp, IconMail, IconPaperBag, IconPdf, IconPhoneCall } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import CompanyDocumentsModal from "@/pages/auth/CompanyDocumentsModal";
+import CompanyDocumentsModal from "@/pages/system/system-documents/CompanyDocumentsModal";
 
 export default function SidebarLinks() {
     const location = useLocation();

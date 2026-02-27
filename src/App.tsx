@@ -27,7 +27,7 @@ import ApplicationGroups from "./pages/applications/doItForMe";
 import CompanyPlans from "./pages/plans";
 import ApplicationInvoice from "./pages/applications/fragments/ApplicationInvoice";
 import { UserDataProvider } from "./providers/userDataProvider";
-import LoginAttempts from "./pages/login-attempts";
+import LoginAttempts from "./pages/system/login-attempts";
 import Consultation from "./pages/consultation";
 import ConsultationApplication from "./pages/consultation/applicatons";
 import ProcurementEntities from "./pages/entities/peUsers";
@@ -35,11 +35,12 @@ import SubmittedApplication from "./pages/applications/selfSubmited";
 import { ApplicantsList } from "./pages/applicants/index";
 import TenderBox from "./pages/tenders/TenderBox";
 import GovernmentTenders from "./pages/tenders/government-tenders";
-import Settings from "./pages/settings";
-import SystemHealth from "./pages/system-health";
-import SystemLogs from "./pages/system-health/System-logs";
+import Settings from "./pages/system/settings";
 import Messages from "./pages/messages";
 import FloatingChatButton from "./ai/components/FloatingChatButton";
+import SystemHealth from "./pages/system/system-health";
+import SystemLogs from "./pages/system/system-health/System-logs";
+import { InvoicePage } from "./pages/payments/InvoicePage";
 
 export const queryClient = new QueryClient({});
 
@@ -77,6 +78,7 @@ function App() {
                                 <Route path="/tenders/:tenderId/applicants" element={<ApplicantsList />} />
 
                                 <Route path="payments" element={<Payments />} />
+                                <Route path="invoices" element={<InvoicePage />} />
                                 <Route path="categories" element={<Categories />} />
                                 <Route path="consultation" element={<Consultation />} />
                                 <Route path="consultation-application" element={<ConsultationApplication />} />

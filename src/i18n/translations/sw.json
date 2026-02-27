@@ -41,6 +41,7 @@
     "menu-settings": "Mipangilio",
     "menu-logs": "Kumbukumbu",
     "menu-health": "Afya",
+    "menu-invoices": "Ankara",
 
     "auth-login-header": "Ingia katika mfumo",
     "auth-login-username": "Barua pepe",
@@ -49,7 +50,7 @@
     "auth-login-forgot-password-link":"Umesahau neno siri lako?",
     "auth-login-create-account-button":"Jisajili",
     "auth-user-guide": "Mwongozo wa Mtumiaji",
-    "auth-documents": "Nyaraka za Kampuni",
+    "auth-documents": "Sera za Kampuni",
     "auth-guide-documents": "Mwongozo & Nyaraka",
 
     "registration-form-title": "Usajili",

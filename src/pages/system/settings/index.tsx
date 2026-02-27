@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import Modal from "@/components/Modal";
 import { useEffect, useState } from "react";
 import { set } from "lodash";
+import { BackupSettings } from "./BackupSettings";
 
 const settingsSchema = yup.object().shape({
     general: generalSchema,
@@ -68,10 +69,11 @@ export default function Settings() {
                 }
             </div>
 
-            <Tabs panels={["General", "SMS", "Payment"]}>
+            <Tabs panels={["General", "SMS", "Payment", "Backup & Reports"]}>
                 <GeneralSettings control={control} />
                 <SMSSettings control={control} />
                 <PaymentSettings control={control} />
+                <BackupSettings />
             </Tabs>
 
 

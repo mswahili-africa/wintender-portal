@@ -12,10 +12,9 @@ import TextInput from "@/components/widgets/forms/TextInput";
 import * as yup from "yup";
 import Select from "react-select";
 import { ICategory } from "@/types";
-import { getCategories } from "@/services/tenders";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "@/hooks/useDebounce";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
 
 interface IProps {
     onSuccess: () => void;
@@ -69,11 +68,13 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
     const schema = yup.object().shape({
         firstName: yup
             .string()
-            .required(t("registration-form-first-name-required")),
+            .required(t("registration-form-first-name-required"))
+            .min(3, "First name must be at least 3 characters long"),
 
         lastName: yup
             .string()
-            .required(t("registration-form-last-name-required")),
+            .required(t("registration-form-last-name-required"))
+            .min(3, "Last name must be at least 3 characters long"),
 
         email: yup
             .string()
@@ -82,7 +83,8 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
 
         phoneNumber: yup
             .string()
-            .required(t("registration-form-phone-required")),
+            .required(t("registration-form-phone-required"))
+            .min(10, "Phone number must be at least 10 digits long"),
 
         confirmPhoneNumber: yup
             .string()
@@ -90,7 +92,8 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                 [yup.ref("phoneNumber")],
                 t("registration-form-phone-not-match")
             )
-            .required(t("registration-form-confirm-phone-required")),
+            .required(t("registration-form-confirm-phone-required"))
+            .min(10, "Phone number must be at least 10 digits long"),
 
         tin: yup
             .string()
@@ -102,11 +105,13 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
 
         companyName: yup
             .string()
-            .required(t("registration-form-company-name-required")),
+            .required(t("registration-form-company-name-required"))
+            .min(3, "Company name must be at least 3 characters long"),
 
         companyPhoneNumber: yup
             .string()
-            .required(t("registration-form-company-phone-required")),
+            .required(t("registration-form-company-phone-required"))
+            .min(10,"Phone number must be at least 10 digits long"),
 
         companyAddress: yup
             .string()
@@ -133,7 +138,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
         setValue,
         formState: { errors },
     } = useForm<IBidderRegisterForm>({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(schema)
     });
 
     const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
@@ -248,6 +253,10 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         hasError={!!errors.firstName}
                         error={errors.firstName?.message}
                         register={register("firstName")}
+                        onChange={(e) => {
+                            const clean = e.target.value.replace(/[^A-Za-z ]/g, ""); // only letters
+                            setValue("firstName", clean, { shouldValidate: true });
+                        }}
                     />
                     <TextInput
                         type="text"
@@ -256,6 +265,10 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         hasError={!!errors.lastName}
                         error={errors.lastName?.message}
                         register={register("lastName")}
+                        onChange={(e) => {
+                            const clean = e.target.value.replace(/[^A-Za-z ]/g, ""); // only letters
+                            setValue("lastName", clean, { shouldValidate: true });
+                        }}
                     />
                     <TextInput
                         type="text"
@@ -264,6 +277,10 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         hasError={!!errors.phoneNumber}
                         error={errors.phoneNumber?.message}
                         register={register("phoneNumber")}
+                        onChange={(e) => {
+                            const clean = e.target.value.replace(/\D/g, ""); // only numbers
+                            setValue("phoneNumber", clean, { shouldValidate: true });
+                        }}
                     />
 
                     <TextInput
@@ -331,9 +348,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         {errors.companyAddress && (
                             <p className="text-red-500 text-sm mt-1">{errors.companyAddress.message}</p>
                         )}
-                        {errors.companyAddress && (
-                            <p className="text-red-500 text-sm mt-1">{errors.companyAddress.message}</p>
-                        )}
                     </div>
 
                 </div>
@@ -345,7 +359,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         <div className="flex flex-row items-center justify-between">
                             <Select
                                 options={availableOptions}
-                                onInputChange={(inputValue)=>setSearchCategory(inputValue)}
+                                onInputChange={(inputValue) => setSearchCategory(inputValue)}
                                 onChange={(selectedOption) => {
                                     const selected = categories.find((c) => c.id === selectedOption?.value);
                                     if (selected) addCategory(selected);

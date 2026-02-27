@@ -12,7 +12,7 @@ export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
 };
 
 
-export default function Button({ loading, icon, label, size, theme, variant, ...rest }: IButtonProps) {
+export default function Button({ loading,type="button", icon, label, size, theme, variant, ...rest }: IButtonProps) {
     const computeSize = () => {
         switch(size) {
             case "sm":
@@ -38,6 +38,8 @@ export default function Button({ loading, icon, label, size, theme, variant, ...
                 return `text-white bg-amber-600 border border-amber-600 ${variant ? 'text-amber-600 bg-white' : 'text-white bg-amber-600'}`
             case "danger":
                 return `border border-red-600 ${variant ? 'text-red-600 bg-red-100' : 'text-white bg-red-600'}`
+            case "info":
+                return `text-white bg-sky-600 border border-sky-600 ${variant ? 'text-sky-600 bg-white' : 'text-white bg-sky-600'}`
             default:
                 return "text-slate-600 bg-slate-100 border border-slate-200 p-1.5"
         }
@@ -48,6 +50,7 @@ export default function Button({ loading, icon, label, size, theme, variant, ...
             {...rest} // ✅ Spread all remaining props including type
             className={`${computeTheme()} ${computeSize()} ${icon ? 'flex justify-center items-center' : ''} font-medium rounded-md`}
             disabled={loading}
+            type={type}
         >
             {loading ? (
                 <IconLoader size={20} className="animate-spin mx-auto" />

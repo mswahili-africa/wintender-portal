@@ -1,5 +1,5 @@
 import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
@@ -12,7 +12,6 @@ import { number, object, string } from "yup";
 import { useMutation } from "@tanstack/react-query";
 import Button from "@/components/button/Button";
 import TenderViewModelDoItForMe from "./tenderViewModelDoItForMe";
-import Chip from "@/components/chip/Chip";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
@@ -48,10 +47,6 @@ export default function DIFMapplications() {
         filter: undefined,
         visibility: "all"
     });
-
-    useEffect(() => {
-        refetch();
-    }, []);
 
     const schema = object().shape({
         status: string().required("Status is required"),

@@ -41,6 +41,7 @@
     "menu-settings": "Settings",
     "menu-logs": "Logs",
     "menu-health": "Health",
+    "menu-invoices": "Invoices",
 
     "auth-login-header": "Login",
     "auth-login-username": "Email",
@@ -49,7 +50,7 @@
     "auth-login-forgot-password-link": "Forgot Password?",
     "auth-login-create-account-button": "Register",
     "auth-user-guide": "User Guide",
-    "auth-documents": "Documents",
+    "auth-documents": "Policies",
     "auth-guide-documents": "Guide & Documents",
 
     "registration-form-title": "Registration",

@@ -3,27 +3,39 @@ import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
 
+  // {
+  //   name: "",
+  //   label: "type",
+  //   sortable: false,
+  //   plainObject: true,
+  //   element: (row: any) => {
+  //     const tenderGroup = row?.tenderGroup;
+
+  //     const theme: "primary" | "warning" =
+  //       tenderGroup === "PRIVATE" ? "primary" : "warning";
+
+  //     return 
+  //     <>
+  //       <div className="uppercase">{row.entityName}</div>
+  //     </>;
+  //   },
+  // },  
   {
-    name: "tenderGroup",
-    label: "type",
+    name: "",
+    label: "Name",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      const tenderGroup = row?.tenderGroup;
-      
-      const theme: "primary" | "warning" =
-        tenderGroup === "PRIVATE" ? "primary" : "warning";
-  
-      return <Chip label={tenderGroup} size="sm" theme={theme} variant="outline" />;
+      return row?.bidderCompanyName;
     },
-  },  
+  },
   {
-    name: "reference",
-    label: "Reference",
+    name: "Entity",
+    label: "Entity",
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.reference;
+      return row.entityName;
     },
   },
   {
@@ -32,7 +44,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      return row.tenderNumber;
+      return row.title;
     },
   },
   {
@@ -56,20 +68,29 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: any) => {
-      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending";
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending"| "approved";
 
       switch (row.status) {
-        case "COMPLETED":
-          theme = "success";
-          break;
         case "REQUESTED":
           theme = "secondary";
+          break;
+        case "APPLIED":
+          theme = "success";
           break;
         case "ON_PROGRESS":
           theme = "warning";
           break;
-          case "RETURNED":
+        case "WON":
+          theme = "success";
+          break;
+        case "NOT_WON":
           theme = "danger";
+          break;
+        case "EXECUTED":
+          theme = "approved";
+          break;
+        case "RETURNED":
+          theme = "warning";
           break;
         case "CANCELED":
           theme = "danger";
@@ -77,19 +98,10 @@ const columns: IColumn[] = [
         default:
           theme = "danger"; // Fallback for unknown statuses
       }
-  
+
       return <Chip label={row.status} size="sm" theme={theme} variant="outline" />;
     },
-  },
-  
-  {
-    name: "updatedAt",
-    label: "Updated At",
-    sortable: true,
-    plainObject: false,
-    element: (value: number | null) => 
-      value ? new Date(value).toLocaleString() : "-", // Show "-" or "Loading..." when value is undefined
-  },
+  }
 ];
 
 export default columns;

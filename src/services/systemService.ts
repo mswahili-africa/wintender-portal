@@ -15,3 +15,18 @@ export async function getSystemHealthDetails() {
     return response.data
 }
 
+
+export async function createBackup() {
+    const response = await http.post<any>(`/commons/backup`)
+    return response.data
+}
+
+export async function sendRatraReport() {
+    const response = await http.post<any>(`/commons/latra-report`)
+    return response.data
+}
+
+export async function deleteLogs() {
+    const response = await http.post<any>(`/commons/logs-deletion`)
+    return response.data
+}

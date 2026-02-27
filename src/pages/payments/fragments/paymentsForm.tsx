@@ -172,7 +172,13 @@ export default function ({ ...props }: IProps) {
                         <input
                             type="number"
                             className={`${errors.phoneNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('phoneNumber', { required: true })}
+                            {...register('phoneNumber', { 
+                                required: true,
+                                min:{
+                                    value:10,
+                                    message:"Phone number must be at least 10 digits"
+                                }
+                            })}
                         />
                     </div>
                     <div className="mb-4">

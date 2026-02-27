@@ -13,7 +13,7 @@ import { ILoginForm } from "@/types/forms";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/i18n/LanguageProvider";
-import CompanyDocumentsModal from "./CompanyDocumentsModal";
+import CompanyDocumentsModal from "../system/system-documents/CompanyDocumentsModal";
 import { set } from "lodash";
 
 export default function Login() {

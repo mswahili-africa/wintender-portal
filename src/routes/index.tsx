@@ -19,7 +19,8 @@ import {
     IconSettings,
     IconAlertTriangle,
     IconHeartRateMonitor,
-    IconMessages
+    IconMessages,
+    IconReceipt
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -95,6 +96,7 @@ const allMenus: IRoute[] = [
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/payments", label: "Transactions", labelKey: "menu-transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
+            { path: "/invoices", label: "Invoices", labelKey: "menu-invoices", icon: <IconReceipt size={20} strokeWidth={1.5} /> },
             { path: "/company-plans", label: "Payment Plans", labelKey: "menu-payment-plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },
@@ -276,7 +278,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             : menu.label === "Finance"
                 ? {
                     ...menu,
-                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans"), // Exclude Payment Plans sub-menu
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans" && sub.label !== "Invoices"), // Exclude Payment Plans sub-menu
                 }
                 : menu.label === "Consultation"
                     ? {
