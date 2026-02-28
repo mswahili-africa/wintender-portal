@@ -4,7 +4,7 @@ import usePopup from "@/hooks/usePopup";
 import Button from "@/components/button/Button";
 import { SettingSection } from "./fragments/SettingSection";
 import toast from "react-hot-toast";
-import { createBackup, sendRatraReport, deleteLogs } from "@/services/settingsService";
+import { createBackup, deleteLogs } from "@/services/settingsService";
 
 export const BackupSettings = () => {
   const {showConfirmation,closePopup}=usePopup();
@@ -16,16 +16,6 @@ export const BackupSettings = () => {
     },
     onError: (error:any) => {
       toast.error(error.response.data.message || "Failed to create backup");
-      console.log(error)
-    }
-  })
-  const ratraReportMutation = useMutation({
-    mutationFn: sendRatraReport,
-    onSuccess: (data) => {
-      toast.success(data.message || "Ratra report sent successfully");
-    },
-    onError: (error:any) => {
-      toast.error(error.response.data.message || "Failed to send ratra report");
       console.log(error)
     }
   })
@@ -51,23 +41,6 @@ export const BackupSettings = () => {
         theme:"warning",
         onConfirm() {
           backupMutation.mutate();
-        },
-      }
-    )
-  }
-
-  // ratra report submit
-  const submitRatraReport = () => {
-    showConfirmation(
-      {
-        title: "Confirm Report",
-        onCancel() {
-          closePopup();
-        },
-        message: "Are you sure you want to send RATRA report?",
-        theme:"warning",
-        onConfirm() {
-          ratraReportMutation.mutate();
         },
       }
     )
@@ -141,16 +114,14 @@ export const BackupSettings = () => {
         description="Download or restore previous backups"
       >
         <SettingItem
-          title="Send RATRA Report"
-          description="Send the latest Ratra report."
+          title="Send System Report"
+          description="Send the latest System report."
         >
           <Button
             size="sm"
             theme="info"
             label="Send Report"
-            disabled={ratraReportMutation.isPending}
-            loading={ratraReportMutation.isPending}
-            onClick={submitRatraReport}
+            disabled={true}
           />
         </SettingItem>
       </SettingSection>

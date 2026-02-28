@@ -19,11 +19,6 @@ export async function createBackup() {
     return response.data
 }
 
-export async function sendRatraReport() {
-    const response = await http.post<any>(`commons/setting/latra-report`)
-    return response.data
-}
-
 export async function deleteLogs() {
     const response = await http.post<any>(`commons/setting/logs-deletion`)
     return response.data
