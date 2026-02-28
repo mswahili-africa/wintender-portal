@@ -1,10 +1,10 @@
 import { SettingItem } from "./fragments/SettingItem";
 import { useMutation } from "@tanstack/react-query";
-import { createBackup, deleteLogs, sendRatraReport } from "@/services/systemService";
 import usePopup from "@/hooks/usePopup";
 import Button from "@/components/button/Button";
 import { SettingSection } from "./fragments/SettingSection";
 import toast from "react-hot-toast";
+import { createBackup, sendRatraReport, deleteLogs } from "@/services/settingsService";
 
 export const BackupSettings = () => {
   const {showConfirmation,closePopup}=usePopup();

@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/button/Button";
 import { paymentSchema, smsSchema, generalSchema } from "./fragments/schemas";
 import { useMutation } from "@tanstack/react-query";
-import { updateSettings } from "@/services/settings";
+import { updateSettings } from "@/services/settingsService";
 import toast from "react-hot-toast";
 import Modal from "@/components/Modal";
 import { useEffect, useState } from "react";

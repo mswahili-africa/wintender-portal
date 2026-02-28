@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import useErrorHandler from "./useErrorHandler";
-import { getSettings } from "@/services/settings";
+import { getSettings } from "@/services/settingsService";
 
 
 export default function() {
