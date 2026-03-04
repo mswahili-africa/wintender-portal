@@ -21,7 +21,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
   const [formData, setFormData] = useState<Partial<IPaymentForm>>({
     phoneNumber: user?.userData?.phoneNumber,
     account: user?.userData?.account,
-    amount: 1000,
+    amount: 30000,
     description: `Payment for Tender ${tender.tenderNumber}`,
     paymentReason: "APPLICATION",
     controlNumber: "", // can be generated after payment request, or input by user if needed
@@ -66,7 +66,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
   }
 
   if (tender.applicationStatus === "NOT_FOUND") {
-    if (walletBalance < 1000) {
+    if (walletBalance < 30000) {
       return (
         <div className="flex flex-col items-center justify-center p-10 text-center">
           <IconAlertTriangle size={64} className="text-red-500 mb-4" />
