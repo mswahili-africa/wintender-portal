@@ -66,7 +66,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
   }
 
   if (tender.applicationStatus === "NOT_FOUND") {
-    if (walletBalance < 30000) {
+    if (walletBalance < 1000) {
       return (
         <div className="flex flex-col items-center justify-center p-10 text-center">
           <IconAlertTriangle size={64} className="text-red-500 mb-4" />
