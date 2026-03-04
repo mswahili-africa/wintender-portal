@@ -99,8 +99,6 @@ const columns: IColumn[] = [
 
       switch (value) {
         case "SUCCESS":
-          theme = "success";
-          break;
         case "SUCCESSFUL":
           theme = "success";
           break;

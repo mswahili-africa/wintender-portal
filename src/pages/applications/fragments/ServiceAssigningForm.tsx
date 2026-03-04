@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { number, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useBillboards } from '@/hooks/useBillboards';
+import { useUserDataContext } from '@/providers/userDataProvider';
 
 const schema = object().shape({
     bidderId: string().required("Bidder is required"),
@@ -24,6 +25,8 @@ export const ServiceAssigningForm = () => {
         resolver: yupResolver(schema),
         defaultValues: { id: "", bidderId: "", title: "", description: "", consultationFee: 10000 }
     });
+
+    const { userData } = useUserDataContext();
 
 
     const { consultationServices, refetch, isLoading } = useBillboards({ page: 1 });
@@ -69,10 +72,10 @@ export const ServiceAssigningForm = () => {
 
     const debouncedFetchBidders = useCallback(
         debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+            if (inputValue.length >= 3) { // Only fetch if 3 or more characters
                 fetchBidders(inputValue);
             } else {
-                setBidders([]); // Clear entities if less than 5 characters
+                setBidders([]); // Clear entities if less than 3 characters
             }
         }, 5),
         [fetchBidders]
@@ -80,24 +83,28 @@ export const ServiceAssigningForm = () => {
     return (
         <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
             {/* JCM bidder search input */}
-            <div className="flex flex-col">
-                <div className="mb-2">
-                    <label htmlFor="bidder" className="block mb-2">
-                        Bidder
-                    </label>
-                    <Select
-                        options={bidders}
-                        onInputChange={(inputValue) => debouncedFetchBidders(inputValue)}
-                        onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
-                        isLoading={loading}
-                        placeholder="Search for a Bidder"
-                    />
+            {
+                userData?.role !== "BIDDER" && (
+                    <div className="flex flex-col">
+                        <div className="mb-2">
+                            <label htmlFor="bidder" className="block mb-2">
+                                Bidder
+                            </label>
+                            <Select
+                                options={bidders}
+                                onInputChange={(inputValue) => debouncedFetchBidders(inputValue)}
+                                onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
+                                isLoading={loading}
+                                placeholder="Search for a Bidder"
+                            />
 
-                </div>
-                <p className="text-xs text-red-500 mt-1 mx-0.5">
-                    {errors.bidderId?.message?.toString()}
-                </p>
-            </div>
+                        </div>
+                        <p className="text-xs text-red-500 mt-1 mx-0.5">
+                            {errors.bidderId?.message?.toString()}
+                        </p>
+                    </div>
+                )
+            }
 
             {/* JCM reason */}
             <div className="mb-2">
@@ -126,15 +133,20 @@ export const ServiceAssigningForm = () => {
                     {...register('description', { required: true })}
                 />
             </div>
-            <div className="mb-4">
-                <label htmlFor="Phone" className="block mb-2">Consultation Fee</label>
+            {
+                userData?.role !== "BIDDER" && (
+                    <div className="mb-4">
+                        <label htmlFor="Phone" className="block mb-2">Consultation Fee</label>
 
-                <input
-                    type="number"
-                    className={`${errors.consultationFee?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                    {...register('consultationFee', { required: true, valueAsNumber: true, min: 10000 })}
-                />
-            </div>
+                        <input
+                            type="number"
+                            className={`${errors.consultationFee?.type === 'required' ? 'input-error' : 'input-normal'}`}
+                            {...register('consultationFee', { required: true, valueAsNumber: true, min: 10000 })}
+                        />
+                    </div>
+                )
+            }
+
 
 
             <Button

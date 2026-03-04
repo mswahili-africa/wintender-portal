@@ -172,11 +172,11 @@ export default function ({ ...props }: IProps) {
                         <input
                             type="number"
                             className={`${errors.phoneNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('phoneNumber', { 
+                            {...register('phoneNumber', {
                                 required: true,
-                                min:{
-                                    value:10,
-                                    message:"Phone number must be at least 10 digits"
+                                min: {
+                                    value: 10,
+                                    message: "Phone number must be at least 10 digits"
                                 }
                             })}
                         />
@@ -190,20 +190,20 @@ export default function ({ ...props }: IProps) {
                             {...register('amount', { required: true, valueAsNumber: true, min: 10000 })}
                         />
                     </div>
-                    {
-                        watch("source") !== "CASH" && (
-                            <div className="mb-4">
-                                <label htmlFor="Phone" className="block mb-2">Description</label>
 
-                                <input
-                                    type="text"
-                                    placeholder="You  can add MNO or Bank payment reference here"
-                                    className={`${errors.description?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                                    {...register('description', { required: true })}
-                                />
-                            </div>
-                        )
-                    }
+                    {/* // watch("source") !== "CASH" && ( */}
+                    <div className="mb-4">
+                        <label htmlFor="Phone" className="block mb-2">Description</label>
+
+                        <input
+                            type="text"
+                            placeholder="You  can add MNO or Bank payment reference here"
+                            className={`${errors.description?.type === 'required' ? 'input-error' : 'input-normal'}`}
+                            {...register('description', { required: true })}
+                        />
+                    </div>
+                    {/* // ) */}
+
 
                     <Button
                         type="submit"

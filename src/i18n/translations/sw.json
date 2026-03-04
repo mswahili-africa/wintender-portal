@@ -8,6 +8,7 @@
     "header-profile":"Profaili",
     "header-language":"Lugha",
     "header-logout":"Toka",
+    "header-role":"Jukumu",
 
     "menu-dashboard": "Dashibodi",
     "menu-tender": "Zabuni",
@@ -28,7 +29,7 @@
     "menu-pe": "PE",
     "menu-pe-admins": "Wakuu wa PE",
     "menu-compliance": "Uzingatiaji",
-    "menu-documents": "Nyaraka",
+    "menu-documents": "Nyaraka za Kampuni",
     "menu-internal": "Ndani",
     "menu-staff": "Wafanyakazi",
     "menu-roles": "Majukumu",

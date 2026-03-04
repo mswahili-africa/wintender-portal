@@ -54,7 +54,7 @@ const Header = () => {
 
     const { contacts } = useWhatsappContacts(
         { page: 0, size: 10 },
-        { enabled: !["BIDDER", "PROCUREMENT_ENTITY","PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(user?.userData?.role as string) }
+        { enabled: !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(user?.userData?.role as string) }
     );
 
 
@@ -97,45 +97,51 @@ const Header = () => {
             }
             <div className="flex flex-row justify-between items-center ">
                 <Tooltip content={t("header-subscription-button")}>
-                    <div onClick={() => setIsPaymentModalOpen(true)} className="flex flex-row lg:gap-5 cursor-pointer">
-                        {typeof subscription === 'number' && (() => {
-                            if (subscription === 0) {
-                                return (
-                                    <div className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <span className="text-xs font-medium text-red-500">
-                                            {t("header-subscription-expired")}
-                                        </span>
-                                    </div>
-                                );
-                            }
+                    <div className="flex flex-col gap-2">
+                        <div onClick={() => setIsPaymentModalOpen(true)} className="flex flex-row lg:gap-3 cursor-pointer">
+                            {typeof subscription === 'number' && (() => {
+                                if (subscription === 0) {
+                                    return (
+                                        <div className="flex items-center gap-1 pe-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span className="text-xs font-medium text-red-500">
+                                                {t("header-subscription-expired")}
+                                            </span>
+                                        </div>
+                                    );
+                                }
 
-                            if (subscription > 0) {
-                                const today = new Date();
-                                const expiryDate = new Date(today);
-                                expiryDate.setDate(today.getDate() + subscription);
+                                if (subscription > 0) {
+                                    const today = new Date();
+                                    const expiryDate = new Date(today);
+                                    expiryDate.setDate(today.getDate() + subscription);
 
-                                const formattedDate = expiryDate.toLocaleDateString('en-GB', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                });
+                                    const formattedDate = expiryDate.toLocaleDateString('en-GB', {
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric',
+                                    });
 
-                                return (
-                                    <div title={`Your Subscription will expire on: ${formattedDate}`} className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-md text-slate-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
-                                            {t("header-subscription-count", { count: subscription })}
-                                        </span>
-                                    </div>
-                                );
-                            }
-                            return null;
-                        })()}
+                                    return (
+                                        <div title={`Your Subscription will expire on: ${formattedDate}`} className="flex items-center gap-1 pe-1.5 hover:bg-slate-100 rounded-md text-slate-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span className={`text-xs font-medium ${subscription <= 3 ? 'text-red-500' : 'text-slate-600'}`}>
+                                                {t("header-subscription-count", { count: subscription })}
+                                            </span>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })()}
+                        </div>
+
+                        <span className="text-[13px] ps-2 text-slate-400">
+                            {auth.user?.role.replace("_", " ")}
+                        </span>
                     </div>
                 </Tooltip>
                 <div className="flex items-center gap-4 min-w-32">
@@ -224,11 +230,14 @@ const Header = () => {
                         <Menu as="div" className="relative inline-block  text-left">
                             {
                                 auth.user &&
-                                <Menu.Button className="flex justify-center items-center h-10 w-10 bg-green-50 rounded-full focus:outline-none ring-2 ring-green-600">
-                                    <div className="text-center text-lg uppercase text-slate-500 font-medium">
-                                        {auth.user.displayName?.charAt(0)}
-                                    </div>
-                                </Menu.Button>
+                                <div className="flex flex-col items-center">
+                                    <Menu.Button className="flex justify-center items-center h-10 w-10 bg-green-50 rounded-full focus:outline-none ring-2 ring-green-600">
+                                        <div className="text-center text-lg uppercase text-slate-500 font-medium">
+                                            {auth.user.displayName?.charAt(0)}
+                                        </div>
+                                    </Menu.Button>
+
+                                </div>
                             }
                             {
                                 auth.user &&
@@ -244,6 +253,12 @@ const Header = () => {
                                             <div className="flex justify-between">
                                                 <span>{t("header-email")}</span>
                                                 <span>{auth.user.email}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span>{t("header-role")}</span>
+                                                <span className="px-2 py-1 text-xs bg-white text-green-600 rounded-full font-semibold">
+                                                    {auth.user?.role?.replaceAll("_", " ")}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

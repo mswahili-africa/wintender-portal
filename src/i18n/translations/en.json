@@ -8,6 +8,7 @@
     "header-profile":"Profile",
     "header-language":"Language",
     "header-logout":"Logout",
+    "header-role":"Role",
 
     "menu-dashboard": "Dashboard",
     "menu-tender": "Tenders",
