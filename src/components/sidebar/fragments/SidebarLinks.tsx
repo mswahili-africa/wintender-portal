@@ -4,7 +4,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 // Import your route definitions (assumed to be in the same file or imported separately)
 import { IRoute, getRoutesByRole } from "@/routes";  // Ensure the import path matches your project structure
 import { UserRole } from "@/utils";
-import { IconBook, IconBrandWhatsapp, IconMail, IconPaperBag, IconPdf, IconPhoneCall } from "@tabler/icons-react";
+import { IconBook, IconBrandWhatsapp, IconMail, IconPdf, IconPhoneCall } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import CompanyDocumentsModal from "@/pages/system/system-documents/CompanyDocumentsModal";

@@ -30,6 +30,7 @@ export interface IRoute {
     label: string;
     labelKey: string;
     icon?: React.ReactElement;
+    dropdown?: boolean;
     permissions?: string[];
     subMenu?: IRoute[];
 }

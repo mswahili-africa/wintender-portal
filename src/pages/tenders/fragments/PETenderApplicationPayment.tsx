@@ -21,7 +21,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
   const [formData, setFormData] = useState<Partial<IPaymentForm>>({
     phoneNumber: user?.userData?.phoneNumber,
     account: user?.userData?.account,
-    amount: 30000,
+    amount: 1000,
     description: `Payment for Tender ${tender.tenderNumber}`,
     paymentReason: "APPLICATION",
     controlNumber: "", // can be generated after payment request, or input by user if needed
