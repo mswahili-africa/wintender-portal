@@ -1,6 +1,6 @@
 import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconSquare, IconSquareCheck } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useState, useCallback, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -21,20 +21,18 @@ import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
 import { useDebounce } from "@/hooks/useDebounce";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
     const [sort, setSort] = useState<string>("createdAt,desc");
     const [filter] = useState<any>({});
-    const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [isEligible, setIsEligible] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
     const [tempKeyword, setTempKeyword] = useState("");
     const [tempSearchType, setTempSearchType] = useState("title");
     const [tempSelectedEntity, setTempSelectedEntity] = useState(null);
@@ -78,8 +76,26 @@ export default function GovernmentTenders() {
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER"; // Extract role from userData, defaulting to "BIDDER" if not found
     const subscriptionDays = userData?.subscription;
-
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (subscriptionDays !== undefined && subscriptionDays < 1) {
+            showConfirmation({
+                theme: "danger",
+                title: "Your subscription has expired",
+                message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
+                onConfirm: () => {
+                    // Open payment modal when confirm is clicked
+                    setIsPaymentModalOpen(true);
+                },
+                onCancel: () => {
+                    // Redirect to home page when cancelled
+                    navigate("/");  // Redirect to home page
+                }
+            });
+        }
+    }, [subscriptionDays, navigate]);
+
 
 
 

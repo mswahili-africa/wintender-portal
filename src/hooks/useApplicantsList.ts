@@ -6,6 +6,7 @@ import { listApplication } from "@/services/tenders";
 interface IProps {
     tenderId: string
     page: number
+    size?: number
     search?: string
     sort?: string
     filter?: Record<string, any>
@@ -17,10 +18,10 @@ interface IProps {
 export default function getApplications({tenderId,...props}: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getApplications", props.page, props.sort, props?.search, props?.filter,props.status,props.comment,props.reviewStage],
+        queryKey: ["getApplications", props.page, props.sort, props?.search, props?.filter,props.status,props.comment,props.reviewStage,props.size],
         queryFn: () => listApplication(tenderId,{
             page: props.page,
-            size: 10,
+            size: props.size ?? 10,
             sort: props.sort,
             search: props.search,
             status: props.status,

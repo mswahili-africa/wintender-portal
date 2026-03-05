@@ -1,6 +1,7 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
 import Loader from "@/components/spinners/Loader";
+import TextInput from "@/components/widgets/forms/TextInput";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
@@ -29,8 +30,8 @@ const InfoRow = ({
   label: string;
   value?: string | number;
 }) => (
-  <div className="flex justify-between text-sm">
-    <span className="text-slate-500">{label}</span>
+  <div className="flex space-x-2 justify-between text-sm">
+    <span className="text-slate-500 win-w- sm:min-w-">{label}:</span>
     <span className="font-medium text-slate-800">
       {value ?? "-"}
     </span>
@@ -87,7 +88,7 @@ export default function ApplicantViewModal({
   if (isError || !applicationDetails) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-        <div className="bg-white p-6 rounded-lg text-red-500 w-full max-w-6xl h-[65vh]">
+        <div className="bg-white px-6 rounded-lg text-red-500 w-full max-w-6xl h-[65vh]">
           {/* HEADER */}
           <div className=" bg-white flex items-center justify-between px-6 py-4 border-b">
             <div>
@@ -102,7 +103,7 @@ export default function ApplicantViewModal({
               <IconX />
             </button>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center text-xl mt-28 justify-center">
             Failed to load application
           </div>
         </div>
@@ -112,7 +113,7 @@ export default function ApplicantViewModal({
 
   const application = applicationDetails as ITenderApplication;
 
-  
+
 
   const openConfirm = (status: "ACCEPTED" | "REJECTED") => {
     setDecision({ id: applicant.id, status });
@@ -146,19 +147,35 @@ export default function ApplicantViewModal({
 
         {/* STATUS + ACTIONS */}
         <div className="px-6 py-3 border-b bg-slate-50 flex justify-between items-center">
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold
+          <div className="flex flex-col">
+            <span
+              className={`px-3 py-1 rounded-full w-fit text-xs font-semibold
               ${application.status === "AWARDED"
-                ? "bg-green-100 text-green-700"
-                : application.status === "CLOSED"
-                ? "bg-orange-100 text-orange-700"
-                : ["REJECTED"].includes(application.status) 
-                  ? "bg-red-100 text-red-700"
-                  : "bg-blue-100 text-blue-700"
-              }`}
-          >
-            {application.status}
-          </span>
+                  ? "bg-green-100 text-green-700"
+                  : application.status === "CLOSED"
+                    ? "bg-orange-100 text-orange-700"
+                    : ["REJECTED"].includes(application.status)
+                      ? "bg-red-100 text-red-700"
+                      : "bg-blue-100 text-blue-700"
+                }`}
+            >
+              {application.status}
+            </span>
+            {
+              userData?.role === "BIDDER" && (
+                application.status === "AWARDED" ?
+                <span className="text-xs text-green-500 mt-1 ms-1">
+                  Congratulations! You have been awarded for this tender.
+                </span>
+                :
+                application.status === "REJECTED" ?
+                <span className="text-xs text-red-500 mt-1 ms-1">
+                  Thank you for applying for this tender.  
+                </span>
+                :null
+              )
+            }
+          </div>
 
           {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(
             userData?.role || ""
@@ -166,7 +183,7 @@ export default function ApplicantViewModal({
             application.status === "SUBMITTED" && (
               <div className="flex gap-2">
                 <Button
-                  label="Accept"
+                  label={userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ? "Accept" : "Confirm"}
                   size="sm"
                   theme="primary"
                   onClick={() => openConfirm("ACCEPTED")}
@@ -277,6 +294,14 @@ export default function ApplicantViewModal({
             Confirm {decision?.status}
           </h3>
 
+          {decision?.status === "ACCEPTED" && (
+            <input
+              type="number"
+              min={0}
+              max={100}
+              className="input-normal w-full"
+            />
+          )}
           {decision?.status === "REJECTED" && (
             <textarea
               className="w-full mt-4 p-2 border rounded"

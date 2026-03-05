@@ -47,6 +47,18 @@ export interface IConfirmPasswordResetForm {
     confirmationCode: string
 }
 
+export type UserRole =
+    | "ADMINISTRATOR"
+    | "BIDDER"
+    | "PUBLISHER"
+    | "ACCOUNTANT"
+    | "MANAGER"
+    | "SUPERVISOR"
+    | "PROCUREMENT_ENTITY"
+    | "PROCUREMENT_ENTITY_REVIEWER"
+    | "PROCUREMENT_ENTITY_CHAIRMAN"
+    | "LEGAL";
+
 export interface IUserData {
     userId: string;
     email: string;
@@ -59,7 +71,7 @@ export interface IUserData {
     subscription: number;
     walletAmount: number;
     account: string;
-    role: string;
+    role: UserRole;
     company: string;
     paymentMode: string;
 }

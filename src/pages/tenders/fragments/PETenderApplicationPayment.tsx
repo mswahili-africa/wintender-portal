@@ -71,7 +71,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
         <div className="flex flex-col items-center justify-center p-10 text-center">
           <IconAlertTriangle size={64} className="text-red-500 mb-4" />
           <p className="text-lg font-semibold text-red-700">
-            Insufficient wallet balance. You need at least TZS 30,000 to start this application.<br/> Please recharge your wallet.
+            Insufficient wallet balance. You need at least {new Intl.NumberFormat("en-TZ", {style: "currency", currency: "TZS", }).format(formData.amount ?? 30000)} to start this application.<br/> Please recharge your wallet.
           </p>
         </div>
       );

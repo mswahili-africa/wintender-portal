@@ -90,6 +90,12 @@ export async function createCategory(payload: ITenderCategory) {
     return response.data
 }
 
+export async function updateCategory(id: string, payload: ITenderCategory) {
+    const response = await http.put<any>(`/tenders/category/${id}/update`, payload)
+
+    return response.data
+}
+
 export async function getCategories(params: {}) {
     const response = await http.get<IlistResponse<any>>("/tenders/category/list", {
         params: params

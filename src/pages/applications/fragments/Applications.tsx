@@ -468,7 +468,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     </Tooltip>
                                 )}
 
-                                {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && (
+                                {/* {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && ( */}
                                     <Tooltip content={t("difm-application-invoice-generator-button-tooltip")}>
                                         <button
                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
@@ -477,7 +477,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                             <IconFile size={20} />
                                         </button>
                                     </Tooltip>
-                                )}
+                                {/* )} */}
                                 {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
                                     <Tooltip content={t("difm-application-delete-button-tooltip")}>
                                         <button className="text-red-600 hover:text-red-700" onClick={() => reject(applicationList)}>

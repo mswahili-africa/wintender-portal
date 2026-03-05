@@ -11,15 +11,17 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import Button from "@/components/button/Button";
 import { useTranslation } from "react-i18next";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import { ITenders } from "@/types";
 
 export const ApplicantsList = () => {
-    const tenderId = useParams().tenderId;
+    const  {tenderId}  = useParams();
+    // const  tenderId  = params.tenderId;
     const location = useLocation();
-    const [tenderDetails, setTenderDetails] = useState<any>(null);
+    const [tenderDetails, setTenderDetails] = useState<ITenders | null>(location.state?.tender);
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
-    const [reviewStage, setReviewStage] = useState<string>('PRELIMINARY');
-    const [status, setStatus] = useState<string>("SUBMITTED");
+    const [reviewStage, setReviewStage] = useState<string>();
+    const [status, setStatus] = useState<string>();
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const { t } = useTranslation();
     const { userData } = useUserDataContext();
@@ -50,14 +52,17 @@ export const ApplicantsList = () => {
 
     // Fetch data using custom hook
     const { applicantList,refetch,isLoading } = getApplications({
-        tenderId: tenderId!,
+        tenderId: tenderId ?? tenderDetails?.id!,
         page,
-        search,
+        size: 10,
+        search: search ? search : undefined,
         sort,
         filter: undefined,
-        status: status,
-        reviewStage: reviewStage
+        status: reviewStage === "PRELIMINARY" ? undefined : status,
+        reviewStage: reviewStage === "PRELIMINARY" ? undefined : reviewStage
     });
+
+    if(!tenderDetails) return <div>Loading...</div>
 
     // Handle sorting of table columns
     const handleSorting = (field: string, direction: SortDirection) => {
@@ -172,7 +177,6 @@ export const ApplicantsList = () => {
                             {typeof title === "string" ? title : title}
                         </button>
                     );
-
                 })}
             </div>
 
@@ -225,7 +229,7 @@ export const ApplicantsList = () => {
                 <ApplicantViewModal
                     onClose={handleModalClose}
                     applicant={handleModal.object}
-                    title="Applicant details"
+                    title="Application details"
                     refetch={refetch}
                 />
             }

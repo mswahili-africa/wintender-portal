@@ -34,7 +34,6 @@ export default function PrivateTenders() {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
     const [tempKeyword, setTempKeyword] = useState("");
     const [tempSearchType, setTempSearchType] = useState("title");
     const [tempSelectedEntity, setTempSelectedEntity] = useState(null);
