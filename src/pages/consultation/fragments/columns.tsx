@@ -1,4 +1,3 @@
-import Chip from "@/components/chip/Chip";
 import { IColumn } from "@/components/widgets/table/Table";
 
 const columns: IColumn[] = [
@@ -13,6 +12,8 @@ const columns: IColumn[] = [
         label: "message",
         sortable: false,
         plainObject: false,
+        element: (value: string) =>  <div dangerouslySetInnerHTML={{__html: value}}></div>
+        
     },
 ];
 

@@ -167,6 +167,11 @@ export async function createBillboard(payload: IConsultation) {
     return response.data
 }
 
+export async function updateBillboard(id: string, payload: IConsultation) {
+    const response = await http.post<any>(`/applications/consultation/billboard/update/${id}`, payload)
+    return response.data
+}
+
 export async function deleteBillboard(id: string) {
     const response = await http.delete<any>(`/applications/consultation/billboard/delete/${id}`);
 

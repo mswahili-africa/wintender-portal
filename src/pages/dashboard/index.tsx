@@ -6,7 +6,6 @@ import {
     IconBuilding,
     IconReportMoney,
     IconFolderOpen,
-    IconFileText,
     IconFiles,
 } from "@tabler/icons-react";
 import { useState } from 'react';
@@ -26,7 +25,6 @@ import { useBillboards } from "@/hooks/useBillboards";
 import { useSummary } from "@/hooks/useSystemDetails";
 import AdminStats from "./stats/AdminStats";
 import BidderStats from "./stats/BidderStats";
-import PEStats from "./stats/PEStats";
 import { formatMoney } from "@/utils";
 import { Link } from "react-router-dom";
 import { IconListLetters } from "@tabler/icons-react";
@@ -140,7 +138,7 @@ export default function Dashboard() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
             >
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-[90%] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-[90%] sm:max-w-4xl max-h-[90vh] overflow-y-auto">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl sm:text-2xl font-bold">{selectedBillboard?.title}</h2>
 
@@ -162,9 +160,8 @@ export default function Dashboard() {
                     </div>
 
 
-                    <div className="text-gray-600 mb-4">
-                        {selectedBillboard ? formatMessage(selectedBillboard.message) : null}
-                    </div>
+                    <div className="text-gray-600 mb-4" dangerouslySetInnerHTML={{ __html: selectedBillboard ? selectedBillboard.message : "" }}></div>
+                    {/* <div className="text-gray-600 mb-4">{selectedBillboard ? formatMessage(selectedBillboard.message) : ""}</div> */}
                     <div className="flex justify-end">
                         <button
                             onClick={closeModal}
