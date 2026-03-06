@@ -15,6 +15,8 @@ import { ICategory } from "@/types";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchCategories } from "@/hooks/categoriesRepository";
+import PhoneInput from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
 
 interface IProps {
     onSuccess: () => void;
@@ -111,7 +113,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
         companyPhoneNumber: yup
             .string()
             .required(t("registration-form-company-phone-required"))
-            .min(10,"Phone number must be at least 10 digits long"),
+            .min(10, "Phone number must be at least 10 digits long"),
 
         companyAddress: yup
             .string()
@@ -136,6 +138,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
         handleSubmit,
         reset,
         setValue,
+        getValues,
         formState: { errors },
     } = useForm<IBidderRegisterForm>({
         resolver: yupResolver(schema)
@@ -184,6 +187,8 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
         const categoryIds = selectedCategories.map((c) => c.id);
 
         const cleanTIN = data.tin.replace(/-/g, ""); // remove dashes before submit
+
+        // console.log(data);
 
         createMutation.mutate({
             ...data,
@@ -270,7 +275,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                             setValue("lastName", clean, { shouldValidate: true });
                         }}
                     />
-                    <TextInput
+                    {/* <TextInput
                         type="text"
                         label={t("registration-form-phone")}
                         placeholder="e.g., 0710101010"
@@ -281,16 +286,49 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                             const clean = e.target.value.replace(/\D/g, ""); // only numbers
                             setValue("phoneNumber", clean, { shouldValidate: true });
                         }}
-                    />
+                    /> */}
 
-                    <TextInput
+                    {/* international phone input */}
+                    <div className="flex flex-col gap-y-1">
+                        <label className="text-sm font-semibold text-gray-500">{t("registration-form-phone")}</label>
+                        <PhoneInput
+                            value={getValues("phoneNumber")}
+                            defaultCountry={"TZ"}
+                            international={true}
+                            placeholder="e.g., 710101010"
+                            className="custom-phone-input"
+                            onChange={(value: any) => setValue("phoneNumber", value)}
+
+                        />
+                        {errors.phoneNumber && (
+                            <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col gap-y-1">
+                        <label className="text-sm font-semibold text-gray-500">{t("registration-form-confirm-phone")}</label>
+                        <PhoneInput
+                            value={getValues("confirmPhoneNumber")}
+                            defaultCountry={"TZ"}
+                            international={true}
+                            className="custom-phone-input"
+                            placeholder="e.g., 710101010"
+                            onChange={(value: any) => setValue("confirmPhoneNumber", value)}
+
+                        />
+                        {errors.confirmPhoneNumber && (
+                            <p className="text-red-500 text-sm mt-1">{errors.confirmPhoneNumber.message}</p>
+                        )}
+                    </div>
+
+                    {/* <TextInput
                         type="text"
                         label={t("registration-form-confirm-phone")}
                         placeholder="e.g., 0710101010"
                         hasError={!!errors.confirmPhoneNumber}
                         error={errors.confirmPhoneNumber?.message}
                         register={register("confirmPhoneNumber")}
-                    />
+                    /> */}
                     <TextInput
                         type="email"
                         label={t("registration-form-email")}
@@ -330,14 +368,29 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                             setValue("tin", formatted); // update the field with formatted value
                         }}
                     />
-                    <TextInput
+                    {/* <TextInput
                         type="text"
                         label={t("registration-form-phone")}
                         placeholder="e.g., 0710000000"
                         hasError={!!errors.companyPhoneNumber}
                         error={errors.companyPhoneNumber?.message}
                         register={register("companyPhoneNumber")}
-                    />
+                    /> */}
+                    <div className="flex flex-col gap-y-1">
+                        <label className="text-sm font-semibold text-gray-500">{t("registration-form-phone")}</label>
+                        <PhoneInput
+                            value={getValues("companyPhoneNumber")}
+                            defaultCountry={"TZ"}
+                            international={true}
+                            className="custom-phone-input"
+                            placeholder="e.g., 710101010"
+                            onChange={(value: any) => setValue("companyPhoneNumber", value)}
+
+                        />
+                        {errors.companyPhoneNumber && (
+                            <p className="text-red-500 text-sm mt-1">{errors.companyPhoneNumber.message}</p>
+                        )}
+                    </div>
                     <div className="flex flex-col">
                         <label className="block mb-2">{t("registration-form-company-address")}</label>
                         <Select

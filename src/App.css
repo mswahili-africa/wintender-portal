@@ -166,3 +166,48 @@
   .dropdown-item {
   @apply w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition;
 }
+
+
+
+/* .custom-phone-input {
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  padding: 10px;
+} */
+
+.custom-phone-input .PhoneInputInput {
+  width: 100%;
+  padding-left: 0.75rem; /* 12px */
+  padding-right: 0.75rem; /* 12px */
+  padding-top: 0.5rem; /* 8px */
+  padding-bottom: 0.5rem; /* 8px */
+  font-size: 0.75rem; /* 12px - text-xs */
+  line-height: 1rem; /* 16px */
+  color: rgb(71, 85, 105); /* #475569 - text-slate-600 */
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(203, 213, 225); /* #cbd5e1 - border-slate-300 */
+  border-radius: 0.375rem; /* 6px - rounded-md */
+  box-sizing: border-box; /* Ensures padding/border don't affect width */
+}
+
+/* Placeholder Color */
+.custom-phone-input .PhoneInputInput::placeholder {
+  color: rgb(148, 163, 184); /* #94a3b8 - placeholder-slate-400 */
+  opacity: 1; /* Firefox placeholder opacity fix */
+}
+
+/* Focus State */
+.custom-phone-input .PhoneInputInput:focus {
+  border-color: rgb(22, 163, 74); /* #16a34a - focus:border-green-600 */
+  outline: none; /* focus:outline-none */
+  --tw-ring-color: transparent; /* focus:ring-0 - effectively removes ring */
+}
+
+/* Responsive: 1280px+ (xl:text-sm) */
+@media (min-width: 1280px) {
+  .custom-phone-input .PhoneInputInput {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
+  }
+}

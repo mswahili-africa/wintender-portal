@@ -6,14 +6,16 @@ import { authStore } from "@/store/auth";
 import ChangePasswordForm from "./fragments/changePasswordForm";
 import PasswordResetRequest from "./fragments/passwordResetRequest";
 import { getUserById, updateBidderCompany } from "@/services/user";
-import { ICategory, ICompany, IUser } from "@/types";
+import { ICategory, ICompany } from "@/types";
 import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/spinners/Spinner";
-import {useCategories} from "@/hooks/categoriesRepository";
+import { useCategories } from "@/hooks/categoriesRepository";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import PhoneInput from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
 
 // JCM props interface
 interface UserProfileProps {
@@ -32,7 +34,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
 
 
     const { categories } = useCategories({ page: 0, size: 1000, search: "", filter: {} });
-    const { userData, loading } = useUserDataContext();
+    const { loading } = useUserDataContext();
 
 
     const accountOwner = (): boolean => {
@@ -262,14 +264,25 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                     />
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="text-sm font-medium" htmlFor="phoneNumber">Phone Number</label>
-                                    <input
-                                        type="tel"
-                                        id="phoneNumber"
-                                        name="phoneNumber"
+                                    <label className="text-sm font-semibold text-gray-500">Phone Number</label>
+                                    <PhoneInput
                                         value={user.phoneNumber}
-                                        onChange={handleInputChange}
-                                        className="border border-gray-300 rounded-md p-2"
+                                        defaultCountry={"TZ"}
+                                        international={true}
+                                        className="custom-phone-input"
+                                        placeholder="e.g., 710101010"
+                                        name="phoneNumber"
+                                        onChange={(value: any) => setUser(prevUser => {
+                                            if (!prevUser) return prevUser;
+
+                                            // Update user-level number
+                                            return {
+                                                ...prevUser,
+                                                ["phoneNumber"]: value
+                                            };
+                                        })
+                                        }
+
                                     />
                                 </div>
                                 <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 p-2 rounded" disabled={updateUserMutation.isPending}>{updateUserMutation.isPending ? <Spinner /> : "Update User"}</button>
@@ -329,13 +342,25 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                     />
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="text-sm font-medium">Primary Number</label>
-                                    <input
-                                        type="tel"
-                                        name="companyPrimaryNumber"
+                                    <label className="text-sm font-semibold text-gray-500">Primary Number</label>
+                                    <PhoneInput
                                         value={user.companyPrimaryNumber}
-                                        onChange={handleInputChange}
-                                        className="border border-gray-300 rounded-md p-2"
+                                        defaultCountry={"TZ"}
+                                        international={true}
+                                        className="custom-phone-input"
+                                        placeholder="e.g., 710101010"
+                                        name="companyPrimaryNumber"
+                                        onChange={(value: any) => setUser(prevUser => {
+                                            if (!prevUser) return prevUser;
+
+                                            // Update user-level number
+                                            return {
+                                                ...prevUser,
+                                                ["companyPrimaryNumber"]: value
+                                            };
+                                        })
+                                        }
+
                                     />
                                 </div>
                                 <div className="flex flex-col">
