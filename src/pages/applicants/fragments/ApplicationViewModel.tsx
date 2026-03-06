@@ -1,7 +1,5 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
-import Loader from "@/components/spinners/Loader";
-import TextInput from "@/components/widgets/forms/TextInput";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
@@ -39,7 +37,7 @@ const InfoRow = ({
 );
 
 /* ----------------------------- COMPONENT ----------------------------- */
-export default function ApplicantViewModal({
+export default function ApplicationViewModal({
   applicant,
   title,
   onClose,

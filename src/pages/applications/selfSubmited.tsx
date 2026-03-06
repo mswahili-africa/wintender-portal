@@ -9,7 +9,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { deleteApplication } from "@/services/tenders";
 import usePopup from "@/hooks/usePopup";
 import toast from "react-hot-toast";
-import ApplicantViewModal from "../applicants/fragments/ApplicantViewModel";
+import ApplicationViewModal from "../applicants/fragments/ApplicationViewModel";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
@@ -167,7 +167,7 @@ export default function SubmittedApplication() {
 
         {/* View modal */}
         {viewOpen && selectedApplication && (
-          <ApplicantViewModal
+          <ApplicationViewModal
             applicant={selectedApplication}
             title="View Application"
             onClose={() => setViewOpen(false)}

@@ -1,11 +1,11 @@
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import { IconEye } from "@tabler/icons-react";
+import { IconEye, IconRefresh } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import columns from "./fragments/ApplicantColumns";
 import getApplications from "@/hooks/useApplicantsList";
-import ApplicantViewModal from "./fragments/ApplicantViewModel";
+import ApplicantViewModal from "./fragments/ApplicationViewModel";
 import { RequirementStage } from "@/types/tenderWizard";
 import Tooltip from "@/components/tooltip/Tooltip";
 import Button from "@/components/button/Button";
@@ -155,6 +155,16 @@ export const ApplicantsList = () => {
                     <strong className=" text-gray-400">Tender:</strong>
 
                     <h2 className="ps-2 font-bold">{tenderDetails?.title}</h2>
+                </div>
+                <div className="w-full flex justify-end">
+                    <Button
+                        type="button"
+                        label="Refresh"
+                        theme="info"
+                        loading={isLoading}
+                        icon={<IconRefresh size={24}/>}
+                        onClick={() => refetch()}
+                    />
                 </div>
             </div>
 
