@@ -1,5 +1,6 @@
 import Chip from "@/components/chip/Chip";
 import { IColumn } from "@/components/widgets/table/Table";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 const columns: IColumn[] = [
 
@@ -79,7 +80,7 @@ const columns: IColumn[] = [
           theme = "danger"; // Fallback for unknown statuses
       }
 
-      return <Chip label={row.status} size="sm" theme={theme} variant="outline" />;
+      return <Chip label={row.status} size="sm" avatar={theme === "danger" ? <IconAlertCircle/> : undefined} theme={theme} variant="outline" />;
     },
   },
 

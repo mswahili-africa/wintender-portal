@@ -5,6 +5,7 @@ import Button from "@/components/button/Button";
 import { SettingSection } from "./fragments/SettingSection";
 import toast from "react-hot-toast";
 import { createBackup, deleteLogs } from "@/services/settingsService";
+import { IconCloudUpload, IconSend2, IconTrash } from "@tabler/icons-react";
 
 export const BackupSettings = () => {
   const {showConfirmation,closePopup}=usePopup();
@@ -77,6 +78,7 @@ export const BackupSettings = () => {
             size="sm"
             theme="info"
             label="Backup Now"
+            icon={<IconCloudUpload size={20}/>}
             disabled={backupMutation.isPending}
             loading={backupMutation.isPending}
             onClick={performBackup}
@@ -102,6 +104,7 @@ export const BackupSettings = () => {
             size="sm"
             theme="danger"
             label="Delete logs"
+            icon={<IconTrash size={20}/>}
             disabled={deleteLogsMutation.isPending}
             loading={deleteLogsMutation.isPending}
             onClick={deleteLogsSubmit}
@@ -120,6 +123,7 @@ export const BackupSettings = () => {
           <Button
             size="sm"
             theme="info"
+            icon={<IconSend2 size={20}/>}
             label="Send Report"
             disabled={true}
           />

@@ -4,7 +4,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
 import PETenderApplicationWizardModal from "./PETenderApplicationWizardModal";
-import { IconX } from "@tabler/icons-react";
+import { IconAlertCircle, IconX } from "@tabler/icons-react";
 import { ITenders } from "@/types";
 import Chip from "@/components/chip/Chip";
 import { Countdown } from "@/components/countdown/Countdown";
@@ -193,6 +193,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                                         })()
                                                     }
                                                     size="sm"
+                                                    avatar={<IconAlertCircle/>}
                                                     theme={
                                                         (() => {
                                                             if (remainingDays < 0) {

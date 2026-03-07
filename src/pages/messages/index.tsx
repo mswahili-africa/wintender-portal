@@ -32,7 +32,7 @@ export default function Messages() {
             <div className="flex justify-between items-center mb-10">
                 <h2 className="text-lg font-bold">Contacts</h2>
                 <div className="flex gap-2">
-                    <Button label="Refresh" icon={<IconRefresh />} theme="secondary" loading={isLoading} onClick={() => refetch()} />
+                    <Button label="Refresh" variant="pastel" icon={<IconRefresh />} theme="info" loading={isLoading} onClick={() => refetch()} />
                 </div>
             </div>
 

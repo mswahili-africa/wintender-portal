@@ -1,6 +1,6 @@
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import { IconEye, IconRefresh } from "@tabler/icons-react";
+import { IconAngle, IconArrowAutofitLeft, IconArrowLeft, IconArrowLeftSquare, IconArrowLeftTail, IconChevronCompactLeft, IconChevronLeft, IconChevronRight, IconEye, IconPdf, IconRefresh, IconSignLeft } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import columns from "./fragments/ApplicantColumns";
@@ -14,7 +14,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { ITenders } from "@/types";
 
 export const ApplicantsList = () => {
-    const  {tenderId}  = useParams();
+    const { tenderId } = useParams();
     // const  tenderId  = params.tenderId;
     const location = useLocation();
     const [tenderDetails, setTenderDetails] = useState<ITenders | null>(location.state?.tender);
@@ -51,7 +51,7 @@ export const ApplicantsList = () => {
 
 
     // Fetch data using custom hook
-    const { applicantList,refetch,isLoading } = getApplications({
+    const { applicantList, refetch, isLoading } = getApplications({
         tenderId: tenderId ?? tenderDetails?.id!,
         page,
         size: 10,
@@ -62,7 +62,7 @@ export const ApplicantsList = () => {
         reviewStage: reviewStage === "PRELIMINARY" ? undefined : reviewStage
     });
 
-    if(!tenderDetails) return <div>Loading...</div>
+    if (!tenderDetails) return <div>Loading...</div>
 
     // Handle sorting of table columns
     const handleSorting = (field: string, direction: SortDirection) => {
@@ -99,48 +99,51 @@ export const ApplicantsList = () => {
     const renderStepContent = () => {
 
         return (
-            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                <div className="flex justify-between items-center p-4 border-b border-slate-200">
+            <div className="bg-white border rounded-xl shadow-sm">
+
+                <div className="flex items-center justify-between p-4 border-b">
+
                     <input
                         type="text"
-                        placeholder="Search"
-                        className="input-normal py-2 w-1/2 lg:w-1/4"
-                        onChange={(e) => setSearch(e.target.value)} // Update search query
+                        placeholder="Search applicants..."
+                        className="input-normal py-2 w-64"
+                        onChange={(e) => setSearch(e.target.value)}
                     />
+
+                    <span className="text-sm text-slate-500">
+                        Showing {applicantList?.content?.length ?? 0} applicants
+                    </span>
+
                 </div>
 
-                {/* Render the main table with applicants list*/}
                 <Table
                     columns={columns}
                     data={applicantList?.content || []}
-                    hasSelection={false}
                     isLoading={isLoading}
-                    hasActions={true}
+                    hasActions
                     onSorting={handleSorting}
                     actionSlot={(selectedApplicant: any) => (
-                        <div className="flex space-x-2">
-                            {
-                                userData?.role !== "PROCUREMENT_ENTITY" &&
-                                <Tooltip content="Review application details">
-                                    <button onClick={() => setHandleModal({ type: "viewApplication", object: selectedApplicant })}>
-                                        <IconEye size={20} />
-                                    </button>
-                                </Tooltip>
-                            }
-                        </div>
+                        <Tooltip content="View application">
+                            <button
+                                onClick={() =>
+                                    setHandleModal({
+                                        type: "viewApplication",
+                                        object: selectedApplicant
+                                    })
+                                }
+                            >
+                                <IconEye size={18} />
+                            </button>
+                        </Tooltip>
                     )}
                 />
 
-
-                {/* Pagination control */}
-                <div className="flex justify-end items-center ms-auto p-4 lg:px-8">
-                    {applicantList?.pageable && (
-                        <Pagination
-                            currentPage={page}
-                            setCurrentPage={setPage}
-                            pageCount={applicantList.totalPages || 1}
-                        />
-                    )}
+                <div className="flex justify-end p-4 border-t">
+                    <Pagination
+                        currentPage={page}
+                        setCurrentPage={setPage}
+                        pageCount={applicantList?.totalPages || 1}
+                    />
                 </div>
 
             </div>
@@ -150,44 +153,118 @@ export const ApplicantsList = () => {
     return (
         <div>
             <div className="flex flex-col justify-between mb-6 gap-3">
-                <h2 className="text-lg font-bold">Tender Box Review</h2>
-                <div className="flex">
-                    <strong className=" text-gray-400">Tender:</strong>
+                <div className="flex items-start justify-between mb-6">
 
-                    <h2 className="ps-2 font-bold">{tenderDetails?.title}</h2>
+                    <div>
+                        <h1 className="text-xl font-semibold text-slate-800">
+                            Tender Review Workspace
+                        </h1>
+
+                        <p className="text-sm text-slate-500">
+                            {tenderDetails?.title}
+                        </p>
+                    </div>
+
+                    <div className="flex gap-3">
+                        <Button
+                            label="Refresh"
+                            theme="info"
+                            loading={isLoading}
+                            icon={<IconRefresh size={18} />}
+                            onClick={() => refetch()}
+                        />
+
+                        <Button
+                            label="Export Report"
+                            variant="pastel"
+                            icon={<IconPdf size={18} />}
+                            onClick={() => refetch()}
+                        />
+                    </div>
+
                 </div>
-                <div className="w-full flex justify-end">
-                    <Button
-                        type="button"
-                        label="Refresh"
-                        theme="info"
-                        loading={isLoading}
-                        icon={<IconRefresh size={24}/>}
-                        onClick={() => refetch()}
-                    />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+
+                    <div className="bg-white border rounded-lg p-4">
+                        <p className="text-xs text-slate-500">Total Applications</p>
+                        <p className="text-xl font-semibold">
+                            {applicantList?.totalElements ?? 0}
+                        </p>
+                    </div>
+
+                    <div className="bg-white border rounded-lg p-4">
+                        <p className="text-xs text-slate-500">Current Stage</p>
+                        <p className="text-sm text-green-600 font-semibold">
+                            {steps[currentStep]}
+                        </p>
+                    </div>
+
+                    <div className="bg-white border rounded-lg p-4">
+                        <p className="text-xs text-slate-500">Under Review</p>
+                        <p className="text-xl font-semibold">
+                            {applicantList?.content?.length ?? 0}
+                        </p>
+                    </div>
+
+                    <div className="bg-white border rounded-lg p-4">
+                        <p className="text-xs text-slate-500">Completion</p>
+                        <p className="text-xl font-semibold">
+                            {Math.round((currentStep / (steps.length - 1)) * 100)}%
+                        </p>
+                    </div>
+
                 </div>
             </div>
 
-            <div className="flex flex-nowrap gap-2 overflow-x-auto mb-4">
-                {steps.map((title, index) => {
-                    const isActive = currentStep === index;
-                    const isClickable = index === 0 || completedSteps.includes(index - 1);
+            <div className="bg-white border rounded-lg p-4 mb-6">
 
-                    return (
-                        <button
-                            key={title.toString()}
-                            type="button"
-                            onClick={() => {
-                                handleFilteringChange(title, index);
-                            }}
-                            className={`flex-1 whitespace-nowrap px-4 py-3 rounded-md text-sm font-medium transition-all ${isActive
-                                ? "bg-green-600 text-white"
-                                : "bg-green-100 text-gray-700 hover:bg-green-200"}`}
-                        >
-                            {typeof title === "string" ? title : title}
-                        </button>
-                    );
-                })}
+                <div className="flex items-center gap-2 overflow-x-auto">
+
+                    {steps.map((step, index) => {
+
+                        const isActive = currentStep === index
+                        const completed = index < currentStep
+
+                        return (
+                            <button
+                                key={step.toString()}
+                                onClick={() => handleFilteringChange(step, index)}
+                                className={`
+            px-4 py-2 text-sm rounded-full border transition
+            ${isActive
+                                        ? "bg-green-600 text-white border-green-600"
+                                        : completed
+                                            ? "bg-green-100 border-green-300 text-green-700"
+                                            : "bg-white border-slate-200 text-slate-600"}
+          `}
+                            >
+                                {step}
+                            </button>
+                        )
+
+                    })}
+
+                </div>
+
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+
+                <div className="bg-white border rounded-lg p-4">
+                    <p className="text-xs text-slate-500 mb-1">Highest Score</p>
+                    <p className="text-lg font-semibold">—</p>
+                </div>
+
+                <div className="bg-white border rounded-lg p-4">
+                    <p className="text-xs text-slate-500 mb-1">Lowest Score</p>
+                    <p className="text-lg font-semibold">—</p>
+                </div>
+
+                <div className="bg-white border rounded-lg p-4">
+                    <p className="text-xs text-slate-500 mb-1">Evaluators Assigned</p>
+                    <p className="text-lg font-semibold">—</p>
+                </div>
+
             </div>
 
             {/* CONTENT */}
@@ -195,40 +272,27 @@ export const ApplicantsList = () => {
                 {renderStepContent()}
             </div>
 
-            <div className="mt-6 flex justify-between">
+            <div className="flex justify-between mt-8">
+
                 {currentStep > 0 && (
-                    <Tooltip content={t("tender-wizard-back-tooltip")}>
-                        <Button
-                            size="md"
-                            type="button"
-                            label={t("tender-wizard-back-button")}
-                            theme="secondary"
-                            onClick={() => setCurrentStep((prev) => prev - 1)}
-                        />
-                    </Tooltip>
+                    <Button
+                        icon={<IconChevronLeft size={18} />}
+                        label="Previous Stage"
+                        theme="secondary"
+                        onClick={() => setCurrentStep((prev) => prev - 1)}
+                    />
                 )}
-                {currentStep < steps.length - 1 ? (
-                    <Tooltip content={t("tender-wizard-next-tooltip")}>
-                        <Button
-                            size="md"
-                            type="button"
-                            label={t("tender-wizard-next-button")}
-                            theme="primary"
-                            onClick={() => handleCompleteStep(currentStep)}
-                        />
-                    </Tooltip>
-                ) : (
-                    <Tooltip content={t("tender-wizard-publish-tooltip")}>
-                        <Button
-                            size="md"
-                            type="submit"
-                            label={t("tender-wizard-publish-button")}
-                            theme="primary"
-                        // loading={uploadTenderMutation.isPending}
-                        />
-                    </Tooltip>
-                )
-                }
+
+                {currentStep < steps.length - 1 && (
+                    <Button
+                        icon={<IconChevronRight size={18} />}
+                        iconPosition="right"
+                        label="Next Stage"
+                        theme="primary"
+                        onClick={() => handleCompleteStep(currentStep)}
+                    />
+                )}
+
             </div>
 
 
