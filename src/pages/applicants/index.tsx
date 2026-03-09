@@ -1,6 +1,6 @@
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import { IconAngle, IconArrowAutofitLeft, IconArrowLeft, IconArrowLeftSquare, IconArrowLeftTail, IconChevronCompactLeft, IconChevronLeft, IconChevronRight, IconEye, IconPdf, IconRefresh, IconSignLeft } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconEye, IconPdf, IconRefresh } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import columns from "./fragments/ApplicantColumns";
@@ -15,7 +15,6 @@ import { ITenders } from "@/types";
 
 export const ApplicantsList = () => {
     const { tenderId } = useParams();
-    // const  tenderId  = params.tenderId;
     const location = useLocation();
     const [tenderDetails, setTenderDetails] = useState<ITenders | null>(location.state?.tender);
     const [page, setPage] = useState<number>(0);

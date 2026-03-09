@@ -178,9 +178,15 @@ export default function Dashboard() {
     if (isLoading) {
         return (
             <div className="p-2 min-h-screen flex flex-col">
-                <div className="flex flex-col p-4 gap-2 w-full sm:w-1/2 mb-5">
-                    <div className="h-6 bg-gray-300 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                <div className="flex justify-between">
+                    <div className="flex flex-col p-4 gap-2 w-full sm:w-1/2 mb-5">
+                        <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                    <div className="flex p-4 gap-2 w-full sm:w-1/2 justify-end">
+                        <div className="h-6 bg-gray-300 rounded w-20"></div>
+                        <div className="h-6 bg-gray-300 rounded w-20"></div>
+                    </div>
                 </div>
                 <div className="flex flex-row gap-4 mb-5">
                     {Array(3).fill(0).map((_, i) => (
