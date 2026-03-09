@@ -23,7 +23,8 @@ export default function({groupId,...props}: IProps) {
         queryFn: () => getDoForMeApplication(groupId ,{page: props.page, size: 10, sort: props.sort,visibility:props.visibility, search: props.search, status: props.status, ...props.filter}),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,
-        staleTime: 2 * 60 * 1000, 
+        staleTime: 2 * 60 * 1000,
+        enabled: props.search !== undefined  ? props.search.length >= 3 : true
     }); 
 
     return {

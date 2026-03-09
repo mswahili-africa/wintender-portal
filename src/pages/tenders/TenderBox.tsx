@@ -18,7 +18,7 @@ import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
-import TenderViewModal from "./fragments/tenderViewModelNew";
+import TenderViewModal from "./fragments/tenderViewModel";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { useDebounce } from "@/hooks/useDebounce";

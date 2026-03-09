@@ -24,7 +24,8 @@ export default function({...props}: IProps) {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         cacheTime: 5 * 60 * 1000,
-        staleTime: 2 * 60 * 1000
+        staleTime: 2 * 60 * 1000,
+        enabled: props.search !== undefined  ? props.search.length >= 3 : true
     });
 
     return {

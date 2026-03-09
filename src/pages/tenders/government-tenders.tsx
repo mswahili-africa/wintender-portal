@@ -10,7 +10,7 @@ import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import Button from "@/components/button/Button";
-import TenderViewModal from "./fragments/tenderViewModelNew";
+import TenderViewModal from "./fragments/tenderViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";

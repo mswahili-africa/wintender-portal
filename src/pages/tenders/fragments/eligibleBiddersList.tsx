@@ -19,6 +19,7 @@ type EligibleBiddersProps = {
 export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
     const [page, setPage] = useState<number>(0);
     const [sort] = useState<string>("createdAt,desc");
+    const [search, setSearch] = useState<string>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [userInfo, setUserInfo] = useState<ICompany | any>();
@@ -54,6 +55,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
     const { bidders, isLoading, refetch } = useBidders({
         page,
         sort,
+        search,
         ...appliedFilters,
     });
 
@@ -61,7 +63,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
         groupId: tender.id,
         applicationGroup: {},
         page: 0,
-        size: 1000, 
+        size: 1000,
         sort: "createdAt,desc",
         filter: { tenderId: tender.id }
     });
@@ -72,7 +74,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
         return bidders.content.map((bidder: any) => {
             // Filter all applications made by this bidder
             const bidderApps = applicationList.content.filter(
-                (app: any) => app.bidderAccount === bidder.account 
+                (app: any) => app.bidderAccount === bidder.account
             );
 
             return {
@@ -128,6 +130,16 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
         );
     };
 
+
+    // total requested and total on-progress bidders
+    const totalRequested = biddersWithApplications.filter(
+        (bidder) => bidder.hasApplied && bidder.applicationStatus === "REQUESTED"
+    );
+
+    const totalOnProgress = biddersWithApplications.filter(
+        (bidder) => bidder.hasApplied && bidder.applicationStatus === "ON_PROGRESS"
+    );
+
     return (
         <div
             className="rounded-md border border-slate-300 backdrop-blur-sm bg-transparent p-4"
@@ -141,6 +153,33 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
                     zIndex={50}
                 />
             )}
+
+            <div className="flex justify-between items-center">
+                <input
+                    type="text"
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="input-normal w-full px-3 border rounded-md sm:w-1/2"
+                    placeholder="Name..."
+                />
+
+                {/* total requests and on progress stats */}
+                <div className="flex flex-col items-end text-sm gap-2 mb-2">
+                    <div className="flex items-center gap-1">
+                        <span className="text-gray-500">Total Eligible:</span>
+                        <span className="text-gray-600 font-bold">{biddersWithApplications?.length ?? 0}</span>
+                    </div>
+                    <div className="flex items-center text-[11px] gap-2">
+                        <div className="flex items-center gap-1">
+                            <span className="text-gray-500">REQUESTED:</span>
+                            <span className="text-gray-600 font-bold">{totalRequested.length ?? 0}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <span className="text-gray-500">ON PROGRESS:</span>
+                            <span className="text-gray-600 font-bold">{totalOnProgress.length ?? 0}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* Custom Table */}
             <div className="overflow-x-auto">
