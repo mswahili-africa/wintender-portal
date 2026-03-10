@@ -461,7 +461,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
                     {/* JCM Consultation fee input */}
                     {
-                        userRole !== "PROCUREMENT_ENTITY" &&
+                        !["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) &&
                         <div className="mb-2">
                             <label htmlFor="consultationFee" className="block mb-2">
                                 {t("tender-wizard-form-consultation-fee")}

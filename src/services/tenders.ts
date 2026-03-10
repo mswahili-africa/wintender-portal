@@ -256,8 +256,8 @@ export async function getTenderApplicationDetails(id: string) {
     return response.data;
 }
 
-export async function reviewApplication(id: string, status: string, comment?: any) {
-    const response = await http.put<any>(`/applications/application/${id}/review`, { status, comment:comment || undefined });
+export async function reviewApplication(id: string, status: string, comment?: any,marks?:number) {
+    const response = await http.put<any>(`/applications/application/${id}/review`, { status, comment:comment || undefined,marks });
 
     return response.data;
 }

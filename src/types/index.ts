@@ -496,7 +496,7 @@ export interface ITenderDetails {
 }
 
 export interface IRequirement {
-  stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "CONSENT";
+  stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "FINANCIAL" | "CONSENT";
   fieldName: string;
   description: string;
   percentage: number;

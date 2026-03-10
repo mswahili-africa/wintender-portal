@@ -1,17 +1,16 @@
 import Button from "@/components/button/Button";
-import Modal from "@/components/Modal";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { reviewApplication } from "@/services/tenders";
 import { ITenderApplication, IFile } from "@/types/tenderWizard";
 import {
-  IconAlertTriangle,
+  IconFile,
   IconFileDownload,
+  IconPlus,
+  IconUpload,
   IconX,
 } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { useRef, useState } from "react";
+import ApplicationConfirmationModal from "./ApplicationConfirmationModal";
 
 /* ----------------------------- TYPES ----------------------------- */
 interface ModalProps {
@@ -50,7 +49,26 @@ export default function ApplicationViewModal({
     id: string;
     status: "ACCEPTED" | "REJECTED";
     comment?: string;
+    marks?: number;
   } | null>(null);
+
+  const [documentScore, setDocumentScore] = useState<{ type: string, score: number, maxScore: number }[]>([]);
+
+  const [negotiationFile, setNegotiationFile] = useState<File | null>(null)
+  const [awardFile, setAwardFile] = useState<File | null>(null)
+
+  const negotiationRef = useRef<HTMLInputElement>(null)
+  const awardRef = useRef<HTMLInputElement>(null)
+
+  const handleNegotiationUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) setNegotiationFile(file)
+  }
+
+  const handleAwardUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) setAwardFile(file)
+  }
 
   /* ----------------------------- DATA FETCH ----------------------------- */
   const {
@@ -58,27 +76,6 @@ export default function ApplicationViewModal({
     isLoading,
     isError,
   } = useTenderApplicationDetails({ id: applicant?.id });
-
-
-  /* ----------------------------- MUTATION ----------------------------- */
-  const reviewMutation = useMutation({
-    mutationFn: ({
-      id,
-      status,
-      comment,
-    }: {
-      id: string;
-      status: string;
-      comment?: string;
-    }) => reviewApplication(id, status, comment),
-    onSuccess: (res: any) => {
-      toast.success(res?.message || "Application reviewed");
-      setConfirmOpen(false);
-      refetch && refetch();
-      onClose();
-    },
-    onError: () => toast.error("Failed to review application"),
-  });
 
   /* ----------------------------- SAFETY ----------------------------- */
   if (isLoading) return <SkeletonLoader />;
@@ -117,6 +114,14 @@ export default function ApplicationViewModal({
     setDecision({ id: applicant.id, status });
     setConfirmOpen(true);
   };
+
+  // function to check if requied from requirements and return true or false and total marks
+  const checkRequiredAndTotalMarks = (fieldName: string) => {
+    const requirement = application.tender.requirements.find((req) => req.fieldName === fieldName);
+    return requirement ? { required: requirement.required, totalMarks: requirement.percentage } : { required: false, totalMarks: 0 };
+  }
+
+
 
 
 
@@ -162,15 +167,15 @@ export default function ApplicationViewModal({
             {
               userData?.role === "BIDDER" && (
                 application.status === "AWARDED" ?
-                <span className="text-xs text-green-500 mt-1 ms-1">
-                  Congratulations! You have been awarded for this tender.
-                </span>
-                :
-                application.status === "REJECTED" ?
-                <span className="text-xs text-red-500 mt-1 ms-1">
-                  Thank you for applying for this tender.  
-                </span>
-                :null
+                  <span className="text-xs text-green-500 mt-1 ms-1">
+                    Congratulations! You have been awarded for this tender.
+                  </span>
+                  :
+                  application.status === "REJECTED" ?
+                    <span className="text-xs text-red-500 mt-1 ms-1">
+                      Thank you for applying for this tender.
+                    </span>
+                    : null
               )
             }
           </div>
@@ -232,11 +237,244 @@ export default function ApplicationViewModal({
             </a>
           </div>
 
+          {
+            ["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userData?.role || "") &&
+            <div className="flex w-full col-span-full sm:px-10 gap-4">
+
+              {/* NEGOTIATION DOCUMENT */}
+              {
+                application.reviewStage === "NEGOTIATION" &&
+                <div className="w-full border rounded-xl p-4 bg-white">
+
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="font-medium text-sm">Negotiation Document</p>
+                      <p className="text-xs text-slate-500">
+                        Uploaded during negotiation stage
+                      </p>
+                    </div>
+
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                      Negotiation
+                    </span>
+                  </div>
+
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    ref={negotiationRef}
+                    onChange={handleNegotiationUpload}
+                    className="hidden"
+                  />
+
+                  {!negotiationFile ? (
+                    <button
+                      onClick={() => negotiationRef.current?.click()}
+                      className="w-full border-2 border-dashed border-slate-300 rounded-lg py-6 flex flex-col items-center gap-2 hover:bg-slate-50"
+                    >
+                      <IconUpload size={20} />
+                      <span className="text-sm">Upload negotiation document</span>
+                      <span className="text-xs text-slate-400">PDF only</span>
+                    </button>
+                  ) : (
+                    <div className="flex items-center justify-between border rounded-lg p-3 bg-slate-50">
+                      <div className="flex items-center gap-2 text-sm">
+                        <IconFile size={18} />
+                        {negotiationFile.name}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => window.open(URL.createObjectURL(negotiationFile))}
+                          className="text-blue-600 text-xs"
+                        >
+                          View
+                        </button>
+
+                        <button
+                          onClick={() => setNegotiationFile(null)}
+                          className="text-red-500 text-xs"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              }
+
+              {/* AWARD DOCUMENT */}
+              {
+                application.reviewStage === "AWARDED" &&
+                <div className="w-full border rounded-xl p-4 bg-white">
+
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="font-medium text-sm">Award Letter</p>
+                      <p className="text-xs text-slate-500">
+                        Final award document for bidder
+                      </p>
+                    </div>
+
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                      Award
+                    </span>
+                  </div>
+
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    ref={awardRef}
+                    onChange={handleAwardUpload}
+                    className="hidden"
+                  />
+
+                  {!awardFile ? (
+                    <button
+                      onClick={() => awardRef.current?.click()}
+                      className="w-full border-2 border-dashed border-slate-300 rounded-lg py-6 flex flex-col items-center gap-2 hover:bg-slate-50"
+                    >
+                      <IconUpload size={20} />
+                      <span className="text-sm">Upload award document</span>
+                      <span className="text-xs text-slate-400">PDF only</span>
+                    </button>
+                  ) : (
+                    <div className="flex items-center justify-between border rounded-lg p-3 bg-slate-50">
+                      <div className="flex items-center gap-2 text-sm">
+                        <IconFile size={18} />
+                        {awardFile.name}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => window.open(URL.createObjectURL(awardFile))}
+                          className="text-blue-600 text-xs"
+                        >
+                          View
+                        </button>
+
+                        <button
+                          onClick={() => setAwardFile(null)}
+                          className="text-red-500 text-xs"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              }
+
+            </div>
+          }
+
+
+          {/* BIDDER PREVIEW */}
+          {/* <div className="mt-6 border rounded-xl p-4 bg-slate-50">
+
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-medium text-sm">
+                Bidder Document View
+              </p>
+
+              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                Bidder Visible
+              </span>
+            </div>
+
+            <div className="space-y-2">
+
+              {negotiationFile && (
+                <div className="flex items-center justify-between text-sm border p-2 rounded">
+                  <span>Negotiation Document</span>
+
+                  <button
+                    onClick={() => window.open(URL.createObjectURL(negotiationFile))}
+                    className="text-blue-600"
+                  >
+                    View
+                  </button>
+                </div>
+              )}
+
+              {awardFile && (
+                <div className="flex items-center justify-between text-sm border p-2 rounded">
+                  <span>Award Letter</span>
+
+                  <button
+                    onClick={() => window.open(URL.createObjectURL(awardFile))}
+                    className="text-blue-600"
+                  >
+                    View
+                  </button>
+                </div>
+              )}
+
+              {!negotiationFile && !awardFile && (
+                <p className="text-xs text-slate-500">
+                  No documents available yet.
+                </p>
+              )}
+
+            </div>
+
+          </div> */}
+
+
+          {/* NEGOTIATION && AWARDED DOCUMENTS */}
+          {
+            (application.reviewStage === "NEGOTIATION" || application.reviewStage === "AWARDED") &&
+            <div className="md:col-span-2 my-3">
+              <h3 className={`text-sm ${application.reviewStage === "AWARDED" ? "text-green-700" : "text-blue-700"} font-semibold underline mb-3`}>
+                {application.reviewStage} NOTICE
+              </h3>
+
+              <div className="space-y-4">
+                {application.files.length < 0 ? (
+                  application.files.map((file: IFile) => (
+                    <details
+                      key={file.id}
+                      className="border rounded-lg overflow-hidden"
+                    >
+                      <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
+                        <div>
+                          {file.documentType} ({file.stage})
+                        </div>
+
+                        {
+                          (() => {
+                            const { required, totalMarks } = checkRequiredAndTotalMarks(file.documentType);
+                            return (
+                              required &&
+                              <div className="flex flex-row items-center gap-x-1">
+                                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                  {totalMarks}%
+                                </span>
+                              </div>
+                            )
+                          })()}
+
+                      </summary>
+                    </details>
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-500 text-center">
+                    No document available yet.
+                  </p>
+                )}
+              </div>
+            </div>
+          }
+
+
           {/* DOCUMENTS */}
           <div className="md:col-span-2">
             <h3 className="text-sm font-semibold text-slate-700 mb-3">
               {application.reviewStage} Documents ({application.files.length})
             </h3>
+
 
             <div className="space-y-4">
               {application.files.length > 0 ? (
@@ -245,8 +483,74 @@ export default function ApplicationViewModal({
                     key={file.id}
                     className="border rounded-lg overflow-hidden"
                   >
-                    <summary className="cursor-pointer px-4 py-2 bg-slate-50 text-sm font-medium">
-                      {file.documentType} ({file.stage})
+                    <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
+                      <div>
+                        {file.documentType} ({file.stage})
+                      </div>
+
+                      {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userData?.role || "") &&
+                        (() => {
+                          const { required, totalMarks } = checkRequiredAndTotalMarks(file.documentType);
+                          return (
+                            required &&
+                            <div className="flex flex-row items-center gap-x-1">
+                              <div className="text-green-500 text-xs">REQUIRED</div>
+                              <div className="text-slate-500 text-xs">{totalMarks}%</div>
+                              <input
+                                type="number"
+                                min={0}
+                                max={totalMarks}
+                                onChange={(e) => {
+                                  const providedValue = Number(e.target.value);
+
+                                  // Clamp between 0 and totalMarks
+                                  const maxMarks = totalMarks;
+                                  const value = Math.max(0, Math.min(providedValue, maxMarks));
+
+                                  // setDecision({ ...decision, marks: value });
+                                  setDocumentScore((prevScores) => {
+                                    const existingIndex = prevScores.findIndex(
+                                      (doc) => doc.type === file.documentType
+                                    );
+
+                                    if (existingIndex !== -1) {
+                                      const updatedScores = [...prevScores];
+                                      updatedScores[existingIndex] = {
+                                        type: file.documentType,
+                                        score: value,
+                                        maxScore: maxMarks,
+                                      };
+                                      return updatedScores;
+                                    } else {
+                                      // Add new entry
+                                      return [
+                                        ...prevScores,
+                                        { type: file.documentType, score: value, maxScore: maxMarks },
+                                      ];
+                                    }
+                                  });
+
+                                }}
+                                onInput={(e) => {
+                                  // Prevent typing beyond top max or below 0
+                                  const input = e.target as HTMLInputElement;
+                                  const maxMarks = totalMarks;
+
+                                  if (Number(input.value) > maxMarks) {
+                                    input.value = String(maxMarks);
+                                  }
+
+                                  if (Number(input.value) < 0) {
+                                    input.value = "0";
+                                  }
+                                }}
+                                className="input-normal h-8 w-full"
+                              />
+                            </div>
+                          )
+                        })()
+                      }
+
                     </summary>
 
                     {file.filePath ? (
@@ -263,7 +567,7 @@ export default function ApplicationViewModal({
                   </details>
                 ))
               ) : (
-                <div className="p-6 text-sm text-slate-500 text-center">
+                <div className="p-6 text-xs text-slate-500 text-center">
                   No documents submitted
                 </div>
               )}
@@ -274,64 +578,14 @@ export default function ApplicationViewModal({
       </div>
 
       {/* CONFIRM MODAL */}
-      <Modal
-        isOpen={confirmOpen}
+      <ApplicationConfirmationModal
+        open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
-        size="sm"
-        zIndex={50}
-      >
-        <div className="p-6 text-center">
-          <IconAlertTriangle
-            size={42}
-            className={`mx-auto mb-3 ${decision?.status === "ACCEPTED"
-              ? "text-green-500"
-              : "text-red-500"
-              }`}
-          />
-          <h3 className="text-lg font-semibold">
-            Confirm {decision?.status}
-          </h3>
-
-          {decision?.status === "ACCEPTED" && (
-            <input
-              type="number"
-              min={0}
-              max={100}
-              className="input-normal w-full"
-            />
-          )}
-          {decision?.status === "REJECTED" && (
-            <textarea
-              className="w-full mt-4 p-2 border rounded"
-              placeholder="Rejection comment"
-              onChange={(e) =>
-                setDecision({ ...decision, comment: e.target.value })
-              }
-            />
-          )}
-
-          <div className="mt-6 flex justify-center gap-3">
-            <Button
-              label="Cancel"
-              theme="secondary"
-              onClick={() => setConfirmOpen(false)}
-            />
-            <Button
-              label="Confirm"
-              theme={decision?.status === "ACCEPTED" ? "primary" : "danger"}
-              loading={reviewMutation.isPending}
-              onClick={() =>
-                decision &&
-                reviewMutation.mutate({
-                  id: decision.id,
-                  status: decision.status,
-                  comment: decision.comment,
-                })
-              }
-            />
-          </div>
-        </div>
-      </Modal>
+        documentScore={documentScore}
+        application={application}
+        decision={decision}
+        setDecision={setDecision}
+      />
     </div>
   );
 }

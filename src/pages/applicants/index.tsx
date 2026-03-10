@@ -22,8 +22,6 @@ export const ApplicantsList = () => {
     const [reviewStage, setReviewStage] = useState<string>();
     const [status, setStatus] = useState<string>();
     const [sort, setSort] = useState<string>("updatedAt,desc");
-    const { t } = useTranslation();
-    const { userData } = useUserDataContext();
     const [handleModal, setHandleModal] = useState<{ type: "viewApplication" | null, object: any }>({ type: null, object: null });
 
     const handleModalClose = () => {
@@ -110,7 +108,7 @@ export const ApplicantsList = () => {
                     />
 
                     <span className="text-sm text-slate-500">
-                        Showing {applicantList?.content?.length ?? 0} applicants
+                        Showing {applicantList?.content?.length ?? 0} application(s)
                     </span>
 
                 </div>
@@ -122,7 +120,7 @@ export const ApplicantsList = () => {
                     hasActions
                     onSorting={handleSorting}
                     actionSlot={(selectedApplicant: any) => (
-                        <Tooltip content="View application">
+                        <Tooltip content="Review application">
                             <button
                                 onClick={() =>
                                     setHandleModal({
@@ -176,7 +174,7 @@ export const ApplicantsList = () => {
                         <Button
                             label="Export Report"
                             variant="pastel"
-                            icon={<IconPdf size={18} />}
+                            icon={<IconPdf className="text-red-500" size={24} />}
                             onClick={() => refetch()}
                         />
                     </div>
