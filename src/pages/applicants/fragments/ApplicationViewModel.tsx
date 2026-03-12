@@ -1,10 +1,12 @@
 import Button from "@/components/button/Button";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { ITenderApplication, IFile } from "@/types/tenderWizard";
+import { ITenderApplication, IFile, IStageMarks } from "@/types/tenderWizard";
 import {
+  IconEye,
   IconFile,
   IconFileDownload,
+  IconTrash,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
@@ -120,6 +122,9 @@ export default function ApplicationViewModal({
     return requirement ? { required: requirement.required, totalMarks: requirement.percentage } : { required: false, totalMarks: 0 };
   }
 
+  //stage marks
+  const stageMark: IStageMarks | undefined = application?.stageMarks?.find(stg => stg.stage === application.reviewStage);
+
 
 
 
@@ -147,57 +152,162 @@ export default function ApplicationViewModal({
           </button>
         </div>
 
-        {/* STATUS + ACTIONS */}
-        <div className="px-6 py-3 border-b bg-slate-50 flex justify-between items-center">
-          <div className="flex flex-col">
+        {/* STATUS + MARKS + ACTIONS */}
+        <div className="px-6 py-1 border-b bg-slate-50 flex items-center justify-between">
+
+          {/* STATUS */}
+          <div className="flex items-center gap-4">
+
             <span
-              className={`px-3 py-1 rounded-full w-fit text-xs font-semibold
-              ${application.status === "AWARDED"
+              className={`px-3 py-1 rounded-full text-xs font-semibold
+      ${application.status === "AWARDED"
                   ? "bg-green-100 text-green-700"
                   : application.status === "CLOSED"
                     ? "bg-orange-100 text-orange-700"
-                    : ["REJECTED"].includes(application.status)
+                    : application.status === "REJECTED"
                       ? "bg-red-100 text-red-700"
                       : "bg-blue-100 text-blue-700"
                 }`}
             >
               {application.status}
             </span>
-            {
-              userData?.role === "BIDDER" && (
-                application.status === "AWARDED" ?
-                  <span className="text-xs text-green-500 mt-1 ms-1">
-                    Congratulations! You have been awarded for this tender.
-                  </span>
-                  :
-                  application.status === "REJECTED" ?
-                    <span className="text-xs text-red-500 mt-1 ms-1">
-                      Thank you for applying for this tender.
-                    </span>
-                    : null
-              )
-            }
+
+            {/* BIDDER MESSAGE */}
+            {userData?.role === "BIDDER" && (
+              <p className={`text-xs font-medium
+        ${application.status === "AWARDED"
+                  ? "text-green-600"
+                  : application.status === "REJECTED"
+                    ? "text-red-500"
+                    : "text-slate-500"}
+      `}>
+
+                {application.status === "AWARDED" &&
+                  "Congratulations! Your bid has been awarded."}
+
+                {application.status === "REJECTED" &&
+                  "Thank you for participating in this tender."}
+
+              </p>
+            )}
+
           </div>
 
+
+          {/* SCORE SUMMARY */}
+          {(application.status === "AWARDED" ||
+            application.status === "REJECTED" ||
+            application.status === "CLOSED") && (
+
+              <div className="flex items-center gap-4 bg-white px-5 py-2 rounded-xl border border-slate-200 shadow-sm">
+
+                {/* Circular Score */}
+                <div className="relative flex items-center justify-center">
+
+                  <svg className="w-12 h-12 -rotate-90">
+
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="transparent"
+                      className="text-slate-100"
+                    />
+
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="transparent"
+                      strokeDasharray={125.6}
+                      strokeDashoffset={
+                        125.6 - (125.6 * (application.totalMarks || 0)) / 100
+                      }
+                      className={`transition-all duration-700 ${(application.totalMarks || 0) >= (stageMark?.passMark ?? 0)
+                        ? "text-emerald-500"
+                        : "text-amber-500"
+                        }`}
+                    />
+
+                  </svg>
+
+                  <span className="absolute text-xs font-bold text-slate-700">
+                    {application.totalMarks || 0}%
+                  </span>
+
+                </div>
+
+
+                {/* Score Details */}
+                <div className="flex flex-col">
+
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+                    Evaluation Score
+                  </span>
+
+                  <div className="flex items-center gap-2">
+
+                    <span className="text-lg font-bold text-slate-800">
+                      {application.totalMarks || 0}
+                    </span>
+
+                    <span className="text-xs text-slate-500">
+                      / 100
+                    </span>
+
+                    <span
+                      className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${(application.totalMarks || 0) >= (stageMark?.passMark ?? 0)
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-red-100 text-red-600"
+                        }`}
+                    >
+                      Pass Mark {stageMark?.passMark ?? 0}%
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
+
+          {/* ACTIONS */}
           {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(
             userData?.role || ""
           ) &&
             application.status === "SUBMITTED" && (
+
               <div className="flex gap-2">
-                <Button
-                  label={userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ? "Accept" : "Confirm"}
-                  size="sm"
-                  theme="primary"
-                  onClick={() => openConfirm("ACCEPTED")}
-                />
+
+                {
+                  (application?.totalMarks || 0) >= (stageMark?.passMark ?? 0) &&
+                  <Button
+                    label={
+                      userData?.role === "PROCUREMENT_ENTITY_REVIEWER"
+                        ? "Accept"
+                        : "Confirm"
+                    }
+                    size="sm"
+                    theme="primary"
+                    onClick={() => openConfirm("ACCEPTED")}
+                  />
+                }
                 <Button
                   label="Reject"
                   size="sm"
                   theme="danger"
                   onClick={() => openConfirm("REJECTED")}
                 />
+
               </div>
+
             )}
+
         </div>
 
         {/* CONTENT */}
@@ -283,23 +393,37 @@ export default function ApplicationViewModal({
                       </div>
 
                       <div className="flex gap-2">
-                        <button
+                        <Button
+                          size="sm"
                           onClick={() => window.open(URL.createObjectURL(negotiationFile))}
-                          className="text-blue-600 text-xs"
-                        >
-                          View
-                        </button>
-
-                        <button
+                          theme="info"
+                          variant="pastel"
+                          icon={<IconEye size={20} />}
+                        />
+                        <Button
+                          size="sm"
                           onClick={() => setNegotiationFile(null)}
-                          className="text-red-500 text-xs"
-                        >
-                          Remove
-                        </button>
+                          theme="danger"
+                          variant="pastel"
+                          // label="Remove"
+                          icon={<IconTrash size={20} />}
+                        />
                       </div>
                     </div>
                   )}
-
+                  <div className="p-2 mt-4 w-full flex justify-center">
+                    {
+                      awardFile &&
+                      <Button
+                        size="sm"
+                        // onClick={() => setAwardFile(null)}
+                        theme="success"
+                        variant="filled"
+                        label="UPLOAD"
+                        icon={<IconUpload size={20} />}
+                      />
+                    }
+                  </div>
                 </div>
               }
 
@@ -310,7 +434,7 @@ export default function ApplicationViewModal({
 
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="font-medium text-sm">Award Letter</p>
+                      <p className="font-medium text-sm">Award Document</p>
                       <p className="text-xs text-slate-500">
                         Final award document for bidder
                       </p>
@@ -346,23 +470,37 @@ export default function ApplicationViewModal({
                       </div>
 
                       <div className="flex gap-2">
-                        <button
+                        <Button
+                          size="sm"
                           onClick={() => window.open(URL.createObjectURL(awardFile))}
-                          className="text-blue-600 text-xs"
-                        >
-                          View
-                        </button>
-
-                        <button
+                          theme="info"
+                          variant="pastel"
+                          icon={<IconEye size={20} />}
+                        />
+                        <Button
+                          size="sm"
                           onClick={() => setAwardFile(null)}
-                          className="text-red-500 text-xs"
-                        >
-                          Remove
-                        </button>
+                          theme="danger"
+                          variant="pastel"
+                          // label="Remove"
+                          icon={<IconTrash size={20} />}
+                        />
                       </div>
                     </div>
                   )}
-
+                  <div className="p-2 mt-4 w-full flex justify-center">
+                    {
+                      awardFile &&
+                      <Button
+                        size="sm"
+                        // onClick={() => setAwardFile(null)}
+                        theme="success"
+                        variant="filled"
+                        label="UPLOAD"
+                        icon={<IconUpload size={20} />}
+                      />
+                    }
+                  </div>
                 </div>
               }
 

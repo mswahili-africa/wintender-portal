@@ -102,7 +102,7 @@ export default function Button({
             ) : (
                 <Fragment>
                     {position === "left" && props.icon}
-                    <span className={`${props.icon && "ml-2"}`}>{props.label}</span>
+                    <span className={`${props.icon && props.label ? "ml-2" : ""}`}>{props.label}</span>
                     {position === "right" && props.icon}
                 </Fragment>
             )}

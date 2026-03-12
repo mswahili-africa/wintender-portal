@@ -168,7 +168,6 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
     useEffect(() => {
         // 1. Get the list of stages that are either finished or currently open
-        // We slice 'steps' from 1 because index 0 is "DETAILS"
         const activeRequirementStages = steps
             .slice(1, currentStep + 1) as RequirementStage[];
 
@@ -269,7 +268,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         const requirementList = Object.entries(requirements).flatMap(([stage, items]) =>
             items.map((item) => ({
                 stage,
-                passMarks: passMarks[stage as RequirementStage],
+                passMark: passMarks[stage as RequirementStage],
                 fieldName: item.fieldName,
                 required: item.required,
                 percentage: item.percentage,
@@ -727,10 +726,6 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
             {open && (
                 <Modal size="xl" isOpen={open} onClose={() => setOpen(false)} title="Upload New Tender">
 
-                    {/* <div className="-mt-10"> */}
-                    {/* <div className="flex justify-between items-center mb-10">
-                <h2 className="text-lg font-bold uppercase">{t("tender-wizard-header")}</h2>
-            </div> */}
                     <form onSubmit={handleSubmit(submit)} className="max-w-7xl mx-auto h-auto flex flex-col">
 
                         {/* PROGRESS BAR */}
@@ -814,7 +809,6 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                             }
                         </div>
                     </form>
-                    {/* </div> */}
                 </Modal>
             )}
         </>

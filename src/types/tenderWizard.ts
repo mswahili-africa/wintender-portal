@@ -101,6 +101,12 @@ export interface IFile {
   filePath: string;
 }
 
+export interface IStageMarks {
+  stage: string;
+  marks: number;
+  passMark: number;
+}
+
 export interface ITenderApplication {
   reference: string;
   tender: ITender;
@@ -110,4 +116,6 @@ export interface ITenderApplication {
   files: IFile[];
   reviewStatus: boolean;
   status: string;
+  stageMarks: IStageMarks[];
+  totalMarks: number;
 }
