@@ -195,9 +195,8 @@ export default function ApplicationViewModal({
 
 
           {/* SCORE SUMMARY */}
-          {(application.status === "AWARDED" ||
-            application.status === "REJECTED" ||
-            application.status === "CLOSED") && (
+          {(
+            userData?.role !== "BIDDER") && (
 
               <div className="flex items-center gap-4 bg-white px-5 py-2 rounded-xl border border-slate-200 shadow-sm">
 

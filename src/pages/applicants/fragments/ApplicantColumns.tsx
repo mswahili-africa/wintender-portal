@@ -1,5 +1,6 @@
 import Chip from "@/components/chip/Chip";
 import { IColumn } from "@/components/widgets/table/Table";
+import { IApplicationInterface } from "@/types/tenderWizard";
 
 // Helper function to convert text to sentence case
 const toSentenceCase = (text: string) => {
@@ -22,6 +23,16 @@ const ApplicantsColumns: IColumn[] = [
     label: "Reference No",
     sortable: false,
     plainObject: false
+  },
+  {
+    name: "",
+    label: "Score",
+    sortable: false,
+    plainObject: true,
+    element: (row: IApplicationInterface) => {
+
+      return <span>{row.totalMarks}/100</span>;
+    },
   },
   {
     name: "status",
