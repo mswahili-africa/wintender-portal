@@ -1,4 +1,4 @@
-import { IconCheckbox, IconEdit, IconEye, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconCheckbox, IconEdit, IconEye, IconFile, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import toast from "react-hot-toast";
@@ -24,7 +24,7 @@ import Tooltip from "@/components/tooltip/Tooltip";
 
 export default function DIFMapplications() {
     const [page, setPage] = useState<number>(0);
-    const [search, setSearch] = useState<string>("");
+    const [search, setSearch] = useState<string|undefined>();
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -43,9 +43,10 @@ export default function DIFMapplications() {
         page,
         search,
         sort,
-        status,
+        status: status === "" || status === undefined ? undefined : status,
         filter: undefined,
-        visibility: "all"
+        visibility: "all",
+        
     });
 
     const schema = object().shape({
@@ -209,19 +210,20 @@ export default function DIFMapplications() {
         <div className="modal-content rounded-lg shadow-lg p-4 z-60"> {/* Set max height and overflow */}
             <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-lg">{t("difm-tabs-all-applications-header")}</h3>
-                <div className="flex flex-col sm:flex-row gap-2 sm:w-1/2">
+                <div className="flex flex-col items-center justify-end sm:flex-row gap-2">
+                    <div className="text-slate-500 flex text-sm flex-row italic">{status === undefined || status === "" ? "All" : status}: <span className="text-green-600 font-bold mx-2">{applicationList?.totalElements ?? 0}</span></div>
                     <input
                         type="text"
                         placeholder="Search"
-                        className="input-normal w-full"
+                        className="input-normal w-full sm:w-72 text-xs"
                         onChange={(e) => setSearch(e.target.value)} // Update search query
                     />
                     <select
-                        className={`input-normal w-full sm:w-3/4`}
+                        className={`input-normal w-full sm:w-60 text-xs`}
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                     >
-                        <option value="">Status</option>
+                        <option value={""}>Status</option>
                         {
                             DIFMStatusOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -396,7 +398,7 @@ export default function DIFMapplications() {
             )}
 
             <TenderViewModelDoItForMe
-                open={isTenderModalOpen && selectedApplication!==null}
+                open={isTenderModalOpen && selectedApplication !== null}
                 selectedApplication={selectedApplication!}
                 onClose={() => setSelectedApplication(null)}
             />

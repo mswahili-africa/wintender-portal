@@ -13,7 +13,7 @@ import InvoiceListColumns from "./fragments/InvoiceListColumns";
 
 export const InvoicePage = () => {
   const [page, setPage] = useState<number>(0);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<string>("updatedAt,desc");
   const [status, setStatus] = useState<string | undefined>(undefined);
   const navigate = useNavigate();

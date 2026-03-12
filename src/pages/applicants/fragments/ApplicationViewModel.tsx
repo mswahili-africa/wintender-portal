@@ -5,7 +5,6 @@ import { ITenderApplication, IFile } from "@/types/tenderWizard";
 import {
   IconFile,
   IconFileDownload,
-  IconPlus,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";

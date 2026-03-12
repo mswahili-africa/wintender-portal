@@ -1,18 +1,15 @@
-
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { createTender, getCategories } from "@/services/tenders";
+import { createTender } from "@/services/tenders";
 import { ITenders } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText, IconNewSection, IconX } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { mixed, number, object, string } from "yup";
 import requirementOptions from "@/pages/complience/data/documents.json";
 import Select from "react-select";
-import { getEntities } from "@/services/entities";
-import { debounce, set } from "lodash";
 import Button from "@/components/button/Button";
 import { TextEditor } from "@/components/editor/TextEditor";
 import { useTranslation } from "react-i18next";
@@ -21,7 +18,7 @@ import { motion } from "framer-motion";
 import { RequirementStage, RequirementItem } from "@/types/tenderWizard";
 import Modal from "@/components/widgets/Modal";
 import { useDebounce } from "@/hooks/useDebounce";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 
 
@@ -70,7 +67,6 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
     const [consentGiven, setConsentGiven] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
     const { userData } = useUserDataContext();  // Use the hook to get user data
     const userRole = userData?.role || "BIDDER";
     const { t } = useTranslation();
@@ -81,6 +77,13 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
     const [marks, setMarks] = useState<number>(100);
     const [totalPercentage, setTotalPercentage] = useState<number>(0);
+    const [passMarks, setPassMarks] = useState<Record<RequirementStage, number>>({
+        [RequirementStage.PRELIMINARY]: 0,
+        [RequirementStage.TECHNICAL]: 0,
+        [RequirementStage.COMMERCIAL]: 0,
+        [RequirementStage.FINANCIAL]: 0,
+        [RequirementStage.CONSENT]: 0,
+    });
 
     // Function to calculate marks based on the percentage values of requirements items marks should not exceed 100
 
@@ -130,28 +133,28 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
     const openDate = watch("openDate");
 
     const { categories: categoryList, isLoading: categoryLoading } = useSearchCategories({
-            page: 0,
-            size: 5,
-            search: debouncedSearch
-        });
-    
-        useEffect(() => {
-            if (categoryList) {
-                setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
-            }
-        }, [categoryList]);
-    
-        const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
-            page: 0,
-            size: 5,
-            search: debouncedSearchEntity
-        });
-    
-        useEffect(() => {
-            if (entityList) {
-                setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
-            }
-        }, [entityList]);
+        page: 0,
+        size: 5,
+        search: debouncedSearch
+    });
+
+    useEffect(() => {
+        if (categoryList) {
+            setCategories(categoryList.content.map(cat => ({ value: cat.id, label: cat.name.toUpperCase() })));
+        }
+    }, [categoryList]);
+
+    const { entities: entityList, isLoading: entityLoading } = useSearchEntities({
+        page: 0,
+        size: 5,
+        search: debouncedSearchEntity
+    });
+
+    useEffect(() => {
+        if (entityList) {
+            setEntities(entityList.content.map(ent => ({ value: ent.id, label: ent.name.toUpperCase() })));
+        }
+    }, [entityList]);
 
     const addRequirement = (stage: RequirementStage) => {
         setRequirements((prev) => ({
@@ -159,6 +162,25 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
             [stage]: [...prev[stage], { fieldName: "", required: true, percentage: 0, description: "" }],
         }));
     };
+
+    // TOTAL MARKS IN EACH STEP
+    const [cumulativePercentage, setCumulativePercentage] = useState<number>(0);
+
+    useEffect(() => {
+        // 1. Get the list of stages that are either finished or currently open
+        // We slice 'steps' from 1 because index 0 is "DETAILS"
+        const activeRequirementStages = steps
+            .slice(1, currentStep + 1) as RequirementStage[];
+
+        // 2. Sum the percentages only for these stages
+        const total = activeRequirementStages.reduce((sum, stage) => {
+            const stageItems = requirements[stage] || [];
+            const stageSum = stageItems.reduce((s, item) => s + (Number(item.percentage) || 0), 0);
+            return sum + stageSum;
+        }, 0);
+
+        setCumulativePercentage(total);
+    }, [requirements, currentStep]); // Recalculate if requirements change OR user moves steps
 
     const updateRequirement = (
         stage: RequirementStage,
@@ -171,7 +193,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
         setRequirements((prev) => ({
             ...prev,
-            [stage]: updated,
+            [stage]: updated
         }));
     };
 
@@ -243,18 +265,23 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         formData.append("tenderType", data.tenderType);
         formData.append("consultationFee", data.consultationFee.toString());
 
+        // JCM
         const requirementList = Object.entries(requirements).flatMap(([stage, items]) =>
             items.map((item) => ({
                 stage,
+                passMarks: passMarks[stage as RequirementStage],
                 fieldName: item.fieldName,
                 required: item.required,
                 percentage: item.percentage,
                 description: item.description
             }))
         );
+
+
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
+        
         uploadTenderMutation.mutate(formData);
     };
 
@@ -518,8 +545,39 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
             );
         }
 
+
+
         return (
-            <div>
+            <>
+                {/* Pass Marks for the current stage */}
+                {
+                    stage !== "PRELIMINARY" &&
+                    <div className="mb-2 flex flex-col">
+                        <label className="label font-bold">
+                            {t("tender-wizard-form-pass-marks")} - {stage}(%)<small className="text-xs text-red-500 ms-2">. Pass mark should not exceed {cumulativePercentage}%</small>
+                        </label>
+
+                        <input
+                            type="number"
+                            min={0}
+                            max={cumulativePercentage}
+                            className="input-normal w-32 border-green-500 text-center"
+                            value={passMarks[stage]} // Read specific stage value
+                            onChange={(e) => {
+                                let value = Number(e.target.value);
+                                if (value > cumulativePercentage) value = cumulativePercentage;
+                                if (value < 0) value = 0;
+
+                                setPassMarks(prev => ({
+                                    ...prev,
+                                    [stage]: value // Update only current stage
+                                }));
+                            }}
+                        />
+                    </div>
+                }
+                {/* ... rest of the items mapping */}
+
                 {requirements[stage].map((req, idx) => {
                     const filteredStageOptions = stageOptions.filter(
                         (opt) =>
@@ -588,7 +646,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                                         type="number"
                                         min={0}
                                         max={100}
-                                        className="input-normal w-full"
+                                        className="input-normal w-full text-center"
                                         value={req.percentage}
                                         onChange={(e) => {
                                             let value = Number(e.target.value);
@@ -609,21 +667,10 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                                     />
                                 </div>
 
+
                                 {/* Required Toggle */}
                                 <div className="lg:col-span-3 flex items-end">
                                     <label className="flex items-center gap-3 cursor-pointer select-none">
-                                        {/* <div className="relative">
-                                            <input
-                                                type="checkbox"
-                                                checked={req.required}
-                                                onChange={(e) =>
-                                                    updateRequirement(stage, idx, "required", e.target.checked)
-                                                }
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-10 h-5 bg-slate-300 rounded-full peer-checked:bg-green-500 transition" />
-                                            <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-5" />
-                                        </div> */}
                                         <input
                                             type="checkbox"
                                             className="mr-1"
@@ -661,7 +708,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                 >
                     {t("tender-wizard-add-requirement-button", { stage: stage })}
                 </button>
-            </div>
+            </ >
         );
     };
 
@@ -689,7 +736,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                         {/* PROGRESS BAR */}
                         <div className="flex flex-row justify-between">
                             <div className="text-sm mb-2 font-medium">{t("tender-wizard-progress")}</div>
-                            {marks > 0 && <span className="text-xs text-green-500 ml-2">({t("tender-wizard-marks-left", { marks: marks })})</span>}
+                            <span className={`text-sm font-bold ${marks > 0 ? "text-green-500" : "text-red-500"} ml-2`}>({t("tender-wizard-marks-left", { marks: marks })})</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
                             <div

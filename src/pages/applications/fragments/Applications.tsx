@@ -35,7 +35,7 @@ interface ApplicationsListProps {
 
 export default function ApplicationsList({ applicationGroup, groupId, onClose, onRefetch }: ApplicationsListProps) {
     const [page, setPage] = useState<number>(0);
-    const [search, setSearch] = useState<string>("");
+    const [search, setSearch] = useState<string|undefined>(undefined);
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);

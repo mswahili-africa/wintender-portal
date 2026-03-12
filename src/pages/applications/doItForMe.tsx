@@ -17,7 +17,7 @@ export default function ApplicationGroups() {
   const { userData } = useUserDataContext();
   const userRole = userData?.role || "BIDDER";
   const [page, setPage] = useState<number>(0);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string|undefined>();
   const [sort, setSort] = useState<string>("updatedAt,desc");
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [selectedGroupList, setSelectedGroupList] = useState<IApplicationGroup | null>(null); // Track selected group
@@ -26,7 +26,7 @@ export default function ApplicationGroups() {
   // Fetch data using custom hook
   const { applicationGroupList, isLoading, refetch } = getAllApplicationsGroup({
     page,
-    search,
+    search: search || "",
     sort,
     filter: undefined,
   });
