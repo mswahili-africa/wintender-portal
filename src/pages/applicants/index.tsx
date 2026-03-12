@@ -6,7 +6,7 @@ import { useLocation, useParams } from "react-router-dom";
 import columns from "./fragments/ApplicantColumns";
 import getApplications from "@/hooks/useApplicantsList";
 import ApplicantViewModal from "./fragments/ApplicationViewModel";
-import { RequirementStage } from "@/types/tenderWizard";
+import { IApplicationInterface, IStageMarks, RequirementStage } from "@/types/tenderWizard";
 import Tooltip from "@/components/tooltip/Tooltip";
 import Button from "@/components/button/Button";
 import { useTranslation } from "react-i18next";
@@ -92,6 +92,11 @@ export const ApplicantsList = () => {
         }
         setCurrentStep(index + 1);
     };
+
+    // HIGHEST SCORE AND LOWEST SCORE
+    const highestScore = Math.max(...(applicantList?.content?.map((applicant: IApplicationInterface) => applicant.totalMarks) || []));
+    const lowestScore = Math.min(...(applicantList?.content?.map((applicant: IApplicationInterface) => applicant.totalMarks) || []));
+    const passMark = applicantList?.content[0]?.stageMarks.map((stageMark: IStageMarks) => stageMark.passMark)[0];
 
     const renderStepContent = () => {
 
@@ -180,7 +185,7 @@ export const ApplicantsList = () => {
                     </div>
 
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
 
                     <div className="bg-white border rounded-lg p-4">
                         <p className="text-xs text-slate-500">Total Applications</p>
@@ -193,6 +198,12 @@ export const ApplicantsList = () => {
                         <p className="text-xs text-slate-500">Current Stage</p>
                         <p className="text-sm text-green-600 font-semibold">
                             {steps[currentStep]}
+                        </p>
+                    </div>
+                    <div className="bg-white border rounded-lg p-4">
+                        <p className="text-xs text-slate-500">Pass Mark</p>
+                        <p className="text-sm text-green-600 font-semibold">
+                            {passMark}
                         </p>
                     </div>
 
@@ -249,17 +260,17 @@ export const ApplicantsList = () => {
 
                 <div className="bg-white border rounded-lg p-4">
                     <p className="text-xs text-slate-500 mb-1">Highest Score</p>
-                    <p className="text-lg font-semibold">—</p>
+                    <p className="text-lg font-semibold">{highestScore ?? "—"}</p>
                 </div>
 
                 <div className="bg-white border rounded-lg p-4">
                     <p className="text-xs text-slate-500 mb-1">Lowest Score</p>
-                    <p className="text-lg font-semibold">—</p>
+                    <p className="text-lg font-semibold">{lowestScore ?? "—"}</p>
                 </div>
 
                 <div className="bg-white border rounded-lg p-4">
                     <p className="text-xs text-slate-500 mb-1">Evaluators Assigned</p>
-                    <p className="text-lg font-semibold">—</p>
+                    <p className="text-lg font-semibold">{"—"}</p>
                 </div>
 
             </div>
