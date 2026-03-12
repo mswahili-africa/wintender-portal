@@ -236,7 +236,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
       return (
         <div>
           <h3 className="text-lg font-bold py-2">{tender.title}</h3>
-          <p><strong>{t("application-wizard-summary")}:</strong> {tender.summary}</p>
+          <p><strong>{t("application-wizard-summary")}:</strong> <span dangerouslySetInnerHTML={{ __html: tender.summary }}></span></p>
 
           <div className="flex items-center py-2">
             <strong className="w-32 text-gray-600">{t("application-wizard-close-date")}:</strong>

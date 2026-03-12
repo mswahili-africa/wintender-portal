@@ -1,7 +1,7 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
+import { useUserDataContext } from "@/providers/userDataProvider";
 import { reviewApplication } from "@/services/tenders";
-import { IRequirement } from "@/types";
 import { ITenderApplication } from "@/types/tenderWizard";
 import {
   IconArrowUp,
@@ -31,6 +31,7 @@ export default function ApplicationConfirmationModal({
   setDecision,
   refetch
 }: ModalProps) {
+  const { userData } = useUserDataContext();
 
 
   /* ----------------------------- MUTATION ----------------------------- */
@@ -65,15 +66,14 @@ export default function ApplicationConfirmationModal({
       });
   }
 
-  // total stage marks and total score from review
-  const totalStageMarks = application.tender.requirements.filter((r) => r.stage === application.reviewStage).filter((r) => r.required === true).reduce((acc, file) => acc + file.percentage, 0);
-  const totalReviewScore = documentScore.reduce((acc, file) => acc + file.score, 0);
+  // total pass marks
+  const passMark = application?.stageMarks?.find((m) => m.stage === application.reviewStage)?.passMark || 0;
 
   // check if there is requirement item not present in documentScore type
   const requiredItems = application.tender.requirements
     .filter((r) => r.stage === application.reviewStage && r.required);
 
-    console.log(requiredItems);
+  console.log(requiredItems);
 
   const areAllRequiredReviewed = requiredItems.every((r) =>
     documentScore.some((file) => file.type === r.fieldName)
@@ -128,12 +128,16 @@ export default function ApplicationConfirmationModal({
               <p className="font-medium">{application?.tender.title}</p>
             </div>
 
-            <div>
-              <p className="text-slate-500 text-xs">Bid Amount</p>
-              <p className="font-medium">
-                {"100,000,000"}
-              </p>
-            </div>
+            {
+              application?.reviewStage === "FINANCIAL" && (
+                <div>
+                  <p className="text-slate-500 text-xs">Bid Amount</p>
+                  <p className="font-medium">
+                    {"10,000,000"}
+                  </p>
+                </div>
+              )
+            }
 
             <div>
               <p className="text-slate-500 text-xs">Submission Date</p>
@@ -155,20 +159,20 @@ export default function ApplicationConfirmationModal({
             <div>
               <p className="text-xs text-slate-500">Score</p>
               <p className="text-xl font-semibold text-green-600">
-                {totalReviewScore ?? 0}%
+                {application?.totalMarks ?? 0}%
               </p>
             </div>
 
             <div>
               <p className="text-xs text-slate-500">Maximum</p>
               <p className="text-lg font-medium">
-                {totalStageMarks}%
+                100%
               </p>
             </div>
 
             <div className="flex items-center flex-col">
               <p className="text-xs text-slate-500">Threshold</p>
-              <p className="text-lg text-green-600 font-medium flex items-center">{(totalStageMarks * 0.7).toFixed()}% <IconArrowUp className="font-extralight" size={17} /></p>
+              <p className="text-lg text-green-600 font-medium flex items-center">{passMark}% <IconArrowUp className="font-extralight" size={17} /></p>
             </div>
 
           </div>
@@ -176,18 +180,18 @@ export default function ApplicationConfirmationModal({
           {/* SCORE BAR */}
           <div className="mt-4 h-2 bg-slate-200 rounded-full">
             <div
-              className={`h-2 rounded-full ${decision?.status === "ACCEPTED"
+              className={`h-2 rounded-full ${application?.totalMarks >= passMark
                 ? "bg-green-500"
                 : "bg-red-500"
                 }`}
-              style={{ width: `${totalReviewScore}%` }}
+              style={{ width: `${application?.totalMarks}%` }}
             />
           </div>
 
           {/* PASS FAIL MESSAGE */}
           <div className="mt-3 text-sm">
 
-            {decision?.status === "ACCEPTED" ? (
+            {decision?.status === "ACCEPTED" && application.totalMarks >= passMark ? (
               <span className="text-green-600 font-medium">
                 ✔ Applicant meets the stage requirements
               </span>
@@ -259,7 +263,7 @@ export default function ApplicationConfirmationModal({
 
         {/* ACTIONS */}
         {
-          areAllRequiredReviewed && (
+          !(areAllRequiredReviewed || userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN") ? (
             <div className="flex justify-end gap-3">
               <Button
                 label="Cancel"
@@ -272,6 +276,14 @@ export default function ApplicationConfirmationModal({
                 loading={reviewMutation.isPending}
                 onClick={submitApplicationReview}
               />
+            </div>
+          ):
+          (
+            // MESSAGE TO TELL REVIEWER THAT SOME REQUIREMENTS HAVE NOT BEEN REVIEWED
+            <div className="   rounded-lg p-3 text-sm text-red-700 mb-6">
+              <p>
+                <span className="font-semibold">Note:</span> Some required requirements have not been reviewed yet. <span className="font-bold">Please review them all</span>  before confirming the decision.
+              </p>
             </div>
           )
         }
