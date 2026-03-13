@@ -628,61 +628,66 @@ export default function ApplicationViewModal({
                         (() => {
                           const { required, totalMarks } = checkRequiredAndTotalMarks(file.documentType);
                           return (
-                            required &&
-                            <div className="flex flex-row items-center gap-x-1">
-                              <div className="text-green-500 text-xs">REQUIRED</div>
-                              <div className="text-slate-500 text-xs">{totalMarks}%</div>
-                              <input
-                                type="number"
-                                min={0}
-                                max={totalMarks}
-                                onChange={(e) => {
-                                  const providedValue = Number(e.target.value);
+                            required &&  userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ?(
+                              <div className="flex flex-row items-center gap-x-1">
+                                <div className="text-green-500 text-xs">REQUIRED</div>
+                                <div className="text-slate-500 text-xs">{totalMarks}%</div>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  max={totalMarks}
+                                  onChange={(e) => {
+                                    const providedValue = Number(e.target.value);
 
-                                  // Clamp between 0 and totalMarks
-                                  const maxMarks = totalMarks;
-                                  const value = Math.max(0, Math.min(providedValue, maxMarks));
+                                    // Clamp between 0 and totalMarks
+                                    const maxMarks = totalMarks;
+                                    const value = Math.max(0, Math.min(providedValue, maxMarks));
 
-                                  // setDecision({ ...decision, marks: value });
-                                  setDocumentScore((prevScores) => {
-                                    const existingIndex = prevScores.findIndex(
-                                      (doc) => doc.type === file.documentType
-                                    );
+                                    // setDecision({ ...decision, marks: value });
+                                    setDocumentScore((prevScores) => {
+                                      const existingIndex = prevScores.findIndex(
+                                        (doc) => doc.type === file.documentType
+                                      );
 
-                                    if (existingIndex !== -1) {
-                                      const updatedScores = [...prevScores];
-                                      updatedScores[existingIndex] = {
-                                        type: file.documentType,
-                                        score: value,
-                                        maxScore: maxMarks,
-                                      };
-                                      return updatedScores;
-                                    } else {
-                                      // Add new entry
-                                      return [
-                                        ...prevScores,
-                                        { type: file.documentType, score: value, maxScore: maxMarks },
-                                      ];
+                                      if (existingIndex !== -1) {
+                                        const updatedScores = [...prevScores];
+                                        updatedScores[existingIndex] = {
+                                          type: file.documentType,
+                                          score: value,
+                                          maxScore: maxMarks,
+                                        };
+                                        return updatedScores;
+                                      } else {
+                                        // Add new entry
+                                        return [
+                                          ...prevScores,
+                                          { type: file.documentType, score: value, maxScore: maxMarks },
+                                        ];
+                                      }
+                                    });
+
+                                  }}
+                                  onInput={(e) => {
+                                    // Prevent typing beyond top max or below 0
+                                    const input = e.target as HTMLInputElement;
+                                    const maxMarks = totalMarks;
+
+                                    if (Number(input.value) > maxMarks) {
+                                      input.value = String(maxMarks);
                                     }
-                                  });
 
-                                }}
-                                onInput={(e) => {
-                                  // Prevent typing beyond top max or below 0
-                                  const input = e.target as HTMLInputElement;
-                                  const maxMarks = totalMarks;
-
-                                  if (Number(input.value) > maxMarks) {
-                                    input.value = String(maxMarks);
-                                  }
-
-                                  if (Number(input.value) < 0) {
-                                    input.value = "0";
-                                  }
-                                }}
-                                className="input-normal h-8 w-full"
-                              />
-                            </div>
+                                    if (Number(input.value) < 0) {
+                                      input.value = "0";
+                                    }
+                                  }}
+                                  className="input-normal h-8 w-full"
+                                />
+                              </div>
+                            )
+                              : userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN" &&
+                              (
+                                <div className="text-green-500 text-xs">REVIEWED</div>
+                              )
                           )
                         })()
                       }

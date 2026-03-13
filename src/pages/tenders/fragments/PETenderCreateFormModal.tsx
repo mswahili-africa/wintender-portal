@@ -280,7 +280,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
-        
+
         uploadTenderMutation.mutate(formData);
     };
 
@@ -551,28 +551,85 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                 {/* Pass Marks for the current stage */}
                 {
                     stage !== "PRELIMINARY" &&
-                    <div className="mb-2 flex flex-col">
-                        <label className="label font-bold">
-                            {t("tender-wizard-form-pass-marks")} - {stage}(%)<small className="text-xs text-red-500 ms-2">. Pass mark should not exceed {cumulativePercentage}%</small>
-                        </label>
+                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden mb-3 shadow-sm">
+                        {/* Header Section */}
+                        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                            <div className="flex flex-col">
+                                <label className="text-sm font-bold text-slate-700 uppercase tracking-tight">
+                                    {t("tender-wizard-form-pass-marks")}
+                                </label>
+                                <span className="text-xs text-slate-500 font-medium">Stage: {stage}</span>
+                            </div>
+                            <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-xs font-bold">
+                                MAX AVAILABLE: {cumulativePercentage}%
+                            </div>
+                        </div>
 
-                        <input
-                            type="number"
-                            min={0}
-                            max={cumulativePercentage}
-                            className="input-normal w-32 border-green-500 text-center"
-                            value={passMarks[stage]} // Read specific stage value
-                            onChange={(e) => {
-                                let value = Number(e.target.value);
-                                if (value > cumulativePercentage) value = cumulativePercentage;
-                                if (value < 0) value = 0;
+                        {/* Control Section */}
+                        <div className="p-6">
+                            <div className="flex items-center gap-8">
+                                {/* Visual Percentage Circle */}
+                                <div className="relative flex-shrink-0 w-20 h-20 flex items-center justify-center bg-slate-50 rounded-full border-4 border-slate-100">
+                                    <span className="text-xl font-black text-slate-800">
+                                        {passMarks[stage] || 0}%
+                                    </span>
+                                    <span className="absolute -bottom-2 bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                        PASS
+                                    </span>
+                                </div>
 
-                                setPassMarks(prev => ({
-                                    ...prev,
-                                    [stage]: value // Update only current stage
-                                }));
-                            }}
-                        />
+                                <div className="flex-grow space-y-4">
+                                    <div className="flex justify-between items-end">
+                                        <div>
+                                            <h4 className="text-sm font-semibold text-slate-800">Minimum Threshold</h4>
+                                            <p className="text-xs text-slate-500">Set the minimum score required to pass this stage.</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                max={cumulativePercentage}
+                                                value={passMarks[stage]}
+                                                onChange={(e) => {
+                                                    let value = Number(e.target.value);
+                                                    if (value > cumulativePercentage) value = cumulativePercentage;
+                                                    if (value < 0) value = 0;
+                                                    setPassMarks(prev => ({ ...prev, [stage]: value }));
+                                                }}
+                                                className="w-20 px-2 py-1 text-center font-bold border-2 border-slate-200 rounded-lg focus:border-blue-500 focus:ring-0 outline-none transition-all"
+                                            />
+                                            <span className="font-bold text-slate-400">%</span>
+                                        </div>
+                                    </div>
+
+                                    {/* The Advanced Slider */}
+                                    <div className="relative pt-2">
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max={cumulativePercentage}
+                                            value={passMarks[stage] || 0}
+                                            onChange={(e) => setPassMarks(prev => ({ ...prev, [stage]: Number(e.target.value) }))}
+                                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                                        />
+                                        <div className="flex justify-between mt-2">
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">Beginner (0%)</span>
+                                            <span className="text-[10px] font-bold text-red-400 uppercase">Limit ({cumulativePercentage}%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Warning Footer */}
+                        {passMarks[stage] > cumulativePercentage && (
+                            <div className="bg-red-50 px-4 py-2 flex items-center gap-2 border-t border-red-100">
+                                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                                <span className="text-xs text-red-600 font-medium">
+                                    Warning: Pass mark cannot exceed the cumulative stage total of {cumulativePercentage}%.
+                                </span>
+                            </div>
+                        )}
                     </div>
                 }
                 {/* ... rest of the items mapping */}

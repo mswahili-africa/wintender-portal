@@ -9,8 +9,6 @@ import ApplicantViewModal from "./fragments/ApplicationViewModel";
 import { IApplicationInterface, IStageMarks, RequirementStage } from "@/types/tenderWizard";
 import Tooltip from "@/components/tooltip/Tooltip";
 import Button from "@/components/button/Button";
-import { useTranslation } from "react-i18next";
-import { useUserDataContext } from "@/providers/userDataProvider";
 import { ITenders } from "@/types";
 
 export const ApplicantsList = () => {
