@@ -73,11 +73,15 @@ export default function ApplicationConfirmationModal({
   const requiredItems = application.tender.requirements
     .filter((r) => r.stage === application.reviewStage && r.required);
 
-  console.log(requiredItems);
 
   const areAllRequiredReviewed = requiredItems.every((r) =>
     documentScore.some((file) => file.type === r.fieldName)
   );
+
+
+  // stage score and overall marks total to current stage
+  const currentStageScore = documentScore.reduce((acc, file) => acc + file.score, 0);
+  const overallMarksToCurrentStage = currentStageScore + application.totalMarks;
 
 
   return (
@@ -157,16 +161,16 @@ export default function ApplicationConfirmationModal({
           <div className="grid grid-cols-3 gap-4 text-center">
 
             <div>
-              <p className="text-xs text-slate-500">Score</p>
+              <p className="text-xs text-slate-500">Overall Score</p>
               <p className="text-xl font-semibold text-green-600">
-                {application?.totalMarks ?? 0}%
+                {overallMarksToCurrentStage}%
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-slate-500">Maximum</p>
+              <p className="text-xs text-slate-500">Stage Score</p>
               <p className="text-lg font-medium">
-                100%
+                {currentStageScore}%
               </p>
             </div>
 
@@ -180,18 +184,18 @@ export default function ApplicationConfirmationModal({
           {/* SCORE BAR */}
           <div className="mt-4 h-2 bg-slate-200 rounded-full">
             <div
-              className={`h-2 rounded-full ${application?.totalMarks >= passMark
+              className={`h-2 rounded-full ${overallMarksToCurrentStage >= passMark
                 ? "bg-green-500"
                 : "bg-red-500"
                 }`}
-              style={{ width: `${application?.totalMarks}%` }}
+              style={{ width: `${overallMarksToCurrentStage}%` }}
             />
           </div>
 
           {/* PASS FAIL MESSAGE */}
           <div className="mt-3 text-sm">
 
-            {decision?.status === "ACCEPTED" && application.totalMarks >= passMark ? (
+            {decision?.status === "ACCEPTED" && overallMarksToCurrentStage >= passMark ? (
               <span className="text-green-600 font-medium">
                 ✔ Applicant meets the stage requirements
               </span>
@@ -256,36 +260,39 @@ export default function ApplicationConfirmationModal({
           </div>
         )}
 
-        {/* WARNING */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-700 mb-6">
-          Once confirmed, this evaluation decision will be recorded and cannot be changed without administrative approval.
-        </div>
 
         {/* ACTIONS */}
         {
-          !(areAllRequiredReviewed || userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN") ? (
-            <div className="flex justify-end gap-3">
-              <Button
-                label="Cancel"
-                theme="secondary"
-                onClick={() => onClose()}
-              />
-              <Button
-                label="Confirm Decision"
-                theme={decision?.status === "ACCEPTED" ? "primary" : "danger"}
-                loading={reviewMutation.isPending}
-                onClick={submitApplicationReview}
-              />
-            </div>
-          ):
-          (
-            // MESSAGE TO TELL REVIEWER THAT SOME REQUIREMENTS HAVE NOT BEEN REVIEWED
-            <div className="   rounded-lg p-3 text-sm text-red-700 mb-6">
-              <p>
-                <span className="font-semibold">Note:</span> Some required requirements have not been reviewed yet. <span className="font-bold">Please review them all</span>  before confirming the decision.
-              </p>
-            </div>
-          )
+          (areAllRequiredReviewed || userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN") ? (
+            <>
+              {/* WARNING */}
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-700 mb-6">
+                Once confirmed, this evaluation decision will be recorded and cannot be changed without administrative approval.
+              </div>
+              <div className="flex justify-end gap-3">
+                <Button
+                  label="Cancel"
+                  theme="secondary"
+                  onClick={() => onClose()}
+                />
+                <Button
+                  label="Confirm Decision"
+                  theme={decision?.status === "ACCEPTED" ? "primary" : "danger"}
+                  loading={reviewMutation.isPending}
+                  onClick={submitApplicationReview}
+                />
+              </div>
+            </>
+
+          ) :
+            (
+              // MESSAGE TO TELL REVIEWER THAT SOME REQUIREMENTS HAVE NOT BEEN REVIEWED
+              <div className="   rounded-lg p-3 text-sm text-red-700 mb-6">
+                <p>
+                  <span className="font-semibold">Note:</span> Some required requirements have not been reviewed yet. <span className="font-bold">Please review them all</span>  before confirming the decision.
+                </p>
+              </div>
+            )
         }
 
       </div>

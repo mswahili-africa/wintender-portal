@@ -126,6 +126,7 @@ export default function ApplicationViewModal({
   const stageMark: IStageMarks | undefined = application?.stageMarks?.find(stg => stg.stage === application.reviewStage);
 
 
+  const overallMarksToCurrentStage = documentScore.reduce((acc, file) => acc + file.score, 0) + application.totalMarks;
 
 
 
@@ -224,9 +225,9 @@ export default function ApplicationViewModal({
                       fill="transparent"
                       strokeDasharray={125.6}
                       strokeDashoffset={
-                        125.6 - (125.6 * (application.totalMarks || 0)) / 100
+                        125.6 - (125.6 * (overallMarksToCurrentStage || 0)) / 100
                       }
-                      className={`transition-all duration-700 ${(application.totalMarks || 0) >= (stageMark?.passMark ?? 0)
+                      className={`transition-all duration-700 ${(overallMarksToCurrentStage || 0) >= (stageMark?.passMark ?? 0)
                         ? "text-emerald-500"
                         : "text-amber-500"
                         }`}
@@ -235,7 +236,7 @@ export default function ApplicationViewModal({
                   </svg>
 
                   <span className="absolute text-xs font-bold text-slate-700">
-                    {application.totalMarks || 0}%
+                    {overallMarksToCurrentStage || 0}%
                   </span>
 
                 </div>
@@ -251,7 +252,7 @@ export default function ApplicationViewModal({
                   <div className="flex items-center gap-2">
 
                     <span className="text-lg font-bold text-slate-800">
-                      {application.totalMarks || 0}
+                      {overallMarksToCurrentStage || 0}
                     </span>
 
                     <span className="text-xs text-slate-500">
@@ -259,7 +260,7 @@ export default function ApplicationViewModal({
                     </span>
 
                     <span
-                      className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${(application.totalMarks || 0) >= (stageMark?.passMark ?? 0)
+                      className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${(overallMarksToCurrentStage || 0) >= (stageMark?.passMark ?? 0)
                         ? "bg-emerald-100 text-emerald-700"
                         : "bg-red-100 text-red-600"
                         }`}
@@ -284,7 +285,7 @@ export default function ApplicationViewModal({
               <div className="flex gap-2">
 
                 {
-                  (application?.totalMarks || 0) >= (stageMark?.passMark ?? 0) &&
+                  overallMarksToCurrentStage  >= (stageMark?.passMark ?? 0) &&
                   <Button
                     label={
                       userData?.role === "PROCUREMENT_ENTITY_REVIEWER"

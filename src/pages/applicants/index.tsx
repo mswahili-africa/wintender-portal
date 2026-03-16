@@ -49,7 +49,7 @@ export const ApplicantsList = () => {
     const { applicantList, refetch, isLoading } = getApplications({
         tenderId: tenderId ?? tenderDetails?.id!,
         page,
-        size: 10,
+        size: 20,
         search: search ? search : undefined,
         sort,
         filter: undefined,
@@ -92,8 +92,11 @@ export const ApplicantsList = () => {
     };
 
     // HIGHEST SCORE AND LOWEST SCORE
-    const highestScore = Math.max(...(applicantList?.content?.map((applicant: IApplicationInterface) => applicant.totalMarks) || []));
-    const lowestScore = Math.min(...(applicantList?.content?.map((applicant: IApplicationInterface) => applicant.totalMarks) || []));
+    const scores = applicantList?.content?.map((a: IApplicationInterface) => a.totalMarks) || [];
+
+    // Use fallback 0 to avoid -Infinity/Infinity
+    const highestScore = scores.length > 0 ? Math.max(...scores) : 0;
+    const lowestScore = scores.length > 0 ? Math.min(...scores) : 0;
     const passMark = applicantList?.content[0]?.stageMarks.map((stageMark: IStageMarks) => stageMark.passMark)[0];
 
     const renderStepContent = () => {
@@ -200,8 +203,8 @@ export const ApplicantsList = () => {
                     </div>
                     <div className="bg-white border rounded-lg p-4">
                         <p className="text-xs text-slate-500">Pass Mark</p>
-                        <p className="text-sm text-green-600 font-semibold">
-                            {passMark}
+                        <p className="text-lg text-green-600 font-semibold">
+                            {passMark ?? 0}%
                         </p>
                     </div>
 
@@ -268,7 +271,7 @@ export const ApplicantsList = () => {
 
                 <div className="bg-white border rounded-lg p-4">
                     <p className="text-xs text-slate-500 mb-1">Evaluators Assigned</p>
-                    <p className="text-lg font-semibold">{"—"}</p>
+                    <p className="text-lg font-semibold">{"Current"}</p>
                 </div>
 
             </div>

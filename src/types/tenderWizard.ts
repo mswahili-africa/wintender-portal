@@ -105,7 +105,7 @@ export interface IFile {
 
 export interface IStageMarks {
   stage: string;
-  marks: number;
+  scoredMark: number;
   passMark: number;
 }
 
