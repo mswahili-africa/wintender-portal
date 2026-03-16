@@ -296,102 +296,110 @@ export default function Dashboard() {
                 </div>
             )}
 
+            <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
             {
-                !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
-                    <>
-                        <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
-                            <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="bg-green-100 p-3 rounded-full">
-                                        <IconMessage className="w-6 h-6 text-green-600" />
-                                    </div>
-                                    <h2 className="text-l font-semibold text-gray-800">SMS Balance</h2>
+                !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) &&
+                <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
+                        <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <IconMessage className="w-6 h-6 text-green-600" />
                                 </div>
-
-                                <div className="space-y-2 text-gray-700">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">NextSMS:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.nextSMS ?? "0"}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">Onfon Media:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onfonMedia ?? "0"}</span>
-                                    </div>
-                                </div>
+                                <h2 className="text-l font-semibold text-gray-800">SMS Balance</h2>
                             </div>
 
-                            <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="bg-green-100 p-3 rounded-full">
-                                        <IconMoneybag className="w-6 h-6 text-green-600" />
-                                    </div>
-                                    <h2 className="text-l font-semibold text-gray-800">{t("dashboard-payments-title")} </h2>
+                            <div className="space-y-2 text-gray-700">
+                                <div className="flex justify-between text-sm">
+                                    <span className="font-medium">NextSMS:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.nextSMS ?? "0"}</span>
                                 </div>
-
-                                <div className="space-y-2 text-gray-700">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">All Time:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.totalAmount ?? 0)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">This Month:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.thisMonth ?? 0)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">Wallet:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.walletBalance ?? 0)}</span>
-                                    </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="font-medium">Onfon Media:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onfonMedia ?? "0"}</span>
                                 </div>
                             </div>
-
-                            <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="bg-green-100 p-3 rounded-full">
-                                        <IconReportMoney className="w-6 h-6 text-green-600" />
-                                    </div>
-                                    <h2 className="text-l font-semibold text-gray-800">Tender Quotations</h2>
-                                </div>
-
-                                <div className="space-y-2 text-gray-700">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">All Time:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations?.totalAmount ?? 0)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="font-medium">This Month:</span>
-                                        <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations?.thisMonth ?? 0)}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            {/* JCM CONTACTS  */}
-                            {
-                                ["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
-                                    <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
-                                        <a
-                                            href="https://wa.me/+255766028558"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
-                                        >
-                                            <IconBrandWhatsapp size={20} />
-                                        </a>
-
-                                        <a
-                                            href="mailto:info@wintender.co.tz"
-                                            className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
-                                        >
-                                            <IconMail size={20} />
-                                        </a>
-                                    </div>
-                                )
-                            }
                         </div>
-                    </>
-                )
+
+                        {
+                            ["ADMINISTRATOR", "ACCOUNTANT"].includes(userRole) &&
+                            <>
+
+                                <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="bg-green-100 p-3 rounded-full">
+                                            <IconMoneybag className="w-6 h-6 text-green-600" />
+                                        </div>
+                                        <h2 className="text-l font-semibold text-gray-800">{t("dashboard-payments-title")} </h2>
+                                    </div>
+
+                                    <div className="space-y-2 text-gray-700">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">All Time:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.totalAmount ?? 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">This Month:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.thisMonth ?? 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">Wallet:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.payments?.walletBalance ?? 0)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="bg-green-100 p-3 rounded-full">
+                                            <IconReportMoney className="w-6 h-6 text-green-600" />
+                                        </div>
+                                        <h2 className="text-l font-semibold text-gray-800">Tender Quotations</h2>
+                                    </div>
+
+                                    <div className="space-y-2 text-gray-700">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">All Time:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations?.totalAmount ?? 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">This Month:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.quotations?.thisMonth ?? 0)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </>
+
+                        }
+
+
+
+
+                        {/* JCM CONTACTS  */}
+                        {
+                            ["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
+                                <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
+                                    <a
+                                        href="https://wa.me/+255766028558"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconBrandWhatsapp size={20} />
+                                    </a>
+
+                                    <a
+                                        href="mailto:info@wintender.co.tz"
+                                        className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconMail size={20} />
+                                    </a>
+                                </div>
+                            )
+                        }
+                    </div>
+                </>
             }
 
 
