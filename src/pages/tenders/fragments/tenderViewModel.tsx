@@ -193,10 +193,11 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                                         })()
                                                     }
                                                     size="sm"
-                                                    avatar={(() =>{
-                                                        if(remainingDays < 0){
-                                                            return <IconAlertCircle/>;
-                                                        }})()
+                                                    avatar={(() => {
+                                                        if (remainingDays < 0) {
+                                                            return <IconAlertCircle />;
+                                                        }
+                                                    })()
                                                     }
                                                     theme={
                                                         (() => {
@@ -226,7 +227,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                         {/* PDF Viewer */}
                                         <div className="mt-4" style={{ overflowY: 'auto' }}>
                                             <iframe
-                                                src={tender?.filePath}
+                                                src={`${tender?.filePath}#toolbar=0&navpanes=0&scrollbar=0`}
                                                 width="100%"
                                                 height={"500px"}
                                                 title="Tender Document"

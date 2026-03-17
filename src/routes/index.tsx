@@ -20,7 +20,10 @@ import {
     IconAlertTriangle,
     IconHeartRateMonitor,
     IconMessages,
-    IconReceipt
+    IconReceipt,
+    IconGraph,
+    IconBuildingArch,
+    IconListCheck
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -30,7 +33,7 @@ export interface IRoute {
     label: string;
     labelKey: string;
     icon?: React.ReactElement;
-    dropdown?: boolean;
+    type?: "item" | "dropdown"; // Add dropdown property
     permissions?: string[];
     subMenu?: IRoute[];
 }
@@ -69,6 +72,7 @@ const allMenus: IRoute[] = [
     {
         path: "/tenders",
         label: "Tender",
+        type:"item",
         labelKey: "menu-tender",
         icon: <IconReport size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -83,6 +87,7 @@ const allMenus: IRoute[] = [
     {
         path: "/applications",
         label: "Consultation",
+        type:"dropdown",
         labelKey: "menu-consultation",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -93,6 +98,7 @@ const allMenus: IRoute[] = [
     {
         path: "/finance",
         label: "Finance",
+        type:"dropdown",
         labelKey: "menu-finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -104,19 +110,21 @@ const allMenus: IRoute[] = [
     {
         path: "/entities",
         label: "Entities",
+        type:"dropdown",
         labelKey: "menu-entities",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/bidders", label: "Bidders", labelKey: "menu-bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
-            { path: "/entities", label: "PE", labelKey: "menu-pe", icon: <IconBrandOffice size={20} strokeWidth={1.5} /> },
+            { path: "/entities", label: "PE", labelKey: "menu-pe", icon: <IconBuildingArch size={20} strokeWidth={1.5} /> },
             { path: "/entities-users", label: "PE Admins", labelKey: "menu-pe-admins", icon: <IconMan size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/compliance",
         label: "Compliance",
+        type:"dropdown",
         labelKey: "menu-compliance",
-        icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
+        icon: <IconListCheck size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/company-documents", label: "Documents", labelKey: "menu-documents", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
@@ -124,6 +132,7 @@ const allMenus: IRoute[] = [
     {
         path: "/users",
         label: "Internal",
+        type:"dropdown",
         labelKey: "menu-internal",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -134,6 +143,7 @@ const allMenus: IRoute[] = [
     {
         path: "/inquiries",
         label: "Inquiries & Support",
+        type:"dropdown",
         labelKey: "menu-inquiries",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -144,9 +154,11 @@ const allMenus: IRoute[] = [
         path: "/reports/login-attempt",
         label: "Reports",
         labelKey: "menu-reports",
+        type:"dropdown",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/publisher-perfomance", label: "Publisher Perfomance", labelKey: "menu-publisher-perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
+            { path: "/difm-statistics", label: "DIFM Statistics", labelKey: "menu-difm-statistics", icon: <IconGraph size={20} strokeWidth={1.5} /> },
             { path: "/login-attempt", label: "Login Attempts", labelKey: "menu-login-attempts", icon: <IconLockAccessOff size={20} strokeWidth={1.5} /> },
 
         ],
@@ -154,6 +166,7 @@ const allMenus: IRoute[] = [
     {
         path: "/settings",
         label: "System",
+        type:"dropdown",
         labelKey: "menu-system",
         icon: <IconSettings className="duration-300 animate-spin" size={20} strokeWidth={1.5} />,
         subMenu: [

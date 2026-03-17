@@ -43,6 +43,7 @@
     "menu-logs": "Logs",
     "menu-health": "Health",
     "menu-invoices": "Invoices",
+    "menu-difm-statistics": "DIFM Statistics",
 
     "auth-login-header": "Login",
     "auth-login-username": "Email",

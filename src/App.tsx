@@ -41,6 +41,7 @@ import FloatingChatButton from "./ai/components/FloatingChatButton";
 import SystemHealth from "./pages/system/system-health";
 import SystemLogs from "./pages/system/system-health/System-logs";
 import { InvoicePage } from "./pages/payments/InvoicePage";
+import DIFMStatistics from "./pages/applications/DIFMStatistics";
 
 export const queryClient = new QueryClient({});
 
@@ -88,6 +89,7 @@ function App() {
                                 <Route path="users/:userId" element={<UserDetail selectedUser={null} selectedLoading={false} />} />
                                 <Route path="roles" element={<Roles />} />
                                 <Route path="publisher-perfomance" element={<PublisherPerformance />} />
+                                <Route path="difm-statistics" element={<DIFMStatistics />} />
                                 <Route path="company-documents" element={<CompanyDocuments />} />
                                 <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
