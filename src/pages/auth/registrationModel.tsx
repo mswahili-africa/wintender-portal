@@ -17,6 +17,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchCategories } from "@/hooks/categoriesRepository";
 import PhoneInput from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
+import { AxiosError } from "axios";
 
 interface IProps {
     onSuccess: () => void;
@@ -174,8 +175,8 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
 
             onSuccess();
         },
-        onError: (error: any) => {
-            toast.error(error.data.message || "Registration failed");
+        onError: (error: AxiosError<{ message: string }>) => {
+            toast.error(error?.response?.data?.message || "Registration failed");
         },
     });
 
