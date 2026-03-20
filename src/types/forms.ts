@@ -36,6 +36,7 @@ export interface IBidderRegisterForm {
     companyName: string;
     companyPhoneNumber: string;
     companyAddress: string;
+    companyBusinessType: string;
     tin: string;
     categoryIds: string[];
 }
@@ -175,4 +176,14 @@ export interface IServiceForm {
     bidderId: string
     description: string
     consultationFee: number
+}
+
+export enum BusinessType {
+  PRIVATE_LIMITED_COMPANY_BY_SHARES = "Private Limited Company By Shares",
+  PUBLIC_UNLIMITED_COMPANY_BY_SHARES = "Public Unlimited Company By Shares",
+  COMPANY_LIMITED_BY_GUARANTEE = "Company Limited by Guarantee",
+  SOLE_PROPRIETORSHIP = "Sole Proprietorship",
+  SPECIAL_GROUP = "Special Group",
+  PARTNERSHIP = "Partnership",
+  BRANCH_OF_FOREIGN_COMPANY = "Branch of a Foreign Company"
 }

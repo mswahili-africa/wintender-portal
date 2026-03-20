@@ -92,6 +92,8 @@
     "registration-form-error": "Registration failed",
     "registration-form-terms": "terms and conditions",
     "registration-form-agree": "I agree to the ",
+    "registration-form-company-business-type": "Business Type",
+    "registration-form-business-type-required": "Business type is required",
 
     "dashboard-welcome": "Welcome, {{name}}",
     "dashboard-welcome-message": "Welcome to your dashboard",

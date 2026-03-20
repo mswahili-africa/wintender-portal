@@ -92,6 +92,9 @@
     "registration-form-error": "Usajili umeshindikana",
     "registration-form-terms": "masharti na vigezo",
     "registration-form-agree": "Nakubali ",
+    "registration-form-company-business-type": "Aina ya kampuni",
+    "registration-form-business-type-required": "Aina ya kampuni inahitajika",
+
 
     "dashboard-welcome": "Karibu, {{name}}",
     "dashboard-welcome-message": "Fahamika zaidi katika dashibodi yako",

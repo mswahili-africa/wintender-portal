@@ -7,6 +7,7 @@ import ChangePasswordForm from "./fragments/changePasswordForm";
 import PasswordResetRequest from "./fragments/passwordResetRequest";
 import { getUserById, updateBidderCompany } from "@/services/user";
 import { ICategory, ICompany } from "@/types";
+import { BusinessType } from "@/types/forms";
 import toast from "react-hot-toast";
 import Select from "react-select";
 import { IconX } from "@tabler/icons-react";
@@ -26,16 +27,10 @@ interface UserProfileProps {
 const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading }) => {
     const { userId } = useParams();
     const auth = useSnapshot(authStore);
-
     const [user, setUser] = useState<ICompany | null>(null);
-    const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-
-
-
     const { categories } = useCategories({ page: 0, size: 1000, search: "", filter: {} });
     const { loading } = useUserDataContext();
-
 
     const accountOwner = (): boolean => {
         return auth.user?.id === userId;
@@ -113,6 +108,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
             companyName: user.companyName || "",
             companyStatus: user.companyStatus || "", // Add this line
             companyPrimaryNumber: user.companyPrimaryNumber || "",
+            companyBusinessType: user.companyBusinessType || "",
             companyAddress: user.companyAddress || "",
             companyEmail: user.companyEmail || "",
             companyWebsite: user.companyWebsite || "",
@@ -375,6 +371,25 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                         required
                                     />
                                 </div>
+                                <div className="flex flex-col col-span-full">
+                                    <label className="text-sm font-medium">{"Business Type"}</label>
+                                    <Select
+                                        options={Object.entries(BusinessType).map(([key, value]) => ({ value: key, label: value }))}
+                                        value={user.companyBusinessType ? { value: user.companyBusinessType, label: Object.entries(BusinessType).find(([k, v]) => k === user.companyBusinessType)?.[1] } : null}
+                                        onChange={(selectedOption) => {
+                                            setUser(prevUser => {
+                                                if (!prevUser) return prevUser;
+
+                                                // Update user-level number
+                                                return {
+                                                    ...prevUser,
+                                                    ["companyBusinessType"]: selectedOption?.value as string
+                                                };
+                                            })
+                                        }}
+                                        placeholder="Select a business type"
+                                    />
+                                </div>
                                 <div className="flex flex-col">
                                     <label className="text-sm font-medium">Website</label>
                                     <input
@@ -392,6 +407,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                             <p className="text-red-500">Company information not available</p>
                         )}
                     </div>
+
 
                     {/* JCM new categories */}
                     <div className="flex flex-col md:w-1/2">

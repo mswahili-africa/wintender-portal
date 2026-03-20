@@ -7,7 +7,7 @@ import usePopup from "@/hooks/usePopup";
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
 import { bidderRegister } from "@/services/auth";
-import { IBidderRegisterForm } from "@/types/forms";
+import { BusinessType, IBidderRegisterForm } from "@/types/forms";
 import TextInput from "@/components/widgets/forms/TextInput";
 import * as yup from "yup";
 import Select from "react-select";
@@ -65,6 +65,11 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
         value: region,
         label: region,
     }));
+
+    // business type options from enum
+    const businessTypeOptions = Object.entries(BusinessType).map(([value, label]) => ({ value, label })); // Convert enum to array of optionsBusinessType
+
+    
     const { t } = useTranslation();
 
     const { showMessage, closePopup } = usePopup();
@@ -120,6 +125,13 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
             .string()
             .required(t("registration-form-address-required")),
 
+        companyBusinessType: yup
+            .string()
+            .oneOf(
+                businessTypeOptions.map((option) => option.value)
+            )
+            .required(t("registration-form-business-type-required")),
+
         categoryIds: yup
             .array()
             .of(yup.string().required())
@@ -131,7 +143,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [agreeTerms, setAgreeTerms] = useState(false);
-    const [searchCategory, setSearchCategory] = useState<string>("");
+    const [searchCategory, setSearchCategory] = useState<string | undefined>(undefined);
     const debouncedSearch = useDebounce(searchCategory, 500);
 
     const {
@@ -149,6 +161,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
         page: 0,
         size: 5,
         search: debouncedSearch
+        
     });
 
     useEffect(() => {
@@ -330,14 +343,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         error={errors.confirmPhoneNumber?.message}
                         register={register("confirmPhoneNumber")}
                     /> */}
-                    <TextInput
-                        type="email"
-                        label={t("registration-form-email")}
-                        placeholder={t("registration-form-email-placeholder")}
-                        hasError={!!errors.email}
-                        error={errors.email?.message}
-                        register={register("email")}
-                    />
                 </div>
                 <span>{t("registration-form-company-info")}</span>
                 <hr></hr>
@@ -350,6 +355,14 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         hasError={!!errors.companyName}
                         error={errors.companyName?.message}
                         register={register("companyName")}
+                    />
+                    <TextInput
+                        type="email"
+                        label={t("registration-form-email")}
+                        placeholder={t("registration-form-email-placeholder")}
+                        hasError={!!errors.email}
+                        error={errors.email?.message}
+                        register={register("email")}
                     />
                     <TextInput
                         type="text"
@@ -401,6 +414,17 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         />
                         {errors.companyAddress && (
                             <p className="text-red-500 text-sm mt-1">{errors.companyAddress.message}</p>
+                        )}
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="block mb-2">{t("registration-form-company-business-type")}</label>
+                        <Select
+                            options={businessTypeOptions}
+                            onChange={(selectedOption) => setValue("companyBusinessType", selectedOption?.value || "")}
+                            placeholder="Select a business type"
+                        />
+                        {errors.companyBusinessType && (
+                            <p className="text-red-500 text-sm mt-1">{errors.companyBusinessType.message}</p>
                         )}
                     </div>
 
