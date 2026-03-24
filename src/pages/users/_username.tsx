@@ -108,7 +108,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
             companyName: user.companyName || "",
             companyStatus: user.companyStatus || "", // Add this line
             companyPrimaryNumber: user.companyPrimaryNumber || "",
-            companyBusinessType: user.companyBusinessType || "",
+            businessType: user.businessType || "",
             companyAddress: user.companyAddress || "",
             companyEmail: user.companyEmail || "",
             companyWebsite: user.companyWebsite || "",
@@ -375,7 +375,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                     <label className="text-sm font-medium">{"Business Type"}</label>
                                     <Select
                                         options={Object.entries(BusinessType).map(([key, value]) => ({ value: key, label: value }))}
-                                        value={user.companyBusinessType ? { value: user.companyBusinessType, label: Object.entries(BusinessType).find(([k, v]) => k === user.companyBusinessType)?.[1] } : null}
+                                        value={user.businessType ? { value: user.businessType, label: Object.entries(BusinessType).find(([k, v]) => k === user.businessType)?.[1] } : null}
                                         onChange={(selectedOption) => {
                                             setUser(prevUser => {
                                                 if (!prevUser) return prevUser;
@@ -383,7 +383,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                                 // Update user-level number
                                                 return {
                                                     ...prevUser,
-                                                    ["companyBusinessType"]: selectedOption?.value as string
+                                                    ["businessType"]: selectedOption?.value as string
                                                 };
                                             })
                                         }}

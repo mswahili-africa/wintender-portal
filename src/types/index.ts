@@ -212,7 +212,7 @@ export interface ICompany {
   companyName: string;
   companyStatus: string;
   companyPrimaryNumber: string;
-  companyBusinessType: string;
+  businessType: string;
   companyAddress: string;
   companyEmail: string;
   companyWebsite: string;

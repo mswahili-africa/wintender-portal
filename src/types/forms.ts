@@ -36,7 +36,7 @@ export interface IBidderRegisterForm {
     companyName: string;
     companyPhoneNumber: string;
     companyAddress: string;
-    companyBusinessType: string;
+    businessType: string;
     tin: string;
     categoryIds: string[];
 }

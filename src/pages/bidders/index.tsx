@@ -2,17 +2,17 @@ import { IconAlertTriangle, IconCalendar, IconChevronDown, IconFilePlus, IconFil
 import { useEffect, useRef, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
-import useBidders from "@/hooks/useBidders";
+import { useBidders } from "@/hooks/biddersRepository";
 import columns from "./fragments/bidder-columns";
 import { ICompany } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { deleteBidder } from "@/services/user";
 import BidderProfileModal from "./fragments/bidderProfileModal";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Select from "react-select";
+import Select, { SingleValue } from "react-select";
 import Button from "@/components/button/Button";
 import Modal from "@/components/Modal";
 import { ExportXLSX } from "@/components/widgets/Excel";
@@ -27,6 +27,14 @@ const tanzaniaRegions = [
     "Njombe", "Pemba North", "Pemba South", "Pwani", "Rukwa", "Ruvuma", "Shinyanga",
     "Simiyu", "Singida", "Tabora", "Tanga", "Zanzibar North", "Zanzibar South and Central", "Zanzibar Urban West"
 ];
+
+const columnSearchOptions:SingleValue<{ label: string, value: string }>[] = [
+    { value: "companyName", label: "Name" },
+    { value: "companyEmail", label: "Email" },
+    { value: "companyTin", label: "Tin" },
+    { value: "phoneNumber", label: "Phone" },
+];
+
 const regionOptions = tanzaniaRegions.map(r => ({ label: r, value: r }));
 
 export default function Bidders() {
@@ -37,75 +45,53 @@ export default function Bidders() {
     const checkboxRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    
+    const { userData } = useUserDataContext();
+
     const [tempSearch, setTempSearch] = useState<string>("");
+    const [tempSearchType, setTempSearchType] = useState<SingleValue<{ label: string, value: string }>>({ label: "Name", value: "companyName" });
     const [tempSelectedRegion, setTempSelectedRegion] = useState<{ label: string, value: string } | null>(null);
     const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
     const [categorySearchTerm, setCategorySearchTerm] = useState("");
     const [openModal, setOpenModal] = useState<{ type: "create" | "update" | "delete" | "view" | null, user: ICompany | null }>(
         { type: null, user: null }
     );
-    
+
     // subscription date state
     const [open, setOpen] = useState(false);
     const [filter, setFilter] = useState("");
     const [subscriptionFilter, setSubscriptionFilter] = useState<string | undefined>("");
 
-    const formatDateTimeLocal = (date: Date) =>
-        date.toISOString().slice(0, 16);
-
     // handle subscription filter select
+    const dateMap: Record<string, number> = {
+        "3days": 3,
+        "1week": 7,
+        "1month": 30,
+    };
+
     const handleSelect = (value: string) => {
         setFilter(value);
 
-        if (value === "3days") {
-            const d = new Date();
-            d.setDate(d.getDate() + 3);
-            setSubscriptionFilter(formatDateTimeLocal(d));
-            setOpen(false);
-        }
-
-        if (value === "1week") {
-            const d = new Date();
-            d.setDate(d.getDate() + 7);
-            setSubscriptionFilter(formatDateTimeLocal(d));
-            setOpen(false);
-        }
-
-        if (value === "1month") {
-            const d = new Date();
-            d.setDate(d.getDate() + 30);
-            setSubscriptionFilter(formatDateTimeLocal(d));
-            setOpen(false);
-        }
-
         if (value === "custom") {
             setSubscriptionFilter("");
+            return;
+        }
+
+        const days = dateMap[value];
+
+        if (days) {
+            const d = new Date();
+            d.setDate(d.getDate() + days);
+            setSubscriptionFilter(d.toISOString().slice(0, 16));
+            setOpen(false);
         }
     };
 
-
-    // JCM DELETE MODAL
-    const { userData } = useUserDataContext();
-
-    const deleteBidderMutation = useMutation({
-        mutationKey: ["deleteBidder", openModal.user?.id],
-        mutationFn: (id: string) => deleteBidder(id),
-        onSuccess: (data) => {
-            toast.success(data.message || "Bidder deleted successfully");
-            handleModalClose();
-            refetch();
-        },
-        onError: (error: any) => {
-            toast.error(`Failed to delete bidder: ${error.message}`);
-        }
-    })
-    // JCM DELETE END
 
     useEffect(() => {
         const addressParam = searchParams.get("address");
         const categoriesParam = searchParams.get("category");
         const searchParam = searchParams.get("search");
+        const searchTypeParam = searchParams.get("searchType");
         const subscriptionDate = searchParams.get("subscriptionDate");
 
 
@@ -121,6 +107,8 @@ export default function Bidders() {
             setTempSelectedRegion({ label: addressParam, value: addressParam });
         }
         setTempSelectedCategories(categoryIds);
+
+        setTempSearchType(columnSearchOptions.find(o => o?.value === searchTypeParam) || columnSearchOptions[0]);
         setTempSearch(searchParam || "");
 
     }, [searchParams.toString()]);
@@ -132,6 +120,7 @@ export default function Bidders() {
         const categoriesParam = searchParams.get("category");
         const addressParam = searchParams.get("address");
         const searchParam = searchParams.get("search");
+        const searchColumnParam = searchParams.get("column");
         const subscriptionDate = searchParams.get("subscriptionDate");
 
         const parsedCategories = categoriesParam
@@ -149,6 +138,9 @@ export default function Bidders() {
         if (searchParam) {
             filter['search'] = searchParam;
         }
+        if (searchColumnParam) {
+            filter['column'] = searchColumnParam;
+        }
 
         if (subscriptionDate) {
             filter['subscriptionDate'] = subscriptionDate;
@@ -156,6 +148,42 @@ export default function Bidders() {
 
         return filter;
     }, [searchParams]);
+
+
+    const handleApplyFilters = () => {
+        const params = new URLSearchParams();
+
+        if (tempSelectedCategories.length > 0) {
+            params.set("category", tempSelectedCategories.join(","));
+        }
+        if (tempSelectedRegion?.value) {
+            params.set("address", tempSelectedRegion.value);
+        }
+        if (tempSearch) {
+            params.set("search", tempSearch);
+        }
+        if (tempSearchType) {
+            params.set("column", tempSearchType.value);
+        }
+        if (subscriptionFilter) {
+            params.set("subscriptionDate", subscriptionFilter);
+        }
+
+        navigate(`?${params.toString()}`);
+        setShowCheckboxes(false);
+        setPage(0);
+    };
+
+
+    const handleResetFilters = () => {
+        setTempSelectedCategories([]);
+        setTempSelectedRegion(null);
+        setTempSearch("");
+        setTempSearchType({ label: "Name", value: "companyName"});
+        setSubscriptionFilter(undefined);
+        navigate("");
+        setPage(0);
+    };
 
 
     const { bidders, isLoading, refetch } = useBidders({
@@ -171,42 +199,12 @@ export default function Bidders() {
         search: categorySearchTerm
     });
 
+
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = e.target;
         setTempSelectedCategories(prev =>
             checked ? [...prev, value] : prev.filter(item => item !== value)
         );
-    };
-
-    const handleApplyFilters = () => {
-        console.log("Filter button clicked");
-        const params = new URLSearchParams();
-
-        if (tempSelectedCategories.length > 0) {
-            params.set("category", tempSelectedCategories.join(","));
-        }
-        if (tempSelectedRegion?.value) {
-            params.set("address", tempSelectedRegion.value);
-        }
-        if (tempSearch) {
-            params.set("search", tempSearch);
-        }
-        if (subscriptionFilter) {
-            params.set("subscriptionDate", subscriptionFilter);
-        }
-
-        navigate(`?${params.toString()}`);
-        setShowCheckboxes(false);
-        setPage(0);
-    };
-
-    const handleResetFilters = () => {
-        setTempSelectedCategories([]);
-        setTempSelectedRegion(null);
-        setTempSearch("");
-        setSubscriptionFilter(undefined);
-        navigate("");
-        setPage(0);
     };
 
 
@@ -228,6 +226,22 @@ export default function Bidders() {
     const handleModalClose = () => {
         setOpenModal({ type: null, user: null });
     };
+
+    // JCM DELETE MODAL
+
+    const deleteBidderMutation = useMutation({
+        mutationKey: ["deleteBidder", openModal.user?.id],
+        mutationFn: (id: string) => deleteBidder(id),
+        onSuccess: (data) => {
+            toast.success(data.message || "Bidder deleted successfully");
+            handleModalClose();
+            refetch();
+        },
+        onError: (error: any) => {
+            toast.error(`Failed to delete bidder: ${error.message}`);
+        }
+    })
+    // JCM DELETE END
 
     return (
         <div>
@@ -313,11 +327,21 @@ export default function Bidders() {
             </div>
             <div className="flex flex-col border-b py-3 gap-y-1 mb-1 border-slate-200">
                 <div className="flex justify-between items-center flex-col md:flex-row">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3" >
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3" >
+                        {/* Search Type Dropdown */}
+                        <div className="mb-2">
+                            <Select
+                                options={columnSearchOptions}
+
+                                // value={{ value: tempSearchType, label: tempSearchType }}
+                                onChange={(selectedOption) => setTempSearchType(selectedOption)}
+                                placeholder="Filter by"
+                            />
+                        </div>
                         <div className="mb-2">
                             <input
                                 type="text"
-                                placeholder="Search by Name"
+                                placeholder="Type keyword..."
                                 className="input-normal py-2 w-60"
                                 value={tempSearch}
                                 onChange={(e) => setTempSearch(e.target.value)}

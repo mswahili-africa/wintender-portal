@@ -24,7 +24,7 @@ import { IconEdit } from "@tabler/icons-react";
 import UserProfile from "@/pages/users/_username";
 import { WalletButton } from "@/components/button/WalletButton";
 import columns from "@/pages/tenders/fragments/tenderColumns";
-import useTenders from "@/hooks/useTenders";
+import {useTenders} from "@/hooks/tendersRepository";
 import TenderViewModal from "@/pages/tenders/fragments/tenderViewModel";
 import {useCategories} from "@/hooks/categoriesRepository";
 import Loader from "@/components/spinners/Loader";

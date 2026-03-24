@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useTenders from "@/hooks/useTendersInternational";
+import { useTendersInternational } from "@/hooks/tendersRepository";
 import usePopup from "@/hooks/usePopup";
 import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
@@ -69,7 +69,7 @@ export default function InternationalTenders() {
         setSearchQuery("");
     };
 
-    const { getTenders, isLoading, refetch } = useTenders({
+    const { getTenders, isLoading, refetch } = useTendersInternational({
         page: page,
         search: searchQuery,
         sort: sort,

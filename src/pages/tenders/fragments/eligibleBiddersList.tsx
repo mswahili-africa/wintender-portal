@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { ICompany, ITenders } from "@/types";
 import { useMutation } from "@tanstack/react-query";
-import useBidders from "@/hooks/useBidders";
+import {useBidders} from "@/hooks/biddersRepository";
 import Pagination from "@/components/widgets/table/Pagination";
 import BidderProfileModal from "@/pages/bidders/fragments/bidderProfileModal";
 import SMSModal from "@/pages/bidders/fragments/sms-model";

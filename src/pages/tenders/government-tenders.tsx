@@ -4,7 +4,6 @@ import { Fragment, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useTenders from "@/hooks/useTendersGovernment";
 import usePopup from "@/hooks/usePopup";
 import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
@@ -23,6 +22,7 @@ import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
+import { useTendersGovernment } from "@/hooks/tendersRepository";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
@@ -65,7 +65,7 @@ export default function GovernmentTenders() {
         setSearchQuery("");
     };
 
-    const { getTenders, isLoading, refetch } = useTenders({
+    const { getTenders, isLoading, refetch } = useTendersGovernment({
         page: page,
         search: searchQuery,
         sort: sort,

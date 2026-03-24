@@ -125,7 +125,7 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
             .string()
             .required(t("registration-form-address-required")),
 
-        companyBusinessType: yup
+        businessType: yup
             .string()
             .oneOf(
                 businessTypeOptions.map((option) => option.value)
@@ -420,11 +420,11 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                         <label className="block mb-2">{t("registration-form-company-business-type")}</label>
                         <Select
                             options={businessTypeOptions}
-                            onChange={(selectedOption) => setValue("companyBusinessType", selectedOption?.value || "")}
+                            onChange={(selectedOption) => setValue("businessType", selectedOption?.value || "")}
                             placeholder="Select a business type"
                         />
-                        {errors.companyBusinessType && (
-                            <p className="text-red-500 text-sm mt-1">{errors.companyBusinessType.message}</p>
+                        {errors.businessType && (
+                            <p className="text-red-500 text-sm mt-1">{errors.businessType.message}</p>
                         )}
                     </div>
 

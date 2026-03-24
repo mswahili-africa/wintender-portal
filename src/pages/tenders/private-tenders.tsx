@@ -4,7 +4,6 @@ import { Fragment, useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
-import useTenders from "@/hooks/useTendersPrivate";
 import usePopup from "@/hooks/usePopup";
 import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
@@ -23,6 +22,7 @@ import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
 import { useDebounce } from "@/hooks/useDebounce";
 import {useSearchCategories} from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
+import { useTendersPrivate } from "@/hooks/tendersRepository";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -67,7 +67,7 @@ export default function PrivateTenders() {
         setSearchQuery("");
     };
 
-    const { getTenders, isLoading, refetch } = useTenders({
+    const { getTenders, isLoading, refetch } = useTendersPrivate({
         page: page,
         search: searchQuery,
         sort: sort,
