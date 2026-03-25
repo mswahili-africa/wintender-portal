@@ -1,6 +1,6 @@
 import {  IPaymentForm, IUSSDPushRequest, IUSSDPushWalletRequest } from "@/types/forms";
 import http from "../http";
-import { IQueryParams, IlistResponse } from "@/types";
+import { IPayment, IQueryParams, IlistResponse } from "@/types";
 
 
 export async function getControlNumber(params: IQueryParams) {
@@ -11,7 +11,7 @@ export async function getControlNumber(params: IQueryParams) {
     return response.data
 }
 export async function getPayments(params: IQueryParams) {
-    const response = await http.get<IlistResponse<any>>("/finance/payment/transaction/list", {
+    const response = await http.get<IlistResponse<IPayment>>("/finance/payment/transaction/list", {
         params: params
     })
 

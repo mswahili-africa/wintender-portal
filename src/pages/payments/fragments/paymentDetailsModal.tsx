@@ -46,7 +46,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
 
     // Get the userId from the user object passed in props
     const { payments } = getUserPayments({
-        userId: payment.createdBy, // Pass the userId from the user object
+        userId: payment.bidderId, // Pass the userId from the user object
         page: page,
         filter: { ...Object.fromEntries(searchParams) }, // Pass filter here
     });
@@ -105,7 +105,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                     <div className="overflow-hidden p-0.5">
                                         <img
                                             src={dummyLogo}
-                                            alt={payment?.company}
+                                            alt={payment?.company!}
                                             className="w-16 h-16 object-cover rounded-full border border-gray-300"
                                         />
                                     </div>

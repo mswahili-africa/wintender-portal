@@ -333,40 +333,24 @@ export interface IStatisticsResponse {
 // end
 
 export interface IPayment {
-  id: string;
-  tenant: string;
-  customerId: string;
-  phoneNumber: string;
-  transactionReference: string;
-  mnoReceiptReference: string;
-  amount: number;
-  requestOrigin: string;
-  mno: string;
-  status: string;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface IPayment {
-  id: string;
-  tenant: string;
-  customerId: string;
-  phoneNumber: string;
-  transactionReference: string;
-  mnoReceiptReference: string;
-  amount: number;
-  requestOrigin: string;
-  mno: string;
-  company: string;  // JCM
-  paymentReason: string;  // JCM
-  userName: string;  // JCM
-  status: string;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
+  createdBy: string;              
+  updatedBy: string | null;       
+  createdAt: number;              
+  updatedAt: number;             
+  id: string;                    
+  paymentReason: "SUBSCRIPTION" | "PURCHASE" | "REFUND" | string;
+  bidderId: string;               
+  controlNumber: string;          
+  phoneNumber: string;            
+  transactionReference: string;   
+  amount: number;                 
+  mno: "USSD-PUSH" | "M-PESA" | "AIRTEL" | string; 
+  period: number;                 
+  comments: string | null;        
+  status: "PENDING" | "SUCCESS" | "FAILED" | "EXPIRED" | string;
+  planName: string;               
+  userName: string;               
+  company: string | null;         
 }
 
 // JCM WALLET TOPUP
