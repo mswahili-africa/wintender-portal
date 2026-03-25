@@ -227,7 +227,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                         {/* PDF Viewer */}
                                         <div className="mt-4" style={{ overflowY: 'auto' }}>
                                             <iframe
-                                                src={`${tender?.filePath}#toolbar=0&navpanes=0&scrollbar=0`}
+                                                src={userData?.role === "BIDDER" ? `${tender?.filePath}#toolbar=0&navpanes=0&scrollbar=0` : `${tender?.filePath}`}
                                                 width="100%"
                                                 height={"500px"}
                                                 title="Tender Document"

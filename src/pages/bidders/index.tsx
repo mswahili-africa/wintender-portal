@@ -28,7 +28,7 @@ const tanzaniaRegions = [
     "Simiyu", "Singida", "Tabora", "Tanga", "Zanzibar North", "Zanzibar South and Central", "Zanzibar Urban West"
 ];
 
-const columnSearchOptions:SingleValue<{ label: string, value: string }>[] = [
+const columnSearchOptions:any[] = [
     { value: "companyName", label: "Name" },
     { value: "companyEmail", label: "Email" },
     { value: "companyTin", label: "Tin" },
@@ -48,7 +48,7 @@ export default function Bidders() {
     const { userData } = useUserDataContext();
 
     const [tempSearch, setTempSearch] = useState<string>("");
-    const [tempSearchType, setTempSearchType] = useState<SingleValue<{ label: string, value: string }>>({ label: "Name", value: "companyName" });
+    const [tempSearchColumn, setTempSearchColumn] = useState<SingleValue<{ label: string, value: string }>>({ label: "Name", value: "companyName" });
     const [tempSelectedRegion, setTempSelectedRegion] = useState<{ label: string, value: string } | null>(null);
     const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
     const [categorySearchTerm, setCategorySearchTerm] = useState("");
@@ -91,7 +91,7 @@ export default function Bidders() {
         const addressParam = searchParams.get("address");
         const categoriesParam = searchParams.get("category");
         const searchParam = searchParams.get("search");
-        const searchTypeParam = searchParams.get("searchType");
+        const searchColumnParam = searchParams.get("column");
         const subscriptionDate = searchParams.get("subscriptionDate");
 
 
@@ -108,7 +108,7 @@ export default function Bidders() {
         }
         setTempSelectedCategories(categoryIds);
 
-        setTempSearchType(columnSearchOptions.find(o => o?.value === searchTypeParam) || columnSearchOptions[0]);
+        setTempSearchColumn(columnSearchOptions.find(o => o?.value === searchColumnParam) || columnSearchOptions[0]);
         setTempSearch(searchParam || "");
 
     }, [searchParams.toString()]);
@@ -162,8 +162,8 @@ export default function Bidders() {
         if (tempSearch) {
             params.set("search", tempSearch);
         }
-        if (tempSearchType) {
-            params.set("column", tempSearchType.value);
+        if (tempSearchColumn) {
+            params.set("column", tempSearchColumn.value);
         }
         if (subscriptionFilter) {
             params.set("subscriptionDate", subscriptionFilter);
@@ -179,7 +179,7 @@ export default function Bidders() {
         setTempSelectedCategories([]);
         setTempSelectedRegion(null);
         setTempSearch("");
-        setTempSearchType({ label: "Name", value: "companyName"});
+        setTempSearchColumn({ label: "Name", value: "companyName"});
         setSubscriptionFilter(undefined);
         navigate("");
         setPage(0);
@@ -332,10 +332,9 @@ export default function Bidders() {
                         <div className="mb-2">
                             <Select
                                 options={columnSearchOptions}
-
-                                // value={{ value: tempSearchType, label: tempSearchType }}
-                                onChange={(selectedOption) => setTempSearchType(selectedOption)}
-                                placeholder="Filter by"
+                                value={columnSearchOptions.find((option: any) => option.value === tempSearchColumn?.value)}
+                                onChange={(selectedOption) => setTempSearchColumn(selectedOption)}
+                                placeholder="Search by"
                             />
                         </div>
                         <div className="mb-2">
