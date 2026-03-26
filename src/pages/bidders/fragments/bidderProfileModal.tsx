@@ -3,7 +3,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
-import { IMessage } from "@/types/forms";
+import { BusinessType, IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
 import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
@@ -282,6 +282,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                 {/* Right Column - Location Info */}
                                 <div className="space-y-4">
                                     <strong>Company</strong>
+                                    {user.businessType && <p><strong>Business Type:</strong> {BusinessType[user.businessType as keyof typeof BusinessType]} </p>}
                                     {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
                                     {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
                                     {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}

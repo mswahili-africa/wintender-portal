@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import { ICategory, ICompany, IPayment } from "@/types";
+import { ICompany, IPayment } from "@/types";
 import { IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
 import { useMutation } from "@tanstack/react-query";
@@ -37,7 +37,6 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, setMessage] = useState<string>("");
-    const [categories, setCategories] = useState<ICategory[]>([]);
     const [isPaymentsView, setIsPaymentsView] = useState(true);
 
     const {t}=useTranslation();

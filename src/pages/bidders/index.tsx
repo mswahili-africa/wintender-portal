@@ -58,7 +58,7 @@ export default function Bidders() {
 
     // subscription date state
     const [open, setOpen] = useState(false);
-    const [filter, setFilter] = useState("");
+    const [filter, setFilter] = useState<string | undefined>(undefined);
     const [subscriptionFilter, setSubscriptionFilter] = useState<string | undefined>("");
 
     // handle subscription filter select
@@ -181,6 +181,7 @@ export default function Bidders() {
         setTempSearch("");
         setTempSearchColumn({ label: "Name", value: "companyName"});
         setSubscriptionFilter(undefined);
+        setFilter(undefined);
         navigate("");
         setPage(0);
     };

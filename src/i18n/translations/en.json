@@ -96,7 +96,7 @@
     "registration-form-business-type-required": "Business type is required",
 
     "dashboard-welcome": "Welcome, {{name}}",
-    "dashboard-welcome-message": "Welcome to your dashboard",
+    "dashboard-welcome-message": "Explore your dashboard",
     "dashboard-account": "Account: {{account}}",
     "dashboard-private-tenders-button":"Private tenders",
     "dashboard-private-tenders-tooltip":"View private tenders list",
