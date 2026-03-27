@@ -12,7 +12,7 @@ export const DIFMStatusOptions = [
 export const paymentOptions = [
     // { name: "Mpesa", img: "/payment_logo/voda.png" },
     { name: "Tigo", img: "/payment_logo/yas.png" },
-    { name: "Airtel", img: "/payment_logo/airtel.png" },
+    // { name: "Airtel", img: "/payment_logo/airtel.png" },
     { name: "Halopesa", img: "/payment_logo/halopesa.png" },
-    { name: "Azampesa", img: "/payment_logo/azam.jpg" },
+    // { name: "Azampesa", img: "/payment_logo/azam.jpg" },
 ]

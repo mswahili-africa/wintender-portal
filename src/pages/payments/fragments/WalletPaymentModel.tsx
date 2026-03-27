@@ -182,7 +182,7 @@ export default function WalletPaymentModal({
                                         {t("wallet-modal-payment-method")}:
                                     </p>
                                     <div className="w-full flex flex-col justify-center items-center">
-                                        <div className="grid grid-cols-5 justify-between items-center gap-5">
+                                        <div className="flex flex-row justify-between items-center gap-5">
                                             {paymentOptions.map((method) => (
                                                 <div
                                                     key={method.name}

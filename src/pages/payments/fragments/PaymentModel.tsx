@@ -167,7 +167,7 @@ export default function PaymentModal({ onClose, }: { onClose: () => void; }) {
                                     {t("subscription-modal-payment-method")}:
                                 </p>
                                 <div className="w-full flex flex-col mb-5 justify-center items-center">
-                                    <div className="grid grid-cols-5 justify-between items-center gap-5">
+                                    <div className="flex flex-row justify-between items-center gap-5">
                                         {paymentOptions.map((method) => (
                                             <div
                                                 key={method.name}

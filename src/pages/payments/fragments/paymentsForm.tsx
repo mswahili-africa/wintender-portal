@@ -7,8 +7,6 @@ import Button from "../../../components/button/Button";
 import Modal from "../../../components/widgets/Modal";
 import { createPayment } from "../../../services/payments";
 import { IPaymentForm } from "../../../types/forms";
-import { getBidders } from "@/services/user";
-import { debounce } from "lodash";
 import Select from "react-select";
 import { useBidders } from "@/hooks/biddersRepository";
 
