@@ -6,6 +6,7 @@ import useErrorHandler from "./useErrorHandler";
 
 interface IProps {
     page: number
+    size?: number
     categories?: string[]
     address?: string;
     search?: string
@@ -18,8 +19,8 @@ interface IProps {
 export function useBidders (props: IProps) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getBidders", props.page, props.sort, props.search,props.column,props.address, props.categories?.join(","), props.filter, props.subscriptionDate],
-        queryFn: () => getBidders({page: props.page, size: 10, sort: props.sort, search: props.search, column:props.column, address: props.address, categories: props.categories, subscriptionDate: props.subscriptionDate}),
+        queryKey: ["getBidders", props.page, props.size, props.sort, props.search,props.column,props.address, props.categories?.join(","), props.filter, props.subscriptionDate],
+        queryFn: () => getBidders({page: props.page, size: props.size ?? 10, sort: props.sort, search: props.search, column:props.column, address: props.address, categories: props.categories, subscriptionDate: props.subscriptionDate}),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,
         refetchOnMount: false,

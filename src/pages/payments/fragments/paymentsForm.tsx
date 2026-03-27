@@ -10,6 +10,7 @@ import { IPaymentForm } from "../../../types/forms";
 import { getBidders } from "@/services/user";
 import { debounce } from "lodash";
 import Select from "react-select";
+import { useBidders } from "@/hooks/biddersRepository";
 
 
 interface IProps {
@@ -24,8 +25,16 @@ export default function ({ ...props }: IProps) {
     });
 
 
-    const [bidders, setBidders] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [search, setSearch] = useState("");
+
+    const {bidders, isLoading} = useBidders({ 
+        page: 0,
+        size: 5, 
+        column:"companyName",
+        search: search 
+    
+    });
+
 
     const createMutation = useMutation({
         mutationFn: (data: IPaymentForm) => createPayment(data),
@@ -57,33 +66,33 @@ export default function ({ ...props }: IProps) {
 
     // JCM Debounced function to fetch bidders
 
-    const fetchBidders = useCallback(async (search = "") => {
-        if (!search) {
-            setBidders([]);
-            return;
-        }
+    // const fetchBidders = useCallback(async (search = "") => {
+    //     if (!search) {
+    //         setBidders([]);
+    //         return;
+    //     }
 
-        setLoading(true);
-        try {
-            const allBidders = await getBidders({ page: 0, size: 5, search });
-            setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch Bidders", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    //     setLoading(true);
+    //     try {
+    //         const allBidders = await getBidders({ page: 0, size: 5, search });
+    //         setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
+    //     } catch (error) {
+    //         console.error("Failed to fetch Bidders", error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }, []);
 
-    const debouncedFetchBidders = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchBidders(inputValue);
-            } else {
-                setBidders([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchBidders]
-    );
+    // const debouncedFetchBidders = useCallback(
+    //     debounce((inputValue) => {
+    //         if (inputValue.length >= 3) { // Only fetch if 5 or more characters
+    //             fetchBidders(inputValue);
+    //         } else {
+    //             setBidders([]); // Clear entities if less than 5 characters
+    //         }
+    //     }, 5),
+    //     [fetchBidders]
+    // );
 
     return (
         <div className="max-w-max">
@@ -105,10 +114,10 @@ export default function ({ ...props }: IProps) {
                                 Bidder
                             </label>
                             <Select
-                                options={bidders}
-                                onInputChange={(inputValue) => debouncedFetchBidders(inputValue)}
-                                onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
-                                isLoading={loading}
+                                options={bidders?.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })) ?? []}
+                                onInputChange={(inputValue) => setSearch(inputValue)}
+                                onChange={(selectedOption) => setValue("bidderId", selectedOption?.value!)}
+                                isLoading={isLoading}
                                 placeholder="Search for a Bidder"
                             />
 
