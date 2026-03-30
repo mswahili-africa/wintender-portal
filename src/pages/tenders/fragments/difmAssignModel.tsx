@@ -12,6 +12,7 @@ import Select from "react-select";
 import { getBidders } from "@/services/user";
 import { debounce } from "lodash";
 import { assignBidder } from "@/services/tenders";
+import { useBidders } from "@/hooks/biddersRepository";
 
 interface IProps {
     onSuccess: () => void;
@@ -27,8 +28,8 @@ const schema = object().shape({
 
 
 export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }: IProps) {
-    const [bidders, setBidders] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    // const [bidders, setBidders] = useState<any[]>([]);
+    const [search, setSearch] = useState("");
 
     const {
         register,
@@ -63,33 +64,13 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
         assignBidderMutation.mutate({ ...data, tenderId });
     };
 
-    const fetchBidders = useCallback(async (search = "") => {
-        if (!search) {
-            setBidders([]);
-            return;
-        }
+    const { bidders, isLoading } = useBidders({
+        page: 0,
+        size: 5,
+        column: "companyName",
+        search: search
 
-        setLoading(true);
-        try {
-            const allBidders = await getBidders({ page: 0, size: 5, search });
-            setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
-        } catch (error) {
-            console.error("Failed to fetch Bidders", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const debouncedFetchBidders = useCallback(
-        debounce((inputValue) => {
-            if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                fetchBidders(inputValue);
-            } else {
-                setBidders([]); // Clear entities if less than 5 characters
-            }
-        }, 5),
-        [fetchBidders]
-    );
+    });
 
     return (
         <Modal zIndex={50} size="sm" title="Assign Bidder" isOpen={isOpen} onClose={onClose}>
@@ -100,10 +81,10 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
                         Bidder
                     </label>
                     <Select
-                        options={bidders}
-                        onInputChange={(inputValue) => debouncedFetchBidders(inputValue)} // Debounced fetch
+                        options={bidders?.content.map((e) => ({ value: e.id, label: e.companyName.toUpperCase() })) || []}
+                        onInputChange={(inputValue) => setSearch(inputValue)} // Debounced fetch
                         onChange={(selectedOption) => setValue("bidderId", selectedOption?.value)}
-                        isLoading={loading}
+                        isLoading={isLoading}
                         placeholder="Search for a Bidder"
                     />
                     <p className="text-xs text-red-500 mt-1 mx-0.5">
