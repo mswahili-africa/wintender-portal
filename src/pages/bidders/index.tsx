@@ -539,6 +539,7 @@ export default function Bidders() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={bidders.totalPages}
+                            totalElements={bidders.totalElements}
                         />
                     )}
                 </div>

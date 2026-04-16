@@ -1,6 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import "swiper/css";
-import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
 import { BusinessType, IMessage } from "@/types/forms";
@@ -24,9 +22,9 @@ import { IconEdit } from "@tabler/icons-react";
 import UserProfile from "@/pages/users/_username";
 import { WalletButton } from "@/components/button/WalletButton";
 import columns from "@/pages/tenders/fragments/tenderColumns";
-import {useTenders} from "@/hooks/tendersRepository";
+import { useTenders } from "@/hooks/tendersRepository";
 import TenderViewModal from "@/pages/tenders/fragments/tenderViewModel";
-import {useCategories} from "@/hooks/categoriesRepository";
+import { useCategories } from "@/hooks/categoriesRepository";
 import Loader from "@/components/spinners/Loader";
 import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
@@ -164,12 +162,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         setIsModalOpen(true); // Open the modal
     };
 
-    const handleSendSMS = () => {
-        const phoneNumber = selectedUser?.phoneNumber || "0100000000"; // Default number for bulk
-        if (!phoneNumber) return;
-        sendSMS.mutate({ phoneNumber, message });
-    };
-
     const sendSMS = useMutation({
         mutationFn: (data: IMessage) => sendMessageSingle(data),
         onSuccess: () => {
@@ -196,503 +188,502 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     });
 
     return (
-        <>
-            <Modal
-                isOpen={isOpen}
-                size={"xl"}
-                zIndex={zIndex}
-                onClose={() => {
-                    setIsOpen(false);
-                    onClose();
-                }}
+        <Modal
+            isOpen={isOpen}
+            size={"xl"}
+            zIndex={zIndex}
+            onClose={() => {
+                setIsOpen(false);
+                onClose();
+            }}
 
-            >
-                <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
-                    <section className="w-full space-y-6">
-                        <div className="border-b border-zinc-200 pb-4">
-                            <div className="my-2 flex gap-4 justify-between">
-                                <div className="flex items-center space-x-3">
-                                    <div className="overflow-hidden p-0.5">
-                                        <img
-                                            src={user.companyLogoFilePath ? user.companyLogoFilePath : dummyLogo}
-                                            alt={user.companyName}
-                                            className="w-16 h-16 object-cover rounded-full border border-gray-300"
+        >
+            <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
+                <section className="w-full space-y-6">
+                    <div className="border-b border-zinc-200 pb-4">
+                        <div className="my-2 flex gap-4 justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="overflow-hidden p-0.5">
+                                    <img
+                                        src={user.companyLogoFilePath ? user.companyLogoFilePath : dummyLogo}
+                                        alt={user.companyName}
+                                        className="w-16 h-16 object-cover rounded-full border border-gray-300"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex flex-col md:flex-row items-center gap-x-2">
+                                        <span>
+                                            <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
+                                        </span> |
+                                        <Chip
+                                            label={`${daysLeft} days left`}
+                                            size="sm"
+                                            theme={daysLeft >= 2 ? "success" : "danger"}
+                                            variant="outline"
                                         />
                                     </div>
-                                    <div className="flex flex-col">
-                                        <div className="flex flex-col md:flex-row items-center gap-x-2">
-                                            <span>
-                                                <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
-                                            </span> |
-                                            <Chip
-                                                label={`${daysLeft} days left`}
-                                                size="sm"
-                                                theme={daysLeft >= 2 ? "success" : "danger"}
-                                                variant="outline"
-                                            />
-                                        </div>
-                                        <h5 className="text-sm font-bold">{user?.account}</h5>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <WalletButton amount={user.walletAmount} />
-
-                                    <button onClick={() => setOpenModal({ type: "whatsapp", tender: null })}>
-                                        <IconBrandWhatsapp size={24} className="text-green-500" />
-                                    </button>
-                                    <button onClick={() => SendSingleSMS(user)}>
-                                        <IconMessage size={24} className="text-green-500" />
-                                    </button>
+                                    <h5 className="text-sm font-bold">{user?.account}</h5>
                                 </div>
                             </div>
-                        </div>
+                            <div className="flex items-center space-x-3">
+                                <WalletButton amount={user.walletAmount} />
 
-                        {/* JCM edit button */}
-                        <div className="flex justify-end w-full">
-                            {
-                                userData?.role === "SUPERVISOR" && // Show edit button only for supervisors
-                                <Button
-                                    label={editDetails ? "Cancel Edit" : "Edit Details"}
-                                    size="sm"
-                                    icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
-                                    theme="primary"
-                                    onClick={() => setEditDetails(!editDetails)}
-                                />
-                            }
-                        </div>
-
-                    </section>
-                </div>
-
-                {
-                    // JCM Show user details only if not SUPERVISOR
-                    !editDetails &&
-                    <>
-                        <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                {/* Left Column - User, Shop, and Status Info */}
-                                <div className="space-y-4">
-                                    <strong>Contact Person</strong>
-                                    <p><strong>Person:</strong> {user.name}</p>
-                                    <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
-                                    <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>
-                                    <p><strong>Plan:</strong> {user.currentPlanId}</p>
-                                </div>
-
-                                {/* Right Column - Location Info */}
-                                <div className="space-y-4">
-                                    <strong>Company</strong>
-                                    {user.businessType && <p><strong>Business Type:</strong> {BusinessType[user.businessType as keyof typeof BusinessType]} </p>}
-                                    {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
-                                    {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
-                                    {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
-                                    {user.companyEmail && <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>}
-                                    {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
-                                    {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
-                                </div>
+                                <button onClick={() => setOpenModal({ type: "whatsapp", tender: null })}>
+                                    <IconBrandWhatsapp size={24} className="text-green-500" />
+                                </button>
+                                <button onClick={() => SendSingleSMS(user)}>
+                                    <IconMessage size={24} className="text-green-500" />
+                                </button>
                             </div>
                         </div>
-                        <div className="border-b border-zinc-200 text-sm  pb-5">
-
-                            <div className="space-y-4">
-                                {/* JCM Edit categories only for supervisors */}
-                                <div className="flex flex-row items-center justify-between">
-                                    <strong className="uppercase text-zinc-400 w-1/2">Do it for me</strong>
-
-                                </div>
-
-                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 w-full">
-
-                                    {/* Total */}
-                                    <div className="bg-white border border-gray-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-gray-100 text-gray-600">
-                                                <IconListNumbers size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    A.W.E
-                                                </p>
-                                                <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.total ?? 0}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Requests */}
-                                    <div className="bg-white border border-blue-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-purple-100 text-purple-600">
-                                                <IconFileText size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Requests
-                                                </p>
-                                                <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.request ?? 0}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* on progress */}
-                                    <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                                                <IconLoader size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    On progress
-                                                </p>
-                                                <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.open ?? 0}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Submitted */}
-                                    <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-green-100 text-green-600">
-                                                <IconSend size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Applied
-                                                </p>
-                                                <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.applied ?? 0}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Awarded */}
-                                    <div className="bg-white border border-emerald-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-emerald-100 text-emerald-600">
-                                                <IconAward size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Won
-                                                </p>
-                                                <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.awarded ?? 0}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Cancelled */}
-                                    <div className="bg-white border border-red-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-full bg-red-100 text-red-600">
-                                                <IconX size={20} />
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                                    Cancelled
-                                                </p>
-                                                <p className="text-md font-bold text-gray-800">
-                                                    {applicationList?.summary?.canceled ?? 0}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
-
-                            <div className="space-y-4">
-                                {/* JCM Edit categories only for supervisors */}
-                                <div className="flex flex-row items-center justify-between">
-                                    <strong className="uppercase w-1/2">Categories</strong>
-
-                                </div>
-
-                                <div>
-                                    {/*JCM Selected Categories */}
-                                    <div className="flex flex-col gap-2 mb-4">
-                                        {
-                                            categoryLoading ? (
-                                                <Loader />
-                                            ) : selectedCategories.length === 0 ? (
-                                                <span className="text-sm text-gray-400 my-10 w-full text-center">
-                                                    No categories
-                                                </span>
-                                            ) : (
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    {selectedCategories.map((category, index) => {
-                                                        const formattedName = category.name
-                                                            .toLowerCase()
-                                                            .replace(/\b\w/g, (char) => char.toUpperCase());
-
-                                                        return (
-                                                            <React.Fragment key={category.id}>
-                                                                <span className="flex items-center w-fit gap-1 px-3 py-1 text-black bg-green-100 border-green-500 border-2 rounded-full text-sm">
-                                                                    {formattedName}
-                                                                </span>
-                                                            </React.Fragment>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )
-                                        }
-
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-                        </div>
-
-                    </>
-                }
-                {/* JCM edit BIDDER profile*/}
-                <div className="w-full">
-                    {
-                        editDetails && <UserProfile selectedUser={user} selectedLoading={false} />
-                    }
-                </div>
-
-
-
-                <div className="w-full flex justify-center mt-8">
-                    <div className="bg-gray-100 rounded-full p-1 flex shadow-md">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.value}
-                                onClick={() => setActiveTab(tab.value as typeof activeTab)}
-                                className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300
-              ${activeTab === tab.value
-                                        ? "bg-green-600 text-white shadow"
-                                        : "text-gray-600 hover:bg-gray-200"
-                                    }`}
-                            >
-                                {tab.name}
-                            </button>
-                        ))}
                     </div>
+
+                    {/* JCM edit button */}
+                    <div className="flex justify-end w-full">
+                        {
+                            userData?.role === "SUPERVISOR" && // Show edit button only for supervisors
+                            <Button
+                                label={editDetails ? "Cancel Edit" : "Edit Details"}
+                                size="sm"
+                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                theme="primary"
+                                onClick={() => setEditDetails(!editDetails)}
+                            />
+                        }
+                    </div>
+
+                </section>
+            </div>
+
+            {
+                // JCM Show user details only if not SUPERVISOR
+                !editDetails &&
+                <>
+                    <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            {/* Left Column - User, Shop, and Status Info */}
+                            <div className="space-y-4">
+                                <strong>Contact Person</strong>
+                                <p><strong>Person:</strong> {user.name}</p>
+                                <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
+                                <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>
+                                <p><strong>Plan:</strong> {user.currentPlanId}</p>
+                            </div>
+
+                            {/* Right Column - Location Info */}
+                            <div className="space-y-4">
+                                <strong>Company</strong>
+                                {user.businessType && <p><strong>Business Type:</strong> {BusinessType[user.businessType as keyof typeof BusinessType]} </p>}
+                                {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
+                                {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
+                                {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
+                                {user.companyEmail && <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>}
+                                {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
+                                {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="border-b border-zinc-200 text-sm  pb-5">
+
+                        <div className="space-y-4">
+                            {/* JCM Edit categories only for supervisors */}
+                            <div className="flex flex-row items-center justify-between">
+                                <strong className="uppercase text-zinc-400 w-1/2">Do it for me</strong>
+
+                            </div>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 w-full">
+
+                                {/* Total */}
+                                <div className="bg-white border border-gray-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-gray-100 text-gray-600">
+                                            <IconListNumbers size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                A.W.E
+                                            </p>
+                                            <p className="text-md font-bold text-gray-800">
+                                                {applicationList?.summary?.total ?? 0}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Requests */}
+                                <div className="bg-white border border-blue-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-purple-100 text-purple-600">
+                                            <IconFileText size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                Requests
+                                            </p>
+                                            <p className="text-md font-bold text-gray-800">
+                                                {applicationList?.summary?.request ?? 0}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* on progress */}
+                                <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                                            <IconLoader size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                On progress
+                                            </p>
+                                            <p className="text-md font-bold text-gray-800">
+                                                {applicationList?.summary?.open ?? 0}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Submitted */}
+                                <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-green-100 text-green-600">
+                                            <IconSend size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                Applied
+                                            </p>
+                                            <p className="text-md font-bold text-gray-800">
+                                                {applicationList?.summary?.applied ?? 0}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Awarded */}
+                                <div className="bg-white border border-emerald-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-emerald-100 text-emerald-600">
+                                            <IconAward size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                Won
+                                            </p>
+                                            <p className="text-md font-bold text-gray-800">
+                                                {applicationList?.summary?.awarded ?? 0}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Cancelled */}
+                                <div className="bg-white border border-red-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-red-100 text-red-600">
+                                            <IconX size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+                                                Cancelled
+                                            </p>
+                                            <p className="text-md font-bold text-gray-800">
+                                                {applicationList?.summary?.canceled ?? 0}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div className="border-b border-zinc-200 text-sm text-zinc-400 pb-4">
+
+                        <div className="space-y-4">
+                            {/* JCM Edit categories only for supervisors */}
+                            <div className="flex flex-row items-center justify-between">
+                                <strong className="uppercase w-1/2">Categories</strong>
+
+                            </div>
+
+                            <div>
+                                {/*JCM Selected Categories */}
+                                <div className="flex flex-col gap-2 mb-4">
+                                    {
+                                        categoryLoading ? (
+                                            <Loader />
+                                        ) : selectedCategories.length === 0 ? (
+                                            <span className="text-sm text-gray-400 my-10 w-full text-center">
+                                                No categories
+                                            </span>
+                                        ) : (
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                {selectedCategories.map((category, index) => {
+                                                    const formattedName = category.name
+                                                        .toLowerCase()
+                                                        .replace(/\b\w/g, (char) => char.toUpperCase());
+
+                                                    return (
+                                                        <React.Fragment key={category.id}>
+                                                            <span className="flex items-center w-fit gap-1 px-3 py-1 text-black bg-green-100 border-green-500 border-2 rounded-full text-sm">
+                                                                {formattedName}
+                                                            </span>
+                                                        </React.Fragment>
+                                                    );
+                                                })}
+                                            </div>
+                                        )
+                                    }
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                </>
+            }
+
+            {/* JCM edit BIDDER profile*/}
+            <div className="w-full">
+                {
+                    editDetails && <UserProfile selectedUser={user} selectedLoading={false} />
+                }
+            </div>
+
+
+
+            <div className="w-full flex justify-center mt-8">
+                <div className="bg-gray-100 rounded-full p-1 flex shadow-md">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.value}
+                            onClick={() => setActiveTab(tab.value as typeof activeTab)}
+                            className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300
+              ${activeTab === tab.value
+                                    ? "bg-green-600 text-white shadow"
+                                    : "text-gray-600 hover:bg-gray-200"
+                                }`}
+                        >
+                            {tab.name}
+                        </button>
+                    ))}
                 </div>
+            </div>
 
 
-                {/* Tab Content */}
-                <div className="tab-content mt-4">
-                    {activeTab === "payments" &&
-                        <div className="container">
-                            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                                <Table
-                                    columns={paymentsColumns}
-                                    loading={paymentLoading}
-                                    data={payments?.content ?? []}
-                                    hasSelection={false}
-                                    hasActions={false}
+            {/* Tab Content */}
+            <div className="tab-content mt-4">
+                {activeTab === "payments" &&
+                    <div className="container">
+                        <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                            <Table
+                                columns={paymentsColumns}
+                                loading={paymentLoading}
+                                data={payments?.content ?? []}
+                                hasSelection={false}
+                                hasActions={false}
+                            />
+                        </div>
+                        {payments?.pageable && (
+                            <div className="flex justify-center p-4">
+                                <Pagination
+                                    currentPage={page}
+                                    setCurrentPage={setPage}
+                                    pageCount={payments?.totalPages!}
                                 />
                             </div>
-                            {payments?.pageable && (
-                                <div className="flex justify-center p-4">
+                        )}
+                    </div>
+                }
+
+                {/* REQUESTS */}
+                {activeTab === "requests" &&
+                    <div className="container">
+                        <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                            <Table
+                                columns={applicationColumns}
+                                loading={requestLoading}
+                                data={applicationList?.content ?? []}
+                                hasSelection={false}
+                                hasActions={false}
+                            />
+                        </div>
+                        {applicationList?.pageable && (
+                            <div className="flex justify-center p-4">
+                                <Pagination
+                                    currentPage={page}
+                                    setCurrentPage={setPage}
+                                    pageCount={applicationList?.totalPages!}
+                                />
+                            </div>
+                        )}
+                    </div>
+                }
+
+
+                {/* ELLIGIBLE TENDERS */}
+                {activeTab === "eligible" &&
+                    <div className="container">
+                        <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                            <Table
+                                columns={columns}
+                                data={getTenders ? getTenders.content : []}
+                                isLoading={isLoading}
+                                hasSelection={false}
+                                hasActions={!["BIDDER", "PROCUREMENT_ENTITY"].includes(userData?.role!)}
+                                actionSlot={(content: ITenders) => {
+                                    return (
+                                        <div className="flex justify-center space-x-2">
+                                            <button
+                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
+                                                onClick={() => setOpenModal({ type: "view", tender: content })}
+                                            >
+                                                <IconEye size={20} />
+                                            </button>
+                                        </div>
+                                    );
+                                }}
+                            />
+
+                            <div className="flex justify-between items-center p-4 lg:px-8">
+                                <div></div>
+
+                                {
+                                    getTenders?.pageable &&
                                     <Pagination
                                         currentPage={page}
                                         setCurrentPage={setPage}
-                                        pageCount={payments?.totalPages!}
+                                        pageCount={getTenders.totalPages}
                                     />
-                                </div>
-                            )}
-                        </div>
-                    }
-
-                    {/* REQUESTS */}
-                    {activeTab === "requests" &&
-                        <div className="container">
-                            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                                <Table
-                                    columns={applicationColumns}
-                                    loading={requestLoading}
-                                    data={applicationList?.content ?? []}
-                                    hasSelection={false}
-                                    hasActions={false}
-                                />
+                                }
                             </div>
-                            {applicationList?.pageable && (
-                                <div className="flex justify-center p-4">
-                                    <Pagination
-                                        currentPage={page}
-                                        setCurrentPage={setPage}
-                                        pageCount={applicationList?.totalPages!}
-                                    />
-                                </div>
-                            )}
                         </div>
-                    }
-
-
-                    {/* ELLIGIBLE TENDERS */}
-                    {activeTab === "eligible" &&
-                        <div className="container">
-                            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                                <Table
-                                    columns={columns}
-                                    data={getTenders ? getTenders.content : []}
-                                    isLoading={isLoading}
-                                    hasSelection={false}
-                                    hasActions={!["BIDDER", "PROCUREMENT_ENTITY"].includes(userData?.role!)}
-                                    actionSlot={(content: ITenders) => {
-                                        return (
-                                            <div className="flex justify-center space-x-2">
+                    </div>
+                }
+                {/* DOCUMENTS */}
+                {activeTab === "documents" &&
+                    <div className="container">
+                        <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
+                            <Table
+                                columns={documentColumns}
+                                data={documents ? documents.content : []}
+                                isLoading={documentLoading}
+                                hasSelection={false}
+                                hasActions={true}
+                                actionSlot={(content: ICompanyDocuments) => {
+                                    return (
+                                        <div className="flex justify-center items-center space-x-3">
+                                            <Tooltip content={t("documents-view-button-tooltip")}>
                                                 <button
                                                     className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                                    onClick={() => setOpenModal({ type: "view", tender: content })}
+                                                    onClick={() => handleView(content)}
                                                 >
                                                     <IconEye size={20} />
                                                 </button>
-                                            </div>
-                                        );
-                                    }}
-                                />
-
-                                <div className="flex justify-between items-center p-4 lg:px-8">
-                                    <div></div>
-
-                                    {
-                                        getTenders?.pageable &&
-                                        <Pagination
-                                            currentPage={page}
-                                            setCurrentPage={setPage}
-                                            pageCount={getTenders.totalPages}
-                                        />
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    {/* DOCUMENTS */}
-                    {activeTab === "documents" &&
-                        <div className="container">
-                            <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
-                                <Table
-                                    columns={documentColumns}
-                                    data={documents ? documents.content : []}
-                                    isLoading={documentLoading}
-                                    hasSelection={false}
-                                    hasActions={true}
-                                    actionSlot={(content: ICompanyDocuments) => {
-                                        return (
-                                            <div className="flex justify-center items-center space-x-3">
-                                                <Tooltip content={t("documents-view-button-tooltip")}>
-                                                    <button
-                                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                                        onClick={() => handleView(content)}
-                                                    >
-                                                        <IconEye size={20} />
-                                                    </button>
-                                                </Tooltip>
-                                                <Fragment>
-                                                    {
-                                                        userData?.role === "SUPERVISOR" &&
-                                                        <Tooltip content={t("documents-delete-button-tooltip")}>
-                                                            <button
-                                                                className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                                                onClick={() => reject(content)}
-                                                            >
-                                                                <IconSquareRoundedMinus size={20} />
-                                                            </button>
-                                                        </Tooltip>
-                                                    }
-                                                </Fragment>
-                                            </div>
-                                        );
-                                    }}
-                                />
-
-                                <div className="flex justify-between items-center p-4 lg:px-8">
-                                    <div></div>
-
-                                    {
-                                        getTenders?.pageable &&
-                                        <Pagination
-                                            currentPage={page}
-                                            setCurrentPage={setPage}
-                                            pageCount={getTenders.totalPages}
-                                        />
-                                    }
-                                </div>
-                                {selectedDocument && (
-                                    <DocumentViewModal
-                                        documentType={selectedDocument.documentType}
-                                        onClose={() => setSelectedDocument(null)}
-                                    >
-                                        <div className="space-y-4">
-                                            {/* Tender Header */}
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-xl font-bold text-gray-800">{selectedDocument.documentNumber}</h3>
-                                            </div>
-
-                                            {/* PDF Viewer */}
-                                            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                                                <iframe
-                                                    src={selectedDocument.filePath}
-                                                    width="100%"
-                                                    height="500px"
-                                                    title="Tender Document"
-                                                ></iframe>
-                                            </div>
-
-                                            {/* Modal Footer */}
-                                            <div className="flex justify-end space-x-2 mt-6">
-                                                <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedDocument(null)} />
-                                            </div>
+                                            </Tooltip>
+                                            <Fragment>
+                                                {
+                                                    userData?.role === "SUPERVISOR" &&
+                                                    <Tooltip content={t("documents-delete-button-tooltip")}>
+                                                        <button
+                                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                                            onClick={() => reject(content)}
+                                                        >
+                                                            <IconSquareRoundedMinus size={20} />
+                                                        </button>
+                                                    </Tooltip>
+                                                }
+                                            </Fragment>
                                         </div>
-                                    </DocumentViewModal>
-                                )}
+                                    );
+                                }}
+                            />
+
+                            <div className="flex justify-between items-center p-4 lg:px-8">
+                                <div></div>
+
+                                {
+                                    getTenders?.pageable &&
+                                    <Pagination
+                                        currentPage={page}
+                                        setCurrentPage={setPage}
+                                        pageCount={getTenders.totalPages}
+                                    />
+                                }
                             </div>
+                            {selectedDocument && (
+                                <DocumentViewModal
+                                    documentType={selectedDocument.documentType}
+                                    onClose={() => setSelectedDocument(null)}
+                                >
+                                    <div className="space-y-4">
+                                        {/* Tender Header */}
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-xl font-bold text-gray-800">{selectedDocument.documentNumber}</h3>
+                                        </div>
+
+                                        {/* PDF Viewer */}
+                                        <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                            <iframe
+                                                src={selectedDocument.filePath}
+                                                width="100%"
+                                                height="500px"
+                                                title="Tender Document"
+                                            ></iframe>
+                                        </div>
+
+                                        {/* Modal Footer */}
+                                        <div className="flex justify-end space-x-2 mt-6">
+                                            <Button label="Close" size="sm" theme="danger" onClick={() => setSelectedDocument(null)} />
+                                        </div>
+                                    </div>
+                                </DocumentViewModal>
+                            )}
                         </div>
-                    }
-
-                </div>
-
-
-                <GeneralSMSModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    selectedUser={selectedUser}
-                    setSelectedUser={setSelectedUser}
-                    title={"Send message"}
-                />
-
-
-                {
-                    openModal.tender && (
-                        <TenderViewModal
-                            isOpen={openModal.type === "view"}
-                            tender={openModal.tender}
-                            onClose={() => setOpenModal({ tender: null, type: null })}
-                            isLoading={false}
-                            onDoItForMeClick={function (): void {
-                                throw new Error("Function not implemented.");
-                            }}
-                        />
-                    )
+                    </div>
                 }
 
-                {/* Whatsapp conversation */}
-                <ConversationModal
-                    open={openModal.type === "whatsapp"}
-                    onClose={() => setOpenModal({ tender: null, type: null })}
-                    contact={contact}
-                />
+            </div>
 
-            </Modal >
-        </>
+
+            <GeneralSMSModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+                title={"Send message"}
+            />
+
+
+            {
+                openModal.tender && (
+                    <TenderViewModal
+                        isOpen={openModal.type === "view"}
+                        tender={openModal.tender}
+                        onClose={() => setOpenModal({ tender: null, type: null })}
+                        isLoading={false}
+                        onDoItForMeClick={function (): void {
+                            throw new Error("Function not implemented.");
+                        }}
+                    />
+                )
+            }
+
+            {/* Whatsapp conversation */}
+            <ConversationModal
+                open={openModal.type === "whatsapp"}
+                onClose={() => setOpenModal({ tender: null, type: null })}
+                contact={contact}
+            />
+
+        </Modal >
     );
 };
 

@@ -327,6 +327,7 @@ export default function PrivateTenders() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={getTenderBox.totalPages}
+                            totalElements={getTenderBox.totalElements}
                         />
                     }
                 </div>

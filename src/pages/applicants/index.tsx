@@ -146,6 +146,7 @@ export const ApplicantsList = () => {
                         currentPage={page}
                         setCurrentPage={setPage}
                         pageCount={applicantList?.totalPages || 1}
+                        totalElements={applicantList?.totalElements || 0}
                     />
                 </div>
 

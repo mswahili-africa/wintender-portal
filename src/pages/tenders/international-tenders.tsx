@@ -364,6 +364,7 @@ export default function InternationalTenders() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={getTenders.totalPages}
+                            totalElements={getTenders.totalElements}
                         />
                     }
                 </div>
