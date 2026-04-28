@@ -3,7 +3,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
 import { BusinessType, IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStar, IconStarFilled, IconStars, IconCircleCheckFilled } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -35,6 +35,7 @@ import { useTranslation } from "react-i18next";
 import { deleteDocument } from "@/services/entities";
 import DocumentViewModal from "@/pages/complience/fragments/documentViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import RatingModal from "./RatingModal";
 
 interface IProps {
     children?: React.ReactNode;
@@ -55,11 +56,16 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
     // const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, _] = useState<string>("");
-    const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | null, tender: ITenders | null }>({ type: null, tender: null });
+    const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | "rating" | null, object: any }>({ type: null, object: null });
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible" | "documents">("requests");
 
     const { t } = useTranslation();
+
+    // modal close
+    const handleCloseModal = () => {
+        setOpenModal({ type: null, object: null });
+    }
 
     const tabs = [
         { name: "Do it for me", value: "requests" },
@@ -214,7 +220,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                     <div className="flex flex-col md:flex-row items-center gap-x-2">
                                         <span>
                                             <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
-                                        </span> |
+                                        </span> <IconCircleCheckFilled className="w-5 h-5 text-blue-500" /> |
                                         <Chip
                                             label={`${daysLeft} days left`}
                                             size="sm"
@@ -222,13 +228,39 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             variant="outline"
                                         />
                                     </div>
-                                    <h5 className="text-sm font-bold">{user?.account}</h5>
+                                    <div className="flex flex-col items-start gap-x-2">
+                                        <div className="flex gap-2">
+                                            {[1, 2, 3, 4, 5].map((star) => {
+                                                // const isActive = star <= (hoverRating || rating);
+
+                                                return (
+                                                    <span
+                                                        key={star}
+                                                        // onClick={() => setRating(star)}
+                                                        // onMouseEnter={() => setHoverRating(star)}
+                                                        // onMouseLeave={() => setHoverRating(null)}
+                                                        className="cursor-pointer transition-transform hover:scale-110"
+                                                    >
+                                                        {true ? (
+                                                            <IconStarFilled className="w-5 h-5 text-yellow-500" />
+                                                        ) : (
+                                                            <IconStar className="w-5 h-5 text-gray-400" />
+                                                        )}
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                        <h5 className="text-sm font-bold">{user?.account}</h5>
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-3">
                                 <WalletButton amount={user.walletAmount} />
 
-                                <button onClick={() => setOpenModal({ type: "whatsapp", tender: null })}>
+                                <button onClick={() => setOpenModal({ type: "rating", object: user })}>
+                                    <IconStars size={24} className="text-yellow-500" />
+                                </button>
+                                <button onClick={() => setOpenModal({ type: "whatsapp", object: null })}>
                                     <IconBrandWhatsapp size={24} className="text-green-500" />
                                 </button>
                                 <button onClick={() => SendSingleSMS(user)}>
@@ -543,7 +575,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                         <div className="flex justify-center space-x-2">
                                             <button
                                                 className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-blue-600"
-                                                onClick={() => setOpenModal({ type: "view", tender: content })}
+                                                onClick={() => setOpenModal({ type: "view", object: content })}
                                             >
                                                 <IconEye size={20} />
                                             </button>
@@ -653,6 +685,14 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
             </div>
 
 
+            {/* Rating modal */}
+            <RatingModal
+                isOpen={openModal.type === "rating"}
+                onClose={handleCloseModal}
+                selectedUser={openModal.object}
+            />
+
+            {/* Messages modal */}
             <GeneralSMSModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -663,11 +703,11 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
 
             {
-                openModal.tender && (
+                openModal.object && (
                     <TenderViewModal
                         isOpen={openModal.type === "view"}
-                        tender={openModal.tender}
-                        onClose={() => setOpenModal({ tender: null, type: null })}
+                        tender={openModal.object}
+                        onClose={handleCloseModal}
                         isLoading={false}
                         onDoItForMeClick={function (): void {
                             throw new Error("Function not implemented.");
@@ -679,7 +719,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
             {/* Whatsapp conversation */}
             <ConversationModal
                 open={openModal.type === "whatsapp"}
-                onClose={() => setOpenModal({ tender: null, type: null })}
+                onClose={() => setOpenModal({ object: null, type: null })}
                 contact={contact}
             />
 

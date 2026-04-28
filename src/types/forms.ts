@@ -187,3 +187,12 @@ export enum BusinessType {
   PARTNERSHIP = "Partnership",
   BRANCH_OF_FOREIGN_COMPANY = "Branch of a Foreign Company"
 }
+
+export enum RatingReason {
+  REGULAR_CUSTOMER = "Regular Customer",
+  HIGH_VALUE_CLIENT = "High Value Client",
+  SUBSCRIBER_ONE_YEAR_PLUS = "Subscriber 1 Year + Consecutively",
+  PARTNERSHIP_JV_WINTENDER = "Partnership / JV with Wintender",
+  PURCHASE_OVER_5M_TSH = "Made Purchase of Tsh 5,000,000/- +",
+  MANUFACTURER_OF_GOODS = "Manufacturer of Goods"
+}
