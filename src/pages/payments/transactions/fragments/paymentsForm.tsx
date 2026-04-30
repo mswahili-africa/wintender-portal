@@ -1,12 +1,12 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Button from "../../../components/button/Button";
-import Modal from "../../../components/widgets/Modal";
-import { createPayment } from "../../../services/payments";
-import { IPaymentForm } from "../../../types/forms";
+import Button from "../../../../components/button/Button";
+import Modal from "../../../../components/widgets/Modal";
+import { createPayment } from "../../../../services/payments";
+import { IPaymentForm, PaymentReason } from "../../../../types/forms";
 import Select from "react-select";
 import { useBidders } from "@/hooks/biddersRepository";
 
@@ -15,6 +15,11 @@ interface IProps {
     initials?: any
     onSuccess: () => void
 }
+
+const paymentReason = Object.entries(PaymentReason).map(([key, value]) => ({
+  value: key,
+  label: value
+}));
 
 export default function ({ ...props }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
@@ -60,38 +65,6 @@ export default function ({ ...props }: IProps) {
         }
     }, [props.initials, reset])
 
-
-
-    // JCM Debounced function to fetch bidders
-
-    // const fetchBidders = useCallback(async (search = "") => {
-    //     if (!search) {
-    //         setBidders([]);
-    //         return;
-    //     }
-
-    //     setLoading(true);
-    //     try {
-    //         const allBidders = await getBidders({ page: 0, size: 5, search });
-    //         setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
-    //     } catch (error) {
-    //         console.error("Failed to fetch Bidders", error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }, []);
-
-    // const debouncedFetchBidders = useCallback(
-    //     debounce((inputValue) => {
-    //         if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-    //             fetchBidders(inputValue);
-    //         } else {
-    //             setBidders([]); // Clear entities if less than 5 characters
-    //         }
-    //     }, 5),
-    //     [fetchBidders]
-    // );
-
     return (
         <div className="max-w-max">
             <Button
@@ -135,10 +108,11 @@ export default function ({ ...props }: IProps) {
                             className={`${errors.paymentReason?.type === "required" ? "input-error" : "input-normal"}`}
                             {...register("paymentReason", { required: true })}
                         >
-                            <option value="WALLET_IN">WALLET_IN</option>
-                            <option value="SUBSCRIPTION">SUBSCRIPTION</option>
-                            <option value="CONSULT_ME">CONSULT_ME</option>
-                            <option value="DO_IT_FOR_ME">DO_IT_FOR_ME</option>
+                            {paymentReason.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
                         </select>
                     </div>
 

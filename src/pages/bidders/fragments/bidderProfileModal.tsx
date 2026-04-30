@@ -229,7 +229,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                         />
                                     </div>
                                     <div className="flex flex-col items-start gap-x-2">
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-1">
                                             {[1, 2, 3, 4, 5].map((star) => {
                                                 // const isActive = star <= (hoverRating || rating);
 
@@ -273,7 +273,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                     {/* JCM edit button */}
                     <div className="flex justify-end w-full">
                         {
-                            userData?.role === "SUPERVISOR" && // Show edit button only for supervisors
+                            ["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role as string) && // Show edit button only for supervisors and customer relationship managers
                             <Button
                                 label={editDetails ? "Cancel Edit" : "Edit Details"}
                                 size="sm"
@@ -622,7 +622,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </Tooltip>
                                             <Fragment>
                                                 {
-                                                    userData?.role === "SUPERVISOR" &&
+                                                    ["SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role as string) &&
                                                     <Tooltip content={t("documents-delete-button-tooltip")}>
                                                         <button
                                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"

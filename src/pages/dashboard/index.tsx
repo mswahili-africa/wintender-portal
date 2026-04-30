@@ -290,7 +290,7 @@ export default function Dashboard() {
                 </div>
             )} */}
 
-            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR", "PUBLISHER"].includes(userRole) && (
+            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER", "PUBLISHER"].includes(userRole) && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary!} />}
                 </div>

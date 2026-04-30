@@ -101,7 +101,7 @@ export default function RatingModal({ isOpen, onClose, selectedUser}: ModalProps
                     ✕
                 </button>
 
-                <h2 className="text-xl font-semibold mb-6 text-center">Rate <span className='text-green-600'>{selectedUser?.name}</span></h2>
+                <h2 className="text-xl font-semibold mb-6 text-center">Rate <br /> <span className='text-green-600 text-sm'>{selectedUser?.companyName}</span></h2>
 
                 <div className="flex flex-col gap-y-4">
                     

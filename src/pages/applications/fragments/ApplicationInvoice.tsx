@@ -21,9 +21,10 @@ export default function ApplicationInvoice() {
 
   const handleDownload = () => {
     const invoice = document.getElementById("invoice");
+    if(!invoice) return;
     html2pdf()
       .from(invoice)
-      .set({ imageTimeout: 5000 })
+      // .set({ imageTimeout: 5000 })
       .save("Wintender-Invoice.pdf");
   };
 

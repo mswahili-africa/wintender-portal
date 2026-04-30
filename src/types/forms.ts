@@ -196,3 +196,10 @@ export enum RatingReason {
   PURCHASE_OVER_5M_TSH = "Made Purchase of Tsh 5,000,000/- +",
   MANUFACTURER_OF_GOODS = "Manufacturer of Goods"
 }
+
+export enum PaymentReason {
+  DO_IT_FOR_ME = "Do it for me",
+  CONSULT_ME = "Consult me",
+  SUBSCRIPTION = "Subscription",
+  WALLET_IN = "Wallet deposit"
+}
