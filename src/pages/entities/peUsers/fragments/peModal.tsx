@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import "swiper/css";
-import "swiper/css/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 import { ICompany, IUser } from "@/types";
 import { IMessage } from "@/types/forms";

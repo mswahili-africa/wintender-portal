@@ -40,11 +40,11 @@ export const InvoicePage = () => {
     applicationGroup: null,
     groupId: "e0c7d6a4-7b5a-4f7f-9a7e-9e0a9e0a9e0a", // Dummy ID for all applications
     page,
-    search,
+    searchValue: search,
     sort,
     status,
     paymentReason,
-    searchColumn,
+    searchKey: searchColumn,
     filter: undefined,
     visibility: "all"
   });
@@ -99,7 +99,7 @@ export const InvoicePage = () => {
                 ))
               }
             </select>
-            <select
+            {/* <select
               className={`input-normal w-[180px]`}
               value={paymentReason}
               onChange={(e) => setPaymentReason(e.target.value)}
@@ -112,7 +112,7 @@ export const InvoicePage = () => {
                   </option>
                 ))
               }
-            </select>
+            </select> */}
             <Button
               type="button"
               label="Reset"

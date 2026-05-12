@@ -123,7 +123,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         applicationGroup: "user-" + user.id,
         groupId: "user-" + user.id,
         page,
-        search,
+        searchValue: search,
         sort,
         filter: undefined,
     });
