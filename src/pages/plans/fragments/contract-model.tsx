@@ -185,10 +185,10 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
 
                     <Button
                         type="submit"
-                        label={createPlan.isPending ? "Creating..." : "Create"}
+                        label={createPlan.isLoading ? "Creating..." : "Create"}
                         theme="primary"
                         size="md"
-                        disabled={createPlan.isPending}
+                        disabled={createPlan.isLoading}
                     />
                 </form>
             </Modal>

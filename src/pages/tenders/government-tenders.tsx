@@ -13,7 +13,7 @@ import TenderViewModal from "./fragments/tenderViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "../payments/transactions/fragments/PaymentModel";
+import PaymentModal from "../payments/fragments/PaymentModel";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import { useTranslation } from "react-i18next";
@@ -372,7 +372,6 @@ export default function GovernmentTenders() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={getTenders.totalPages}
-                            totalElements={getTenders.totalElements}
                         />
                     }
                 </div>

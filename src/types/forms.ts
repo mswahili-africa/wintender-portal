@@ -138,12 +138,6 @@ export interface IPlan {
     amount: number
 }
 
-export interface IRatingForm {
-    bidderId: string
-    star: number
-    reason: string
-}
-
 export interface IAssignBidder {
     bidderId: string
     tenderId: string
@@ -192,20 +186,4 @@ export enum BusinessType {
   SPECIAL_GROUP = "Special Group",
   PARTNERSHIP = "Partnership",
   BRANCH_OF_FOREIGN_COMPANY = "Branch of a Foreign Company"
-}
-
-export enum RatingReason {
-  REGULAR_CUSTOMER = "Regular Customer",
-  HIGH_VALUE_CLIENT = "High Value Client",
-  SUBSCRIBER_ONE_YEAR_PLUS = "Subscriber 1 Year + Consecutively",
-  PARTNERSHIP_JV_WINTENDER = "Partnership / JV with Wintender",
-  PURCHASE_OVER_5M_TSH = "Made Purchase of Tsh 5,000,000/- +",
-  MANUFACTURER_OF_GOODS = "Manufacturer of Goods"
-}
-
-export enum PaymentReason {
-  DO_IT_FOR_ME = "Do it for me",
-  CONSULT_ME = "Consult me",
-  SUBSCRIPTION = "Subscription",
-  WALLET_IN = "Wallet deposit"
 }

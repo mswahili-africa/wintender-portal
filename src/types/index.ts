@@ -222,12 +222,6 @@ export interface ICompany {
   companyLogoFilePath: string;
   companyCategories: string[];
   categoryIds: string[];
-  rating: IRating;
-}
-
-export interface IRating{
-  star:number;
-  reason:string;
 }
 
 export interface ICompanyDocuments {

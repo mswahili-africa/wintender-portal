@@ -118,8 +118,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
             companyTinFilePath: user.companyTinFilePath || "",
             categoryIds: selectedCategories.map(cat => cat.id),
             companyCategories: [],
-            walletAmount: user.walletAmount || 0,
-            rating: user.rating || {}
+            walletAmount: user.walletAmount || 0
         };
 
         try {

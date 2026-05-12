@@ -28,7 +28,7 @@ const tanzaniaRegions = [
     "Simiyu", "Singida", "Tabora", "Tanga", "Zanzibar North", "Zanzibar South and Central", "Zanzibar Urban West"
 ];
 
-const columnSearchOptions: any[] = [
+const columnSearchOptions:any[] = [
     { value: "companyName", label: "Name" },
     { value: "companyEmail", label: "Email" },
     { value: "companyTin", label: "Tin" },
@@ -179,7 +179,7 @@ export default function Bidders() {
         setTempSelectedCategories([]);
         setTempSelectedRegion(null);
         setTempSearch("");
-        setTempSearchColumn({ label: "Name", value: "companyName" });
+        setTempSearchColumn({ label: "Name", value: "companyName"});
         setSubscriptionFilter(undefined);
         setFilter(undefined);
         navigate("");
@@ -250,10 +250,7 @@ export default function Bidders() {
                 <h2 className="text-lg font-bold">Bidders</h2>
 
                 <div className="flex gap-x-2">
-                    {
-                        !["CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role as string) &&
-                        <ExportXLSX name="Bidders" data={bidders?.content || []} columns={bidderExcelColumns} />
-                    }
+                    <ExportXLSX name="Bidders" data={bidders?.content || []} columns={bidderExcelColumns} />
                     <button
                         className="bg-green-600 text-white py-2 px-3 rounded hover:bg-green-800 flex items-center"
                         onClick={openBulkSendModal}
@@ -262,6 +259,9 @@ export default function Bidders() {
                         Send Bulk
                     </button>
                     <div className="relative w-64">
+                        {/* <label className="text-sm font-medium text-gray-600">
+                            Subscription
+                        </label> */}
 
                         {/* Trigger */}
                         <button
@@ -517,7 +517,7 @@ export default function Bidders() {
                                 <IconSearch className="h-5 w-5 text-green-500" />
                             </button>
                             {
-                                ["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "PUBLISHER", "ADMINISTRATOR", "ACCOUNTANT"].includes(userData?.role as string) &&
+                                ["SUPERVISOR", "PUBLISHER", "ADMINISTRATOR", "ACCOUNTANT"].includes(userData?.role as string) &&
                                 <button onClick={() => { setOpenModal({ type: "create", user: content }); }}>
                                     <IconFilePlus className="h-5 w-5 text-green-500" />
                                 </button>
@@ -539,7 +539,6 @@ export default function Bidders() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={bidders.totalPages}
-                            totalElements={bidders.totalElements}
                         />
                     )}
                 </div>

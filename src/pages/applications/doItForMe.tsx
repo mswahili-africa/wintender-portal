@@ -154,7 +154,6 @@ export default function ApplicationGroups() {
                     currentPage={page}
                     setCurrentPage={setPage}
                     pageCount={applicationGroupList.totalPages}
-                    totalElements={applicationGroupList.totalElements}
                   />
                 )}
               </div>

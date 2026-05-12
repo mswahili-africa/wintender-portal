@@ -622,7 +622,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={applicationList.totalPages}
-                            totalElements={applicationList.totalElements}
                         />
                     )}
                 </div>

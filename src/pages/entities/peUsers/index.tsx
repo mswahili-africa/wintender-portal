@@ -161,7 +161,6 @@ export default function ProcurementEntities() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={pes.totalPages}
-                            totalElements={pes.totalElements}
                         />
                     )}
                 </div>

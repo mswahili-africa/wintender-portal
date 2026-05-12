@@ -188,7 +188,6 @@ export default function () {
               currentPage={page}
               setCurrentPage={setPage}
               pageCount={payments.totalPages}
-              totalElements={payments.totalElements}
             />
           )}
         </div>

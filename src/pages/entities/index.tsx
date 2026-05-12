@@ -128,7 +128,6 @@ export default function () {
                         currentPage={page}
                         setCurrentPage={setPage}
                         pageCount={entities.totalPages}
-                        totalElements={entities.totalElements}
                     />
                 }
             </div>

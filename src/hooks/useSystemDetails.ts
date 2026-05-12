@@ -1,6 +1,7 @@
 import { getSummaryReport } from "@/services/reports";
 import {  getSystemHealthDetails, getSystemLogs } from "@/services/systemService";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface IProps {
     page: number

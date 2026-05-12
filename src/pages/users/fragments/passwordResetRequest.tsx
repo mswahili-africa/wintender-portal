@@ -43,7 +43,7 @@ export default function({...props}: IProps) {
                     label="Reset Password" 
                     theme="primary"
                     size="md"
-                    loading={forgotPasswordMutation.isPending}
+                    loading={forgotPasswordMutation.isLoading}
                     onClick={submitReset} />
             </section>
         </div>

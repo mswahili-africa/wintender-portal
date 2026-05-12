@@ -221,7 +221,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
             label="Save"
             theme="primary"
             size="md"
-            loading={createMutation.isPending}
+            loading={createMutation.isLoading}
           />
         </form>
       </Modal>
@@ -255,7 +255,7 @@ export default function UserForm({ onSuccess, initials }: IProps) {
             label="Update"
             theme="primary"
             size="md"
-            loading={updateMutation.isPending}
+            loading={updateMutation.isLoading}
           />
         </form>
       </Modal>

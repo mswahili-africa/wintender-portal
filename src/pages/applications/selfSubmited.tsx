@@ -161,7 +161,6 @@ export default function SubmittedApplication() {
               currentPage={page}
               setCurrentPage={setPage}
               pageCount={applications.totalPages}
-              totalElements={applications.totalElements}
             />
           )}
         </div>

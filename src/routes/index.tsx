@@ -43,7 +43,6 @@ type UserRole =
     | "ADMINISTRATOR"
     | "BIDDER"
     | "PUBLISHER"
-    | "CUSTOMER_RELATIONSHIP_MANAGER"
     | "ACCOUNTANT"
     | "MANAGER"
     | "SUPERVISOR"
@@ -53,7 +52,7 @@ type UserRole =
     | "LEGAL";
 
 const isValidUserRole = (role: any): role is UserRole => {
-    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "CUSTOMER_RELATIONSHIP_MANAGER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN", "SUPERVISOR"].includes(role);
+    return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN", "SUPERVISOR"].includes(role);
 };
 
 const useUserRole = (): UserRole => {
@@ -73,22 +72,22 @@ const allMenus: IRoute[] = [
     {
         path: "/tenders",
         label: "Tender",
-        type: "item",
+        type:"item",
         labelKey: "menu-tender",
         icon: <IconReport size={20} strokeWidth={1.5} />,
         subMenu: [
-            { path: "/tenders", label: "Private", labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/government-tenders", label: "Government", labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
-            { path: "/categories", label: "Categories", labelKey: "menu-categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
-            { path: "/do-it-for-me", label: "Do It For Me", labelKey: "menu-difm", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
-            { path: "/tender-box", label: "Tender Box", labelKey: "menu-tender-box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
-            { path: "/submitted-application", label: "My Submissions", labelKey: "menu-my-submissions", icon: <IconFiles size={20} strokeWidth={1.5} /> }
+            { path: "/tenders", label: "Private",labelKey: "menu-private-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/government-tenders", label: "Government",labelKey: "menu-government-tenders", icon: <IconFileText size={20} strokeWidth={1.5} /> },
+            { path: "/categories", label: "Categories",labelKey: "menu-categories", icon: <IconCategory size={20} strokeWidth={1.5} /> },
+            { path: "/do-it-for-me", label: "Do It For Me",labelKey: "menu-difm", icon: <IconGitPullRequest size={20} strokeWidth={1.5} /> },
+            { path: "/tender-box", label: "Tender Box",labelKey: "menu-tender-box", icon: <IconFiles size={20} strokeWidth={1.5} /> },
+            { path: "/submitted-application", label: "My Submissions",labelKey: "menu-my-submissions", icon: <IconFiles size={20} strokeWidth={1.5} /> }
         ],
     },
     {
         path: "/applications",
         label: "Consultation",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-consultation",
         icon: <IconGitPullRequest size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -99,7 +98,7 @@ const allMenus: IRoute[] = [
     {
         path: "/finance",
         label: "Finance",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-finance",
         icon: <IconReportMoney size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -111,7 +110,7 @@ const allMenus: IRoute[] = [
     {
         path: "/entities",
         label: "Entities",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-entities",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -123,7 +122,7 @@ const allMenus: IRoute[] = [
     {
         path: "/compliance",
         label: "Compliance",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-compliance",
         icon: <IconListCheck size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -133,7 +132,7 @@ const allMenus: IRoute[] = [
     {
         path: "/users",
         label: "Internal",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-internal",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -144,7 +143,7 @@ const allMenus: IRoute[] = [
     {
         path: "/inquiries",
         label: "Inquiries & Support",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-inquiries",
         icon: <IconGlobe size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -155,7 +154,7 @@ const allMenus: IRoute[] = [
         path: "/reports/login-attempt",
         label: "Reports",
         labelKey: "menu-reports",
-        type: "dropdown",
+        type:"dropdown",
         icon: <IconBrandOffice size={20} strokeWidth={1.5} />,
         subMenu: [
             { path: "/publisher-perfomance", label: "Publisher Perfomance", labelKey: "menu-publisher-perfomance", icon: <IconUser size={20} strokeWidth={1.5} /> },
@@ -167,7 +166,7 @@ const allMenus: IRoute[] = [
     {
         path: "/settings",
         label: "System",
-        type: "dropdown",
+        type:"dropdown",
         labelKey: "menu-system",
         icon: <IconSettings className="duration-300 animate-spin" size={20} strokeWidth={1.5} />,
         subMenu: [
@@ -232,27 +231,6 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
 
         ),
     SUPERVISOR: () => allMenus
-        .filter(menu => !["Internal", "Compliance"].includes(menu.label)) // Exclude Internal and Compliance menus
-        .map(menu => menu.label === "Entities"
-            ? {
-                ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "Roles"),
-            }
-            : menu.label === "Tender" ? {
-                ...menu,
-                subMenu: menu.subMenu?.filter(sub => sub.label !== "My Submissions"), // Exclude Do It For Me and Tender Box sub-menus
-            }
-                : menu.label === "Consultation" ? {
-                    ...menu,
-                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Billboards"), // Exclude Billboards sub-menu
-                }
-                    : menu.label === "System" ? {
-                        ...menu,
-                        subMenu: menu.subMenu?.filter(sub => sub.label !== "Settings"), // Exclude Logs and Health sub-menus
-                    }
-                        : menu
-        ),
-    CUSTOMER_RELATIONSHIP_MANAGER: () => allMenus
         .filter(menu => !["Internal", "Compliance"].includes(menu.label)) // Exclude Internal and Compliance menus
         .map(menu => menu.label === "Entities"
             ? {
