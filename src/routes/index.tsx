@@ -23,7 +23,8 @@ import {
     IconReceipt,
     IconGraph,
     IconBuildingArch,
-    IconListCheck
+    IconListCheck,
+    IconPackages
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -105,6 +106,7 @@ const allMenus: IRoute[] = [
         subMenu: [
             { path: "/payments", label: "Transactions", labelKey: "menu-transactions", icon: <IconReportMoney size={20} strokeWidth={1.5} /> },
             { path: "/invoices", label: "Invoices", labelKey: "menu-invoices", icon: <IconReceipt size={20} strokeWidth={1.5} /> },
+            { path: "/subscription-plans", label: "Subscription Plans", labelKey: "menu-subscription-plans", icon: <IconPackages size={20} strokeWidth={1.5} /> },
             { path: "/company-plans", label: "Payment Plans", labelKey: "menu-payment-plans", icon: <IconCalendarUser size={20} strokeWidth={1.5} /> },
         ],
     },

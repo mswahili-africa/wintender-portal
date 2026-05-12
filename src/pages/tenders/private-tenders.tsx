@@ -1,28 +1,28 @@
 import { IconTrash, IconEye, IconEdit, IconFilter, IconRefresh, IconClockPlus, IconSquareCheck, IconSquare } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import usePopup from "@/hooks/usePopup";
-import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
+import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import Button from "@/components/button/Button";
 import TenderViewModal from "./fragments/tenderViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
-import { Link, useNavigate } from "react-router-dom";
-import PaymentModal from "../payments/transactions/fragments/PaymentModel";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
 import { useDebounce } from "@/hooks/useDebounce";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useTendersPrivate } from "@/hooks/tendersRepository";
+import PricingModal from "../payments/subscription/fragments/PricingModel";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -191,12 +191,11 @@ export default function PrivateTenders() {
                 </div>
             </div>
 
-            {isPaymentModalOpen && (
-                <PaymentModal
-                    onClose={() => setIsPaymentModalOpen(false)}
-                />
+            <PricingModal
+                open={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+            />
 
-            )}
 
             <TenderEdit
                 open={openModal.type === "update"}

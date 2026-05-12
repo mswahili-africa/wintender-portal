@@ -42,6 +42,7 @@ import SystemHealth from "./pages/system/system-health";
 import SystemLogs from "./pages/system/system-health/System-logs";
 import { InvoicePage } from "./pages/payments/invoices/InvoicePage";
 import DIFMStatistics from "./pages/applications/DIFMStatistics";
+import SubscriptionPlans from "./pages/payments/subscription";
 
 export const queryClient = new QueryClient({});
 
@@ -91,6 +92,7 @@ function App() {
                                 <Route path="publisher-perfomance" element={<PublisherPerformance />} />
                                 <Route path="difm-statistics" element={<DIFMStatistics />} />
                                 <Route path="company-documents" element={<CompanyDocuments />} />
+                                <Route path="subscription-plans" element={<SubscriptionPlans />} />
                                 <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
                                 <Route path="login-attempt" element={<LoginAttempts />} />

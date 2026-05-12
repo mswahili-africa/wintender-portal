@@ -23,6 +23,7 @@
     "menu-consult-me": "Nishauri",
     "menu-finance": "Fedha",
     "menu-transactions": "Miamala",
+    "menu-subscription-plans": "Vifurushi",
     "menu-payment-plans": "Mipango ya Malipo",
     "menu-entities": "Mashirika",
     "menu-bidders": "Wazabuni",
@@ -95,7 +96,6 @@
     "registration-form-company-business-type": "Aina ya kampuni",
     "registration-form-business-type-required": "Aina ya kampuni inahitajika",
 
-
     "dashboard-welcome": "Karibu, {{name}}",
     "dashboard-welcome-message": "Fahamika zaidi katika dashibodi yako",
     "dashboard-account": "Akaunti: {{account}}",
@@ -127,7 +127,12 @@
     "dashboard-tender-awarded-title":"Wazabuni walioteuliwa",
     "dashboard-tender-awarded":"Jumla ya Wazabuni walioteuliwa",
 
-    "subscription-modal-header": "Sasisha Usajili Wako",
+    "subscription-pricing-modal-header": "Sasisha Usajili Wako",
+    "subscription-pricing-modal-sub-header": "Tafadhali chagua kifurushi cha usajili",
+
+    "subscription-card-button-label":"Lipia {{name}}",
+
+    "subscription-modal-header": "Lipa Usajili Wako",
     "subscription-modal-sub-header": "Lipa moja kwa moja kutoka kwenye pochi au simu yako",
     "subscription-modal-phone": "Namba ya Simu",
     "subscription-modal-phone-input-placeholder": "Ingiza namba yako ya simu",
@@ -345,7 +350,7 @@
     "consultation-application-status-update-button-tooltip": "Sasisha hali ya ombi",
 
     "documents-header": "Nyaraka mbalimbali",
-    "documents-upload-button": "Pakia",
+    "documents-upload-button": "Pakia nyaraka",
     "documents-upload-button-tooltip": "Pakia nyaraka mpya",
     "documents-view-button-tooltip": "Tazama maelezo ya nyaraka",
     "documents-delete-button-tooltip": "Futa nyaraka hii",
