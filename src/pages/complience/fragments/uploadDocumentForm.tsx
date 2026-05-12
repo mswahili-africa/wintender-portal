@@ -1,6 +1,6 @@
 import Button from "@/components/button/Button";
 import Modal from "@/components/widgets/Modal";
-import { ICompanyDocuments } from "@/types/index";
+import { ICompany, ICompanyDocuments } from "@/types/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IconFileText, IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 
 interface IProps {
+    company?: ICompany
     onSuccess: () => void;
     initials?: ICompanyDocuments;
 }
@@ -26,7 +27,7 @@ const schema = object().shape({
     documentNumber: string().required("Document number is required"),
 });
 
-export default function DocumentUpload({ onSuccess }: IProps) {
+export default function DocumentUpload({ onSuccess, company }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [documentFile, setDocumentFile] = useState<string | any>();
     const { t } = useTranslation();
@@ -67,6 +68,9 @@ export default function DocumentUpload({ onSuccess }: IProps) {
         formData.append("documentType", data.documentType);
         formData.append("documentNumber", data.documentNumber);
 
+        if (company) formData.append("bidderId", company.id)
+
+
         uploadDocumentMutation.mutate(formData);
     };
 
@@ -89,6 +93,13 @@ export default function DocumentUpload({ onSuccess }: IProps) {
                 onClose={(v) => setOpen(v)}
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
+                    {
+                        company &&
+                        <div className="mb-4">
+                            <div className="text-xl font-bold">{company.companyName}</div>
+                        </div>
+                    }
+
                     <div className="mb-2">
                         <label htmlFor="documentType" className="block mb-2">
                             Type

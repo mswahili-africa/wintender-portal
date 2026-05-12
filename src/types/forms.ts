@@ -138,6 +138,12 @@ export interface IPlan {
     amount: number
 }
 
+export interface IRatingForm {
+    bidderId: string
+    star: number
+    reason: string
+}
+
 export interface IAssignBidder {
     bidderId: string
     tenderId: string

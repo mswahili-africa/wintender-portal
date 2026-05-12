@@ -1,6 +1,7 @@
 import Button from '@/components/button/Button';
-import { ICompany, IUser } from '@/types';
-import { IMessage, RatingReason } from '@/types/forms';
+import { rateCompany } from '@/services/entities';
+import { ICompany } from '@/types';
+import { IRatingForm, RatingReason } from '@/types/forms';
 import { IconLoader, IconStar, IconStarFilled } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -15,49 +16,40 @@ interface ModalProps {
 
 // Dropdown option type
 export interface DropdownOption {
-  value: keyof typeof RatingReason; // enum key
-  label: string;                        // enum value
+    value: keyof typeof RatingReason; // enum key
+    // value: string;
+    label: string;                        // enum value
 }
 
 // Generate options
 export const options: DropdownOption[] = Object.entries(RatingReason).map(
-  ([key, value]) => ({
-    value: key as keyof typeof RatingReason,
-    label: value
-  })
+    ([key, value]) => ({
+        value: key as keyof typeof RatingReason,
+        // value: value,
+        label: value
+    })
 );
 
-// const options = Object.values(RatingReason).map(reason => ({
-//     value: reason,
-//     label: reason
-// }));
-
-export default function RatingModal({ isOpen, onClose, selectedUser}: ModalProps) {
+export default function RatingModal({ isOpen, onClose, selectedUser }: ModalProps) {
     if (!isOpen) return null;
 
-    const [message, setMessage] = useState<string>("");
     const [reason, setReason] = useState<string>(''); // url for media type
 
     const [rating, setRating] = useState<number>(0);
     const [hoverRating, setHoverRating] = useState<any>(null);
 
-    // useEffect(() => {
-    //     setMediaType('');
-    //     setMedia('');
-    //     setMessage('');
-    //     if (selectedUser) {
-    //         setIsMessageToAll(false);
-    //         setNumberOfRecipient(selectedUser?.phoneNumber || '');
-    //     } else {
-    //         setIsMessageToAll(true);
-    //     }
-    // }, [selectedUser]);
+    useEffect(() => {
+        if (selectedUser && selectedUser?.rating !== null) {
+            setRating(selectedUser?.rating.star);
+            setReason(selectedUser?.rating.reason);
+        }
+    }, [selectedUser]);
+
 
     const ratingMutation = useMutation({
-        mutationFn: async ( data: any) => {console.log(data)},
+        mutationFn: (data: IRatingForm) => rateCompany(data),
         onSuccess: () => {
             toast.success("Sent successfully");
-            setMessage("");
             setReason('');
             setRating(0);
             toast.success("Rating submitted");
@@ -70,12 +62,17 @@ export default function RatingModal({ isOpen, onClose, selectedUser}: ModalProps
     });
 
     const handleRating = () => {
-        const payload = {
-            userId: selectedUser?.id,
-            rating,
-            reason,
-            message
+        if (!selectedUser) {
+            toast.error("No user selected for rating");
+            return;
+        }
+
+        const payload: IRatingForm = {
+            bidderId: selectedUser?.id,
+            star: rating,
+            reason: reason,
         };
+
         ratingMutation.mutate(payload);
     };
 
@@ -104,7 +101,7 @@ export default function RatingModal({ isOpen, onClose, selectedUser}: ModalProps
                 <h2 className="text-xl font-semibold mb-6 text-center">Rate <br /> <span className='text-green-600 text-sm'>{selectedUser?.companyName}</span></h2>
 
                 <div className="flex flex-col gap-y-4">
-                    
+
 
                     <div className="flex flex-col items-center">
                         <label className="block mb-2 font-medium">Rate</label>
@@ -139,22 +136,13 @@ export default function RatingModal({ isOpen, onClose, selectedUser}: ModalProps
                         <label className="block mb-2">Reason for rating</label>
                         <Select
                             options={options}
+                            value={options.find(option => option.value === reason)}
                             onChange={(value) => setReason(value?.value || '')}
                             placeholder="Select a reason"
                         />
                         {/* {errors.companyAddress && (
                             <p className="text-red-500 text-sm mt-1">{errors.companyAddress.message}</p>
                         )} */}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-                        <textarea
-                            className="input-normal w-full mb-4"
-                            rows={4}
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type your remarks here"
-                        />
                     </div>
 
 

@@ -1,6 +1,9 @@
 import { IColumn } from "@/components/widgets/table/Table";
 import Chip from "@/components/chip/Chip";
 import dummyLogo from "@/assets/images/bidder-dummy-logo.png"
+import { RatingDisplay } from "./ratingDisplay";
+import { IRating } from "@/types";
+import { IconCircleCheckFilled } from "@tabler/icons-react";
 
 const columns: IColumn[] = [
 
@@ -9,7 +12,7 @@ const columns: IColumn[] = [
         label: "name",
         sortable: false,
         plainObject: true,
-        element: (row: { name: string; companyName: string; companyLogoFilePath: string, createdAt: Date }) => (
+        element: (row: { name: string; companyName: string; companyLogoFilePath: string, createdAt: Date, rating: IRating }) => (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
                     src={row.companyLogoFilePath ? row.companyLogoFilePath : dummyLogo}
@@ -23,8 +26,20 @@ const columns: IColumn[] = [
                     }}
                 />
                 <div className="flex flex-col">
-                    <span>{row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase()}</span> {/* Display the name next to the logo */}
-                    <span className="text-slate-400 text-xs">{new Date(row.createdAt).toLocaleDateString()}</span> {/* Display the name next to the logo */}
+                    <div className="flex flex-row items-center gap-x-2">
+                        <span>{row?.companyName ? row.companyName.toUpperCase() : row?.name.toUpperCase()}</span> {/* Display the name next to the logo */}
+                        {
+                            row.rating && row.rating.star >= 3 &&
+                            <div className=" bg-white rounded-full p-1 shadow-sm">
+                                <IconCircleCheckFilled className="w-4 h-4 text-blue-500" />
+                            </div>
+                        }
+                    </div>
+                    <div className="flex flex-row items-center gap-x-2">
+                        <RatingDisplay rating={row.rating} showReason={false} />
+                        <div className="h-4 w-[1px] bg-zinc-200 mx-1 hidden sm:block" />
+                        <span className="text-slate-400 text-xs">{new Date(row.createdAt).toLocaleDateString()}</span> {/* Display the name next to the logo */}
+                    </div>
                 </div>
             </div>
         ),
