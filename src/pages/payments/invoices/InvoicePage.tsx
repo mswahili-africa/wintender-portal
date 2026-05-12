@@ -11,7 +11,6 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import { useNavigate } from "react-router-dom";
 import InvoiceListColumns from "./fragments/InvoiceListColumns";
 import Select from "react-select";
-import { PaymentReason } from "@/types/forms";
 import Button from "@/components/button/Button";
 
 const columnSearchOptions: any[] = [
@@ -21,17 +20,17 @@ const columnSearchOptions: any[] = [
   { value: "controlNumber", label: "Control number" },
 ];
 
-const paymentReasonList = Object.entries(PaymentReason).map(([key, value]) => ({
-  value: key,
-  label: value
-}));
+// const paymentReasonList = Object.entries(PaymentReason).map(([key, value]) => ({
+//   value: key,
+//   label: value
+// }));
 
 export const InvoicePage = () => {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<string>("updatedAt,desc");
   const [status, setStatus] = useState<string | undefined>(undefined);
-  const [paymentReason, setPaymentReason] = useState<string | undefined>(undefined);
+  // const [paymentReason, setPaymentReason] = useState<string | undefined>(undefined);
   const [searchColumn, setSearchColumn] = useState<string | undefined>("title");
   const navigate = useNavigate();
 
@@ -40,10 +39,10 @@ export const InvoicePage = () => {
     applicationGroup: null,
     groupId: "e0c7d6a4-7b5a-4f7f-9a7e-9e0a9e0a9e0a", // Dummy ID for all applications
     page,
-    searchValue: search,
+    searchValue: search === "" ? undefined : search,
     sort,
     status,
-    paymentReason,
+    // paymentReason,
     searchKey: searchColumn,
     filter: undefined,
     visibility: "all"
@@ -51,9 +50,9 @@ export const InvoicePage = () => {
 
   // reset filter
   const resetFilter = () => {
-    setSearch(undefined);
+    setSearch("");
     setStatus(undefined);
-    setPaymentReason(undefined);
+    // setPaymentReason(undefined);
     setSearchColumn("title");
   };
 
@@ -79,6 +78,7 @@ export const InvoicePage = () => {
             <input
               type="text"
               placeholder="Search"
+              value={search}
               className="input-normal w-[200px] lg:w-[300px]"
               onChange={(e) => setSearch(e.target.value)} // Update search query
             />
