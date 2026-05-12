@@ -36,6 +36,9 @@ import { deleteDocument } from "@/services/entities";
 import DocumentViewModal from "@/pages/complience/fragments/documentViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import RatingModal from "./RatingModal";
+import DocumentUpload from "@/pages/complience/fragments/uploadDocumentForm";
+import usePopup from "@/hooks/usePopup";
+import { RatingDisplay } from "./ratingDisplay";
 
 interface IProps {
     children?: React.ReactNode;
@@ -53,6 +56,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<ICompany | null>(null);
     const [selectedDocument, setSelectedDocument] = useState<ICompanyDocuments | null>(null);
+    const { showConfirmation, closePopup } = usePopup();
 
     // const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, _] = useState<string>("");
@@ -154,7 +158,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                 deteleMutation.mutate(payload.id);
                 refetch();
             },
-            onCancel: () => { },
+            onCancel: () => closePopup(),
         });
     };
 
@@ -204,86 +208,102 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
             }}
 
         >
-            <div className="w-full grid grid-cols-1 gap-10 py-6 px-4 md:px-8">
+            <div className="w-full grid grid-cols-1 gap-10 py-6 px-">
                 <section className="w-full space-y-6">
-                    <div className="border-b border-zinc-200 pb-4">
-                        <div className="my-2 flex gap-4 justify-between">
-                            <div className="flex items-center space-x-3">
-                                <div className="overflow-hidden p-0.5">
-                                    <img
-                                        src={user.companyLogoFilePath ? user.companyLogoFilePath : dummyLogo}
-                                        alt={user.companyName}
-                                        className="w-16 h-16 object-cover rounded-full border border-gray-300"
-                                    />
+                    <div className="bg-white rounded-2xl border border-zinc-100 p-6 ">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+
+                            {/* Left: Identity Section */}
+                            <div className="flex items-center gap-5">
+                                <div className="relative">
+                                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
+                                        <img
+                                            src={user.companyLogoFilePath || dummyLogo}
+                                            alt={user.companyName}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex flex-col">
-                                    <div className="flex flex-col md:flex-row items-center gap-x-2">
-                                        <span>
-                                            <h4 className="lg:text-lg font-medium me-2">{user?.companyName?.toUpperCase()}</h4>
-                                        </span> <IconCircleCheckFilled className="w-5 h-5 text-blue-500" /> |
+
+                                <div className="space-y-2">
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        <h4 className="text-xl font-bold text-zinc-800 tracking-tight">
+                                            {user?.companyName?.toUpperCase()}
+                                        </h4>
+                                        {
+                                            user.rating && user.rating.star >= 3 &&
+                                            // <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-sm">
+                                            <div className=" bg-white rounded-full p-1 shadow-sm">
+                                                <IconCircleCheckFilled className="w-6 h-6 text-blue-500" />
+                                            </div>
+                                        }
                                         <Chip
                                             label={`${daysLeft} days left`}
                                             size="sm"
                                             theme={daysLeft >= 2 ? "success" : "danger"}
-                                            variant="outline"
+                                            variant="pastel" // Use flat for a more modern look
                                         />
                                     </div>
-                                    <div className="flex flex-col items-start gap-x-2">
-                                        <div className="flex gap-1">
-                                            {[1, 2, 3, 4, 5].map((star) => {
-                                                // const isActive = star <= (hoverRating || rating);
 
-                                                return (
-                                                    <span
-                                                        key={star}
-                                                        // onClick={() => setRating(star)}
-                                                        // onMouseEnter={() => setHoverRating(star)}
-                                                        // onMouseLeave={() => setHoverRating(null)}
-                                                        className="cursor-pointer transition-transform hover:scale-110"
-                                                    >
-                                                        {true ? (
-                                                            <IconStarFilled className="w-5 h-5 text-yellow-500" />
-                                                        ) : (
-                                                            <IconStar className="w-5 h-5 text-gray-400" />
-                                                        )}
-                                                    </span>
-                                                );
-                                            })}
-                                        </div>
-                                        <h5 className="text-sm font-bold">{user?.account}</h5>
-                                    </div>
+                                    {/* New Rating Component */}
+                                    <RatingDisplay rating={user.rating} showReason />
+
+                                    <p className="text-xs font-mono text-zinc-500 bg-zinc-50 px-2 py-1 rounded inline-block">
+                                        ID: {user?.account}
+                                    </p>
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-3">
+
+                            {/* Right: Action Section */}
+                            <div className="flex flex-wrap items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-100">
                                 <WalletButton amount={user.walletAmount} />
 
-                                <button onClick={() => setOpenModal({ type: "rating", object: user })}>
-                                    <IconStars size={24} className="text-yellow-500" />
-                                </button>
-                                <button onClick={() => setOpenModal({ type: "whatsapp", object: null })}>
-                                    <IconBrandWhatsapp size={24} className="text-green-500" />
-                                </button>
-                                <button onClick={() => SendSingleSMS(user)}>
-                                    <IconMessage size={24} className="text-green-500" />
-                                </button>
+                                <div className="h-8 w-[1px] bg-zinc-200 mx-1 hidden sm:block" />
+
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setOpenModal({ type: "rating", object: user })}
+                                        className="p-2 hover:bg-amber-50 rounded-lg transition-colors group"
+                                    >
+                                        <IconStars size={22} className="text-amber-500 group-hover:scale-110 transition-transform" />
+                                    </button>
+                                    <button
+                                        onClick={() => setOpenModal({ type: "whatsapp", object: null })}
+                                        className="p-2 hover:bg-green-50 rounded-lg transition-colors group"
+                                    >
+                                        <IconBrandWhatsapp size={22} className="text-green-500 group-hover:scale-110 transition-transform" />
+                                    </button>
+                                    <button
+                                        onClick={() => SendSingleSMS(user)}
+                                        className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
+                                    >
+                                        <IconMessage size={22} className="text-blue-500 group-hover:scale-110 transition-transform" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* JCM edit button */}
-                    <div className="flex justify-end w-full">
-                        {
-                            ["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role as string) && // Show edit button only for supervisors and customer relationship managers
-                            <Button
-                                label={editDetails ? "Cancel Edit" : "Edit Details"}
-                                size="sm"
-                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
-                                theme="primary"
-                                onClick={() => setEditDetails(!editDetails)}
-                            />
-                        }
-                    </div>
+                    {/* Admin Controls Area */}
+                    <div className="flex justify-end items-center gap-3">
 
+
+                        <div className="flex flex-row items-end gap-x-2">
+                            {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "ADMINISTRATOR", "MANAGER"].includes(userData?.role!) && (
+                                <DocumentUpload company={user} onSuccess={refetch} />
+                            )}
+                            {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && (
+                                <Button
+                                    label={editDetails ? "Cancel" : "Edit Profile"}
+                                    size="sm"
+                                    icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                    theme={editDetails ? "danger" : "primary"}
+                                    onClick={() => setEditDetails(!editDetails)}
+                                    className="rounded-xl shadow-sm"
+                                />
+                            )}
+                        </div>
+                    </div>
                 </section>
             </div>
 
@@ -622,7 +642,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             </Tooltip>
                                             <Fragment>
                                                 {
-                                                    ["SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role as string) &&
+                                                    ["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role as string) &&
                                                     <Tooltip content={t("documents-delete-button-tooltip")}>
                                                         <button
                                                             className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
@@ -728,7 +748,4 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 };
 
 export default BidderProfileModal;
-function showConfirmation(arg0: { theme: string; title: string; message: string; onConfirm: () => void; onCancel: () => void; }) {
-    throw new Error("Function not implemented.");
-}
 
