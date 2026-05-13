@@ -139,7 +139,7 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                                     {tender?.selfApply && (
                                         <button type="button" onClick={() => setActiveTab("CLARIFICATION")} className={`flex items-center justify-center flex-row gap-x-2 uppercase w-full p-2 text-sm ${activeTab === "CLARIFICATION" ? "bg-green-600 text-white" : "text-gray-500"} `}>Clarifications <div className="text-white bg-red-600 rounded-full p-1 w-5 h-5 flex items-center justify-center">{tender?.clarificationCount ?? 0}</div></button>
                                     )}
-                                    {(userRole === "ADMINISTRATOR" || userRole === "MANAGER" || userRole === "PUBLISHER" || userRole === "ACCOUNTANT" || userRole === "SUPERVISOR") && (
+                                    {["ADMINISTRATOR", "MANAGER", "PUBLISHER", "ACCOUNTANT", "SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER"].includes(userRole) && (
                                         <button type="button" onClick={() => setActiveTab("ELIGIBLE")} className={` uppercase w-full p-2 text-sm ${activeTab === "ELIGIBLE" ? "bg-green-600 text-white" : "text-gray-500 bg-transparent"} `}>Eligible Bidders</button>
                                     )}
                                 </div>

@@ -48,6 +48,33 @@ const columns: IColumn[] = [
     },
   },
   {
+    name: "paymentReason",
+    label: "Payment Reason",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      return row.paymentReason;
+    },
+  },
+  {
+    name: "controlNumber",
+    label: "Control no.",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      return row.controlNumber;
+    },
+  },
+  {
+    name: "referenceNumber",
+    label: "Reference",
+    sortable: false,
+    plainObject: true,
+    element: (row: any) => {
+      return row.referenceNumber;
+    },
+  },
+  {
     name: "Fees",
     label: "Fees",
     sortable: false,

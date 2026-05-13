@@ -150,7 +150,7 @@ export default function ConfirmPasswordResetForm({ email, title }: IProps) {
                     label="Submit Code" 
                     theme="primary"
                     size="md" 
-                    loading={confirmResetMutation.isLoading} 
+                    loading={confirmResetMutation.isPending} 
                 />
             </form>
         </section>

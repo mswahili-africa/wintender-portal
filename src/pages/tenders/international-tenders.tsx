@@ -14,7 +14,7 @@ import TenderViewModal from "./fragments/tenderViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "../payments/fragments/PaymentModel";
+import PaymentModal from "../payments/transactions/fragments/PaymentModel";
 import { debounce } from "lodash";
 import { getEntities } from "@/services/entities";
 import Select from "react-select";
@@ -364,6 +364,7 @@ export default function InternationalTenders() {
                             currentPage={page}
                             setCurrentPage={setPage}
                             pageCount={getTenders.totalPages}
+                            totalElements={getTenders.totalElements}
                         />
                     }
                 </div>

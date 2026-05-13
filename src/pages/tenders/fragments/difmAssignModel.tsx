@@ -32,7 +32,6 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
     const [search, setSearch] = useState("");
 
     const {
-        register,
         handleSubmit,
         setValue,
         reset,
@@ -95,10 +94,10 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
                 {/* ✅ Assign Button */}
                 <Button
                     type="submit"
-                    label={assignBidderMutation.isLoading ? "Assigning..." : "Assign"}
+                    label={assignBidderMutation.isPending ? "Assigning..." : "Assign"}
                     theme="primary"
                     size="md"
-                    disabled={assignBidderMutation.isLoading}
+                    disabled={assignBidderMutation.isPending}
                 />
             </form>
         </Modal>
