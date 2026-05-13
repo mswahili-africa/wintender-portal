@@ -6,24 +6,23 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import useTenders from "@/hooks/useTenderBox";
 import usePopup from "@/hooks/usePopup";
-import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
+import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import Button from "@/components/button/Button";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "../payments/transactions/fragments/PaymentModel";
-import { debounce } from "lodash";
-import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import TenderViewModal from "./fragments/tenderViewModel";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { useDebounce } from "@/hooks/useDebounce";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
-import { useEntities, useSearchEntities } from "@/hooks/entitiesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
+import { useSearchEntities } from "@/hooks/entitiesRepository";
+import PricingModal from "../payments/subscription/fragments/PricingModel";
+import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -176,12 +175,14 @@ export default function PrivateTenders() {
                 )}
             </div>
 
-            {isPaymentModalOpen && (
-                <PaymentModal
-                    onClose={() => setIsPaymentModalOpen(false)}
-                />
+            {/* <PricingModal
+                open={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+            /> */}
 
-            )}
+            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+
+
 
             <div className="flex justify-between items-center border-b border-slate-200">
                 <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>

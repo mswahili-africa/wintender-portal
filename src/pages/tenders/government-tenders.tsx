@@ -13,7 +13,6 @@ import TenderViewModal from "./fragments/tenderViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "../payments/transactions/fragments/PaymentModel";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import { useTranslation } from "react-i18next";
@@ -23,6 +22,8 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useTendersGovernment } from "@/hooks/tendersRepository";
+import PricingModal from "../payments/subscription/fragments/PricingModel";
+import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
 
 export default function GovernmentTenders() {
     const [page, setPage] = useState<number>(0);
@@ -206,12 +207,13 @@ export default function GovernmentTenders() {
                 )}
             </div>
 
-            {isPaymentModalOpen && (
-                <PaymentModal
-                    onClose={() => setIsPaymentModalOpen(false)}
-                />
+            {/* <PricingModal
+                open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)}
+            /> */}
 
-            )}
+            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+
+
 
             <TenderEdit
                 open={openModal.type === "update"}

@@ -1,12 +1,12 @@
 import { IconTrash, IconEye, IconEdit, IconClockPlus, IconFilter, IconRefresh, IconSquareCheck, IconSquare } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import { useTendersInternational } from "@/hooks/tendersRepository";
 import usePopup from "@/hooks/usePopup";
-import { deleteTenders, getCategories, requestDoForMe } from "@/services/tenders";
+import { deleteTenders, requestDoForMe } from "@/services/tenders";
 import { ITenders } from "@/types";
 import columns from "./fragments/tenderColumns";
 import Button from "@/components/button/Button";
@@ -14,17 +14,16 @@ import TenderViewModal from "./fragments/tenderViewModel";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import TenderEdit from "./fragments/tenderEditForm";
 import { useNavigate } from "react-router-dom";
-import PaymentModal from "../payments/transactions/fragments/PaymentModel";
-import { debounce } from "lodash";
-import { getEntities } from "@/services/entities";
 import Select from "react-select";
 import useApiMutation from "@/hooks/useApiMutation";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import PETenderCreateFormModal from "./fragments/PETenderCreateFormModal";
-import {useSearchCategories} from "@/hooks/categoriesRepository";
+import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useDebounce } from "@/hooks/useDebounce";
+import PricingModal from "../payments/subscription/fragments/PricingModel";
+import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
 
 export default function InternationalTenders() {
     const [page, setPage] = useState<number>(0);
@@ -34,7 +33,6 @@ export default function InternationalTenders() {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
     const [isEligible, setIsEligible] = useState(false);
     const [tempKeyword, setTempKeyword] = useState("");
     const [tempSearchType, setTempSearchType] = useState("title");
@@ -199,11 +197,11 @@ export default function InternationalTenders() {
                 )}
             </div>
 
-            {isPaymentModalOpen && (
-                <PaymentModal
-                    onClose={() => setIsPaymentModalOpen(false)}
-                />
-            )}
+            {/* <PricingModal
+                open={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+            /> */}
+            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
 
             <TenderEdit
                 open={openModal.type === "update"}

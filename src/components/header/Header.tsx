@@ -15,13 +15,13 @@ import { authStore } from "@/store/auth";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import WalletPaymentModal from "@/pages/payments/transactions/fragments/WalletPaymentModel";
 import { useState } from "react";
-import PaymentModal from "@/pages/payments/transactions/fragments/PaymentModel";
 import { WalletButton } from "../button/WalletButton";
 import { useWhatsappContacts } from "@/hooks/notificationRepository";
 import { ConversationModal } from "@/pages/messages/fragments/ConversationModal";
 import Tooltip from "../tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import SubscriptionPaymentModal from "@/pages/payments/subscription/fragments/SubscriptionPaymentModal";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
@@ -346,12 +346,7 @@ const Header = () => {
                         throw new Error("Function not implemented.");
                     }} />
 
-                {isPaymentModalOpen && (
-                    <PaymentModal
-                        onClose={() => setIsPaymentModalOpen(false)}
-                    />
-
-                )}
+                <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
 
                 {/* Message modal */}
                 <ConversationModal
