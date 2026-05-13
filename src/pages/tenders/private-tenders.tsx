@@ -23,6 +23,7 @@ import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useTendersPrivate } from "@/hooks/tendersRepository";
 import PricingModal from "../payments/subscription/fragments/PricingModel";
+import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -191,11 +192,12 @@ export default function PrivateTenders() {
                 </div>
             </div>
 
-            <PricingModal
+            {/* <PricingModal
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
-            />
+            /> */}
 
+            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
 
             <TenderEdit
                 open={openModal.type === "update"}

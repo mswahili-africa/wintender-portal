@@ -22,6 +22,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import PricingModal from "../payments/subscription/fragments/PricingModel";
+import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -174,10 +175,13 @@ export default function PrivateTenders() {
                 )}
             </div>
 
-            <PricingModal
+            {/* <PricingModal
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
-            />
+            /> */}
+
+            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+
 
 
             <div className="flex justify-between items-center border-b border-slate-200">

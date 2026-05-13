@@ -23,6 +23,7 @@ import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useDebounce } from "@/hooks/useDebounce";
 import PricingModal from "../payments/subscription/fragments/PricingModel";
+import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
 
 export default function InternationalTenders() {
     const [page, setPage] = useState<number>(0);
@@ -196,10 +197,11 @@ export default function InternationalTenders() {
                 )}
             </div>
 
-            <PricingModal
+            {/* <PricingModal
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
-            />
+            /> */}
+            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
 
             <TenderEdit
                 open={openModal.type === "update"}
