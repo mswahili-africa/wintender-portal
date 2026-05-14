@@ -25,8 +25,8 @@ export default function({groupId,...props}: IProps,options?: { enabled?: boolean
         queryFn: () => getDoForMeApplication(groupId ,{page: props.page, size: 10, sort: props.sort,visibility:props.visibility, searchValue: props.searchValue, status: props.status, paymentReason: props.paymentReason, searchKey: props.searchKey, ...props.filter}),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,
-        staleTime: 5 * 60 * 1000,
-        cacheTime: 10 * 60 * 1000,
+        // staleTime: 5 * 60 * 1000,
+        // cacheTime: 10 * 60 * 1000,
         enabled: options && options?.enabled ? true : props.searchValue !== undefined  ? props.searchValue.length >= 3 : true
     });
 
