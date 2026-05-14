@@ -3,7 +3,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
 import { BusinessType, IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStar, IconStarFilled, IconStars, IconCircleCheckFilled } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStar, IconStarFilled, IconStars, IconCircleCheckFilled, IconPlus, IconFolderPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -39,6 +39,7 @@ import RatingModal from "./RatingModal";
 import DocumentUpload from "@/pages/complience/fragments/uploadDocumentForm";
 import usePopup from "@/hooks/usePopup";
 import { RatingDisplay } from "./ratingDisplay";
+import DocumentUploadModal from "@/pages/complience/fragments/uploadDocumentForm";
 
 interface IProps {
     children?: React.ReactNode;
@@ -60,7 +61,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
     // const [isSending, setIsSending] = useState<boolean>(false); // Loading state
     const [message, _] = useState<string>("");
-    const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | "rating" | null, object: any }>({ type: null, object: null });
+    const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | "rating" | "documents" | null, object: any }>({ type: null, object: null });
 
     const [activeTab, setActiveTab] = useState<"requests" | "payments" | "eligible" | "documents">("requests");
 
@@ -130,7 +131,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
 
     // documents
-    const { documents, isLoading: documentLoading, refetch } = useCompanyDocuments({
+    const { documents, isLoading: documentLoading, refetch: refetchDocuments } = useCompanyDocuments({
         page: page,
         // search: search,
         sort: sort,
@@ -141,7 +142,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         mutationFn: (documentId: string) => deleteDocument(documentId),
         onSuccess: (res) => {
             toast.success("Deleted successful");
-            refetch();
+            refetchDocuments();
         },
         onError: (error: any) => {
             toast.error("Delete failed");
@@ -156,7 +157,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                 "This action cannot be undone. Please verify that you want to delete.",
             onConfirm: () => {
                 deteleMutation.mutate(payload.id);
-                refetch();
+                refetchDocuments();
             },
             onCancel: () => closePopup(),
         });
@@ -210,11 +211,11 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         >
             <div className="w-full grid grid-cols-1 gap-10 py-6 px-">
                 <section className="w-full space-y-6">
-                    <div className="bg-white rounded-2xl border border-zinc-100 p-6 ">
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="bg-white rounded-2xl border-b border-zinc-100 p-2 ">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-y-6 gap-x-2 ">
 
                             {/* Left: Identity Section */}
-                            <div className="flex items-center gap-5">
+                            <div className="flex flex-col sm:flex-row items-center gap-5">
                                 <div className="relative">
                                     <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
                                         <img
@@ -227,7 +228,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                                 <div className="space-y-2">
                                     <div className="flex flex-wrap items-center gap-3">
-                                        <h4 className="text-xl font-bold text-zinc-800 tracking-tight">
+                                        <h4 className="text-lg font-bold text-zinc-800 tracking-tight">
                                             {user?.companyName?.toUpperCase()}
                                         </h4>
                                         {
@@ -255,55 +256,67 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                             </div>
 
                             {/* Right: Action Section */}
-                            <div className="flex flex-wrap items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-100">
-                                <WalletButton amount={user.walletAmount} />
+                            <div className="flex flex-col gap-y-2">
+                                <div className="flex flex-row items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                                    <WalletButton amount={user.walletAmount} />
 
-                                <div className="h-8 w-[1px] bg-zinc-200 mx-1 hidden sm:block" />
+                                    <div className="h-8 w-[1px] bg-zinc-200 mx-1 hidden sm:block" />
 
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => setOpenModal({ type: "rating", object: user })}
-                                        className="p-2 hover:bg-amber-50 rounded-lg transition-colors group"
-                                    >
-                                        <IconStars size={22} className="text-amber-500 group-hover:scale-110 transition-transform" />
-                                    </button>
-                                    <button
-                                        onClick={() => setOpenModal({ type: "whatsapp", object: null })}
-                                        className="p-2 hover:bg-green-50 rounded-lg transition-colors group"
-                                    >
-                                        <IconBrandWhatsapp size={22} className="text-green-500 group-hover:scale-110 transition-transform" />
-                                    </button>
-                                    <button
-                                        onClick={() => SendSingleSMS(user)}
-                                        className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
-                                    >
-                                        <IconMessage size={22} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                                    </button>
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => setOpenModal({ type: "rating", object: user })}
+                                            className="p-2 hover:bg-amber-50 rounded-lg transition-colors group"
+                                        >
+                                            <IconStars size={22} className="text-amber-500 group-hover:scale-110 transition-transform" />
+                                        </button>
+                                        <button
+                                            onClick={() => setOpenModal({ type: "whatsapp", object: null })}
+                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors group"
+                                        >
+                                            <IconBrandWhatsapp size={22} className="text-green-500 group-hover:scale-110 transition-transform" />
+                                        </button>
+                                        <button
+                                            onClick={() => SendSingleSMS(user)}
+                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
+                                        >
+                                            <IconMessage size={22} className="text-blue-500 group-hover:scale-110 transition-transform" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Admin Controls Area */}
+                                <div className="flex justify-end items-center gap-3">
+
+
+                                    <div className="flex flex-row items-end">
+                                        {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "ADMINISTRATOR", "MANAGER"].includes(userData?.role!) && (
+                                            <Button
+                                                label={"Add Document"}
+                                                size="sm"
+                                                variant="text"
+                                                icon={<IconFolderPlus size={16} />}
+                                                theme={"info"}
+                                                onClick={() => setOpenModal({ type: "documents", object: user })}
+                                            />
+                                        )}
+
+                                        <div className="h-6 w-[1px] bg-zinc-200 mx-1" />
+                                        {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && (
+                                            <Button
+                                                label={editDetails ? "Cancel" : "Edit Profile"}
+                                                size="sm"
+                                                variant="text"
+                                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                                theme={editDetails ? "danger" : "primary"}
+                                                onClick={() => setEditDetails(!editDetails)}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Admin Controls Area */}
-                    <div className="flex justify-end items-center gap-3">
-
-
-                        <div className="flex flex-row items-end gap-x-2">
-                            {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "ADMINISTRATOR", "MANAGER"].includes(userData?.role!) && (
-                                <DocumentUpload company={user} onSuccess={refetch} />
-                            )}
-                            {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && (
-                                <Button
-                                    label={editDetails ? "Cancel" : "Edit Profile"}
-                                    size="sm"
-                                    icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
-                                    theme={editDetails ? "danger" : "primary"}
-                                    onClick={() => setEditDetails(!editDetails)}
-                                    className="rounded-xl shadow-sm"
-                                />
-                            )}
-                        </div>
-                    </div>
                 </section>
             </div>
 
@@ -315,7 +328,9 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             {/* Left Column - User, Shop, and Status Info */}
                             <div className="space-y-4">
-                                <strong>Contact Person</strong>
+                                <div className="border-b w-fit">
+                                    <strong>Contact Person</strong>
+                                </div>
                                 <p><strong>Person:</strong> {user.name}</p>
                                 <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
                                 <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>
@@ -324,7 +339,9 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                             {/* Right Column - Location Info */}
                             <div className="space-y-4">
-                                <strong>Company</strong>
+                                <div className="border-b w-fit">
+                                    <strong>Company</strong>
+                                </div>
                                 {user.businessType && <p><strong>Business Type:</strong> {BusinessType[user.businessType as keyof typeof BusinessType]} </p>}
                                 {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
                                 {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
@@ -720,6 +737,15 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                 setSelectedUser={setSelectedUser}
                 title={"Send message"}
             />
+
+            {/* Document upload modal */}
+            <DocumentUploadModal
+                company={openModal.object}
+                refetch={refetchDocuments}
+                open={openModal.type === "documents"}
+                onClose={handleCloseModal}
+            />
+
 
 
             {

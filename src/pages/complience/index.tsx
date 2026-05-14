@@ -16,6 +16,7 @@ import DocumentViewModal from "./fragments/documentViewModel";
 import Button from "@/components/button/Button";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import DocumentUploadModal from "./fragments/uploadDocumentForm";
 
 export default function CompanyDocuments() {
 
@@ -30,6 +31,12 @@ export default function CompanyDocuments() {
   const { showConfirmation } = usePopup();
   const [selectedDocument, setSelectedDocument] = useState<ICompanyDocuments | null>(null);
   const { t } = useTranslation();
+  const [handleModal, setHandleModal] = useState<{ type: "view" | "upload" | null, object: any }>({ type: null, object: null });
+
+  const handleCloseModal = () => {
+    setSelectedDocument(null);
+    setHandleModal({ type: null, object: null });
+  }
 
   const { documents, isLoading, refetch } = useCompanyDocuments({
     page: page,
@@ -70,17 +77,14 @@ export default function CompanyDocuments() {
 
   const handleView = (content: ICompanyDocuments) => {
     setSelectedDocument(content);
-  }
+    setHandleModal({ type: "view", object: content });
+  };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-lg font-semibold">{t("documents-header")}</h2>
-        <DocumentUpload
-          onSuccess={() => {
-            refetch();
-          }}
-        />
+        <Button label={t("documents-upload-button")} size="sm" onClick={() => setHandleModal({ type: "upload", object: null })} theme="primary" />
       </div>
 
       <div className="border border-slate-200 bg-white rounded-md overflow-hidden">
@@ -142,7 +146,7 @@ export default function CompanyDocuments() {
       {selectedDocument && (
         <DocumentViewModal
           documentType={selectedDocument.documentType}
-          onClose={() => setSelectedDocument(null)}
+          onClose={handleCloseModal}
         >
           <div className="space-y-4">
             {/* Tender Header */}
@@ -168,6 +172,13 @@ export default function CompanyDocuments() {
           </div>
         </DocumentViewModal>
       )}
+
+      <DocumentUploadModal
+        open={handleModal?.type === "upload"}
+        initials={handleModal?.object}
+        onClose={handleCloseModal}
+        refetch={refetch}
+        />
 
     </div>
   );

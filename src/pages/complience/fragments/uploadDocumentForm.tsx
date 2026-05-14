@@ -16,8 +16,10 @@ import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 
 interface IProps {
+    open: boolean;
+    onClose: () => void;
     company?: ICompany
-    onSuccess: () => void;
+    refetch: () => void;
     initials?: ICompanyDocuments;
 }
 
@@ -27,8 +29,7 @@ const schema = object().shape({
     documentNumber: string().required("Document number is required"),
 });
 
-export default function DocumentUpload({ onSuccess, company }: IProps) {
-    const [open, setOpen] = useState<boolean>(false);
+export default function DocumentUploadModal({ refetch, company, open, onClose }: IProps) {
     const [documentFile, setDocumentFile] = useState<string | any>();
     const { t } = useTranslation();
     const {
@@ -53,9 +54,9 @@ export default function DocumentUpload({ onSuccess, company }: IProps) {
         onSuccess: () => {
             reset();
             setDocumentFile(undefined);
-            setOpen(false);
+            onClose();
             toast.success("Document uploaded successfully");
-            onSuccess();
+            refetch();
         },
         onError: (error: any) => {
             toast.error("Failed to Document firmware " + error);
@@ -75,22 +76,22 @@ export default function DocumentUpload({ onSuccess, company }: IProps) {
     };
 
     return (
-        <div className="max-w-max">
-            <Tooltip content={t("documents-upload-button-tooltip")}>
-                <Button
-                    type="button"
-                    label={t("documents-upload-button")}
-                    icon={<IconPlus size={18} />}
-                    theme="primary"
-                    size="md"
-                    onClick={() => setOpen(true)}
-                />
-            </Tooltip>
+        // <div className="max-w-max">
+            // {/* <Tooltip content={t("documents-upload-button-tooltip")}>
+            //     <Button
+            //         type="button"
+            //         label={t("documents-upload-button")}
+            //         icon={<IconPlus size={18} />}
+            //         theme="primary"
+            //         size="md"
+            //         onClick={() => setOpen(true)}
+            //     />
+            // </Tooltip> */}
             <Modal
                 size="sm"
                 title="Upload Document"
                 isOpen={open}
-                onClose={(v) => setOpen(v)}
+                onClose={onClose}
             >
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
                     {
@@ -217,6 +218,6 @@ export default function DocumentUpload({ onSuccess, company }: IProps) {
                     />
                 </form>
             </Modal>
-        </div>
+        // </div>
     );
 }
