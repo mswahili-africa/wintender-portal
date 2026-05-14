@@ -120,14 +120,19 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
         filter: { ...Object.fromEntries(searchParams) }, // Pass filter here
     });
 
-    const { applicationList, isLoading: requestLoading } = useApplicationsList({
-        applicationGroup: "user-" + user.id,
-        groupId: "user-" + user.id,
-        page,
-        searchValue: search,
-        sort,
-        filter: undefined,
-    });
+    const { applicationList, isLoading: requestLoading } = useApplicationsList(
+        {
+            applicationGroup: "user-" + user.id,
+            groupId: "user-" + user.id,
+            page,
+            searchValue: search,
+            sort,
+            filter: undefined,
+        },
+        {
+            enabled: activeTab === "requests" // Only fetch when the requests tab is active
+        }
+    );
 
 
     // documents
@@ -300,16 +305,18 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                             />
                                         )}
 
-                                        <div className="h-6 w-[1px] bg-zinc-200 mx-1" />
                                         {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && (
-                                            <Button
-                                                label={editDetails ? "Cancel" : "Edit Profile"}
-                                                size="sm"
-                                                variant="text"
-                                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
-                                                theme={editDetails ? "danger" : "primary"}
-                                                onClick={() => setEditDetails(!editDetails)}
-                                            />
+                                            <>
+                                                <div className="h-6 w-[1px] bg-zinc-200 mx-1" />
+                                                <Button
+                                                    label={editDetails ? "Cancel" : "Edit Profile"}
+                                                    size="sm"
+                                                    variant="text"
+                                                    icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                                    theme={editDetails ? "danger" : "primary"}
+                                                    onClick={() => setEditDetails(!editDetails)}
+                                                />
+                                            </>
                                         )}
                                     </div>
                                 </div>
