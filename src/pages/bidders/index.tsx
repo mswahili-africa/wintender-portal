@@ -548,7 +548,7 @@ export default function Bidders() {
                 <GeneralSMSModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    title={""}
+                    title={"Send message"}
                 />
 
                 <PrivateTenderRequestModal
