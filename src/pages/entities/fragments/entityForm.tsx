@@ -247,19 +247,22 @@ export default function ({ ...props }: IProps) {
               className="label block py-10 bg-slate-50 border border-dashed border-slate-200 rounded-md cursor-pointer"
             >
               <div className="text-slate-500 text-xs text-center font-light">
-                <IconFileText
-                  size={32}
-                  strokeWidth={1.5}
-                  className="mx-auto mb-4"
-                />
                 {watch("logoFile") ? (
+                  <>
+                  <img src={URL.createObjectURL(watch("logoFile"))} alt="logo" className="w-20 mx-auto mb-4" width={32} height={32} />
                   <div>{watch("logoFile").name}</div>
+                  </>
                 ) : (
                   <Fragment>
+                    <IconFileText
+                      size={32}
+                      strokeWidth={1.5}
+                      className="mx-auto mb-4"
+                    />
                     <p>Add Entity LOGO .jpg file here</p>
-                    <p className="text-blue-500 font-medium">Click to browse</p>
                   </Fragment>
                 )}
+                <p className="text-blue-500 font-medium">Click to browse</p>
               </div>
               <input
                 type="file"
