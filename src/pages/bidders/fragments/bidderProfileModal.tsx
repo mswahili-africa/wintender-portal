@@ -293,7 +293,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
 
                                     <div className="flex flex-row items-end">
-                                        {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "ADMINISTRATOR", "MANAGER"].includes(userData?.role!) && (
+                                        {/* {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "ADMINISTRATOR", "MANAGER"].includes(userData?.role!) && ( */}
                                             <Button
                                                 label={"Add Document"}
                                                 size="sm"
@@ -302,9 +302,9 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                                 theme={"info"}
                                                 onClick={() => setOpenModal({ type: "documents", object: user })}
                                             />
-                                        )}
+                                        {/* )} */}
 
-                                        {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && (
+                                        {/* {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && ( */}
                                             <>
                                                 <div className="h-6 w-[1px] bg-zinc-200 mx-1" />
                                                 <Button
@@ -316,7 +316,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                                                     onClick={() => setEditDetails(!editDetails)}
                                                 />
                                             </>
-                                        )}
+                                        {/* )} */}
                                     </div>
                                 </div>
                             </div>
@@ -740,7 +740,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 selectedUser={selectedUser}
-                setSelectedUser={setSelectedUser}
                 title={"Send message"}
             />
 
