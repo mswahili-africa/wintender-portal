@@ -187,7 +187,6 @@ export default function Login() {
 
             {/* Registration Modal */}
             <RegistrationModel
-                onSuccess={() => setCreate(false)}
                 initials={null}
                 isOpen={create}
                 onClose={() => setCreate(false)}

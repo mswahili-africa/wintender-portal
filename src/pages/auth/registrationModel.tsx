@@ -20,14 +20,13 @@ import 'react-phone-number-input/style.css'
 import { AxiosError } from "axios";
 
 interface IProps {
-    onSuccess: () => void;
     initials?: any;
     isOpen: boolean;
     onClose: () => void;
     openDocuments?: () => void;
 }
 
-export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocuments }: IProps) {
+export default function RegistrationModel({ isOpen, onClose, openDocuments }: IProps) {
     const tanzaniaRegions = [
         "Arusha",
         "Dar es Salaam",
@@ -186,7 +185,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
             });
             setTimeout(() => { closePopup(); reset(); }, 10000)
 
-            onSuccess();
         },
         onError: (error: AxiosError<{ message: string }>) => {
             toast.error(error?.response?.data?.message || "Registration failed");
@@ -289,18 +287,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                             setValue("lastName", clean, { shouldValidate: true });
                         }}
                     />
-                    {/* <TextInput
-                        type="text"
-                        label={t("registration-form-phone")}
-                        placeholder="e.g., 0710101010"
-                        hasError={!!errors.phoneNumber}
-                        error={errors.phoneNumber?.message}
-                        register={register("phoneNumber")}
-                        onChange={(e) => {
-                            const clean = e.target.value.replace(/\D/g, ""); // only numbers
-                            setValue("phoneNumber", clean, { shouldValidate: true });
-                        }}
-                    /> */}
 
                     {/* international phone input */}
                     <div className="flex flex-col gap-y-1">
@@ -334,15 +320,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                             <p className="text-red-500 text-sm mt-1">{errors.confirmPhoneNumber.message}</p>
                         )}
                     </div>
-
-                    {/* <TextInput
-                        type="text"
-                        label={t("registration-form-confirm-phone")}
-                        placeholder="e.g., 0710101010"
-                        hasError={!!errors.confirmPhoneNumber}
-                        error={errors.confirmPhoneNumber?.message}
-                        register={register("confirmPhoneNumber")}
-                    /> */}
                 </div>
                 <span>{t("registration-form-company-info")}</span>
                 <hr></hr>
@@ -382,14 +359,6 @@ export default function RegistrationModel({ onSuccess, isOpen, onClose, openDocu
                             setValue("tin", formatted); // update the field with formatted value
                         }}
                     />
-                    {/* <TextInput
-                        type="text"
-                        label={t("registration-form-phone")}
-                        placeholder="e.g., 0710000000"
-                        hasError={!!errors.companyPhoneNumber}
-                        error={errors.companyPhoneNumber?.message}
-                        register={register("companyPhoneNumber")}
-                    /> */}
                     <div className="flex flex-col gap-y-1">
                         <label className="text-sm font-semibold text-gray-500">{t("registration-form-phone")}</label>
                         <PhoneInput
