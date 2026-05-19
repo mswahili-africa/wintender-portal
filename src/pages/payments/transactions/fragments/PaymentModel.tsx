@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Puff } from "react-loader-spinner";
 import { paymentOptions } from "@/types/statuses";
 import { Trans, useTranslation } from "react-i18next";
-import { AlternativePaymentSection } from "./AlternativePaymentSection";
+import { AlternativePaymentSection } from "../../fragments/AlternativePaymentSection";
 import { useUserDataContext } from "@/providers/userDataProvider";
 
 export default function PaymentModal({ onClose, }: { onClose: () => void; }) {

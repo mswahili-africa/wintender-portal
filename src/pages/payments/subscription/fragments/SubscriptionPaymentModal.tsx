@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Puff } from "react-loader-spinner";
 import { paymentOptions } from "@/types/statuses";
 import { Trans, useTranslation } from "react-i18next";
-import { AlternativePaymentSection } from "../../transactions/fragments/AlternativePaymentSection";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import { AlternativePaymentSection } from "../../fragments/AlternativePaymentSection";
 
 export default function SubscriptionPaymentModal({ open,onClose }: { open: boolean; onClose: () => void; }) {
     const [warningMessage, setWarningMessage] = useState("");

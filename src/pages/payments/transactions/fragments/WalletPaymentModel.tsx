@@ -9,8 +9,8 @@ import { set } from "lodash";
 import { IconX } from "@tabler/icons-react";
 import { paymentOptions } from "@/types/statuses";
 import { Trans, useTranslation } from "react-i18next";
-import { AlternativePaymentSection } from "./AlternativePaymentSection";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import { AlternativePaymentSection } from "../../fragments/AlternativePaymentSection";
 
 export default function WalletPaymentModal({
     isOpen,
