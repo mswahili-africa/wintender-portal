@@ -12,11 +12,10 @@ interface ModalProps {
     onClose: () => void;
     title: string;
     selectedUser?: ICompany | null;
-    setSelectedUser?: (user: ICompany | null) => void;
     bulkSendGroup?: string;
 }
 
-export default function GeneralSMSModal({ isOpen, onClose, title, selectedUser, bulkSendGroup, setSelectedUser }: ModalProps) {
+export default function GeneralSMSModal({ isOpen, onClose, title, selectedUser, bulkSendGroup }: ModalProps) {
     if (!isOpen) return null;
 
     const [message, setMessage] = useState<string>("");
@@ -45,7 +44,6 @@ export default function GeneralSMSModal({ isOpen, onClose, title, selectedUser, 
             setMediaType('');
             setMedia('');
             setNumberOfRecipient('');
-            setSelectedUser && setSelectedUser(null);
             onClose();
 
         },

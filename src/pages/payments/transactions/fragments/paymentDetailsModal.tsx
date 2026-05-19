@@ -15,8 +15,8 @@ import { getUserPayments } from "@/hooks/usePayments";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import Chip from "@/components/chip/Chip";
 import paymentListColumns from "./paymentListColumns";
-import SMSModal from "@/pages/bidders/fragments/sms-model";
 import { useTranslation } from "react-i18next";
+import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 
 interface IProps {
     children?: React.ReactNode;
@@ -37,7 +37,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
     const [message, setMessage] = useState<string>("");
     const [isPaymentsView, setIsPaymentsView] = useState(true);
 
-    const {t}=useTranslation();
+    const { t } = useTranslation();
 
     const [searchParams, _] = useSearchParams();
 
@@ -128,7 +128,7 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                     <p><strong>{t("transaction-modal-reference-no")}:</strong> {payment?.transactionReference}</p>
                                     <p><strong>{t("transaction-modal-amount")}:</strong> {payment?.amount}</p>
                                     <div className="flex flex-row me-4 gap-x-2">
-                                    <strong>{t("transaction-modal-status")}:</strong>
+                                        <strong>{t("transaction-modal-status")}:</strong>
                                         <Chip
                                             label={payment?.status}
                                             size="sm"
@@ -224,65 +224,13 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
 
                     </div>
                 </div >
-                {isModalOpen && (
-                    <SMSModal
-                        isOpen={isModalOpen}
-                        onClose={() => !isSending && setIsModalOpen(false)}
-                        title={selectedUser ? `Send SMS to ${selectedUser.name}` : "Send Bulk SMS"}
-                    >
-                        {!selectedUser && (
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                <textarea
-                                    className="input-normal w-full mb-4"
-                                    rows={4}
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    placeholder="Type your message here"
-                                    maxLength={160} // Limit to 160 characters
-                                />
-                                <p className="text-sm text-gray-500">
-                                    {message.length}/160 characters
-                                </p>
-                            </div>
-                        )}
-                        {selectedUser && (
-                            <>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
-                                    <input
-                                        type="text"
-                                        className="input-normal w-full mb-4"
-                                        value={selectedUser.name + ' - ' + selectedUser.phoneNumber}
-                                        readOnly
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                    <textarea
-                                        id="message"
-                                        className="input-normal w-full mb-4"
-                                        rows={4}
-                                        value={message}
-                                        onChange={(e) => setMessage(e.target.value)}
-                                        placeholder="Type your message here"
-                                        maxLength={160} // Limit to 160 characters
-                                    />
-                                    <p className="text-sm text-gray-500">
-                                        {message.length}/160 characters
-                                    </p>
-                                </div>
-                            </>
-                        )}
-                        <button
-                            className={`bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500 w-full ${isSending ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            onClick={handleSendSMS}
-                            disabled={isSending}
-                        >
-                            {isSending ? "Sending..." : "Send"}
-                        </button>
-                    </SMSModal>
-                )}
+
+                <GeneralSMSModal
+                    isOpen={isModalOpen}
+                    onClose={() => !isSending && setIsModalOpen(false)}
+                    title={selectedUser ? `Send SMS to ${selectedUser.name}` : "Send Bulk SMS"}
+                    selectedUser={selectedUser}
+                />
             </Modal >
         </>
     );

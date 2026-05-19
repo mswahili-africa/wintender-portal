@@ -4,13 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 import {useBidders} from "@/hooks/biddersRepository";
 import Pagination from "@/components/widgets/table/Pagination";
 import BidderProfileModal from "@/pages/bidders/fragments/bidderProfileModal";
-import SMSModal from "@/pages/bidders/fragments/sms-model";
 import { sendMessageSingle } from "@/services/commons";
 import { IMessage } from "@/types/forms";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import Spinner from "@/components/spinners/Spinner";
+import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 
 type EligibleBiddersProps = {
     tender: ITenders;
@@ -255,8 +255,7 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
             </div>
 
             {/* SMS Modal */}
-            {isModalOpen && (
-                <SMSModal
+            <GeneralSMSModal
                     isOpen={isModalOpen}
                     onClose={() => !isSending && setIsModalOpen(false)}
                     title={
@@ -264,32 +263,8 @@ export const EligibleBidders = ({ tender }: EligibleBiddersProps) => {
                             ? `Send SMS to ${selectedUser.companyName}`
                             : "Send Bulk SMS"
                     }
-                >
-                    <div>
-                        <label className="block text-sm font-medium text-gray-200 mb-1">
-                            Message
-                        </label>
-                        <textarea
-                            className="w-full bg-transparent border border-gray-400 rounded p-2 text-gray-100 mb-3"
-                            rows={4}
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type your message here"
-                            maxLength={160}
-                        />
-                        <p className="text-xs text-gray-400">{message.length}/160</p>
-                    </div>
-
-                    <button
-                        className={`bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500 w-full ${isSending ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                        onClick={handleSendSMS}
-                        disabled={isSending}
-                    >
-                        {isSending ? "Sending..." : "Send"}
-                    </button>
-                </SMSModal>
-            )}
+                    selectedUser={selectedUser}
+             />
         </div>
     );
 };
