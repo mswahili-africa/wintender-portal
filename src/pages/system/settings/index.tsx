@@ -70,9 +70,9 @@ export default function Settings() {
             </div>
 
             <Tabs panels={["General", "SMS", "Payment", "Backup & Reports"]}>
-                <GeneralSettings control={control} />
-                <SMSSettings control={control} />
-                <PaymentSettings control={control} />
+                <GeneralSettings control={control as any} />
+                <SMSSettings control={control as any} />
+                <PaymentSettings control={control as any} />
                 <BackupSettings />
             </Tabs>
 

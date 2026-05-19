@@ -1,5 +1,5 @@
 
-import { Control, Controller, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormStateReturn } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { SettingItem } from "./fragments/SettingItem";
 type TProps = {
   control: Control<any>;

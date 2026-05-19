@@ -273,7 +273,7 @@ export default function PrivateTenderRequestModal({
                         </label>
 
 
-                        <TextEditor control={control} name="summary" />
+                        <TextEditor control={control as any} name="summary" />
 
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
                             {errors.summary?.message?.toString()}
