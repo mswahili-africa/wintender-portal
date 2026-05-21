@@ -15,7 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/spinners/Spinner";
 import { useCategories } from "@/hooks/categoriesRepository";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import PhoneInput from "react-phone-number-input";
+import PhoneInput, {parsePhoneNumber} from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
 
 // JCM props interface
@@ -212,6 +212,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
     }, [user, categories]);
 
 
+    // phone number parser
+    const userPreloadedCountry = user?.phoneNumber ? parsePhoneNumber(user.phoneNumber)?.country : undefined;
+    const companyPreloadedCountry = user?.companyPrimaryNumber ? parsePhoneNumber(user.companyPrimaryNumber)?.country : undefined;
+
+
     return (
         <div className="container mx-auto p-4">
             <Tabs panels={!accountOwner() ? ["User Info", "Company Info"] : ["User Info", "Company Info", "Password"]}>
@@ -264,7 +269,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                     <label className="text-sm font-semibold text-gray-500">Phone Number</label>
                                     <PhoneInput
                                         value={user.phoneNumber}
-                                        defaultCountry={"TZ"}
+                                        country={userPreloadedCountry ||"TZ"}
                                         international={true}
                                         className="custom-phone-input"
                                         placeholder="e.g., 710101010"
@@ -342,7 +347,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                     <label className="text-sm font-semibold text-gray-500">Primary Number</label>
                                     <PhoneInput
                                         value={user.companyPrimaryNumber}
-                                        defaultCountry={"TZ"}
+                                        country={companyPreloadedCountry || "TZ"}
                                         international={true}
                                         className="custom-phone-input"
                                         placeholder="e.g., 710101010"

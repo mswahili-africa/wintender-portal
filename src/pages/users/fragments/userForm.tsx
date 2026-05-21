@@ -14,6 +14,9 @@ import { IlistResponse, IRole, IUser } from "@/types";
 import { IRegisterForm } from "@/types/forms";
 import TextInput from "@/components/widgets/forms/TextInput";
 import { useUserDataContext } from "@/providers/userDataProvider";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
+
 interface IProps {
   onSuccess: () => void;
   initials?: IUser | null;
@@ -47,6 +50,8 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -114,6 +119,9 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
     }
   }, [initials]);
 
+  // phone number parser
+  const preloadedPhoneCountry = initials?.phoneNumber ? parsePhoneNumber(initials.phoneNumber)?.country : '';
+
   return (
     <div className="max-w-max">
       <Button
@@ -153,7 +161,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
               error={errors.lastName?.message}
               register={register("lastName")}
             />
-            <TextInput
+            {/* <TextInput
               type="text"
               label="Phone number"
               placeholder="e.g., 0710101010"
@@ -161,7 +169,20 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
               error={errors.phoneNumber?.message}
               register={register("phoneNumber")}
               disabled={!!initials}
-            />
+            /> */}
+            <div className="flex flex-col">
+              <label htmlFor="">Phone number</label>
+              <PhoneInput
+                value={getValues("phoneNumber")}
+                defaultCountry={"TZ"}
+                international={true}
+                className="custom-phone-input"
+                placeholder="e.g., 710101010"
+                name="phoneNumber"
+                onChange={(value: any) => setValue("phoneNumber", value)}
+
+              />
+            </div>
             <TextInput
               type="email"
               label="Email"
@@ -208,7 +229,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
                   })
                   .map((item: IRole) => (
                     <option key={item.id} value={item.id}>
-                       {item.role.replace("_", " ")}
+                      {item.role.replace("_", " ")}
                     </option>
                   ))}
               </select>
