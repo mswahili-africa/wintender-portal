@@ -1,5 +1,6 @@
 import http from "@/http";
-import { ICompany, IQueryParams, IUser, IlistResponse} from "@/types";
+import { ICompany, IPEPerson, IQueryParams, IUser, IlistResponse} from "@/types";
+import { IPePersonForm } from "@/types/forms";
 
 
 export async function getUsers(params: IQueryParams) {
@@ -32,6 +33,24 @@ export async function getPEUsers(params: IQueryParams) {
     })
 
     return response.data
+}
+
+export async function getPEPersons(params: IQueryParams) {
+    const response = await http.get<IlistResponse<IPEPerson>>("entities/persons", {
+        params: params
+    })
+
+    return response.data
+}
+
+export async function signupPerson(payload: FormData) {
+    const response = await http.post<any>("entities/persons", payload)
+}
+export async function updatePePerson(payload: FormData, userId: string) {
+    const response = await http.put<any>(`entities/persons/${userId}`, payload)
+}
+export async function deletePePerson(userId: string) {
+    const response = await http.delete<any>(`entities/persons/${userId}`)
 }
 
 export async function getUserById(id: string) {

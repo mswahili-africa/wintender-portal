@@ -27,6 +27,13 @@ export interface IRegisterForm {
     procurementEntityId: string;
 }
 
+export interface IPePersonForm extends IRegisterForm {
+    address: string;
+    gender: string;
+    imageFile: File | null;
+    jobTitle: string;
+}
+
 export interface IBidderRegisterForm {
     firstName: string;
     lastName: string;

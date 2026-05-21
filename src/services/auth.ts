@@ -1,6 +1,6 @@
 import { TOKEN_KEY } from "@/http/constants";
 import http from "../http";
-import { ILoginResponse, ICountry, IRole, IlistResponse, IToken, ILoginAttempt } from "@/types";
+import { ILoginResponse, ICountry, IRole, IlistResponse, ILoginAttempt } from "@/types";
 import { IBidderRegisterForm, IConfirmPasswordResetForm, IRegisterForm } from "@/types/forms";
 
 
@@ -87,6 +87,7 @@ export async function updateUser(payload: IRegisterForm, userId: string) {
 export async function signup(payload: IRegisterForm) {
     const response = await http.post<any>("/users/user/create", payload)
 }
+
 
 export async function bidderRegister(payload: IBidderRegisterForm) {
     const response = await http.post<any>("/users/bidder/register", payload)

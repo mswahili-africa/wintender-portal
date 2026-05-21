@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { getEntities } from "@/services/entities";
 import useErrorHandler from "./useErrorHandler";
-import { getPEUsers } from "@/services/user";
+import { getPEPersons, getPEUsers } from "@/services/user";
 
 interface IProps {
     page: number
@@ -11,6 +11,8 @@ interface IProps {
     search?: string
     sort?: string
     filter?: Record<string, any>
+    searchKey?: string
+    searchValue?: string
 }
 
 export function useEntities(props: IProps) {
@@ -80,6 +82,26 @@ export function usePEUsers({...props}: IProps) {
     const { isLoading, isError, data, error, refetch } = useQuery({
         queryKey: ["usePEUsers", props.page, props.sort, props?.search, props?.filter],
         queryFn: () => getPEUsers({page: props.page, size: 10, sort: props.sort, search: props.search}),
+        onError: (error: AxiosError) => handleError(error),
+        refetchInterval: 300000,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+
+    return {
+        isLoading,
+        isError,
+        pes: data,
+        error,
+        refetch
+    }
+}
+
+export function usePEPersons({...props}: IProps) {
+    const { handleError } = useErrorHandler();
+    const { isLoading, isError, data, error, refetch } = useQuery({
+        queryKey: ["usePEUsers", props.page, props.sort, props?.search, props?.filter,props.searchKey,props.searchValue],
+        queryFn: () => getPEPersons({page: props.page, size: 10, sort: props.sort, searchKey:props.searchKey,searchValue:props.searchValue}),
         onError: (error: AxiosError) => handleError(error),
         refetchInterval: 300000,
         refetchOnWindowFocus: false,

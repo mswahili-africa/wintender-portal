@@ -151,9 +151,11 @@ export interface IUser {
   [x: string]: any;
   id: string;
   name: string;
+  gender?: string;
   account: string;
   address: string;
   phoneNumber: string;
+  jobTitle?: string;
   email: string;
   idType: string;
   idImagePath: string;
@@ -184,6 +186,25 @@ export interface IEntity {
   createdAt: number;
   updatedAt: number;
   status: string;
+}
+export interface IPEPerson {
+  id: string;
+  account: string;
+  procurementEntityId: string;
+  firstName: string;
+  lastName: string;
+  jobTitle: string;
+  email: string;
+  phoneNumber: string;
+  passportPhoto: string; // Updated to strictly string since API returns an S3 URL
+  gender: "MALE" | "FEMALE";
+  address: string;
+  entityType: "PRIVATE" | "PUBLIC" | string; // Handled dynamically based on your system types
+  entityName: string;
+  createdBy: string;
+  updatedBy: string | null;
+  createdAt: number; // Unix timestamp in milliseconds
+  updatedAt: number;
 }
 
 export interface ILoginAttempt {
