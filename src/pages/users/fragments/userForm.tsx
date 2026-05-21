@@ -12,7 +12,6 @@ import { signup, updateUser } from "@/services/auth";
 import { authStore } from "@/store/auth";
 import { IlistResponse, IRole, IUser } from "@/types";
 import { IRegisterForm } from "@/types/forms";
-import useRoles from "@/hooks/useRoles";
 import TextInput from "@/components/widgets/forms/TextInput";
 import { useUserDataContext } from "@/providers/userDataProvider";
 interface IProps {
@@ -26,14 +25,14 @@ const schema = object().shape({
   lastName: string().required("Last name is required"),
   email: string().email().required("Email is required"),
   phoneNumber: string().required("Phone number is required"),
-  role: string().required("Role is required"),
+  roleId: string().required("Role is required"),
   status: string().optional(),
   nationalId: string().required("National ID number is required"),
 });
 
 const updateSchema = object().shape({
   name: string().required("Name is required"),
-  role: string().required("Role is required"),
+  roleId: string().required("Role is required"),
   status: string().required("Status is required"),
 });
 
@@ -109,7 +108,7 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
   useEffect(() => {
     if (initials) {
       updateSetValue("name", initials.name);
-      updateSetValue("role", initials.roleDetails?.id);
+      updateSetValue("roleId", initials.roleDetails?.id);
       updateSetValue("status", initials.status);
       setUpdate(true);
     }
@@ -187,8 +186,8 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
               </label>
 
               <select
-                className={errors.role ? "input-error" : "input-normal"}
-                {...register("role", { required: true })}
+                className={errors.roleId ? "input-error" : "input-normal"}
+                {...register("roleId", { required: true })}
                 disabled={!!initials}
               >
                 <option value=""></option>
@@ -260,8 +259,8 @@ export default function UserForm({ onSuccess, initials, roles }: IProps) {
 
             <select
               id="role"
-              className={errors.role ? "input-error" : "input-normal"}
-              {...updateRegister("role", { required: true })}
+              className={errors.roleId ? "input-error" : "input-normal"}
+              {...updateRegister("roleId", { required: true })}
               defaultValue={initials?.roleDetails?.id ?? ""}
             >
               <option value="">Select a role</option>
