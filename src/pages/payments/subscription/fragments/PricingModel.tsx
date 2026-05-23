@@ -1,13 +1,16 @@
 import { IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import PriceCard from "./PriceCard";
+import { useSubscriptionPlans } from "@/hooks/usePayments";
 
-export default function PricingModal({open, onClose, }: { open: boolean; onClose: () => void; }) {
+
+export default function PricingModal({ open, onClose, }: { open: boolean; onClose: () => void; }) {
+    if (!open) return null
+
     const { t } = useTranslation();
 
+    const { subscriptionPlans, isLoading } = useSubscriptionPlans({});
 
-    
-    if(!open) return null
 
     return (
         <div className="fixed inset-0 bg-black overflow-y-auto bg-opacity-50 flex justify-center z-50">
@@ -24,10 +27,21 @@ export default function PricingModal({open, onClose, }: { open: boolean; onClose
                         <div className="text-green-600 font-bold text-lg mb-2 mt-5">{t("subscription-pricing-modal-sub-header")}</div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-5">
-                            <PriceCard name="MWANZO" predecessor="ALPHA" description="Lorem ipsum dolor" price={"20000"} features={["Feature 1", "Feature 2", "Feature 3"]} />
-                            <PriceCard name="OMBA" predecessor="APPLY" description="Lorem ipsum dolor" price={"60000"} features={["Feature 1", "Feature 2", "Feature 3"]} />
-                            <PriceCard name="SHINDA" predecessor="WIN" description="Lorem ipsum dolor" price={"120000"} features={["Feature 1", "Feature 2", "Feature 3"]} />
-                            <PriceCard name="TIMIZA" isPopular predecessor="EXECUTE" description="Lorem ipsum dolor" price={"240000"} features={["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"]} />
+                            {
+                                isLoading ?
+                                    Array(4).fill(0).map((_, i) => (
+                                        <div key={i} className="w-full h-96 bg-gray-300 rounded-3xl animate-pulse ">
+
+                                        </div>
+                                    ))
+                                    :
+                                    subscriptionPlans?.length == 0 ? 
+                                    <div className="col-span-full text-center h-40 w-full">{t("subscription-pricing-modal-no-plans")}</div> 
+                                    : subscriptionPlans?.map((plan) =>
+                                        <PriceCard plan={plan} />
+                                    )
+                                    
+                            }
                         </div>
 
 

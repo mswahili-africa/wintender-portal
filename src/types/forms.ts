@@ -125,7 +125,6 @@ export interface IConsultationApplication {
 export interface IUSSDPushRequest {
     planId: string
     phoneNumber: string
-    period: number
     reason: string
     mno: string
     source: string
@@ -215,4 +214,16 @@ export enum PaymentReason {
   CONSULT_ME = "Consult me",
   SUBSCRIPTION = "Subscription",
   WALLET_IN = "Wallet deposit"
+}
+
+export interface ISubscriptionPlanForm {
+    id?:string;
+    name: string;
+    predecessor?: string;
+    description: string;
+    duration: String;
+    amount: number;
+    benefits: string[];
+    popular?: boolean;
+    status?: string;
 }

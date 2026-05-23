@@ -207,11 +207,11 @@ export default function GovernmentTenders() {
                 )}
             </div>
 
-            {/* <PricingModal
+            <PricingModal
                 open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)}
-            /> */}
+            />
 
-            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+            {/* <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} /> */}
 
 
 

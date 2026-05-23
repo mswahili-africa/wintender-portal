@@ -246,9 +246,9 @@ export interface ICompany {
   rating: IRating;
 }
 
-export interface IRating{
-  star:number;
-  reason:string;
+export interface IRating {
+  star: number;
+  reason: string;
 }
 
 export interface ICompanyDocuments {
@@ -338,7 +338,7 @@ interface IBiddersSummary {
 
 interface IPaymentSummary {
   totalAmount: number;
-  walletBalance:number;
+  walletBalance: number;
   thisMonth: number;
 }
 
@@ -360,24 +360,24 @@ export interface IStatisticsResponse {
 // end
 
 export interface IPayment {
-  createdBy: string;              
-  updatedBy: string | null;       
-  createdAt: number;              
-  updatedAt: number;             
-  id: string;                    
+  createdBy: string;
+  updatedBy: string | null;
+  createdAt: number;
+  updatedAt: number;
+  id: string;
   paymentReason: "SUBSCRIPTION" | "PURCHASE" | "REFUND" | string;
-  bidderId: string;               
-  controlNumber: string;          
-  phoneNumber: string;            
-  transactionReference: string;   
-  amount: number;                 
-  mno: "USSD-PUSH" | "M-PESA" | "AIRTEL" | string; 
-  period: number;                 
-  comments: string | null;        
+  bidderId: string;
+  controlNumber: string;
+  phoneNumber: string;
+  transactionReference: string;
+  amount: number;
+  mno: "USSD-PUSH" | "M-PESA" | "AIRTEL" | string;
+  period: number;
+  comments: string | null;
   status: "PENDING" | "SUCCESS" | "FAILED" | "EXPIRED" | string;
-  planName: string;               
-  userName: string;               
-  company: string | null;         
+  planName: string;
+  userName: string;
+  company: string | null;
 }
 
 // JCM WALLET TOPUP
@@ -568,3 +568,36 @@ export interface IAIChatMessage {
   content: string;
   timestamp: string;
 }
+
+export interface IBenefit {
+  id?: string;
+  name: string;
+  description?: string;
+}
+
+export interface ISubscriptionPlan {
+  id?: string;
+  name: string;
+  predecessor?: string;
+  description: string;
+  duration: String;
+  amount: number;
+  discount: number;
+  currency: string;
+  benefitsId: string[];
+  benefits: IBenefit[];
+  popular?: boolean;
+  status?: string;
+}
+
+export interface ISubscriptionBenefit {
+  createdBy: string;
+  updatedBy: string;
+  createdAt: number;
+  updatedAt: number;
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+}
+

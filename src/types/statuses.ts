@@ -16,3 +16,15 @@ export const paymentOptions = [
     { name: "Halopesa", img: "/payment_logo/halopesa.png" },
     // { name: "Azampesa", img: "/payment_logo/azam.jpg" },
 ]
+
+export enum SubscriptionPlanDuration {
+    MONTHLY = "MONTHLY",
+    QUARTERLY = "QUARTERLY",
+    SEMI_ANNUALLY = "SEMI ANNUALLY",
+    ANNUALLY = "ANNUALLY",
+}
+
+export enum SubscriptionPlanStatus {
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+}

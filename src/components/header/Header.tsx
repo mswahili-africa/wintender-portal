@@ -22,6 +22,7 @@ import Tooltip from "../tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import SubscriptionPaymentModal from "@/pages/payments/subscription/fragments/SubscriptionPaymentModal";
+import PricingModal from "@/pages/payments/subscription/fragments/PricingModel";
 
 const Header = () => {
     const auth = useSnapshot(authStore);
@@ -346,7 +347,12 @@ const Header = () => {
                         throw new Error("Function not implemented.");
                     }} />
 
-                <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+                <PricingModal
+                    open={isPaymentModalOpen}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                />
+
+                {/* <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} /> */}
 
                 {/* Message modal */}
                 <ConversationModal

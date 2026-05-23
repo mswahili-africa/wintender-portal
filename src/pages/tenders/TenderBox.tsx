@@ -175,12 +175,12 @@ export default function PrivateTenders() {
                 )}
             </div>
 
-            {/* <PricingModal
+            <PricingModal
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
-            /> */}
+            />
 
-            <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+            {/* <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} /> */}
 
 
 

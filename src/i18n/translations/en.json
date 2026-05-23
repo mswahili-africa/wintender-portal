@@ -23,7 +23,7 @@
     "menu-consult-me": "Consult Me",
     "menu-finance": "Finance",
     "menu-transactions": "Transactions",
-    "menu-subscription-plans": "Subscription Plans",
+    "menu-subscription-plans": "Subscription",
     "menu-payment-plans": "Payments Plans",
     "menu-entities": "Entities",
     "menu-bidders": "Bidders",
@@ -130,8 +130,9 @@
 
     "subscription-pricing-modal-header":"Renew Your Subscription",
     "subscription-pricing-modal-sub-header":"Choose your subscription plan",
+    "subscription-pricing-modal-no-plans":"No plans available",
 
-    "subscription-card-button-label":"Upgrade to {{name}}",
+    "subscription-card-button-label":"Upgrade to {{subscriptionPlan}}",
 
     "subscription-modal-header":"Subscription Payment Confirmation",
     "subscription-modal-sub-header":"Pay direct from your wallet or mobile",

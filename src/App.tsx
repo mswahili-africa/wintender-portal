@@ -82,6 +82,11 @@ function App() {
 
                                 <Route path="payments" element={<Payments />} />
                                 <Route path="invoices" element={<InvoicePage />} />
+                                <Route path="company-plans" element={<CompanyPlans />} />
+                                <Route path="subscription-plans" element={<SubscriptionPlans />} />
+
+
+
                                 <Route path="categories" element={<Categories />} />
                                 <Route path="consultation" element={<Consultation />} />
                                 <Route path="consultation-application" element={<ConsultationApplication />} />
@@ -95,7 +100,6 @@ function App() {
                                 <Route path="difm-statistics" element={<DIFMStatistics />} />
                                 <Route path="company-documents" element={<CompanyDocuments />} />
                                 <Route path="subscription-plans" element={<SubscriptionPlans />} />
-                                <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="application-profoma-invoice" element={<ApplicationInvoice />} />
                                 <Route path="login-attempt" element={<LoginAttempts />} />
                                 <Route path="error-logs" element={<SystemLogs />} /> {/* JCM logs  */}

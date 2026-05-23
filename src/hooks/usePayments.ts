@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useErrorHandler from "./useErrorHandler";
 import { AxiosError } from "axios";
-import { getPayments } from "../services/payments";
+import { getPayments, getSubscriptionBenefits, getSubscriptionPlans } from "../services/payments";
 
 interface IProps {
     userId: string
@@ -82,6 +82,68 @@ export function getUserPayments({ userId, ...props }: IProps) { // userId is des
         isLoading,
         isError,
         payments: data,
+        error,
+        refetch,
+    };
+}
+
+
+// BENEFITS
+export function useSubscriptionBenefits({page,sort,search,filter,size }: {page?:number,sort?:string,search?:string,filter?:Record<string,any>,size?:number}) { // userId is destructured here
+    const { handleError } = useErrorHandler();
+
+    const { isLoading, isError, data, error, refetch } = useQuery({
+        queryKey: ["getSubscriptionBenefits", page, sort, search], // Include userId in queryKey
+        queryFn: () =>
+            getSubscriptionBenefits({
+                page: page ?? 0,
+                size: size ?? 50,
+                sort: sort,
+                search: search,
+                filter: filter,
+            }),
+        onError: (error: AxiosError) => handleError(error),
+        cacheTime:60 * 60 * 1000,
+        staleTime:  60 * 60 * 1000, 
+        refetchOnReconnect: false,
+        refetchOnWindowFocus: false,
+    });
+
+    return {
+        isLoading,
+        isError,
+        subscriptionPlanBenefits: data,
+        error,
+        refetch,
+    };
+}
+
+// SUBSCRIPTIONS
+export function useSubscriptionPlans({page,sort,search,filter,size }: {page?:number,sort?:string,search?:string,filter?:Record<string,any>,size?:number}) { // userId is destructured here
+    const { handleError } = useErrorHandler();
+
+    const { isLoading, isError, data, error, refetch } = useQuery({
+        queryKey: ["geTSubscriptionPlans", page, sort, search], // Include userId in queryKey
+        queryFn: () =>
+            getSubscriptionPlans({
+                page: page ?? 0,
+                size: size ?? 4,
+                sort: sort,
+                search: search,
+                filter: filter,
+            }),
+        onError: (error: AxiosError) => handleError(error),
+        cacheTime:60 * 60 * 1000,
+        staleTime: 120 * 60 * 1000, // 2 hour
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchOnMount: false,
+    });
+
+    return {
+        isLoading,
+        isError,
+        subscriptionPlans: data,
         error,
         refetch,
     };
