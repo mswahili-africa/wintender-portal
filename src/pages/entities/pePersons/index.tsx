@@ -1,5 +1,5 @@
 import { IconPlus, IconEdit, IconTrash, IconRecycle, IconEye } from "@tabler/icons-react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
 import columns from "./fragments/columns";
@@ -10,11 +10,10 @@ import { deletePePerson } from "@/services/user";
 import { usePEPersons } from "@/hooks/entitiesRepository";
 import PEPersonFormModal from "./fragments/PEPersonFormModal";
 import Button from "@/components/button/Button";
-import GeneralSMSModal from "@/pages/messages/fragments/GeneralSmsModal";
 import usePopup from "@/hooks/usePopup";
 import Select from "react-select";
 import { PEPersonDetailsModal } from "./fragments/PEPersonDetailsModal";
-import { set } from "lodash";
+import Tooltip from "@/components/tooltip/Tooltip";
 
 const columnSearchOptions: any[] = [
     { value: "name", label: "Name" },
@@ -66,7 +65,7 @@ export default function ProcurementEntitiesPersons() {
             message:
                 "This action cannot be undone. Please verify that you want to delete.",
             onConfirm: () => {
-                deleteMutation.mutate(isModalOpen.user?.id!);
+                deleteMutation.mutate(user.id!);
             },
             onCancel: () => { },
         });
@@ -137,33 +136,37 @@ export default function ProcurementEntitiesPersons() {
                     actionSlot={(content: any) => {
                         return (
                             <>
-                                <Button
-                                    type="button"
-                                    variant="text"
-                                    icon={<IconEye size={20} />}
-                                    theme="primary"
-                                    size="md"
-                                    onClick={() => setIsModalOpen({ type: "view", user: content })}
-                                />
-                                <div className="flex justify-center space-x-3">
-                                    <button
-                                        onClick={() => setIsModalOpen({ type: "update", user: content })}
-                                    >
-                                        <IconEdit
-                                            className="h-5 w-5 text-grey-500"
-                                        />
-                                    </button>
+                                <Fragment>
+                                    <Tooltip content={'View Person'}>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                            onClick={() => setIsModalOpen({ type: "view", user: content })}
+                                        >
+                                            <IconEye size={20} />
+                                        </button>
+                                    </Tooltip>
+                                </Fragment>
 
-                                </div>
-
-                                <Button
-                                    type="button"
-                                    variant="text"
-                                    icon={<IconTrash size={20} />}
-                                    theme="danger"
-                                    size="md"
-                                    onClick={() => handleDelete(content)}
-                                />
+                                <Fragment>
+                                    <Tooltip content={'Edit this PE Person'}>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                            onClick={() => setIsModalOpen({ type: "update", user: content })}
+                                        >
+                                            <IconEdit size={20} />
+                                        </button>
+                                    </Tooltip>
+                                </Fragment>
+                                <Fragment>
+                                    <Tooltip content={'Delete this PE Person'}>
+                                        <button
+                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-red-600"
+                                            onClick={() => handleDelete(content)}
+                                        >
+                                            <IconTrash size={20} />
+                                        </button>
+                                    </Tooltip>
+                                </Fragment>
                             </>
                         );
                     }}

@@ -66,7 +66,7 @@ export const PEPersonDetailsModal: React.FC<PEPersonDetailsModalProps> = ({ isOp
           </h3>
           <p className="text-sm font-medium text-green-600 flex items-center gap-1 mt-0.5">
             <IconBriefcase size={14} />
-            {person.jobTitle.trim()}
+            {person?.jobTitle?.trim()}
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export const PEPersonDetailsModal: React.FC<PEPersonDetailsModalProps> = ({ isOp
               </div>
               <div className="flex flex-col">
                 <span className="text-xs text-gray-400">Phone Number</span>
-                <span className="text-sm font-medium text-gray-800">{person.phoneNumber}</span>
+                <span className="text-sm font-medium text-gray-800">{person?.phoneNumber}</span>
               </div>
             </div>
 
@@ -105,7 +105,7 @@ export const PEPersonDetailsModal: React.FC<PEPersonDetailsModalProps> = ({ isOp
               </div>
               <div className="flex flex-col">
                 <span className="text-xs text-gray-400">Physical Address</span>
-                <span className="text-sm font-medium text-gray-800 break-words">{person.address.trim()}</span>
+                <span className="text-sm font-medium text-gray-800 break-words">{person?.address?.trim()}</span>
               </div>
             </div>
           </div>
@@ -125,11 +125,11 @@ export const PEPersonDetailsModal: React.FC<PEPersonDetailsModalProps> = ({ isOp
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs text-gray-400">Assigned Entity</span>
-                  <span className="text-sm font-semibold text-gray-800">{person.entityName}</span>
+                  <span className="text-sm font-semibold text-gray-800">{person?.entityName}</span>
                 </div>
               </div>
               <span className="text-xs bg-purple-200 text-purple-700 px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wide">
-                {person.entityType}
+                {person?.entityType}
               </span>
             </div>
           </div>

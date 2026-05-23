@@ -11,32 +11,32 @@ const columns: IColumn[] = [
     plainObject: true,
     element: (row: IPEPerson) => {
       // Uses the S3 bucket image if available, drops back to placeholder if empty
-      const imageSrc = row.passportPhoto || dummyLogo;
+      const imageSrc = row?.passportPhoto || dummyLogo;
 
       return (
         <div className="flex items-center gap-3">
           <img
             src={imageSrc}
-            alt={`${row.firstName}'s photo`}
+            alt={`${row?.firstName}'s photo`}
             className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm"
           />
           <div>
             <span className="font-medium text-gray-900 block capitalize">
-              {`${row.firstName} ${row.lastName}`}
+              {`${row?.firstName} ${row?.lastName}`}
             </span>
             <span className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
               <IconBuilding size={12} className="text-gray-400 shrink-0" />
-              <span className="truncate max-w-[180px]" title={row.entityName}>
-                {row.entityName}
+              <span className="truncate max-w-[180px]" title={row?.entityName}>
+                {row?.entityName}
               </span>
               <span className="text-[10px] bg-teal-100 text-teal-600 px-1.5 py-0.2 rounded font-semibold uppercase scale-90">
-                {row.entityType}
+                {row?.entityType}
               </span>
             </span>
             <span className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
               <IconBriefcase size={12} className="text-gray-500 shrink-0" />
-              <span className="truncate max-w-[180px]" title={row.entityName}>
-                {row.jobTitle.trim()}
+              <span className="truncate max-w-[180px]" title={row?.entityName}>
+                {row?.jobTitle?.trim()}
               </span>
             </span>
           </div>
@@ -52,7 +52,7 @@ const columns: IColumn[] = [
     element: (row: IPEPerson) => (
       <div className="flex items-center gap-1.5 text-sm text-gray-600">
         <IconPhone size={16} className="text-gray-400" />
-        <span>{row.phoneNumber}</span>
+        <span>{row?.phoneNumber}</span>
       </div>
     ),
   },
@@ -64,8 +64,8 @@ const columns: IColumn[] = [
     element: (row: IPEPerson) => (
       <div className="flex items-center gap-1.5 text-sm text-gray-600">
         <IconMail size={16} className="text-gray-400" />
-        <a href={`mailto:${row.email}`} className="hover:text-blue-600 transition-colors lowercase">
-          {row.email}
+        <a href={`mailto:${row?.email}`} className="hover:text-blue-600 transition-colors lowercase">
+          {row?.email}
         </a>
       </div>
     ),
@@ -76,7 +76,7 @@ const columns: IColumn[] = [
     sortable: false,
     plainObject: true,
     element: (row: IPEPerson) => {
-      const isMale = row.gender === "MALE";
+      const isMale = row?.gender === "MALE";
       return (
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide border ${
@@ -85,7 +85,7 @@ const columns: IColumn[] = [
               : "bg-purple-50 text-purple-700 border-purple-200"
           }`}
         >
-          {row.gender}
+          {row?.gender}
         </span>
       );
     },
@@ -98,8 +98,8 @@ const columns: IColumn[] = [
     element: (row: IPEPerson) => (
       <div className="flex items-center gap-1.5 text-sm text-gray-600 max-w-[160px]">
         <IconMapPin size={16} className="text-gray-400 shrink-0" />
-        <span className="truncate" title={row.address.trim()}>
-          {row.address.trim()}
+        <span className="truncate" title={row?.address?.trim()}>
+          {row?.address?.trim()}
         </span>
       </div>
     ),
