@@ -144,7 +144,7 @@ export default function Dashboard() {
 
                         <Button
                             size="sm"
-                            label="Request 'Consultation'"
+                            label={t('menu-consult-me')}
                             theme="primary"
                             onClick={handleConsultMeClick}
                         >
