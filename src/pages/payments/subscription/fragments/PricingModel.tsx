@@ -14,7 +14,7 @@ export default function PricingModal({ open, onClose, }: { open: boolean; onClos
 
     return (
         <div className="fixed inset-0 bg-black overflow-y-auto bg-opacity-50 flex justify-center z-50">
-            <div className="bg-white rounded-lg my-10 h-fit p-6 w-[90%] sm:w-[80%] relative">
+            <div className="bg-white rounded-lg my-20 h-fit p-6 w-[90%] sm:w-[80%] relative">
                 <div className="flex flex-col ">
                     {/* Header */}
                     <div className="flex justify-between items-center">

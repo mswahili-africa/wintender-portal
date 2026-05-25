@@ -74,7 +74,7 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
     return (
         <Modal zIndex={50} size="sm" title="Assign Bidder" isOpen={isOpen} onClose={onClose}>
             <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-                {/* ✅ Bidder Selection with Debounced Search */}
+                {/*  Bidder Selection with Debounced Search */}
                 <div className="mb-2">
                     <label htmlFor="bidder" className="block mb-2">
                         Bidder
@@ -91,7 +91,7 @@ export default function DIFMAssignModel({ onSuccess, isOpen, onClose, tenderId }
                     </p>
                 </div>
 
-                {/* ✅ Assign Button */}
+                {/*  Assign Button */}
                 <Button
                     type="submit"
                     label={assignBidderMutation.isPending ? "Assigning..." : "Assign"}

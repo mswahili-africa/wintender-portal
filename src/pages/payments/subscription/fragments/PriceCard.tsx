@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IconCheck, IconArrowRight, IconShieldLock } from '@tabler/icons-react';
 import Button from "@/components/button/Button";
-import { Trans, useTranslation, } from 'react-i18next';
+import { useTranslation, } from 'react-i18next';
 import SubscriptionPaymentModal from './SubscriptionPaymentModal';
 import { ISubscriptionPlan } from '@/types';
 import { SubscriptionPlanDuration } from '@/types/statuses';

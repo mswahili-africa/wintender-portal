@@ -12,6 +12,7 @@ import { object, string } from "yup";
 import Select from "react-select";
 import { getBidders } from "@/services/user";
 import { debounce } from "lodash";
+import { useBidders } from "@/hooks/biddersRepository";
 
 interface IProps {
     onSuccess: () => void;
@@ -26,9 +27,17 @@ const schema = object().shape({
 
 export default function ContractModal({ onSuccess, initials }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const [bidders, setBidders] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [planType, setPlanType] = useState<string>("RETAINER");
+    const [search, setSearch] = useState<string>("");
+
+    const { bidders, isLoading } = useBidders({
+        page: 0,
+        size: 5,
+        column: "companyName",
+        search: search
+
+    });
 
     const {
         register,
@@ -58,33 +67,6 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
         createPlan.mutate(data);
     };
 
-    const fetchBidders = useCallback(async (search = "") => {
-               if (!search) {
-                   setBidders([]);
-                   return;
-               }
-       
-               setLoading(true);
-               try {
-                   const allBidders = await getBidders({ page: 0, size: 5, search });
-                   setBidders(allBidders.content.map(e => ({ value: e.id, label: e.companyName.toUpperCase() })));
-               } catch (error) {
-                   console.error("Failed to fetch Bidders", error);
-               } finally {
-                   setLoading(false);
-               }
-           }, []);
-       
-           const debouncedFetchBidders = useCallback(
-               debounce((inputValue) => {
-                   if (inputValue.length >= 3) { // Only fetch if 5 or more characters
-                       fetchBidders(inputValue);
-                   } else {
-                       setBidders([]); // Clear entities if less than 5 characters
-                   }
-               }, 5),
-               [fetchBidders]
-           );
 
     const handlePlanTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedPlan = event.target.value;
@@ -105,15 +87,16 @@ export default function ContractModal({ onSuccess, initials }: IProps) {
 
             <Modal size="sm" title="Create Company Plan" isOpen={open} onClose={(v) => setOpen(v)}>
                 <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
+
                     <div className="mb-2">
-                        <label htmlFor="com" className="block mb-2">
+                        <label htmlFor="bidder" className="block mb-2">
                             Bidder
                         </label>
                         <Select
-                            options={bidders}
-                            onInputChange={(inputValue) => debouncedFetchBidders(inputValue)} // Debounced fetch
+                            options={bidders?.content.map((e) => ({ value: e.id, label: e.companyName.toUpperCase() })) || []}
+                            onInputChange={(inputValue) => setSearch(inputValue)} // Debounced fetch
                             onChange={(selectedOption) => setValue("bidder", selectedOption?.value)}
-                            isLoading={loading}
+                            isLoading={isLoading}
                             placeholder="Search for a Bidder"
                         />
                         <p className="text-xs text-red-500 mt-1 mx-0.5">
