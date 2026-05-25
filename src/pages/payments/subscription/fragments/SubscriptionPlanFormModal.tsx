@@ -170,7 +170,7 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                             {...register("duration")}
                         >
                             {Object.entries(SubscriptionPlanDuration).map(([key, value]) => (
-                                <option key={key} value={value}>
+                                <option key={key} value={key}>
                                     {value.replace("_", " ")}
                                 </option>
                             ))}
