@@ -25,7 +25,7 @@ interface IProps {
 
 const schema = object().shape({
     name: string().required("Plan name is required"),
-    duration: string().oneOf(Object.values(SubscriptionPlanDuration)).required("Duration is required"),
+    duration: string().oneOf(Object.keys(SubscriptionPlanDuration)).required("Duration is required"),
     amount: number().typeError("Amount must be a number").positive("Amount must be greater than 0").required("Amount is required"),
     benefits: array().of(string()).min(1, "Select at least one benefit"),
     popular: boolean(),

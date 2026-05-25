@@ -33,11 +33,11 @@ const PriceCard = ({ plan }: PriceCardProps) => {
   const plansOrderedList = ["MONTHLY", "QUARTERLY", "SEMI_ANNUALLY", "ANNUALLY"];
 
   let description ;
-  if(plan.duration === SubscriptionPlanDuration.MONTHLY) {
+  if(plan.duration === 'MONTHLY') {
     description = "ALPHA";
-  } else if (plan.duration === SubscriptionPlanDuration.QUARTERLY) {
+  } else if (plan.duration === 'QUARTERLY') {
     description ='APPLY';
-  } else if (plan.duration === SubscriptionPlanDuration.SEMI_ANNUALLY) {
+  } else if (plan.duration === 'SEMI_ANNUALLY') {
     description = 'WIN';
   } else {
     description = 'EXECUTE';
