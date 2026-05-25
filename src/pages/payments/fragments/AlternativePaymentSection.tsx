@@ -33,13 +33,13 @@ export const AlternativePaymentSection = () => {
                 <Trans
                     i18nKey="payment-share-proof"
                     components={{
-                        email: <a href="mailto:finance@wintender.co.tz" target="_blank" className="font-semibold text-blue-600 hover:underline" />,
+                        email: <a href="mailto:finance@wintender.tz" target="_blank" className="font-semibold text-blue-600 hover:underline" />,
                         phone: (
                             <a href="https://wa.me/255747098558" target='_blank' className="font-semibold text-blue-600 hover:underline" />
                         ),
                     }}
                     values={{
-                        email: "finance@wintender.co.tz",
+                        email: "finance@wintender.tz",
                         phone: "+255747098558",
                     }}
                 />
