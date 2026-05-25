@@ -130,9 +130,11 @@
 
     "subscription-pricing-modal-header": "Sasisha Usajili Wako",
     "subscription-pricing-modal-sub-header": "Tafadhali chagua kifurushi cha usajili",
+    "subscription-pricing-modal-current-plan": "Kifurushi chako kwa sasa ni ",
     "subscription-pricing-modal-no-plans":"Hakuna kifurushi cha usajili",
     
     "subscription-card-button-label":"Lipia {{subscriptionPlan}}",
+    "subscription-card-button-label-upgrade":"Lipia {{subscriptionPlan}}",
 
     "subscription-modal-header": "Lipa Usajili Wako",
     "subscription-modal-sub-header": "Lipa moja kwa moja kutoka kwenye pochi au simu yako",

@@ -2,14 +2,19 @@ import { IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import PriceCard from "./PriceCard";
 import { useSubscriptionPlans } from "@/hooks/usePayments";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 
 export default function PricingModal({ open, onClose, }: { open: boolean; onClose: () => void; }) {
     if (!open) return null
 
+    const { userData } = useUserDataContext();
+
     const { t } = useTranslation();
 
     const { subscriptionPlans, isLoading } = useSubscriptionPlans({});
+
+    const currentPlan = userData?.currentPlanId && subscriptionPlans?.find((plan) => plan.id === userData?.currentPlanId);
 
 
     return (
@@ -26,6 +31,14 @@ export default function PricingModal({ open, onClose, }: { open: boolean; onClos
                     <div>
                         <div className="text-green-600 font-bold text-lg mb-2 mt-5">{t("subscription-pricing-modal-sub-header")}</div>
 
+                        {
+                            userData?.role === "BIDDER" && currentPlan &&
+                            <div className="text-green-600 font-bold text-lg mb-2 mt-5">
+                                {t("subscription-pricing-modal-current-plan")}
+                                <span className="text-green-600 font-bold text-lg mb-2 mt-5">{currentPlan?.name}</span>
+                            </div>
+                        }
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-5">
                             {
                                 isLoading ?
@@ -35,12 +48,12 @@ export default function PricingModal({ open, onClose, }: { open: boolean; onClos
                                         </div>
                                     ))
                                     :
-                                    subscriptionPlans?.length == 0 ? 
-                                    <div className="col-span-full text-center h-40 w-full">{t("subscription-pricing-modal-no-plans")}</div> 
-                                    : subscriptionPlans?.map((plan) =>
-                                        <PriceCard plan={plan} />
-                                    )
-                                    
+                                    subscriptionPlans?.length == 0 ?
+                                        <div className="col-span-full text-center h-40 w-full">{t("subscription-pricing-modal-no-plans")}</div>
+                                        : subscriptionPlans?.map((plan) =>
+                                            <PriceCard plan={plan} />
+                                        )
+
                             }
                         </div>
 

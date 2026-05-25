@@ -82,6 +82,7 @@ export interface IUserData {
     role: UserRole;
     company: string;
     paymentMode: string;
+    currentPlanId: string;
 }
 
 export interface IMessage {

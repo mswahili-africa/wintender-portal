@@ -140,7 +140,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                     <div className="md:col-span-2 flex flex-col justify-between space-y-6">
                         <div>
                             <span className="text-xs font-bold text-green-600 uppercase tracking-widest block mb-1">
-                                {plan.name} Checkout
+                                {plan.name} Package Checkout
                             </span>
                             <h3 className="text-xl font-bold text-gray-900">
                                 {t("subscription-modal-header")}
@@ -214,13 +214,23 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                 </div>
 
                                 {/* Pricing Summary Breakdown Component */}
-                                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between">
+                                <div className="bg-gray-50 border-gray-100 rounded-xl p-4 space-y-3">
+                                <div className=" flex items-center justify-between">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                        Package name
+                                    </span>
+                                    <span className="text-xl font-bold text-green-700 tracking-tight">
+                                        {plan.name}
+                                    </span>
+                                </div>
+                                <div className=" flex items-center justify-between">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                                         Total Charge Due
                                     </span>
                                     <span className="text-xl font-bold text-gray-900 tracking-tight">
                                         {formattedAmount}
                                     </span>
+                                </div>
                                 </div>
 
                                 {/* Interactive Action Triggers */}
@@ -273,7 +283,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                     </div>
 
                     {/* Alternative Cross-Section Partition Column Group */}
-                    <div className="md:col-span-2 border-t md:border-t-0 md:border-l border-gray-100 pt-6 md:pt-0 md:pl-6">
+                    <div className="md:col-span-2 border-t text-black md:border-t-0 md:border-l border-gray-100 pt-6 md:pt-0 md:pl-6">
                         <AlternativePaymentSection />
                     </div>
 

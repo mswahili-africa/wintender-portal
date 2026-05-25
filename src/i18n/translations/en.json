@@ -130,9 +130,11 @@
 
     "subscription-pricing-modal-header":"Renew Your Subscription",
     "subscription-pricing-modal-sub-header":"Choose your subscription plan",
+    "subscription-pricing-modal-current-plan":"Your current plan is ",
     "subscription-pricing-modal-no-plans":"No plans available",
 
-    "subscription-card-button-label":"Upgrade to {{subscriptionPlan}}",
+    "subscription-card-button-label":"Subscribe {{subscriptionPlan}}",
+    "subscription-card-button-label-upgrade":"Upgrade to {{subscriptionPlan}}",
 
     "subscription-modal-header":"Subscription Payment Confirmation",
     "subscription-modal-sub-header":"Pay direct from your wallet or mobile",
