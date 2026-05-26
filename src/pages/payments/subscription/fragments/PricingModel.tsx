@@ -108,7 +108,7 @@ export default function PricingModal({ open, onClose }: { open: boolean; onClose
             <div className="flex items-center gap-2.5 text-slate-500">
               <IconShieldCheck size={20} className="text-emerald-500 shrink-0" />
               <p className="text-xs font-semibold tracking-wide">
-                Secure encrypted payment channels. Cancel or change plans anytime.
+                Secure encrypted payment channels. Subscribe or change plans anytime.
               </p>
             </div>
             <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 tracking-wider uppercase">
