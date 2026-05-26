@@ -30,7 +30,7 @@ const PriceCard = ({ plan }: PriceCardProps) => {
     (userData?.subscription ?? 0) >= 1 &&
     userData?.role === "BIDDER";
 
-  const plansOrderedList = ["MONTHLY", "QUARTERLY", "SEMI_ANNUALLY", "ANNUALLY"];
+  const plansOrderedList = ["Mwanzo", "Omba", "Shinda", "Timiza","Investors"];
 
   let description ;
   if(plan.duration === 'MONTHLY') {
@@ -39,8 +39,10 @@ const PriceCard = ({ plan }: PriceCardProps) => {
     description ='APPLY';
   } else if (plan.duration === 'SEMI_ANNUALLY') {
     description = 'WIN';
-  } else {
+  } else if (plan.duration === 'ANNUALLY'){
     description = 'EXECUTE';
+  } else {
+    description = "ELEVATE";
   }
   
   // Find current active index based on the user's active plan duration token, not the ID
@@ -52,7 +54,7 @@ const PriceCard = ({ plan }: PriceCardProps) => {
   const isSmallerPlan = currentPlanIndex !== -1 && targetPlanIndex < currentPlanIndex;
 
   // PREMIUM COMPUTATION: Verify if this plan is the highest configuration element in the tier array list
-  const isPremiumPlan = targetPlanIndex === plansOrderedList.length - 1;
+  const isPremiumPlan = plan.name.toLocaleLowerCase() == 'investors';
 
   // Consolidated CSS Dynamic Style Themes
   let cardStyleTheme = "bg-white border border-slate-200 text-slate-800 hover:border-emerald-500/50 shadow-slate-200/40 shadow-xl";
