@@ -9,7 +9,10 @@ import { createPayment } from "../../../../services/payments";
 import { IPaymentForm, PaymentReason } from "../../../../types/forms";
 import Select from "react-select";
 import { useBidders } from "@/hooks/biddersRepository";
-
+import { useSubscriptionPlans } from "@/hooks/usePayments";
+import { SubscriptionPlanDuration } from "@/types/statuses";
+import PhoneInput, {parsePhoneNumber} from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
 
 interface IProps {
     initials?: any
@@ -17,25 +20,27 @@ interface IProps {
 }
 
 const paymentReason = Object.entries(PaymentReason).map(([key, value]) => ({
-  value: key,
-  label: value
+    value: key,
+    label: value
 }));
 
 export default function ({ ...props }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const { watch, register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
-        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "", source: "", description: "", bidderId: "", paymentReason: "" }
+    const { watch, register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
+        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "", source: "", description: "", bidderId: "", planId: "", duration: "", paymentReason: "" }
     });
 
 
     const [search, setSearch] = useState("");
 
-    const {bidders, isLoading} = useBidders({ 
+    const { subscriptionPlans, isLoading: plansLoading } = useSubscriptionPlans({});
+
+    const { bidders, isLoading } = useBidders({
         page: 0,
-        size: 5, 
-        column:"companyName",
-        search: search 
-    
+        size: 5,
+        column: "companyName",
+        search: search
+
     });
 
 
@@ -62,6 +67,8 @@ export default function ({ ...props }: IProps) {
             setValue("paymentReason", props.initials.paymentReason ?? "");
             setValue("bidderId", props.initials.bidderId ?? "");
             setValue("source", props.initials.source ?? "");
+            setValue("planId", props.initials.planId ?? "");
+            setValue("duration", props.initials.duration ?? "");
         }
     }, [props.initials, reset])
 
@@ -116,6 +123,46 @@ export default function ({ ...props }: IProps) {
                         </select>
                     </div>
 
+                    {
+                        watch("paymentReason") === "SUBSCRIPTION" &&
+                        <>
+                            <div className="mb-2">
+                                <label htmlFor="region" className="block mb-2">
+                                    Subscription Plan
+                                </label>
+
+                                <select
+                                    className={`${errors.paymentReason?.type === "required" ? "input-error" : "input-normal"}`}
+                                    {...register("planId", { required: true })}
+                                >
+                                    {subscriptionPlans?.map((option) => (
+                                        <option key={option.id} value={option.id}>
+                                            {option.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-2">
+                                <label htmlFor="region" className="block mb-2">
+                                    Duration
+                                </label>
+
+                                <select
+                                    className={`${errors.paymentReason?.type === "required" ? "input-error" : "input-normal"}`}
+                                    {...register("duration", { required: true })}
+                                >
+                                    {
+                                        Object.entries(SubscriptionPlanDuration).map(([key, value]) => (
+                                            <option key={key} value={key}>
+                                                {value}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                        </>
+                    }
+
                     {/* JCM payment method */}
                     <div className="mb-2">
                         <label htmlFor="region" className="block mb-2">
@@ -147,19 +194,18 @@ export default function ({ ...props }: IProps) {
                             </div>
                         )
                     }
-                    <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Phone Number</label>
 
-                        <input
-                            type="number"
-                            className={`${errors.phoneNumber?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('phoneNumber', {
-                                required: true,
-                                min: {
-                                    value: 10,
-                                    message: "Phone number must be at least 10 digits"
-                                }
-                            })}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-500">Phone Number</label>
+                        <PhoneInput
+                            value={getValues('phoneNumber')}
+                            defaultCountry={"TZ"}
+                            international={true}
+                            className="custom-phone-input"
+                            placeholder="e.g., 710101010"
+                            name="companyPrimaryNumber"
+                            onChange={(value: any) =>setValue("phoneNumber", value)}
+
                         />
                     </div>
                     <div className="mb-4">

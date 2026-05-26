@@ -175,6 +175,8 @@ export interface IPaymentForm {
     referenceId: string
     bidderId: string
     source: string
+    planId?: string
+    duration?: string
 }
 
 export interface ICreditForm {
