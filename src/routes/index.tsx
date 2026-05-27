@@ -318,7 +318,7 @@ const visibilityRules: Record<UserRole, () => IRoute[]> = {
             : menu.label === "Finance"
                 ? {
                     ...menu,
-                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans" && sub.label !== "Invoices"), // Exclude Payment Plans sub-menu
+                    subMenu: menu.subMenu?.filter(sub => sub.label !== "Payment Plans" && sub.label !== "Invoices" && sub.label !== "Subscription Plans"), // Exclude Payment Plans sub-menu
                 }
                 : menu.label === "Consultation"
                     ? {
