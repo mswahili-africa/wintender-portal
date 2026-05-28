@@ -209,12 +209,12 @@ export default function ({ ...props }: IProps) {
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs text-green-500">(minimum: 10000)</span></label>
+                        <label htmlFor="Phone" className="block mb-2">Amount <span className="text-xs text-green-500">(minimum: 20000)</span></label>
 
                         <input
                             type="number"
                             className={`${errors.amount?.type === 'required' ? 'input-error' : 'input-normal'}`}
-                            {...register('amount', { required: true, valueAsNumber: true, min: 10000 })}
+                            {...register('amount', { required: true, valueAsNumber: true, min: 20000 })}
                         />
                     </div>
 

@@ -155,6 +155,7 @@
     "payment-modal-account-name":"Account Name",
     "payment-modal-account-number":"Account Number",
     "payment-modal-branch":"Branch",
+    "payment-modal-currency":"Currency",
     "payment-modal-swift-code":"Swift Code",
     "payment-modal-you-can-pay-with-lipa":"You can also pay with LIPA NAMBA details below",
     "payment-modal-you-can-pay-with":"You can also pay with BANK ACCOUNT details below",

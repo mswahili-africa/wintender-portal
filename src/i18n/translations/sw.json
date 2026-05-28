@@ -155,6 +155,7 @@
     "payment-modal-lipa-name":"Jina",
     "payment-modal-account-number":"Namba ya Akaunti",
     "payment-modal-branch": "Tawi",
+    "payment-modal-currency": "Sarafu",
     "payment-modal-swift-code": "Nambari ya Swift",
     "payment-modal-you-can-pay-with-lipa":"Unaweza pia kulipa kwa LIPA NAMBA hapa chini",
     "payment-modal-you-can-pay-with": "Unaweza pia kulipa kwa AKAUNTI YA BENKI hapa chini",

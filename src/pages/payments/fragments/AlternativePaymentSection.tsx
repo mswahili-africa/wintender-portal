@@ -24,7 +24,8 @@ export const AlternativePaymentSection = () => {
             <p>{t("payment-modal-bank-name")}: <span className="text-md font-bold">CRDB Bank PLC</span></p>
             <p>{t("payment-modal-account-name")}: <span className="text-md font-bold">Hatuamoja Company Limited</span></p>
             <p>{t("payment-modal-account-number")}: <span className="text-md font-bold">0150388028500</span></p>
-            <p>{t("payment-modal-branch")}: <span className="text-md font-bold">Goba</span></p>
+            {/* <p>{t("payment-modal-branch")}: <span className="text-md font-bold">Goba</span></p> */}
+            <p>{t("payment-modal-currency")}: <span className="text-md font-bold">TZS</span></p>
             <p>{t("payment-modal-swift-code")}: <span className="text-md font-bold">CORUTZTZ</span></p>
 
             {/* General instructions with emphasis */}
