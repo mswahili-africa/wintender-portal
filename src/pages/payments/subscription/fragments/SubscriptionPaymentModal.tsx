@@ -322,7 +322,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                             <div className="bg-gray-50 border-gray-100 rounded-xl p-4 space-y-3">
                                 <div className=" flex items-center justify-between">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                        Package name
+                                        Package name <span className="text-[8pt] text-green-600">({durationMeta[duration]?.subtitle})</span>
                                     </span>
                                     <span className="text-xl font-bold text-green-700 tracking-tight">
                                         {plan.name}

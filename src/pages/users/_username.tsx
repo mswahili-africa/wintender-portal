@@ -15,7 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/spinners/Spinner";
 import { useCategories } from "@/hooks/categoriesRepository";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import PhoneInput, {parsePhoneNumber} from "react-phone-number-input";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
 
 // JCM props interface
@@ -269,7 +269,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ selectedUser, selectedLoading
                                     <label className="text-sm font-semibold text-gray-500">Phone Number</label>
                                     <PhoneInput
                                         value={user.phoneNumber}
-                                        country={userPreloadedCountry ||"TZ"}
+                                        country={userPreloadedCountry || "TZ"}
                                         international={true}
                                         className="custom-phone-input"
                                         placeholder="e.g., 710101010"

@@ -33,13 +33,11 @@ const PriceCard = ({ plan }: PriceCardProps) => {
   const plansOrderedList = ["Mwanzo", "Omba", "Shinda", "Timiza","Investors"];
 
   let description ;
-  if(plan.duration === 'MONTHLY') {
-    description = "ALPHA";
-  } else if (plan.duration === 'QUARTERLY') {
+  if (plan.name == 'Omba') {
     description ='APPLY';
-  } else if (plan.duration === 'SEMI_ANNUALLY') {
+  } else if (plan.name === 'Shinda') {
     description = 'WIN';
-  } else if (plan.duration === 'ANNUALLY'){
+  } else if (plan.name === 'Timiza'){
     description = 'EXECUTE';
   } else {
     description = "ELEVATE";
