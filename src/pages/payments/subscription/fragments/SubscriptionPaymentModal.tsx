@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Puff } from "react-loader-spinner";
@@ -322,7 +322,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                             <div className="bg-gray-50 border-gray-100 rounded-xl p-4 space-y-3">
                                 <div className=" flex items-center justify-between">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                        Package name <span className="text-[8pt] text-green-600">({durationMeta[duration]?.subtitle})</span>
+                                        {t("subscription-modal-package-name")} <span className="text-[8pt] text-green-600">({durationMeta[duration]?.subtitle})</span>
                                     </span>
                                     <span className="text-xl font-bold text-green-700 tracking-tight">
                                         {plan.name}
@@ -330,7 +330,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                 </div>
                                 <div className=" flex items-center justify-between">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                        Total Charge Due
+                                        {t("subscription-modal-total-charge-due")}
                                     </span>
                                     <span className="text-xl font-bold text-gray-900 tracking-tight">
                                         {formattedAmount}
@@ -365,9 +365,15 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
 
                             {
                                 finalAmount > 5000000 &&
+
                                 <div className="mt-4 text-red-500 text-sm font-medium text-center">
-                                    <span className="font-bold">{formattedAmount}</span> is greater that allowed amount (5,000,000) should be paid using bank transfer or e-wallet
+                                    <Trans
+                                        i18nKey="subscription-modal-charge-warning"
+                                        values={{ amount: formattedAmount }}
+                                        components={{ bold: <span className="font-bold" /> }}
+                                    />
                                 </div>
+
                             }
                         </div>
                     ) : (

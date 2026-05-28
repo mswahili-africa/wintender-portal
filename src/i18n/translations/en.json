@@ -142,12 +142,15 @@
     "subscription-modal-phone-input-placeholder":"Enter your phone number",
     "subscription-modal-period":"Subscription Period",
     "subscription-modal-months-count":"{{count}} month(s)",
-    "subscription-modal-total":"Total: {{amount}}",
+    "subscription-modal-package-name":"Total: ",
+    "subscription-modal-total-charge-due":"Total: ",
     "subscription-modal-payment-method":"Choose payment method",
     "subscription-modal-duration":"Duration",
     "subscription-modal-processing-notice": "Please wait, your payment via {{provider}} is being processed...",
     "subscription-modal-pay-with-mobile":"Pay with Mobile",
     "subscription-modal-pay-with-wallet":"Pay with Wallet",
+    "subscription-modal-charge-warning": "<bold>{{amount}}</bold> is greater than allowed amount (5,000,000) should be paid using bank transfer or e-wallet",
+
     
     "payment-modal-alternatively":"alternatively",
     "payment-share-proof": "After completing payment, send proof to <email>{{email}}</email> or WhatsApp <phone>{{phone}}</phone> for verification.",
