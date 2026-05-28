@@ -144,6 +144,7 @@
     "subscription-modal-months-count":"{{count}} month(s)",
     "subscription-modal-total":"Total: {{amount}}",
     "subscription-modal-payment-method":"Choose payment method",
+    "subscription-modal-duration":"Duration",
     "subscription-modal-processing-notice": "Please wait, your payment via {{provider}} is being processed...",
     "subscription-modal-pay-with-mobile":"Pay with Mobile",
     "subscription-modal-pay-with-wallet":"Pay with Wallet",

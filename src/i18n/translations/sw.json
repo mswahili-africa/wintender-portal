@@ -144,6 +144,7 @@
     "subscription-modal-months-count": "{{count}} mwezi/miezi",
     "subscription-modal-total": "Jumla: {{amount}}",
     "subscription-modal-payment-method": "Chagua njia ya malipo",
+    "subscription-modal-duration": "Kipindi cha Usajili",
     "subscription-modal-processing-notice": "Tafadhali subiri, malipo yako kupitia {{provider}} yanashughulikiwa...",
     "subscription-modal-pay-with-mobile": "Lipa kwa Simu",
     "subscription-modal-pay-with-wallet": "Lipa kwa Pochi",
