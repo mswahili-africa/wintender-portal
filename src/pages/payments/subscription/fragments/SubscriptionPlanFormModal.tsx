@@ -126,8 +126,8 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                             type="text"
                             placeholder="e.g., Premium Tier"
                             className={`w-full px-3 py-2 border rounded-lg text-sm transition-shadow focus:outline-none focus:ring-2 ${errors.name
-                                    ? "border-red-300 focus:ring-red-100 bg-red-50/30"
-                                    : "border-gray-200 focus:ring-blue-100"
+                                ? "border-red-300 focus:ring-red-100 bg-red-50/30"
+                                : "border-gray-200 focus:ring-blue-100"
                                 }`}
                             {...register("name")}
                         />
@@ -146,8 +146,8 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                                 placeholder="0.00"
                                 step="0.01"
                                 className={`w-full pl-5 pr-3 py-2 border rounded-lg text-sm transition-shadow focus:outline-none focus:ring-2 ${errors.amount
-                                        ? "border-red-300 focus:ring-red-100 bg-red-50/30"
-                                        : "border-gray-200 focus:ring-blue-100"
+                                    ? "border-red-300 focus:ring-red-100 bg-red-50/30"
+                                    : "border-gray-200 focus:ring-blue-100"
                                     }`}
                                 {...register("amount")}
                             />
@@ -169,11 +169,13 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                                 }`}
                             {...register("duration")}
                         >
-                            {Object.entries(SubscriptionPlanDuration).map(([key, value]) => (
-                                <option key={key} value={key}>
-                                    {value.replace("_", " ")}
-                                </option>
-                            ))}
+                            {
+                                Object.entries(SubscriptionPlanDuration).filter(([key]) => key == "MONTHLY").map(([key, value]) => (
+                                    <option key={key} value={key}>
+                                        {value}
+                                    </option>
+                                ))
+                            }
                         </select>
                         {errors.duration && (
                             <p className="text-xs text-red-500 mt-1 font-medium">{errors.duration.message}</p>
@@ -189,8 +191,8 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                                 type="button"
                                 onClick={() => setValue("popular", true)}
                                 className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${popularity === true
-                                        ? "bg-white text-emerald-700 shadow-sm border border-emerald-100"
-                                        : "text-gray-500 hover:text-gray-900"
+                                    ? "bg-white text-emerald-700 shadow-sm border border-emerald-100"
+                                    : "text-gray-500 hover:text-gray-900"
                                     }`}
                             >
                                 Popular
@@ -199,8 +201,8 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                                 type="button"
                                 onClick={() => setValue("popular", false)}
                                 className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${popularity === false
-                                        ? "bg-white text-gray-700 shadow-sm border border-gray-200"
-                                        : "text-gray-500 hover:text-gray-900"
+                                    ? "bg-white text-gray-700 shadow-sm border border-gray-200"
+                                    : "text-gray-500 hover:text-gray-900"
                                     }`}
                             >
                                 Not Popular
@@ -218,8 +220,8 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                                 type="button"
                                 onClick={() => setValue("status", SubscriptionPlanStatus.ACTIVE)}
                                 className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${currentStatus === SubscriptionPlanStatus.ACTIVE
-                                        ? "bg-white text-emerald-700 shadow-sm border border-emerald-100"
-                                        : "text-gray-500 hover:text-gray-900"
+                                    ? "bg-white text-emerald-700 shadow-sm border border-emerald-100"
+                                    : "text-gray-500 hover:text-gray-900"
                                     }`}
                             >
                                 Active
@@ -228,8 +230,8 @@ export default function SubscriptionPlanFormModal({ open, onClose, refresh, init
                                 type="button"
                                 onClick={() => setValue("status", SubscriptionPlanStatus.INACTIVE)}
                                 className={`py-1.5 text-xs font-semibold rounded-lg transition-all ${currentStatus === SubscriptionPlanStatus.INACTIVE
-                                        ? "bg-white text-gray-700 shadow-sm border border-gray-200"
-                                        : "text-gray-500 hover:text-gray-900"
+                                    ? "bg-white text-gray-700 shadow-sm border border-gray-200"
+                                    : "text-gray-500 hover:text-gray-900"
                                     }`}
                             >
                                 Inactive
