@@ -7,7 +7,7 @@ import { cva } from "class-variance-authority";
 
 interface IProps {
     isOpen: boolean
-    size: "xs" | "sm" | "md" | "lg" | "xl"
+    size: "xs" | "sm" | "md" | "lg" | "xl" | "xxl" | "xxxl"
     children: React.ReactNode
     closeIcon?: boolean
     zIndex?: number
@@ -27,7 +27,9 @@ export default function(props: IProps) {
                     sm: "w-full md:max-w-md xl:max-w-lg",
                     md: "w-full md:max-w-xl xl:max-w-2xl",
                     lg: "w-full md:max-w-2xl xl:max-w-3xl",
-                    xl: "w-full max-w-3xl xl:max-w-5xl"
+                    xl: "w-full max-w-3xl xl:max-w-5xl",
+                    xxl: "w-full max-w-4xl xl:max-w-6xl",
+                    xxxl: "w-full max-w-5xl xl:max-w-7xl"
                 }
             }
         }
