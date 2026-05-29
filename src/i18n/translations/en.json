@@ -142,7 +142,7 @@
     "subscription-modal-phone-input-placeholder":"Enter your phone number",
     "subscription-modal-period":"Subscription Period",
     "subscription-modal-months-count":"{{count}} month(s)",
-    "subscription-modal-package-name":"Total: ",
+    "subscription-modal-package-name":"Package name: ",
     "subscription-modal-total-charge-due":"Total: ",
     "subscription-modal-payment-method":"Choose payment method",
     "subscription-modal-duration":"Duration",
