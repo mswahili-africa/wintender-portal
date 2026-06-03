@@ -16,8 +16,8 @@ export default function ApplicationInvoice() {
   // Calculations
   const subtotal = applications.reduce((sum, app) => sum + (app?.principleAmount ?? 0), 0);
   const tax = subtotal * 0.18;
-  const withoutTax = subtotal - tax;
-  const total = withoutTax + tax;
+  const withoutTax = subtotal ;
+  const total = subtotal + tax;
 
   const handleDownload = () => {
     const invoice = document.getElementById("invoice");
