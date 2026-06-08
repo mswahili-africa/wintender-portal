@@ -45,7 +45,7 @@ export const RatingDisplay = ({ rating, showReason }: { rating: IRating | null, 
 
       {/* Reason Badge */}
       {
-        showReason && (
+        showReason && rating.reason && (
           <div className="flex items-center gap-1.5">
             <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-100 rounded-md">
               <IconInfoCircle size={14} className="text-blue-500" />

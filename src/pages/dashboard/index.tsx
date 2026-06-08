@@ -31,6 +31,8 @@ import { IconListLetters } from "@tabler/icons-react";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
 import StatGroupCard from "./fragments/StatGroupCard";
+import { RatingDisplay } from "../bidders/fragments/ratingDisplay";
+import { IRating } from "@/types";
 
 export default function Dashboard() {
     const { userData } = useUserDataContext();
@@ -205,6 +207,8 @@ export default function Dashboard() {
                     {
                         userRole && userRole.includes("BIDDER") && (<>
                             <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
+                            {/* New Rating Component */}
+                            <RatingDisplay rating={{ star: 1, reason: null }} showReason={false} />
                             <div className="flex flex-col sm:flex-row justify-between mb-6">
                                 <div className="text-gray-800 mb-2 w-fit">{t("dashboard-welcome-message")} </div>
                                 <div className="flex flex-col justify-end text-end gap-1">
@@ -241,6 +245,7 @@ export default function Dashboard() {
                     {/* <h2 className="text-xl font-bold mb-4">Dashboard</h2> */}
                     <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
                     <div className="text-gray-600">{t("dashboard-welcome-message")}</div>
+
                 </>
             }
             <Modal isOpen={showModal} closeModal={closeModal} />
@@ -290,7 +295,7 @@ export default function Dashboard() {
                 </div>
             )} */}
 
-            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER", "PUBLISHER"].includes(userRole) && (
+            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "PUBLISHER"].includes(userRole) && (
                 <div className="mt-6">
                     {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary!} />}
                 </div>
