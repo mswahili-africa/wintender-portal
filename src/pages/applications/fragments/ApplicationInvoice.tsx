@@ -177,11 +177,12 @@ export default function ApplicationInvoice() {
                   <span style={{ display: "inline-flex", alignItems: "center" }}>
                     100% Pre-Paid
                   </span>
-                  <p>Bank name: CRDB Bank PLC</p>
-                  <p>Account Name: Hatuamoja Company Limited</p>
-                  <p>Account Number: 0150388028500</p>
-                  <p>Branch: Goba</p>
-                  <p>SwiftCode: CORUTZTZ</p>
+                  <p>Bank name: CRDB Bank</p>
+                  <p>Account Name: Wintender Company</p>
+                  <p>Account Number: 10398725064</p>
+                  {/* <p>Branch: Goba</p> */}
+                  <p>Currency: TZS</p>
+                  {/* <p>SwiftCode: CORUTZTZ</p> */}
                 </td>
                 <td style={{ border: "none" }}></td>
               </tr>

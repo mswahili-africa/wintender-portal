@@ -21,12 +21,12 @@ export const AlternativePaymentSection = () => {
             <div className="font-bold text-green-600 text-md w-full sm:my-3 my-6">--------{t("payment-modal-or")}--------</div>
 
             <p className="text-sm mb-2">{t("payment-modal-you-can-pay-with")}: </p>
-            <p>{t("payment-modal-bank-name")}: <span className="text-md font-bold">CRDB Bank PLC</span></p>
-            <p>{t("payment-modal-account-name")}: <span className="text-md font-bold">Hatuamoja Company Limited</span></p>
-            <p>{t("payment-modal-account-number")}: <span className="text-md font-bold">0150388028500</span></p>
+            <p>{t("payment-modal-bank-name")}: <span className="text-md font-bold">CRDB Bank</span></p>
+            <p>{t("payment-modal-account-name")}: <span className="text-md font-bold">Wintender Company</span></p>
+            <p>{t("payment-modal-account-number")}: <span className="text-md font-bold">10398725064</span></p>
             {/* <p>{t("payment-modal-branch")}: <span className="text-md font-bold">Goba</span></p> */}
             <p>{t("payment-modal-currency")}: <span className="text-md font-bold">TZS</span></p>
-            <p>{t("payment-modal-swift-code")}: <span className="text-md font-bold">CORUTZTZ</span></p>
+            {/* <p>{t("payment-modal-swift-code")}: <span className="text-md font-bold">CORUTZTZ</span></p> */}
 
             {/* General instructions with emphasis */}
             <div className="font-bold text-green-600 my-3">{t("payment-modal-instructions")}:</div>
