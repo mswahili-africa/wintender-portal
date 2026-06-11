@@ -3,7 +3,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
 import { BusinessType, IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStars, IconCircleCheckFilled, IconFolderPlus } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStars, IconCircleCheckFilled, IconFolderPlus, IconBriefcase, IconBuilding, IconId, IconMail, IconMapPin, IconPhone, IconUser, IconWorld } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -294,28 +294,28 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                                     <div className="flex flex-row items-end">
                                         {/* {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "ADMINISTRATOR", "MANAGER"].includes(userData?.role!) && ( */}
-                                            <Button
-                                                label={"Add Document"}
-                                                size="sm"
-                                                variant="text"
-                                                icon={<IconFolderPlus size={16} />}
-                                                theme={"info"}
-                                                onClick={() => setOpenModal({ type: "documents", object: user })}
-                                            />
+                                        <Button
+                                            label={"Add Document"}
+                                            size="sm"
+                                            variant="text"
+                                            icon={<IconFolderPlus size={16} />}
+                                            theme={"info"}
+                                            onClick={() => setOpenModal({ type: "documents", object: user })}
+                                        />
                                         {/* )} */}
 
                                         {/* {["SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER"].includes(userData?.role!) && ( */}
-                                            <>
-                                                <div className="h-6 w-[1px] bg-zinc-200 mx-1" />
-                                                <Button
-                                                    label={editDetails ? "Cancel" : "Edit Profile"}
-                                                    size="sm"
-                                                    variant="text"
-                                                    icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
-                                                    theme={editDetails ? "danger" : "primary"}
-                                                    onClick={() => setEditDetails(!editDetails)}
-                                                />
-                                            </>
+                                        <>
+                                            <div className="h-6 w-[1px] bg-zinc-200 mx-1" />
+                                            <Button
+                                                label={editDetails ? "Cancel" : "Edit Profile"}
+                                                size="sm"
+                                                variant="text"
+                                                icon={editDetails ? <IconX size={16} /> : <IconEdit size={16} />}
+                                                theme={editDetails ? "danger" : "primary"}
+                                                onClick={() => setEditDetails(!editDetails)}
+                                            />
+                                        </>
                                         {/* )} */}
                                     </div>
                                 </div>
@@ -330,32 +330,106 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
                 // JCM Show user details only if not SUPERVISOR
                 !editDetails &&
                 <>
-                    <div className="border-b border-zinc-200 text-sm text-black-400 pb-4">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            {/* Left Column - User, Shop, and Status Info */}
+                    <div className="border-b border-slate-200 text-sm text-slate-600 pb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                            {/* Left Column - User Profile Section */}
                             <div className="space-y-4">
-                                <div className="border-b w-fit">
-                                    <strong>Contact Person</strong>
+                                <div className="flex items-center gap-2 pb-2 border-b border-slate-100 w-full">
+                                    <IconUser size={18} className="text-emerald-600" />
+                                    <h4 className="font-bold text-slate-800 text-base">Contact Person</h4>
                                 </div>
-                                <p><strong>Person:</strong> {user.name}</p>
-                                <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>
-                                <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>
-                                <p><strong>Plan:</strong> {user.currentPlanId}</p>
+
+                                <div className="space-y-3 pl-1">
+                                    <div className="flex items-center gap-3">
+                                        <IconUser size={16} className="text-slate-400 shrink-0" />
+                                        <p><span className="text-slate-400 font-medium">Name:</span> <span className="font-semibold text-slate-800">{user.name}</span></p>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <IconPhone size={16} className="text-slate-400 shrink-0" />
+                                        <p><span className="text-slate-400 font-medium">Phone:</span> <span className="font-semibold text-slate-800">{user.companyPrimaryNumber}</span></p>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <IconMail size={16} className="text-slate-400 shrink-0" />
+                                        <p>
+                                            <span className="text-slate-400 font-medium">Email: </span>
+                                            <a href={`mailto:${user.companyEmail}`} className="text-blue-600 hover:underline font-medium transition-colors">
+                                                {user.companyEmail}
+                                            </a>
+                                        </p>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <IconId size={16} className="text-slate-400 shrink-0" />
+                                        <p><span className="text-slate-400 font-medium">Plan Tier:</span> <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 uppercase tracking-wider">{user.currentPlanId || 'Free'}</span></p>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Right Column - Location Info */}
+                            {/* Right Column - Corporate Identity Info */}
                             <div className="space-y-4">
-                                <div className="border-b w-fit">
-                                    <strong>Company</strong>
+                                <div className="flex items-center gap-2 pb-2 border-b border-slate-100 w-full">
+                                    <IconBuilding size={18} className="text-emerald-600" />
+                                    <h4 className="font-bold text-slate-800 text-base">Company Profile</h4>
                                 </div>
-                                {user.businessType && <p><strong>Business Type:</strong> {BusinessType[user.businessType as keyof typeof BusinessType]} </p>}
-                                {user.companyTin && <p><strong>TIN:</strong> {user.companyTin}</p>}
-                                {user.companyAddress && <p><strong>Address:</strong> {user.companyAddress}</p>}
-                                {user.companyPrimaryNumber && <p><strong>Phone:</strong> {user.companyPrimaryNumber}</p>}
-                                {user.companyEmail && <p><a href={`mailto:${user.companyEmail}`}><strong>Email:</strong> <span className="text-blue-600 hover:underline"> {user.companyEmail}</span></a></p>}
-                                {user.companyWebsite && <p><strong>Website:</strong> {user.companyWebsite}</p>}
-                                {/* {user.companyCategories && user.companyCategories.length > 0 && <p><strong>Categories:</strong> {selectedCategories.map((c) => c.name).join(", ")}</p>} */}
+
+                                <div className="space-y-3 pl-1">
+                                    {user.businessType && (
+                                        <div className="flex items-center gap-3">
+                                            <IconBriefcase size={16} className="text-slate-400 shrink-0" />
+                                            <p><span className="text-slate-400 font-medium">Business Type:</span> <span className="font-semibold text-slate-800">{BusinessType[user.businessType as keyof typeof BusinessType]}</span></p>
+                                        </div>
+                                    )}
+
+                                    {user.companyTin && (
+                                        <div className="flex items-center gap-3">
+                                            <IconFileText size={16} className="text-slate-400 shrink-0" />
+                                            <p><span className="text-slate-400 font-medium">TIN Number:</span> <span className="font-mono font-semibold text-slate-800">{user.companyTin}</span></p>
+                                        </div>
+                                    )}
+
+                                    {user.companyAddress && (
+                                        <div className="flex items-start gap-3">
+                                            <IconMapPin size={16} className="text-slate-400 shrink-0 mt-0.5" />
+                                            <p><span className="text-slate-400 font-medium">Address:</span> <span className="font-medium text-slate-800">{user.companyAddress}</span></p>
+                                        </div>
+                                    )}
+
+                                    {user.companyPrimaryNumber && (
+                                        <div className="flex items-center gap-3">
+                                            <IconPhone size={16} className="text-slate-400 shrink-0" />
+                                            <p><span className="text-slate-400 font-medium">Corp Phone:</span> <span className="font-semibold text-slate-800">{user.companyPrimaryNumber}</span></p>
+                                        </div>
+                                    )}
+
+                                    {user.companyEmail && (
+                                        <div className="flex items-center gap-3">
+                                            <IconMail size={16} className="text-slate-400 shrink-0" />
+                                            <p>
+                                                <span className="text-slate-400 font-medium">Corp Email: </span>
+                                                <a href={`mailto:${user.companyEmail}`} className="text-blue-600 hover:underline font-medium transition-colors">
+                                                    {user.companyEmail}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {user.companyWebsite && (
+                                        <div className="flex items-center gap-3">
+                                            <IconWorld size={16} className="text-slate-400 shrink-0" />
+                                            <p>
+                                                <span className="text-slate-400 font-medium">Website: </span>
+                                                <a href={user.companyWebsite.startsWith('http') ? user.companyWebsite : `https://${user.companyWebsite}`} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline font-medium transition-colors">
+                                                    {user.companyWebsite}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
+
                         </div>
                     </div>
                     <div className="border-b border-zinc-200 text-sm  pb-5">
