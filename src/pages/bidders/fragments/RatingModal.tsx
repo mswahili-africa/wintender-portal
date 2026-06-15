@@ -42,7 +42,7 @@ export default function RatingModal({ isOpen, onClose, selectedUser }: ModalProp
     useEffect(() => {
         if (selectedUser && selectedUser?.rating !== null) {
             setRating(selectedUser?.rating.star);
-            setReason(selectedUser?.rating.reason);
+            setReason(selectedUser?.rating.reason || '');
         }
     }, [selectedUser]);
 
