@@ -1,4 +1,5 @@
 import { List } from "lodash";
+import { RatingReason } from "./forms";
 
 export interface IGenericResponse {
   statusCodeValue: number;
@@ -248,7 +249,7 @@ export interface ICompany {
 
 export interface IRating {
   star: number;
-  reason: string;
+  reason: RatingReason | null;
 }
 
 export interface ICompanyDocuments {
@@ -372,6 +373,7 @@ export interface IPayment {
   transactionReference: string;
   amount: number;
   mno: "USSD-PUSH" | "M-PESA" | "AIRTEL" | string;
+  source: "MOBILE" | "WALLET" | "POS";
   period: number;
   comments: string | null;
   status: "PENDING" | "SUCCESS" | "FAILED" | "EXPIRED" | string;

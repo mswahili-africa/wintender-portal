@@ -156,8 +156,8 @@ export default function () {
                     <IconSearch size={20} />
                   </button>
                 </Tooltip>
-                {(userRole === "ADMINISTRATOR" || userRole === "ACCOUNTANT") &&
-                  content.status == "PENDING" && (
+                {["ADMINISTRATOR" , "ACCOUNTANT"].includes(userRole) &&
+                  content.status == "PENDING" && content.source == "POS" && (
                     <Fragment>
                       <Tooltip content={t("payments-approve-button-tooltip")}>
                         <button

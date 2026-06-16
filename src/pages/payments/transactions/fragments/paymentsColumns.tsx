@@ -53,6 +53,28 @@ const columns: IColumn[] = [
     },
   },
   {
+    name: "source",
+    label: "Source",
+    sortable: false,
+    plainObject: false,
+    element: (value: string) => {
+      let theme: "primary" | "secondary" | "success" | "warning" | "danger" | "pending" | "approved";
+
+      switch (value) {
+        case "MOBILE":
+          theme = "primary";
+          break;
+        case "WALLET":
+          theme = "approved";
+          break;
+        default:
+          theme = "secondary";
+      }
+
+      return <Chip label={value} size="sm" theme={theme} variant="pastel" />;
+    }
+  },
+  {
     name: "paymentReason",
     label: "Reason",
     sortable: false,

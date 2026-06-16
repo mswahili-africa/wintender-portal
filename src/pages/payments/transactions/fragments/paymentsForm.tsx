@@ -27,7 +27,7 @@ const paymentReason = Object.entries(PaymentReason).map(([key, value]) => ({
 export default function ({ ...props }: IProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { watch, register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm<IPaymentForm>({
-        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "", source: "", description: "", bidderId: "", planId: "", duration: "", paymentReason: "" }
+        defaultValues: { controlNumber: "", phoneNumber: "", amount: 10000, mno: "", source: "POS", description: "", bidderId: "", planId: "", duration: "", paymentReason: "" }
     });
 
 

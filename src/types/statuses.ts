@@ -28,3 +28,9 @@ export enum SubscriptionPlanStatus {
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
 }
+
+export enum PaymentSource {
+    MOBILE = "MOBILE",
+    WALLET = "WALLET",
+    POS = "POS"
+}

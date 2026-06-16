@@ -14,7 +14,7 @@ import {
 } from "@tabler/icons-react";
 
 import { USSDPushRequest, USSDPushEnquiry } from "@/services/payments";
-import { paymentOptions, SubscriptionPlanDuration } from "@/types/statuses";
+import { paymentOptions, PaymentSource, SubscriptionPlanDuration } from "@/types/statuses";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { AlternativePaymentSection } from "../../fragments/AlternativePaymentSection";
 import { ISubscriptionPlan } from "@/types";
@@ -104,7 +104,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
         }, 5000);
     };
 
-    const handlePayment = async (type: "WALLET" | "MOBILE") => {
+    const handlePayment = async (type: PaymentSource) => {
         const updatedDetails = { ...paymentDetails, source: type };
 
         if (!updatedDetails.phoneNumber) {
@@ -158,8 +158,6 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
     }).format(finalAmount);
 
     return (
-        // <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4 transition-all animate-fadeIn">
-        //     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative p-6 md:p-8">
         <Modal size="xxl" zIndex={60} isOpen={open} onClose={onClose}>
 
             {/* Close Button Trigger */}
@@ -205,15 +203,6 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                     <span className="absolute left-3 top-2.5 text-gray-400">
                                         <IconPhone size={18} />
                                     </span>
-                                    {/* <input
-                                        type="text"
-                                        id="phoneNumber"
-                                        name="phoneNumber"
-                                        value={paymentDetails.phoneNumber}
-                                        onChange={handleChange}
-                                        placeholder={t("subscription-modal-phone-input-placeholder") || "e.g., 255658191222"}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 transition-shadow"
-                                    /> */}
                                     <PhoneInput
                                         value={paymentDetails.phoneNumber}
                                         defaultCountry={"TZ"}
@@ -271,7 +260,6 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                 </div>
 
                                 {/* Advanced Select Cards Matrix Grid Wrapper */}
-                                {/* Note: Changed grid-cols-5 to grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 for cleaner rendering across devices */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-100/70 p-2 rounded-2xl border border-slate-200/60">
                                     {Object.entries(SubscriptionPlanDuration).map(([key, value]) => {
                                         // Safeguard against missing array configurations gracefully
@@ -353,7 +341,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 <button
                                     type="button"
-                                    onClick={() => handlePayment("WALLET")}
+                                    onClick={() => handlePayment(PaymentSource.WALLET)}
                                     className="flex items-center justify-center gap-2 px-5 py-3 bg-gray-900 text-white hover:bg-gray-800 font-semibold text-sm rounded-xl transition-colors shadow-sm"
                                 >
                                     <IconWallet size={18} />
@@ -364,7 +352,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                     finalAmount <= 5000000 &&
                                     <button
                                         type="button"
-                                        onClick={() => handlePayment("MOBILE")}
+                                        onClick={() => handlePayment(PaymentSource.MOBILE)}
                                         className="flex items-center justify-center gap-2 px-5 py-3 bg-green-600 text-white hover:bg-green-700 font-semibold text-sm rounded-xl transition-colors shadow-sm"
                                     >
                                         <IconDeviceMobileDollar size={18} />
@@ -422,7 +410,5 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
 
             </div>
         </Modal>
-        //     {/* </div>
-        // </div> */}
     );
 }
