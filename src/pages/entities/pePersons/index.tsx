@@ -1,4 +1,4 @@
-import { IconPlus, IconEdit, IconTrash, IconRecycle, IconEye } from "@tabler/icons-react";
+import { IconPlus, IconEdit, IconTrash, IconRecycle, IconEye, IconUserPlus } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -84,7 +84,7 @@ export default function ProcurementEntitiesPersons() {
                 <Button
                     type="button"
                     label="PE Person"
-                    icon={<IconPlus size={18} />}
+                    icon={<IconUserPlus size={18} />}
                     theme="primary"
                     size="md"
                     onClick={() => setIsModalOpen({ type: "create", user: null })}

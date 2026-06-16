@@ -5,12 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Loader from "@/components/spinners/Loader";
 import { IWalletTopUp } from "@/types";
-import { set } from "lodash";
 import { IconX } from "@tabler/icons-react";
 import { paymentOptions } from "@/types/statuses";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { AlternativePaymentSection } from "../../fragments/AlternativePaymentSection";
+import PhoneInput from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
 
 export default function WalletPaymentModal({
     isOpen,
@@ -46,7 +47,7 @@ export default function WalletPaymentModal({
 
     const handleSubmit = async () => {
         if (!paymentDetails.phoneNumber) {
-            setWarningMessage(t("wallet-modal-phone-error"));  
+            setWarningMessage(t("wallet-modal-phone-error"));
             return; // Prevent submission if phone number is empty
         }
         if (!paymentDetails.amount) {
@@ -150,7 +151,7 @@ export default function WalletPaymentModal({
                                 </div>
                             )}
                             <label className="block text-sm text-gray-600" htmlFor="phoneNumber">{t("wallet-modal-phone-number")}</label>
-                            <input
+                            {/* <input
                                 type="text"
                                 id="phoneNumber"
                                 name="phoneNumber"
@@ -158,6 +159,15 @@ export default function WalletPaymentModal({
                                 onChange={handleChange}
                                 className="input-normal w-full mt-2"
                                 placeholder="Enter your phone number"
+                            /> */}
+                            <PhoneInput
+                                value={paymentDetails.phoneNumber}
+                                defaultCountry={"TZ"}
+                                international={true}
+                                className="custom-phone-input"
+                                placeholder="e.g., 710101010"
+                                name="companyPrimaryNumber"
+                                onChange={(value: any) => setPaymentDetails((prev) => ({ ...prev, phoneNumber: value }))}
                             />
                         </div>
                         <div className="mt-4">

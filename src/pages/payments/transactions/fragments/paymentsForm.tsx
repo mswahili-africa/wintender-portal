@@ -62,7 +62,7 @@ export default function ({ ...props }: IProps) {
         if (props.initials) {
             setValue("controlNumber", props.initials.controlNumber);
             setValue("phoneNumber", props.initials.phoneNumber ?? "");
-            setValue("amount", props.initials.amount ?? 10000);
+            setValue("amount", props.initials.amount ?? 20000);
             setValue("description", props.initials.description ?? "");
             setValue("paymentReason", props.initials.paymentReason ?? "");
             setValue("bidderId", props.initials.bidderId ?? "");

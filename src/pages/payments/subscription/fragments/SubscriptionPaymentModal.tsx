@@ -19,6 +19,8 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { AlternativePaymentSection } from "../../fragments/AlternativePaymentSection";
 import { ISubscriptionPlan } from "@/types";
 import Modal from "@/components/Modal";
+import PhoneInput from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
 
 interface SubscriptionPaymentModalProps {
     open: boolean;
@@ -203,7 +205,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                     <span className="absolute left-3 top-2.5 text-gray-400">
                                         <IconPhone size={18} />
                                     </span>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         id="phoneNumber"
                                         name="phoneNumber"
@@ -211,6 +213,15 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
                                         onChange={handleChange}
                                         placeholder={t("subscription-modal-phone-input-placeholder") || "e.g., 255658191222"}
                                         className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 transition-shadow"
+                                    /> */}
+                                    <PhoneInput
+                                        value={paymentDetails.phoneNumber}
+                                        defaultCountry={"TZ"}
+                                        international={true}
+                                        className="custom-phone-input"
+                                        placeholder="e.g., 710101010"
+                                        name="companyPrimaryNumber"
+                                        onChange={(value: any) => setPaymentDetails((prev) => ({ ...prev, phoneNumber: value }))}
                                     />
                                 </div>
                             </div>
