@@ -1,5 +1,5 @@
 import http from "@/http"
-import { ISettings } from "@/types"
+import { ISettings } from "@/types/settings"
 
 
 export async function getSettings() {

@@ -323,6 +323,10 @@ export default function Dashboard() {
                                     <span className="font-medium">Onfon Media:</span>
                                     <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onfonMedia ?? "0"}</span>
                                 </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="font-medium">On SMS:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.messageBalance?.onSMS ?? "0"}</span>
+                                </div>
                             </div>
                         </div>
 

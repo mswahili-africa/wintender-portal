@@ -1,5 +1,6 @@
 import { Control, Controller } from "react-hook-form";
 import { SettingItem } from "./fragments/SettingItem";
+import { SMSAggregators } from "@/types/settings";
 type TProps = {
   control: Control<any>;
 };
@@ -18,15 +19,15 @@ export const SMSSettings = ({ control }: TProps) => {
           render={({ field }) => {
             return (
               <div className="flex gap-y-4">
-                {["NEXT_SMS", "ONFONMEDIA"].map((option) => (
+                {Object.entries(SMSAggregators).map(([key, value]) => (
                   <button
                     type="button"
-                    key={option}
-                    onClick={() => field.onChange(option)}
+                    key={key}
+                    onClick={() => field.onChange(key)}
                     className={`px-4 text-sm py-1 rounded border transition 
-                      ${field.value === option ? "bg-green-500 text-white border-green-500" : "bg-white border-gray-300"}`}
+                      ${field.value === key ? "bg-green-500 text-white border-green-500" : "bg-white border-gray-300"}`}
                   >
-                    {option}
+                    {value}
                   </button>
                 ))}
               </div>

@@ -1,6 +1,8 @@
 
 import { Control, Controller } from "react-hook-form";
 import { SettingItem } from "./fragments/SettingItem";
+import { CurrencyTypes, PaymentAggregators } from "@/types/settings";
+import { keyBy } from "lodash";
 type TProps = {
   control: Control<any>;
 }
@@ -17,15 +19,15 @@ export const PaymentSettings = ({ control }: TProps) => {
           control={control}
           render={({ field }) => {
             return <div className="flex gap-y-4">
-              {["AZAM_PAY", "FLUTTERWAVE"].map((option) => (
+              {Object.entries(PaymentAggregators).map(([key, value]) =>(
                 <button
                   type="button"
-                  key={option}
-                  onClick={() => field.onChange(option)}
+                  key={key}
+                  onClick={() => field.onChange(key)}
                   className={`px-4 text-sm py-1 rounded border transition 
-                ${field.value === option ? "bg-green-500 text-white border-green-500" : "bg-white border-gray-300"}`}
+                ${field.value === key ? "bg-green-500 text-white border-green-500" : "bg-white border-gray-300"}`}
                 >
-                  {field.value === option ? <strong>{option}</strong> : option}
+                  {field.value === key ? <strong>{value}</strong> : value}
                 </button>
               ))}
               <div>
@@ -45,15 +47,15 @@ export const PaymentSettings = ({ control }: TProps) => {
           control={control}
           render={({ field }) => (
             <div className="flex gap-y-4">
-              {["TZS", "KES", "UGS"].map((option) => (
+              {Object.entries(CurrencyTypes).map(([key, value]) => (
                 <button
-                  key={option}
+                  key={key}
                   type="button"
-                  onClick={() => field.onChange(option)}
+                  onClick={() => field.onChange(key)}
                   className={`px-4 text-sm py-1 rounded border transition 
-                    ${field.value === option ? "bg-green-500 text-white border-green-500" : "bg-white border-gray-300"}`}
+                    ${field.value === key ? "bg-green-500 text-white border-green-500" : "bg-white border-gray-300"}`}
                 >
-                  {field.value === option ? <strong>{option}</strong> : option}
+                  {field.value === key ? <strong>{value}</strong> : value}
                 </button>
               ))}
             </div>

@@ -1,3 +1,4 @@
+import { PaymentAggregators, SMSAggregators } from "@/types/settings";
 import * as yup from "yup";
 
 export const generalSchema = yup.object({
@@ -10,17 +11,17 @@ export const generalSchema = yup.object({
 export const paymentSchema = yup.object({
   aggregator: yup
     .string()
-    .oneOf(["AZAM_PAY", "FLUTTERWAVE"], "Invalid payment aggregator")
+    .oneOf(Object.entries(PaymentAggregators).map(([key, value]) => key), "Invalid payment aggregator")
     .required("Payment aggregator is required"),
   currency: yup
     .string()
-    .oneOf(["TZS", "KES", "UGS"], "Invalid currency")
+    .oneOf(Object.entries(PaymentAggregators).map(([key, value]) => key), "Invalid currency")
     .required("Currency is required"),
 });
 
 export const smsSchema = yup.object({
   aggregator: yup
     .string()
-    .oneOf(["NEXT_SMS", "ONFONMEDIA"], "Invalid SMS aggregator")
+    .oneOf(Object.entries(SMSAggregators).map(([key, value]) => key), "Invalid SMS aggregator")
     .required("SMS aggregator is required"),
 });

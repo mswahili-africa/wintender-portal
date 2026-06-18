@@ -330,6 +330,7 @@ export interface IProcurementEntities {
 export interface IMessageBalance {
   nextSMS: string;
   onfonMedia: string;
+  onSMS: string;
 }
 
 interface IBiddersSummary {
@@ -518,13 +519,6 @@ export interface IRequirement {
 }
 
 
-
-// JCM Settings Interface
-export interface ISettings {
-  general: any;
-  payment: any;
-  sms: any;
-}
 
 export interface IReply {
   repliedMessageId: string;
