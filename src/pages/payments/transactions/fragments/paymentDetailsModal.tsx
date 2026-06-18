@@ -112,7 +112,23 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                     <Chip
                                         label={payment?.status}
                                         size="sm"
-                                        theme={payment?.status === "SUCCESSFUL" || payment?.status === "APPROVED" ? "success" : "danger"}
+                                        theme={
+                                            (() => {
+                                                switch (payment?.status) {
+                                                    case "SUCCESSFUL":
+                                                    case "APPROVED":
+                                                    case "SUCCESS":
+                                                        return "success";
+                                                    case "PENDING":
+                                                        return "secondary";
+                                                    case "FAILED":
+                                                    case "REJECTED":
+                                                        return "danger";
+                                                    default:
+                                                        return "warning";
+                                                }
+                                            })()
+                                        }
                                         variant="outline"
                                     />
                                 </div>
@@ -132,7 +148,23 @@ const PaymentDetailsModal: React.FC<IProps> = ({ payment, onClose }) => {
                                         <Chip
                                             label={payment?.status}
                                             size="sm"
-                                            theme={payment?.status === "SUCCESSFUL" || payment?.status === "APPROVED" ? "success" : "danger"}
+                                            theme={
+                                                (() => {
+                                                    switch (payment?.status) {
+                                                        case "SUCCESSFUL":
+                                                        case "APPROVED":
+                                                        case "SUCCESS":
+                                                            return "success";
+                                                        case "PENDING":
+                                                            return "secondary";
+                                                        case "FAILED":
+                                                        case "REJECTED":
+                                                            return "danger";
+                                                        default:
+                                                            return "warning";
+                                                    }
+                                                })()
+                                            }
                                             variant="outline"
                                         />
                                     </div>
