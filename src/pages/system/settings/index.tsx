@@ -13,8 +13,8 @@ import { updateSettings } from "@/services/settingsService";
 import toast from "react-hot-toast";
 import Modal from "@/components/Modal";
 import { useEffect, useState } from "react";
-import { set } from "lodash";
 import { BackupSettings } from "./BackupSettings";
+import { IconSettingsCheck } from "@tabler/icons-react";
 
 const settingsSchema = yup.object().shape({
     general: generalSchema,
@@ -22,20 +22,45 @@ const settingsSchema = yup.object().shape({
     sms: smsSchema,
 });
 
+// infer type
+type TSettingsSchema = yup.InferType<typeof settingsSchema>;
+
+
 export default function Settings() {
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmation, setConfirmation] = useState("");
     const { settings } = useSettings();
 
-
-    const { handleSubmit, control, reset,formState } = useForm({
+    const { handleSubmit, control, reset, formState: { isDirty, errors } } = useForm({
         resolver: yupResolver(settingsSchema),
         defaultValues: {
-            general:  {},
+            general: {},
             payment: {},
-            sms:  {},
+            sms: {},
         },
     });
+
+    // Debugging tool: Logging errors if validation is failing on submit
+    useEffect(() => {
+        if (Object.keys(errors).length > 0) {
+            console.error("Form Validation Errors:", errors);
+
+            if(errors.payment) {
+                if(errors.payment.aggregator) toast.error(errors.payment.aggregator.message!);
+                if(errors.payment.currency) toast.error(errors.payment.currency.message!);
+                return;
+            }
+            if(errors.general) {
+                if(errors.general.language) toast.error(errors.general.language.message!);
+                return;
+            }
+            if(errors.sms) {
+                if(errors.sms.aggregator) toast.error(errors.sms.aggregator.message!);
+                return;
+            }
+            toast.error("There is an error with your settings form. Please check the console.");
+        }
+    }, [errors]);
 
     useEffect(() => {
         if (settings) {
@@ -47,7 +72,6 @@ export default function Settings() {
         }
     }, [settings, reset]);
 
-    // Handle form submission
     const updateSettingsMutation = useMutation({
         mutationKey: ["updateSettings"],
         mutationFn: async (data: any) => updateSettings(data),
@@ -59,14 +83,36 @@ export default function Settings() {
         },
     });
 
+    // 2. The actual submission logic executed ONLY when form is valid and modal is confirmed
+    const onFormSubmit = (data: TSettingsSchema) => {
+        if (confirmation !== "confirm") {
+            toast.error("You must type 'confirm' to proceed");
+            return;
+        }
+
+
+        const formData = {
+            general: data.general,
+            payment: data.payment,
+            sms: data.sms,
+        };
+
+        updateSettingsMutation.mutate(formData);
+    };
+
     return (
-        <form>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
             <div className="w-full ms-auto flex flex-row justify-end">
-                {
-                     !updateSettingsMutation.isPending ? (
-                        <button className={`${formState.isDirty ? "bg-red-500 text-white" : "bg-gray-200 text-black"} px-4 py-2 rounded text-sm`} onClick={() => setModalOpen(true)} type="button" disabled={!formState.isDirty}>Save changes</button>
-                    ) : null
-                }
+                <Button
+                    theme={isDirty ? "danger" : undefined}
+                    onClick={() => setModalOpen(true)}
+                    label="Save changes"
+                    icon={<IconSettingsCheck />}
+                    size="md"
+                    type="button" 
+                    disabled={!isDirty}
+                    loading={updateSettingsMutation.isPending}
+                />
             </div>
 
             <Tabs panels={["General", "SMS", "Payment", "Backup & Reports"]}>
@@ -75,7 +121,6 @@ export default function Settings() {
                 <PaymentSettings control={control as any} />
                 <BackupSettings />
             </Tabs>
-
 
             <Modal
                 closeIcon={true}
@@ -90,7 +135,6 @@ export default function Settings() {
                         To proceed, please type <strong>"confirm"</strong> below.
                     </p>
 
-                    {/* Confirmation input */}
                     <input
                         type="text"
                         placeholder="Type 'confirm' to proceed"
@@ -99,7 +143,6 @@ export default function Settings() {
                         onChange={(e) => setConfirmation(e.target.value)}
                     />
 
-                    {/* Submit */}
                     <div className="flex justify-end gap-3">
                         <Button
                             type="button"
@@ -109,33 +152,19 @@ export default function Settings() {
                             onClick={() => setModalOpen(false)}
                         />
 
+                        {/* 4. Changed type to "submit" so it triggers the form submission */}
                         <Button
-                            type="button"
+                            type="button" 
                             label="Confirm & Save"
                             theme="danger"
-                            disabled={updateSettingsMutation.isPending}
+                            disabled={updateSettingsMutation.isPending || confirmation !== "confirm"}
                             loading={updateSettingsMutation.isPending}
                             size="md"
-                            onClick={() => {
-                                handleSubmit((data) => {
-                                    if (confirmation !== "confirm") {
-                                        toast.error("You must type 'confirm' to proceed");
-                                        return;
-                                    }
-                                    const formData = {
-                                        general: data.general,
-                                        payment: data.payment,
-                                        sms: data.sms,
-                                    };
-                                    updateSettingsMutation.mutate(formData);
-                                    setModalOpen(false);
-                                })();
-                            }}
+                            onClick={handleSubmit(onFormSubmit)}
                         />
                     </div>
                 </div>
             </Modal>
-
         </form>
-    )
+    );
 }

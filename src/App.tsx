@@ -44,6 +44,7 @@ import { InvoicePage } from "./pages/payments/invoices/InvoicePage";
 import DIFMStatistics from "./pages/applications/DIFMStatistics";
 import SubscriptionPlans from "./pages/payments/subscription";
 import ProcurementEntitiesPersons from "./pages/entities/pePersons";
+import Partnership from "./pages/entities/partnership";
 
 export const queryClient = new QueryClient({});
 
@@ -94,6 +95,7 @@ function App() {
                                 <Route path="bidders" element={<Bidders />} />
                                 <Route path="entities-users" element={<ProcurementEntities />} />
                                 <Route path="/entities-persons" element={<ProcurementEntitiesPersons />} />
+                                <Route path="/partnerships" element={<Partnership />} />
                                 <Route path="users/:userId" element={<UserDetail selectedUser={null} selectedLoading={false} />} />
                                 <Route path="roles" element={<Roles />} />
                                 <Route path="publisher-perfomance" element={<PublisherPerformance />} />

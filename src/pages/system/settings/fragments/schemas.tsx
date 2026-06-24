@@ -1,4 +1,4 @@
-import { PaymentAggregators, SMSAggregators } from "@/types/settings";
+import { CurrencyTypes, PaymentAggregators, SMSAggregators } from "@/types/settings";
 import * as yup from "yup";
 
 export const generalSchema = yup.object({
@@ -15,7 +15,7 @@ export const paymentSchema = yup.object({
     .required("Payment aggregator is required"),
   currency: yup
     .string()
-    .oneOf(Object.entries(PaymentAggregators).map(([key, value]) => key), "Invalid currency")
+    .oneOf(Object.entries(CurrencyTypes).map(([key, value]) => key), "Invalid currency")
     .required("Currency is required"),
 });
 

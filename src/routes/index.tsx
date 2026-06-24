@@ -25,7 +25,8 @@ import {
     IconBuildingArch,
     IconListCheck,
     IconPackage,
-    IconTags
+    IconTags,
+    IconFileCertificate
 } from "@tabler/icons-react";
 import React from "react";
 import { useUserDataContext } from "@/providers/userDataProvider";
@@ -121,7 +122,8 @@ const allMenus: IRoute[] = [
             { path: "/bidders", label: "Bidders", labelKey: "menu-bidders", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
             { path: "/entities", label: "PE", labelKey: "menu-pe", icon: <IconBuildingArch size={20} strokeWidth={1.5} /> },
             { path: "/entities-users", label: "PE Admins", labelKey: "menu-pe-admins", icon: <IconMan size={20} strokeWidth={1.5} /> },
-            { path: "/entities-persons", label: "PE Persons", labelKey: "menu-pe-persons", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> }
+            { path: "/entities-persons", label: "PE Persons", labelKey: "menu-pe-persons", icon: <IconUsersGroup size={20} strokeWidth={1.5} /> },
+            { path: "/partnerships", label: "Partnership / JV", labelKey: "menu-pe-partnership", icon: <IconFileCertificate size={20} strokeWidth={1.5} /> }
         ],
     },
     {
