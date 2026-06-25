@@ -1,4 +1,4 @@
-import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconListNumbers, IconLoader, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
+import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconListNumbers, IconLoader, IconSend, IconSquareRoundedMinus, IconTruckDelivery, IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
@@ -24,6 +24,7 @@ import TextInput from "@/components/widgets/forms/TextInput";
 import { filter } from "lodash";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import SummaryCard, { ISummaryCardProps } from "@/components/cards/SummaryCard";
 
 
 interface ApplicationsListProps {
@@ -58,6 +59,66 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         status: status !== "" ? status : undefined,
         filter: undefined,
     });
+
+    // Configuration mapping array
+        const summaryConfigs: ISummaryCardProps[] = [
+            {
+                label: "A.W.E",
+                value: applicationList?.summary?.total ?? 0,
+                icon: <IconListNumbers size={18} />,
+                borderColor: "border-gray-100",
+                iconBgColor: "bg-gray-100",
+                iconTextColor: "text-gray-600",
+            },
+            {
+                label: "Requests",
+                value: applicationList?.summary?.request ?? 0,
+                icon: <IconFileText size={18} />,
+                borderColor: "border-blue-100",
+                iconBgColor: "bg-purple-100",
+                iconTextColor: "text-purple-600",
+            },
+            {
+                label: "On progress",
+                value: applicationList?.summary?.open ?? 0,
+                icon: <IconLoader size={18} />,
+                borderColor: "border-green-100",
+                iconBgColor: "bg-blue-100",
+                iconTextColor: "text-blue-600",
+            },
+            {
+                label: "Applied",
+                value: applicationList?.summary?.applied ?? 0,
+                icon: <IconSend size={18} />,
+                borderColor: "border-green-100",
+                iconBgColor: "bg-green-100",
+                iconTextColor: "text-green-600",
+            },
+            {
+                label: "Won",
+                value: applicationList?.summary?.awarded ?? 0,
+                icon: <IconAward size={18} />,
+                borderColor: "border-emerald-100",
+                iconBgColor: "bg-emerald-100",
+                iconTextColor: "text-emerald-600",
+            },
+            {
+                label: "Executed", // Corrected spelling from 'Excuted'
+                value: applicationList?.summary?.executed ?? 0,
+                icon: <IconTruckDelivery size={18} />,
+                borderColor: "border-emerald-100",
+                iconBgColor: "bg-amber-100",
+                iconTextColor: "text-amber-600",
+            },
+            {
+                label: "Cancelled",
+                value: applicationList?.summary?.canceled ?? 0,
+                icon: <IconX size={18} />,
+                borderColor: "border-red-100",
+                iconBgColor: "bg-red-100",
+                iconTextColor: "text-red-600",
+            },
+        ];
 
     const schema = object().shape({
         status: string().required("Status is required"),
@@ -323,109 +384,19 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                 <div className="border-b border-zinc-200 text-sm  pb-5">
 
                     <div className="space-y-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 w-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 w-full">
 
-                            {/* Total */}
-                            <div className="bg-white border border-gray-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-full bg-gray-100 text-gray-600">
-                                        <IconListNumbers size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            {t("difm-total-requests")}
-                                        </p>
-                                        <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.total ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Requests */}
-                            <div className="bg-white border border-blue-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-full bg-purple-100 text-purple-600">
-                                        <IconFileText size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            {t("difm-requests")}
-                                        </p>
-                                        <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.request ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* on progress */}
-                            <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                                        <IconLoader size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            {t("difm-on-progress")}
-                                        </p>
-                                        <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.open ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Submitted */}
-                            <div className="bg-white border border-green-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-full bg-green-100 text-green-600">
-                                        <IconSend size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            {t("difm-applied")}
-                                        </p>
-                                        <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.applied ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Awarded */}
-                            <div className="bg-white border border-emerald-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-full bg-emerald-100 text-emerald-600">
-                                        <IconAward size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            {t("difm-won")}
-                                        </p>
-                                        <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.awarded ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Cancelled */}
-                            <div className="bg-white border border-red-100 rounded-xl p-1 shadow-sm hover:shadow-md transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-full bg-red-100 text-red-600">
-                                        <IconX size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-wide">
-                                            {t("difm-canceled")}
-                                        </p>
-                                        <p className="text-md font-bold text-gray-800">
-                                            {applicationList?.summary?.canceled ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            {summaryConfigs.map((config, index) => (
+                                    <SummaryCard
+                                        key={index}
+                                        label={config.label}
+                                        value={config.value}
+                                        icon={config.icon}
+                                        borderColor={config.borderColor}
+                                        iconBgColor={config.iconBgColor}
+                                        iconTextColor={config.iconTextColor}
+                                    />
+                                ))}
                         </div>
 
                     </div>

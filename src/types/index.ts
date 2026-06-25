@@ -32,6 +32,17 @@ export interface IQueryParamsUserFilter {
   filter?: Record<string, any>;
 }
 
+export interface IApplicationSummary {
+  request: number;
+  total: number;
+  awarded: number;
+  notAwarded: number;
+  applied: number;
+  open: number;
+  executed: number;
+  canceled: number;
+}
+
 export interface IlistResponse<T> {
   content: T[];
   pageable: Pageable;
@@ -44,7 +55,7 @@ export interface IlistResponse<T> {
   numberOfElements: number;
   size: number;
   empty: boolean;
-  summary: any | null;
+  summary: IApplicationSummary | null;
 
 }
 

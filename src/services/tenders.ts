@@ -1,5 +1,5 @@
 import http from "@/http";
-import { IQueryParams, ITenderCategory, ITenders, IlistResponse } from "@/types";
+import { IApplications, IQueryParams, ITenderCategory, ITenders, IlistResponse } from "@/types";
 import { IApplicationPDFReport, IAssignBidder, IConsultation } from "@/types/forms";
 import { IApplicationInterface, ITender, ITenderApplication } from "@/types/tenderWizard";
 
@@ -147,7 +147,7 @@ export async function getDoForMeGroup(params: {}) {
 }
 
 export async function getDoForMeApplication(groupId: string, params: {}) {
-    const response = await http.get<IlistResponse<any>>(`/applications/do-for-me/list/application/${groupId}`, {
+    const response = await http.get<IlistResponse<IApplications>>(`/applications/do-for-me/list/application/${groupId}`, {
         params: params
     })
 
