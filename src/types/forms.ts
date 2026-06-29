@@ -103,7 +103,7 @@ export interface IConsultation {
 
 export interface IApplicationPDFReport {
     groupId: string
-    month: number
+    month: number | string
 }
 
 export interface IConsultationApplication {

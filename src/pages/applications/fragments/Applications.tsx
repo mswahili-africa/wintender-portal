@@ -43,7 +43,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
-    const [reportMonth, setReportMonth] = useState<number | null>(null);
+    const [reportMonth, setReportMonth] = useState<number | string | null>("ALL");
     const [status, setStatus] = useState<string>("");
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
@@ -343,9 +343,9 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             <select
                                 className="input-normal w-36"
                                 value={reportMonth ?? ""}
-                                onChange={(e) => setReportMonth(Number(e.target.value))}
+                                onChange={(e) => setReportMonth(e.target.value)}
                             >
-                                <option value="0">All</option>
+                                <option value="ALL">All</option>
                                 <option value="1">January</option>
                                 <option value="2">February</option>
                                 <option value="3">March</option>
@@ -365,7 +365,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                     label={requestPDFReportMutation.isPending ? "Requesting..." : t("difm-request-pdf-report-button")}
                                     size="sm"
                                     theme="primary"
-                                    disabled={!reportMonth}
+                                    // disabled={!reportMonth}
                                     onClick={() =>
                                         requestPDFReportMutation.mutate({
                                             groupId,
