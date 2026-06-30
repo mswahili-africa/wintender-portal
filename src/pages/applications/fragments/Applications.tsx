@@ -346,7 +346,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 label={t("difm-request-pdf-report-button")}
                                 size="sm"            
                                 icon={<IconReportAnalytics size={18} />}
-                                theme="primary"
+                                theme="info"
                                 onClick={() => setHandleModal({ type: "report", object: null })}
                             />
                         </Tooltip>

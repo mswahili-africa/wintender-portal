@@ -289,7 +289,7 @@
     "difm-new-request-button-tooltip":"Create new request",
     "difm-view-button-tooltip":"View request details",
     "difm-request-pdf-report-button-tooltip":"Request PDF report of your do it for me requests",
-    "difm-request-pdf-report-button":"Request PDF",
+    "difm-request-pdf-report-button":"Request DIFM PDF report",
     "difm-total-requests":"Total",
     "difm-requests":"Requests",
     "difm-on-progress":"On Progress",
