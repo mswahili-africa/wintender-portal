@@ -1,4 +1,4 @@
-import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconListNumbers, IconLoader, IconSend, IconSquareRoundedMinus, IconTruckDelivery, IconX } from "@tabler/icons-react";
+import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconFlagCheck, IconListNumbers, IconLoader, IconReportAnalytics, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
@@ -13,18 +13,16 @@ import { number, object, string } from "yup";
 import { useMutation } from "@tanstack/react-query";
 import Button from "@/components/button/Button";
 import TenderViewModelDoItForMe from "./tenderViewModelDoItForMe";
-import Chip from "@/components/chip/Chip";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
 import { IApplicationPDFReport } from "@/types/forms";
 import { DIFMStatusOptions } from "@/types/statuses";
-import TextInput from "@/components/widgets/forms/TextInput";
-import { filter } from "lodash";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import SummaryCard, { ISummaryCardProps } from "@/components/cards/SummaryCard";
+import DifmReportGenerationModal from "./DifmReportGenerationModal";
 
 
 interface ApplicationsListProps {
@@ -36,7 +34,7 @@ interface ApplicationsListProps {
 
 export default function ApplicationsList({ applicationGroup, groupId, onClose, onRefetch }: ApplicationsListProps) {
     const [page, setPage] = useState<number>(0);
-    const [search, setSearch] = useState<string|undefined>(undefined);
+    const [search, setSearch] = useState<string | undefined>(undefined);
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -48,6 +46,11 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [handleModal, setHandleModal] = useState<{ type: "status" | "tender" | "report" | "", object: any }>({ type: "", object: null });
+
+    const handleCloseAllModals = () => {
+        setHandleModal({ type: "", object: null });
+    }
 
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
@@ -61,64 +64,64 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     });
 
     // Configuration mapping array
-        const summaryConfigs: ISummaryCardProps[] = [
-            {
-                label: "A.W.E",
-                value: applicationList?.summary?.total ?? 0,
-                icon: <IconListNumbers size={18} />,
-                borderColor: "border-gray-100",
-                iconBgColor: "bg-gray-100",
-                iconTextColor: "text-gray-600",
-            },
-            {
-                label: "Requests",
-                value: applicationList?.summary?.request ?? 0,
-                icon: <IconFileText size={18} />,
-                borderColor: "border-blue-100",
-                iconBgColor: "bg-purple-100",
-                iconTextColor: "text-purple-600",
-            },
-            {
-                label: "On progress",
-                value: applicationList?.summary?.open ?? 0,
-                icon: <IconLoader size={18} />,
-                borderColor: "border-green-100",
-                iconBgColor: "bg-blue-100",
-                iconTextColor: "text-blue-600",
-            },
-            {
-                label: "Applied",
-                value: applicationList?.summary?.applied ?? 0,
-                icon: <IconSend size={18} />,
-                borderColor: "border-green-100",
-                iconBgColor: "bg-green-100",
-                iconTextColor: "text-green-600",
-            },
-            {
-                label: "Won",
-                value: applicationList?.summary?.awarded ?? 0,
-                icon: <IconAward size={18} />,
-                borderColor: "border-emerald-100",
-                iconBgColor: "bg-emerald-100",
-                iconTextColor: "text-emerald-600",
-            },
-            {
-                label: "Executed", // Corrected spelling from 'Excuted'
-                value: applicationList?.summary?.executed ?? 0,
-                icon: <IconTruckDelivery size={18} />,
-                borderColor: "border-emerald-100",
-                iconBgColor: "bg-amber-100",
-                iconTextColor: "text-amber-600",
-            },
-            {
-                label: "Cancelled",
-                value: applicationList?.summary?.canceled ?? 0,
-                icon: <IconX size={18} />,
-                borderColor: "border-red-100",
-                iconBgColor: "bg-red-100",
-                iconTextColor: "text-red-600",
-            },
-        ];
+    const summaryConfigs: ISummaryCardProps[] = [
+        {
+            label: "A.W.E",
+            value: applicationList?.summary?.total ?? 0,
+            icon: <IconListNumbers size={18} />,
+            borderColor: "border-gray-100",
+            iconBgColor: "bg-gray-100",
+            iconTextColor: "text-gray-600",
+        },
+        {
+            label: "Requests",
+            value: applicationList?.summary?.request ?? 0,
+            icon: <IconFileText size={18} />,
+            borderColor: "border-blue-100",
+            iconBgColor: "bg-purple-100",
+            iconTextColor: "text-purple-600",
+        },
+        {
+            label: "On progress",
+            value: applicationList?.summary?.open ?? 0,
+            icon: <IconLoader size={18} />,
+            borderColor: "border-green-100",
+            iconBgColor: "bg-blue-100",
+            iconTextColor: "text-blue-600",
+        },
+        {
+            label: "Applied",
+            value: applicationList?.summary?.applied ?? 0,
+            icon: <IconSend size={18} />,
+            borderColor: "border-green-100",
+            iconBgColor: "bg-green-100",
+            iconTextColor: "text-green-600",
+        },
+        {
+            label: "Won",
+            value: applicationList?.summary?.awarded ?? 0,
+            icon: <IconAward size={18} />,
+            borderColor: "border-emerald-100",
+            iconBgColor: "bg-emerald-100",
+            iconTextColor: "text-emerald-600",
+        },
+        {
+            label: "Executed", // Corrected spelling from 'Excuted'
+            value: applicationList?.summary?.executed ?? 0,
+            icon: <IconFlagCheck size={18} />,
+            borderColor: "border-emerald-100",
+            iconBgColor: "bg-amber-100",
+            iconTextColor: "text-amber-600",
+        },
+        {
+            label: "Cancelled",
+            value: applicationList?.summary?.canceled ?? 0,
+            icon: <IconX size={18} />,
+            borderColor: "border-red-100",
+            iconBgColor: "bg-red-100",
+            iconTextColor: "text-red-600",
+        },
+    ];
 
     const schema = object().shape({
         status: string().required("Status is required"),
@@ -144,18 +147,18 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
 
 
-    const requestPDFReportMutation = useMutation({
-        mutationFn: (payload: IApplicationPDFReport) =>
-            requestApplicationPDFReport(payload),
+    // const requestPDFReportMutation = useMutation({
+    //     mutationFn: (payload: IApplicationPDFReport) =>
+    //         requestApplicationPDFReport(payload),
 
-        onSuccess: () => {
-            toast.success("Check your WhatsApp for the PDF report");
-        },
+    //     onSuccess: () => {
+    //         toast.success("Check your WhatsApp for the PDF report");
+    //     },
 
-        onError: () => {
-            toast.error("Request failed");
-        },
-    });
+    //     onError: () => {
+    //         toast.error("Request failed");
+    //     },
+    // });
 
     const deteleMutation = useMutation({
         mutationFn: (doItForMeId: string) => deleteDoForMe(doItForMeId),
@@ -338,44 +341,15 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             }
                         </select>
 
-                        {/* PDF Report Section */}
-                        <div className="flex flex-row gap-2 items-center">
-                            <select
-                                className="input-normal w-36"
-                                value={reportMonth ?? ""}
-                                onChange={(e) => setReportMonth(e.target.value)}
-                            >
-                                <option value="ALL">All</option>
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-
-                            <Tooltip content={t("difm-request-pdf-report-button-tooltip")}>
-                                <Button
-                                    label={requestPDFReportMutation.isPending ? "Requesting..." : t("difm-request-pdf-report-button")}
-                                    size="sm"
-                                    theme="primary"
-                                    // disabled={!reportMonth}
-                                    onClick={() =>
-                                        requestPDFReportMutation.mutate({
-                                            groupId,
-                                            month: reportMonth!,
-                                        })
-                                    }
-                                />
-                            </Tooltip>
-
-                        </div>
+                        <Tooltip content={t("difm-request-pdf-report-button-tooltip")}>
+                            <Button
+                                label={t("difm-request-pdf-report-button")}
+                                size="sm"            
+                                icon={<IconReportAnalytics size={18} />}
+                                theme="primary"
+                                onClick={() => setHandleModal({ type: "report", object: null })}
+                            />
+                        </Tooltip>
 
                     </div>
                     <button onClick={handleCloseModal} className="text-red-500">Close</button>
@@ -387,16 +361,16 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 w-full">
 
                             {summaryConfigs.map((config, index) => (
-                                    <SummaryCard
-                                        key={index}
-                                        label={config.label}
-                                        value={config.value}
-                                        icon={config.icon}
-                                        borderColor={config.borderColor}
-                                        iconBgColor={config.iconBgColor}
-                                        iconTextColor={config.iconTextColor}
-                                    />
-                                ))}
+                                <SummaryCard
+                                    key={index}
+                                    label={config.label}
+                                    value={config.value}
+                                    icon={config.icon}
+                                    borderColor={config.borderColor}
+                                    iconBgColor={config.iconBgColor}
+                                    iconTextColor={config.iconTextColor}
+                                />
+                            ))}
                         </div>
 
                     </div>
@@ -440,14 +414,14 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                                 )}
 
                                 {/* {(applicationList.status === "COMPLETED" || applicationList.status === "ON_PROGRESS") && ( */}
-                                    <Tooltip content={t("difm-application-invoice-generator-button-tooltip")}>
-                                        <button
-                                            className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
-                                            onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
-                                        >
-                                            <IconFile size={20} />
-                                        </button>
-                                    </Tooltip>
+                                <Tooltip content={t("difm-application-invoice-generator-button-tooltip")}>
+                                    <button
+                                        className="flex items-center text-xs xl:text-sm text-slate-600 hover:text-green-600"
+                                        onClick={() => viewProfomaInvoice(applicationGroup, applicationList)}
+                                    >
+                                        <IconFile size={20} />
+                                    </button>
+                                </Tooltip>
                                 {/* )} */}
                                 {userRole === "BIDDER" && applicationList.status === "REQUESTED" && (
                                     <Tooltip content={t("difm-application-delete-button-tooltip")}>
@@ -580,12 +554,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     </div>
                 )}
 
-                <TenderViewModelDoItForMe
-                    open={isTenderModalOpen && selectedApplication !== null}
-                    selectedApplication={selectedApplication!}
-                    applicationGroup={applicationGroup}
-                    onClose={() => setSelectedApplication(null)}
-                />
 
                 <div className="flex justify-between items-center p-4 lg:px-8">
                     {applicationList?.pageable && (
@@ -597,6 +565,19 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                         />
                     )}
                 </div>
+
+                <TenderViewModelDoItForMe
+                    open={isTenderModalOpen && selectedApplication !== null}
+                    selectedApplication={selectedApplication!}
+                    applicationGroup={applicationGroup}
+                    onClose={() => setSelectedApplication(null)}
+                />
+
+                <DifmReportGenerationModal
+                    open={handleModal.type === "report"}
+                    groupId={groupId}
+                    onClose={handleCloseAllModals}
+                />
             </div>
         </div >
     );
