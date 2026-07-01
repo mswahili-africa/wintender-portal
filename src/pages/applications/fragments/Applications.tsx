@@ -337,101 +337,103 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
-            <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[85vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-bold text-l">{applicationGroup?.bidderCompanyName}</h3>
-                    <button onClick={handleCloseModal} className="text-red-500">Close</button>
-                </div>
-                <div className="flex flex-row justify-between gap-2 mb-2 px-5">
-                    <div className="flex flex-row gap-x-2">
-                        <Select
-                            options={difmApplicationColumnSearchOptions}
-                            value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
-                            onChange={(selectedOption) => setFilterQuery({ ...filterQuery, searchKey: selectedOption?.value })}
-                            placeholder="Search by"
-                            className="w-[200px] p-0"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            value={filterQuery?.searchValue || ""}
-                            className="input-normal w-[200px] lg:w-[300px]"
-                            onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
-                        />
+            <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[85vh] z-60 overflow-y-auto"> {/* Set max height and overflow */}
+                <div className="w-full sticky top-0 bg-white shadow-sm p-4 mb-5">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold text-l">{applicationGroup?.bidderCompanyName}</h3>
+                        <button onClick={handleCloseModal} className="text-red-500">Close</button>
                     </div>
-                    <div className="flex gap-x-2">
-                        <select
-                            className="input-normal w-full sm:w-36"
-                            value={filterQuery?.status || ""}
-                            onChange={(e) => setFilterQuery({ ...filterQuery, status: e.target.value })}
-                        >
-                            <option value="">ALL</option>
-                            {
-                                DIFMStatusOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))
-                            }
-                        </select>
-
-                        <Button
-                            type="button"
-                            label="Filter"
-                            icon={<IconFilter size={18} />}
-                            onClick={handleFilterSubmit}
-                            theme="info"
-                            size="sm"
-                        />
-                        {
-                            (filterQuery?.searchValue || filterQuery?.status || filterQuery?.searchKey !== 'title') && (
-                                <Button
-                                    type="button"
-                                    label="Reset"
-                                    icon={<IconRecycle size={18} />}
-                                    onClick={resetFilter}
-                                    theme="warning"
-                                    size="sm"
-                                />
-                            )
-                        }
-
-                        <Tooltip content={t("difm-request-pdf-report-button-tooltip")}>
-                            <Button
-                                label={t("difm-request-pdf-report-button")}
-                                size="sm"
-                                icon={<IconReportAnalytics size={18} />}
-                                theme="primary"
-                                onClick={() => setHandleModal({ type: "report", object: null })}
+                    <div className="flex flex-row justify-between gap-2 mb-2 px-5">
+                        <div className="flex flex-row gap-x-2">
+                            <Select
+                                options={difmApplicationColumnSearchOptions}
+                                value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
+                                onChange={(selectedOption) => setFilterQuery({ ...filterQuery, searchKey: selectedOption?.value })}
+                                placeholder="Search by"
+                                className="w-[200px] p-0"
                             />
-                        </Tooltip>
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                value={filterQuery?.searchValue || ""}
+                                className="input-normal w-[200px] lg:w-[300px]"
+                                onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
+                            />
+                        </div>
+                        <div className="flex gap-x-2">
+                            <select
+                                className="input-normal w-full sm:w-36"
+                                value={filterQuery?.status || ""}
+                                onChange={(e) => setFilterQuery({ ...filterQuery, status: e.target.value })}
+                            >
+                                <option value="">ALL</option>
+                                {
+                                    DIFMStatusOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))
+                                }
+                            </select>
 
-                    </div>
+                            <Button
+                                type="button"
+                                label="Filter"
+                                icon={<IconFilter size={18} />}
+                                onClick={handleFilterSubmit}
+                                theme="info"
+                                size="sm"
+                            />
+                            {
+                                (filterQuery?.searchValue || filterQuery?.status || filterQuery?.searchKey !== 'title') && (
+                                    <Button
+                                        type="button"
+                                        label="Reset"
+                                        icon={<IconRecycle size={18} />}
+                                        onClick={resetFilter}
+                                        theme="warning"
+                                        size="sm"
+                                    />
+                                )
+                            }
 
-                </div>
-
-                <div className="border-b border-zinc-200 text-sm  pb-5">
-
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 w-full">
-
-                            {summaryConfigs.map((config, index) => (
-                                <SummaryCard
-                                    key={index}
-                                    label={config.label}
-                                    value={config.value}
-                                    icon={config.icon}
-                                    borderColor={config.borderColor}
-                                    iconBgColor={config.iconBgColor}
-                                    iconTextColor={config.iconTextColor}
+                            <Tooltip content={t("difm-request-pdf-report-button-tooltip")}>
+                                <Button
+                                    label={t("difm-request-pdf-report-button")}
+                                    size="sm"
+                                    icon={<IconReportAnalytics size={18} />}
+                                    theme="primary"
+                                    onClick={() => setHandleModal({ type: "report", object: null })}
                                 />
-                            ))}
+                            </Tooltip>
+
                         </div>
 
                     </div>
+
+                    <div className="border-b border-zinc-200 text-sm  pb-5">
+
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 w-full">
+
+                                {summaryConfigs.map((config, index) => (
+                                    <SummaryCard
+                                        key={index}
+                                        label={config.label}
+                                        value={config.value}
+                                        icon={config.icon}
+                                        borderColor={config.borderColor}
+                                        iconBgColor={config.iconBgColor}
+                                        iconTextColor={config.iconTextColor}
+                                    />
+                                ))}
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
-
+                <div className="p-4 lg:px-8">
                 {isLoading ? (
                     <Loader />
                 ) : (
@@ -619,6 +621,8 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             totalElements={applicationList.totalElements}
                         />
                     )}
+                </div>
+
                 </div>
 
                 <TenderViewModelDoItForMe
