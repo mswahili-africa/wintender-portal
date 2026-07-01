@@ -21,7 +21,7 @@ interface IProps {
 export default function({groupId,...props}: IProps,options?: { enabled?: boolean }) {
     const { handleError } = useErrorHandler();
     const { isLoading, isError, data, error, refetch } = useQuery({
-        queryKey: ["getDIFMApplications",props.applicationGroup?.id, props.page,props.status, props.sort, props?.searchValue, props?.filter,props?.visibility,props?.paymentReason, props?.searchKey],
+        queryKey: ["getDIFMApplications",props.applicationGroup?.id, props.page,props.status, props.sort, props?.searchValue, props?.filter,props?.visibility,props?.paymentReason],
         queryFn: () => getDoForMeApplication(groupId ,{page: props.page, size: 10, sort: props.sort,visibility:props.visibility, searchValue: props.searchValue, status: props.status, paymentReason: props.paymentReason, searchKey: props.searchKey, ...props.filter}),
         onError: (error: AxiosError) => handleError(error),
         refetchOnWindowFocus: false,

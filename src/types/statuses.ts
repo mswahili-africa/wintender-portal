@@ -34,3 +34,16 @@ export enum PaymentSource {
     WALLET = "WALLET",
     POS = "POS"
 }
+
+export const difmApplicationColumnSearchOptions: any[] = [
+    { value: "bidderCompanyName", label: "Bidder" },
+    { value: "title", label: "Tender" },
+    { value: "referenceNumber", label: "Reference number" },
+    { value: "controlNumber", label: "Control number" },
+];
+
+export const difmApplicationQueryParams: Record<string, any> = {
+    status: undefined,
+    searchKey: "title",
+    searchValue: undefined,
+};

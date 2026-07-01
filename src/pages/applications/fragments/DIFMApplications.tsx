@@ -1,4 +1,4 @@
-import { IconCheckbox, IconEdit, IconEye, IconFile, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconCheckbox, IconEdit, IconEye, IconFile, IconFilter, IconRecycle, IconSquareRoundedMinus } from "@tabler/icons-react";
 import { useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import toast from "react-hot-toast";
@@ -17,20 +17,24 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
 import DIFMListColumns from "./DIFMListColumns";
-import { DIFMStatusOptions } from "@/types/statuses";
+import { difmApplicationColumnSearchOptions, difmApplicationQueryParams, DIFMStatusOptions } from "@/types/statuses";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
+import Select from "react-select";
+
 
 
 export default function DIFMapplications() {
     const [page, setPage] = useState<number>(0);
-    const [search, setSearch] = useState<string|undefined>();
+    const [search, setSearch] = useState<string | undefined>();
     const [sort, setSort] = useState<string>("updatedAt,desc");
     const [selectedApplication, setSelectedApplication] = useState<IApplications | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
+    const [searchColumn, setSearchColumn] = useState<string | undefined>("title");
+    const [filterQuery, setFilterQuery] = useState<Record<string, any> | undefined>(difmApplicationQueryParams);
     const [status, setStatus] = useState<string | undefined>(undefined);
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
@@ -44,10 +48,32 @@ export default function DIFMapplications() {
         search,
         sort,
         status: status === "" || status === undefined ? undefined : status,
+        searchKey: searchColumn,
+        searchValue: search === "" || search === undefined ? undefined : search,
         filter: undefined,
         visibility: "all",
-        
+
     });
+
+    // submit filter
+    const handleFilterSubmit = () => {
+        setSearch(filterQuery?.searchValue);
+        setStatus(filterQuery?.status);
+        setSearchColumn(filterQuery?.searchKey);
+    };
+
+    // reset filter
+    const resetFilter = () => {
+        setSearch(undefined);
+        setStatus(undefined);
+        setSearchColumn("title");
+
+        setFilterQuery({
+            status: undefined,
+            searchKey: "title",
+            searchValue: undefined,
+        });
+    };
 
     const schema = object().shape({
         status: string().required("Status is required"),
@@ -208,30 +234,62 @@ export default function DIFMapplications() {
     return (
         // <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
         <div className="modal-content rounded-lg shadow-lg p-4 z-60"> {/* Set max height and overflow */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col items-start">
                 <h3 className="font-bold text-lg">{t("difm-tabs-all-applications-header")}</h3>
-                <div className="flex flex-col items-center justify-end sm:flex-row gap-2">
-                    <div className="text-slate-500 flex text-sm flex-row italic">{status === undefined || status === "" ? "All" : status}: <span className="text-green-600 font-bold mx-2">{applicationList?.totalElements ?? 0}</span></div>
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        className="input-normal w-full sm:w-72 text-xs"
-                        onChange={(e) => setSearch(e.target.value)} // Update search query
-                    />
-                    <select
-                        className={`input-normal w-full sm:w-60 text-xs`}
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                    >
-                        <option value={""}>Status</option>
+                <div className="flex flex-row gap-2 w-full justify-between mb-4">
+                    <div className="flex flex-row gap-x-2">
+                        <Select
+                            options={difmApplicationColumnSearchOptions}
+                            value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
+                            onChange={(selectedOption) => setFilterQuery({ ...filterQuery, searchKey: selectedOption?.value })}
+                            placeholder="Search by"
+                            className="w-[200px] p-0"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={filterQuery?.searchValue || ""}
+                            className="input-normal w-[200px] lg:w-[300px]"
+                            onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
+                        />
+                    </div>
+
+                    <div className="flex gap-x-2">
+                        <select
+                            className={`input-normal w-[150px]`}
+                            value={filterQuery?.status || ""}
+                            onChange={(e) => setFilterQuery({ ...filterQuery, status: e.target.value })}
+                        >
+                            <option value=''>Status</option>
+                            {
+                                DIFMStatusOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))
+                            }
+                        </select>
+                        <Button
+                            type="button"
+                            label="Filter"
+                            icon={<IconFilter size={18} />}
+                            onClick={handleFilterSubmit}
+                            theme="info"
+                            size="sm"
+                        />
                         {
-                            DIFMStatusOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))
+                            (filterQuery?.searchValue || filterQuery?.status !== undefined || filterQuery?.searchKey !== 'title') && (
+                                <Button
+                                    type="button"
+                                    label="Reset"
+                                    icon={<IconRecycle size={18} />}
+                                    onClick={resetFilter}
+                                    theme="warning"
+                                    size="sm"
+                                />
+                            )
                         }
-                    </select>
+                    </div>
                 </div>
             </div>
 

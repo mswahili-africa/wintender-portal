@@ -3,8 +3,8 @@ import Pagination from "@/components/widgets/table/Pagination";
 import { Table } from "@/components/widgets/table/Table";
 import useApplicationsList from "@/hooks/useApplicationsList";
 import { IApplications } from "@/types";
-import { DIFMStatusOptions } from "@/types/statuses";
-import { IconFile, IconRecycle } from "@tabler/icons-react";
+import { difmApplicationColumnSearchOptions, difmApplicationQueryParams, DIFMStatusOptions } from "@/types/statuses";
+import { IconFile, IconFilter, IconRecycle } from "@tabler/icons-react";
 import { t } from "i18next";
 import { useState } from "react";
 import Tooltip from "@/components/tooltip/Tooltip";
@@ -13,18 +13,6 @@ import InvoiceListColumns from "./fragments/InvoiceListColumns";
 import Select from "react-select";
 import Button from "@/components/button/Button";
 
-const columnSearchOptions: any[] = [
-  { value: "bidderCompanyName", label: "Bidder" },
-  { value: "title", label: "Tender" },
-  { value: "referenceNumber", label: "Reference number" },
-  { value: "controlNumber", label: "Control number" },
-];
-
-// const paymentReasonList = Object.entries(PaymentReason).map(([key, value]) => ({
-//   value: key,
-//   label: value
-// }));
-
 export const InvoicePage = () => {
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
@@ -32,6 +20,8 @@ export const InvoicePage = () => {
   const [status, setStatus] = useState<string | undefined>(undefined);
   // const [paymentReason, setPaymentReason] = useState<string | undefined>(undefined);
   const [searchColumn, setSearchColumn] = useState<string | undefined>("title");
+  const [filterQuery, setFilterQuery] = useState<Record<string, any> | undefined>(difmApplicationQueryParams);
+
   const navigate = useNavigate();
 
   // Fetch data using custom hook
@@ -41,19 +31,31 @@ export const InvoicePage = () => {
     page,
     searchValue: search === "" ? undefined : search,
     sort,
-    status,
+    status: status === "" || status === undefined ? undefined : status,
     // paymentReason,
     searchKey: searchColumn,
     filter: undefined,
     visibility: "all"
   });
 
+  // Handle filter submission
+  const handleFilterSubmit = () => {
+    setSearch(filterQuery?.searchValue);
+    setStatus(filterQuery?.status);
+    setSearchColumn(filterQuery?.searchKey);
+  };
+
   // reset filter
   const resetFilter = () => {
-    setSearch("");
+    setSearch(undefined);
     setStatus(undefined);
-    // setPaymentReason(undefined);
     setSearchColumn("title");
+
+    setFilterQuery({
+      status: undefined,
+      searchKey: "title",
+      searchValue: undefined,
+    })
   };
 
   const viewProfomaInvoice = (application: IApplications) => {
@@ -65,30 +67,30 @@ export const InvoicePage = () => {
   return (
     <div className="modal-content rounded-lg shadow-lg p-4 z-60"> {/* Set max height and overflow */}
       <div className="flex flex-col justify-between mb-4">
-        <h3 className="font-bold text-lg mb-4">{t("difm-tabs-all-applications-header")}</h3>
+        <h3 className="font-bold text-lg mb-4">Invoices</h3>
         <div className="flex flex-row gap-2 w-full justify-between mb-4">
           <div className="flex flex-row gap-x-2">
             <Select
-              options={columnSearchOptions}
-              value={columnSearchOptions.find((option: any) => option.value === searchColumn)}
-              onChange={(selectedOption) => setSearchColumn(selectedOption?.value)}
+              options={difmApplicationColumnSearchOptions}
+              value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
+              onChange={(selectedOption) => setFilterQuery({ ...filterQuery, searchKey: selectedOption?.value })}
               placeholder="Search by"
               className="w-[200px] p-0"
             />
             <input
               type="text"
               placeholder="Search"
-              value={search}
+              value={filterQuery?.searchValue || ""}
               className="input-normal w-[200px] lg:w-[300px]"
-              onChange={(e) => setSearch(e.target.value)} // Update search query
+              onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
             />
           </div>
 
           <div className="flex gap-x-2">
             <select
               className={`input-normal w-[150px]`}
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              value={filterQuery?.status || ""}
+              onChange={(e) => setFilterQuery({ ...filterQuery, status: e.target.value })}
             >
               <option value="">Status</option>
               {
@@ -99,28 +101,26 @@ export const InvoicePage = () => {
                 ))
               }
             </select>
-            {/* <select
-              className={`input-normal w-[180px]`}
-              value={paymentReason}
-              onChange={(e) => setPaymentReason(e.target.value)}
-            >
-              <option value="">payment reason</option>
-              {
-                paymentReasonList.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))
-              }
-            </select> */}
             <Button
               type="button"
-              label="Reset"
-              icon={<IconRecycle size={18} />}
-              onClick={resetFilter}
-              theme="warning"
-              size="md"
+              label="Filter"
+              icon={<IconFilter size={18} />}
+              onClick={handleFilterSubmit}
+              theme="info"
+              size="sm"
             />
+            {
+              (filterQuery?.searchValue || filterQuery?.status || filterQuery?.searchKey !== 'title') && (
+                <Button
+                  type="button"
+                  label="Reset"
+                  icon={<IconRecycle size={18} />}
+                  onClick={resetFilter}
+                  theme="warning"
+                  size="sm"
+                />
+              )
+            }
           </div>
         </div>
       </div>

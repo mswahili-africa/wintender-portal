@@ -1,4 +1,4 @@
-import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconFlagCheck, IconListNumbers, IconLoader, IconReportAnalytics, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
+import { IconAward, IconCheckbox, IconEdit, IconEye, IconFile, IconFileText, IconFilter, IconFlagCheck, IconListNumbers, IconLoader, IconRecycle, IconReportAnalytics, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import applicationListColumns from "./applicationListColumns";
@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import usePopup from "@/hooks/usePopup";
 import { useUserDataContext } from "@/providers/userDataProvider";
 import { IApplicationGroup, IApplications } from "@/types";
-import { deleteDoForMe, requestApplicationPDFReport, updatePrincipleAmount, updateStatus } from "@/services/tenders";
+import { deleteDoForMe, updatePrincipleAmount, updateStatus } from "@/services/tenders";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { number, object, string } from "yup";
@@ -17,13 +17,12 @@ import useApplicationsList from "@/hooks/useApplicationsList";
 import Pagination from "@/components/widgets/table/Pagination";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/spinners/Loader";
-import { IApplicationPDFReport } from "@/types/forms";
-import { DIFMStatusOptions } from "@/types/statuses";
+import { difmApplicationColumnSearchOptions, difmApplicationQueryParams, DIFMStatusOptions } from "@/types/statuses";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import SummaryCard, { ISummaryCardProps } from "@/components/cards/SummaryCard";
 import DifmReportGenerationModal from "./DifmReportGenerationModal";
-
+import Select from "react-select";
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
@@ -41,12 +40,13 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     const [editAmount, setEditAmount] = useState<number | null>(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isTenderModalOpen, setIsTenderModalOpen] = useState(false);
-    const [reportMonth, setReportMonth] = useState<number | string | null>("ALL");
-    const [status, setStatus] = useState<string>("");
+    const [status, setStatus] = useState<string | undefined>(undefined);
     const { showConfirmation } = usePopup();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [handleModal, setHandleModal] = useState<{ type: "status" | "tender" | "report" | "", object: any }>({ type: "", object: null });
+    const [filterQuery, setFilterQuery] = useState<Record<string, any> | undefined>(difmApplicationQueryParams);
+    const [searchColumn, setSearchColumn] = useState<string | undefined>("title");
 
     const handleCloseAllModals = () => {
         setHandleModal({ type: "", object: null });
@@ -58,10 +58,32 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
         groupId,
         page,
         search,
+        searchValue: search === "" ? undefined : search,
+        searchKey: searchColumn,
         sort,
         status: status !== "" ? status : undefined,
         filter: undefined,
     });
+
+    // Handle filter submission
+    const handleFilterSubmit = () => {
+        setSearch(filterQuery?.searchValue);
+        setStatus(filterQuery?.status);
+        setSearchColumn(filterQuery?.searchKey);
+    };
+
+    // reset filter
+    const resetFilter = () => {
+        setSearch(undefined);
+        setStatus(undefined);
+        setSearchColumn("title");
+
+        setFilterQuery({
+            status: undefined,
+            searchKey: "title",
+            searchValue: undefined,
+        })
+    };
 
     // Configuration mapping array
     const summaryConfigs: ISummaryCardProps[] = [
@@ -315,21 +337,33 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-1 bg-black bg-opacity-50">
-            <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[80vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
+            <div className="modal-content bg-white rounded-lg shadow-lg w-[90%] max-h-[85vh] p-4 z-60 overflow-y-auto"> {/* Set max height and overflow */}
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="font-bold text-l">{applicationGroup?.bidderCompanyName}</h3>
-                    <div className="flex flex-row gap-2">
+                    <button onClick={handleCloseModal} className="text-red-500">Close</button>
+                </div>
+                <div className="flex flex-row justify-between gap-2 mb-2 px-5">
+                    <div className="flex flex-row gap-x-2">
+                        <Select
+                            options={difmApplicationColumnSearchOptions}
+                            value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
+                            onChange={(selectedOption) => setFilterQuery({ ...filterQuery, searchKey: selectedOption?.value })}
+                            placeholder="Search by"
+                            className="w-[200px] p-0"
+                        />
                         <input
                             type="text"
-                            placeholder="Search tender title here..."
-                            className="input-normal w-60"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search"
+                            value={filterQuery?.searchValue || ""}
+                            className="input-normal w-[200px] lg:w-[300px]"
+                            onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
                         />
+                    </div>
+                    <div className="flex gap-x-2">
                         <select
                             className="input-normal w-full sm:w-36"
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
+                            value={filterQuery?.status || ""}
+                            onChange={(e) => setFilterQuery({ ...filterQuery, status: e.target.value })}
                         >
                             <option value="">ALL</option>
                             {
@@ -341,18 +375,39 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                             }
                         </select>
 
+                        <Button
+                            type="button"
+                            label="Filter"
+                            icon={<IconFilter size={18} />}
+                            onClick={handleFilterSubmit}
+                            theme="info"
+                            size="sm"
+                        />
+                        {
+                            (filterQuery?.searchValue || filterQuery?.status || filterQuery?.searchKey !== 'title') && (
+                                <Button
+                                    type="button"
+                                    label="Reset"
+                                    icon={<IconRecycle size={18} />}
+                                    onClick={resetFilter}
+                                    theme="warning"
+                                    size="sm"
+                                />
+                            )
+                        }
+
                         <Tooltip content={t("difm-request-pdf-report-button-tooltip")}>
                             <Button
                                 label={t("difm-request-pdf-report-button")}
-                                size="sm"            
+                                size="sm"
                                 icon={<IconReportAnalytics size={18} />}
-                                theme="info"
+                                theme="primary"
                                 onClick={() => setHandleModal({ type: "report", object: null })}
                             />
                         </Tooltip>
 
                     </div>
-                    <button onClick={handleCloseModal} className="text-red-500">Close</button>
+
                 </div>
 
                 <div className="border-b border-zinc-200 text-sm  pb-5">
