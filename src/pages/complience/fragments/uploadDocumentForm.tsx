@@ -59,7 +59,7 @@ export default function DocumentUploadModal({ refetch, company, open, onClose }:
             refetch();
         },
         onError: (error: any) => {
-            toast.error("Failed to Document firmware " + error);
+            toast.error(error.response.data.message || "Failed to Document firmware ");
         },
     });
 
