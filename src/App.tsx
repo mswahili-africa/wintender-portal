@@ -118,7 +118,7 @@ function App() {
                         <Outlet />
                     </div>
 
-                    <FloatingChatButton />
+                    {/* <FloatingChatButton /> */}
                 </PopupProvider>
             </QueryClientProvider>
         </UserDataProvider>
