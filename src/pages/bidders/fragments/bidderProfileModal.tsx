@@ -3,7 +3,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ICategory, ICompany, ICompanyDocuments, IContacts, ITenders } from "@/types";
 import { BusinessType, IMessage } from "@/types/forms";
 import { sendMessageSingle } from "@/services/commons";
-import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStars, IconCircleCheckFilled, IconFolderPlus, IconBriefcase, IconBuilding, IconId, IconMail, IconMapPin, IconPhone, IconUser, IconWorld } from "@tabler/icons-react";
+import { IconAward, IconBrandWhatsapp, IconEye, IconFileText, IconListNumbers, IconLoader, IconMessage, IconSend, IconSquareRoundedMinus, IconStars, IconCircleCheckFilled, IconFolderPlus, IconBriefcase, IconBuilding, IconId, IconMail, IconMapPin, IconPhone, IconUser, IconWorld, IconAwardOff } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -178,6 +178,14 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
             iconTextColor: "text-emerald-600",
         },
         {
+            label: "Not Won",
+            value: applicationList?.summary?.notAwarded ?? 0,
+            icon: <IconAwardOff size={18} />,
+            borderColor: "border-orange-100",
+            iconBgColor: "bg-orange-100",
+            iconTextColor: "text-orange-600",
+        },
+        {
             label: "Executed", // Corrected spelling from 'Excuted'
             value: applicationList?.summary?.executed ?? 0,
             icon: <IconTruckDelivery size={18} />,
@@ -265,7 +273,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     });
 
 
-    
+
 
     return (
         <Modal
@@ -506,7 +514,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                             </div>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 w-full">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 w-full">
 
                                 {summaryConfigs.map((config, index) => (
                                     <SummaryCard

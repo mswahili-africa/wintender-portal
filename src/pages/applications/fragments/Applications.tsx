@@ -23,6 +23,7 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import SummaryCard, { ISummaryCardProps } from "@/components/cards/SummaryCard";
 import DifmReportGenerationModal from "./DifmReportGenerationModal";
 import Select from "react-select";
+import { IconAwardOff } from "@tabler/icons-react";
 
 interface ApplicationsListProps {
     applicationGroup: IApplicationGroup;
@@ -126,6 +127,14 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
             borderColor: "border-emerald-100",
             iconBgColor: "bg-emerald-100",
             iconTextColor: "text-emerald-600",
+        },
+        {
+            label: "Not Won",
+            value: applicationList?.summary?.notAwarded ?? 0,
+            icon: <IconAwardOff size={18} />,
+            borderColor: "border-orange-100",
+            iconBgColor: "bg-orange-100",
+            iconTextColor: "text-orange-600",
         },
         {
             label: "Executed", // Corrected spelling from 'Excuted'
@@ -414,7 +423,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     <div className="border-b border-zinc-200 text-sm  pb-5">
 
                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 w-full">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 w-full">
 
                                 {summaryConfigs.map((config, index) => (
                                     <SummaryCard
