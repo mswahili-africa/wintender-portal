@@ -34,7 +34,8 @@ export default function DifmReportGenerationModal({ open, groupId, onClose }: IP
       toast.success("Check your WhatsApp for the PDF report");
       onClose();
     },
-    onError: () => {
+    onError: (data: any) => {
+      console.log(data.response.data);
       toast.error("Report request failed. Please try again.");
     },
   });
