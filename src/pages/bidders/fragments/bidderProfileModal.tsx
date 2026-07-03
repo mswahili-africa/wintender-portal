@@ -138,14 +138,6 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     // Configuration mapping array
     const summaryConfigs: ISummaryCardProps[] = [
         {
-            label: "A.W.E",
-            value: applicationList?.summary?.total ?? 0,
-            icon: <IconListNumbers size={18} />,
-            borderColor: "border-gray-100",
-            iconBgColor: "bg-gray-100",
-            iconTextColor: "text-gray-600",
-        },
-        {
             label: "Requests",
             value: applicationList?.summary?.request ?? 0,
             icon: <IconFileText size={18} />,
@@ -514,7 +506,7 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
 
                             </div>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 w-full">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 w-full">
 
                                 {summaryConfigs.map((config, index) => (
                                     <SummaryCard

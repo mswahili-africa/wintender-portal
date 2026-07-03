@@ -32,7 +32,6 @@ export default function AdminStats({ summary }: IProps) {
         title="Do it for me"
         icon={<IconGitPullRequest size={20} />}
         items={[
-          { label: "A.W.E", value: summary?.requests?.total ?? 0 },
           { label: "Requests", value: summary?.requests?.request ?? 0 },
           { label: "On progress", value: summary?.requests?.open ?? 0 },
           { label: "Applied", value: summary?.requests?.applied ?? 0 },

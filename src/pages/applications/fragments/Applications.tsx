@@ -89,14 +89,6 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
     // Configuration mapping array
     const summaryConfigs: ISummaryCardProps[] = [
         {
-            label: "A.W.E",
-            value: applicationList?.summary?.total ?? 0,
-            icon: <IconListNumbers size={18} />,
-            borderColor: "border-gray-100",
-            iconBgColor: "bg-gray-100",
-            iconTextColor: "text-gray-600",
-        },
-        {
             label: "Requests",
             value: applicationList?.summary?.request ?? 0,
             icon: <IconFileText size={18} />,
@@ -355,7 +347,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     <div className="flex flex-row justify-between gap-2 mb-2 px-5">
                         <div className="flex flex-row gap-x-2">
                             <Select
-                                options={difmApplicationColumnSearchOptions}
+                                options={difmApplicationColumnSearchOptions.filter((option: any) => option.value !== "bidderCompanyName")}
                                 value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
                                 onChange={(selectedOption) => setFilterQuery({ ...filterQuery, searchKey: selectedOption?.value })}
                                 placeholder="Search by"
@@ -423,7 +415,7 @@ export default function ApplicationsList({ applicationGroup, groupId, onClose, o
                     <div className="border-b border-zinc-200 text-sm  pb-5">
 
                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 w-full">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 w-full">
 
                                 {summaryConfigs.map((config, index) => (
                                     <SummaryCard

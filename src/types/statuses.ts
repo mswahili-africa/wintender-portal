@@ -36,8 +36,9 @@ export enum PaymentSource {
 }
 
 export const difmApplicationColumnSearchOptions: any[] = [
-    { value: "bidderCompanyName", label: "Bidder" },
     { value: "title", label: "Tender" },
+    { value: "bidderCompanyName", label: "Bidder" },
+    { value: "entityName", label: "PE" },
     { value: "referenceNumber", label: "Reference number" },
     { value: "controlNumber", label: "Control number" },
 ];
