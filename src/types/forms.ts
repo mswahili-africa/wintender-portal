@@ -22,7 +22,7 @@ export interface IRegisterForm {
     lastName: string;
     email: string;
     phoneNumber: string;
-    role: string;
+    roleId: string;
     nationalId: string;
     procurementEntityId: string;
 }
