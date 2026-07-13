@@ -1,195 +1,301 @@
+import React from "react";
+import { 
+  IconUsers, 
+  IconGavel,  
+  IconScale, 
+  IconLeaf, 
+  IconFingerprint, 
+  IconReportMedical, 
+  IconEyeCheck,
+  IconAlertOctagon,
+  IconBulb,
+  IconShieldPlus
+} from "@tabler/icons-react";
+import { IconShield } from "@tabler/icons-react";
+
 export default function SupplierCodeOfConduct() {
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10 text-slate-800">
-      {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 text-green-700">
+    <div className="max-w-5xl mx-auto px-6 py-12 text-slate-800 antialiased selection:bg-emerald-100">
+      
+      {/* HEADER SECTION */}
+      <header className="mb-10 pb-8 border-b border-slate-200/60">
+        <div className="flex items-center gap-2 text-emerald-600 mb-2">
+          <IconGavel size={24} className="stroke-[2]" />
+          <span className="text-xs font-bold uppercase tracking-widest">Ethical Framework</span>
+        </div>
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
           WINTENDER E-PROCUREMENT PORTAL
         </h1>
-        <h2 className="text-xl font-semibold text-green-700">
+        <h2 className="text-xl font-bold text-slate-700 mt-1">
           Supplier Code of Conduct
         </h2>
-        <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-          This Supplier Code of Conduct (“Code”) establishes the ethical,
-          legal, environmental, and professional standards required of all
-          suppliers registered on the{" "}
-          <strong>E-Procurement Portal</strong>.
-          Compliance with this Code is mandatory and constitutes a condition
-          of registration and continued participation in procurement
-          opportunities facilitated through the Portal.
-        </p>
-      </div>
 
-      {/* CONTENT */}
-      <div className="space-y-8 text-sm leading-relaxed">
+        <p className="text-[14px] text-slate-600 mt-4 leading-relaxed max-w-4xl">
+          This Supplier Code of Conduct (“Code”) establishes the definitive ethical, legal, environmental, 
+          and professional standards required of all vendors registered on the <strong className="text-slate-900 font-semibold">E-Procurement Portal</strong>. 
+          Compliance with this Code is mandatory and constitutes a strict condition of platform registration and continued participation 
+          in procurement opportunities.
+        </p>
+      </header>
+
+      {/* CORE CONTENT LAYOUT */}
+      <div className="space-y-10 text-[14px] leading-relaxed text-slate-600">
+        
+        {/* 1. PURPOSE AND SCOPE */}
         <Section title="1. Purpose and Scope">
           <p>
-            This Code defines minimum standards of conduct applicable to all
-            registered suppliers, including their directors, employees,
-            agents, subcontractors, and affiliates engaged in activities
-            connected to tenders published through the Portal.
+            This Code defines minimum standards of conduct applicable to all registered suppliers, including their board directors, 
+            corporate employees, operational agents, subcontractors, and organizational affiliates engaged in activities 
+            connected to marketplace tenders.
           </p>
-          <p>
-            Suppliers shall ensure that this Code is cascaded internally and
-            contractually to subcontractors and supply chain partners where
-            applicable.
+          <p className="text-xs text-slate-500 pl-2 border-l-2 border-zinc-200">
+            Suppliers hold full responsibility for cascading these expectations internally and ensuring equivalent contractual 
+            compliance across their active subcontractors and supply chain nodes.
           </p>
         </Section>
 
-        <Section title="2. Legal and Regulatory Compliance">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Operate in full compliance with all applicable laws and regulations.</li>
-            <li>Maintain valid business registration, licenses, and tax compliance.</li>
-            <li>
-              Promptly notify Wintender of any suspension, investigation,
-              insolvency, or material regulatory action.
-            </li>
-          </ul>
-          <p className="mt-2 font-medium text-red-600">
-            Zero tolerance applies to deliberate regulatory non-compliance.
-          </p>
-        </Section>
+        {/* 2. LEGAL & 3. ANTI-CORRUPTION */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Section title="2. Legal and Regulatory Compliance">
+            <ul className="space-y-2 text-xs text-slate-700 font-medium">
+              <li className="flex gap-2"><span className="text-emerald-500 font-bold">✓</span> Operate in full compliance with localized and national statutes.</li>
+              <li className="flex gap-2"><span className="text-emerald-500 font-bold">✓</span> Maintain valid business registrations, operating licenses, and tax statuses.</li>
+              <li className="flex gap-2"><span className="text-emerald-500 font-bold">✓</span> Promptly notify Wintender of suspensions, insolvencies, or investigations.</li>
+            </ul>
+            <div className="mt-3 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-semibold flex items-center gap-2">
+              <IconAlertOctagon size={16} className="shrink-0 text-rose-600" />
+              <span>Zero tolerance applies to deliberate regulatory non-compliance.</span>
+            </div>
+          </Section>
 
-        <Section title="3. Anti-Bribery and Anti-Corruption">
-          <p>Suppliers must uphold the highest standards of integrity.</p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Offering or accepting bribes, kickbacks, or facilitation payments</li>
-            <li>Influence peddling or improper lobbying</li>
-            <li>Improper gifts or hospitality intended to influence decisions</li>
-          </ul>
-          <p className="mt-2">
-            Any attempt to manipulate evaluation outcomes shall result in
-            immediate disqualification and possible blacklisting.
-          </p>
-        </Section>
+          <Section title="3. Anti-Bribery and Anti-Corruption">
+            <p className="text-xs text-slate-500 mb-2 italic">Suppliers must absolutely prohibit the following practices:</p>
+            <ul className="space-y-1.5 text-xs text-slate-700 font-medium">
+              <li className="flex gap-2"><span className="text-rose-500 font-bold">•</span> Offering or accepting bribes, kickbacks, or facilitation tokens.</li>
+              <li className="flex gap-2"><span className="text-rose-500 font-bold">•</span> Influence peddling, collusion, or improper backchannel lobbying.</li>
+              <li className="flex gap-2"><span className="text-rose-500 font-bold">•</span> Giving improper gifts or hospitality intended to skew award decisions.</li>
+            </ul>
+            <p className="mt-2 text-xs text-slate-400">
+              Attempts to manipulate evaluation logic result in immediate disqualification and platform blacklisting.
+            </p>
+          </Section>
+        </div>
 
+        {/* 4. FAIR COMPETITION & 5. HUMAN RIGHTS */}
         <Section title="4. Fair Competition and Procurement Integrity">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Submit independent and genuine bids</li>
-            <li>Avoid collusion, bid-rigging, and price-fixing</li>
-            <li>Disclose any actual or potential conflicts of interest</li>
-          </ul>
+          <p className="mb-3">Marketplace participants are strictly mandated to maintain authentic competition structures:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <StandardCard icon={<IconScale />} label="Independent Bidding" desc="Formulate and submit unique, genuine bids entirely isolated from competitor insight." />
+            <StandardCard icon={<IconShield />} label="Zero Collusion" desc="Avoid bid-rigging schemes, artificial price-fixing configurations, or market allocation pacts." />
+            <StandardCard icon={<IconEyeCheck />} label="Conflict Disclosure" desc="Immediately declare potential or active conflicts of interest with procurement decision-makers." />
+          </div>
         </Section>
 
-        <Section title="5. Human Rights and Labour Standards">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Prohibition of forced labor and human trafficking</li>
-            <li>Prohibition of child labor</li>
-            <li>Non-discrimination and equal opportunity</li>
-            <li>Safe and healthy working conditions</li>
-            <li>Payment of lawful wages and benefits</li>
-          </ul>
-        </Section>
+        {/* 5. HUMAN RIGHTS & 6. ENVIRONMENTAL RESPONSIBILITY */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Section title="5. Human Rights and Labour Standards">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+              <ComplianceBullet label="Forced Labor Ban" desc="Absolute prohibition of human trafficking or indentured labor." />
+              <ComplianceBullet label="Child Labor Protection" desc="Strict compliance with international minimum age parameters." />
+              <ComplianceBullet label="Equal Opportunity" desc="Zero tolerance for workplace discrimination or systemic harassment." />
+              <ComplianceBullet label="Safe Working Environments" desc="Maintaining secure, health-compliant operational spaces." />
+              <ComplianceBullet label="Statutory Wages" desc="Guaranteed payment of lawful localized wages and benefit items." />
+            </div>
+          </Section>
 
-        <Section title="6. Environmental Responsibility">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Compliance with environmental laws</li>
-            <li>Minimization of waste and pollution</li>
-            <li>Responsible resource and energy use</li>
-            <li>Safe handling of hazardous materials</li>
-          </ul>
-        </Section>
+          <Section title="6. Environmental Responsibility">
+            <div className="bg-zinc-50 border border-zinc-200/60 rounded-2xl p-4 space-y-3">
+              <div className="flex gap-3 items-start">
+                <IconLeftBorder color="text-emerald-600"><IconLeaf size={16} /></IconLeftBorder>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Ecological Accountability</h4>
+                  <p className="text-slate-500 text-[11px] mt-0.5 leading-relaxed">
+                    Suppliers must ensure absolute alignment with all applicable regional environmental laws, implement active 
+                    waste minimization pipelines, prioritize responsible energy and resource usage, and enforce 
+                    secure handling controls over hazardous compounds.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Section>
+        </div>
 
-        <Section title="7. Data Protection and Information Security">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Protect confidential procurement information</li>
-            <li>Use data solely for legitimate tender purposes</li>
-            <li>Implement safeguards against data breaches</li>
-            <li>Comply with applicable data protection laws</li>
-          </ul>
-        </Section>
+        {/* 7. DATA PROTECTION & 8. INTELLECTUAL PROPERTY */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200/60">
+          <Section title="7. Data Protection & Security">
+            <ul className="space-y-1.5 text-xs text-slate-700">
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Securely isolate and protect confidential tender materials.</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Utilize shared data packages strictly for authorized bidding pipelines.</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Maintain strict system firewalls against potential data breach events.</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Adhere completely to governing statutory data protection rules.</li>
+            </ul>
+          </Section>
 
-        <Section title="8. Intellectual Property Rights">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Respect intellectual property rights</li>
-            <li>Avoid unauthorized use or disclosure</li>
-            <li>Ensure submitted documents do not infringe third-party rights</li>
-          </ul>
-        </Section>
+          <Section title="8. Intellectual Property Rights">
+            <ul className="space-y-1.5 text-xs text-slate-700">
+              <li className="flex gap-2"><span className="text-slate-400 font-bold">•</span> Respect proprietary system methodologies and third-party property arrays.</li>
+              <li className="flex gap-2"><span className="text-slate-400 font-bold">•</span> Prevent unauthorized duplication or distribution of portal document assets.</li>
+              <li className="flex gap-2"><span className="text-slate-400 font-bold">•</span> Ensure submitted proposal graphics or data packages cause zero infringement.</li>
+            </ul>
+          </Section>
+        </div>
 
-        <Section title="9. Financial Transparency">
-          <p>
-            Suppliers must maintain accurate and truthful records. Any
-            falsification, misrepresentation, or fraudulent certification
-            is strictly prohibited.
-          </p>
-        </Section>
+        {/* 9, 10, 11 CORPORATE EXPECTATIONS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200/60">
+          <Section title="9. Financial Transparency">
+            <p className="text-xs">
+              Registered organizations must maintain truthful financial records. 
+              Falsifying record log values, submitting misrepresentations, or displaying fraudulent certifications 
+              triggers direct platform exclusion.
+            </p>
+          </Section>
 
-        <Section title="10. Conflict of Interest">
-          <p>
-            Suppliers must disclose any situation that could compromise
-            impartial participation, including relationships with
-            procurement decision-makers or competing bidders.
-          </p>
-        </Section>
+          <Section title="10. Conflict of Interest">
+            <p className="text-xs">
+              Suppliers must proactively flag situations that could impact objective participation, including 
+              familial or financial links to buyers, technical consultants, or evaluating panel members.
+            </p>
+          </Section>
 
-        <Section title="11. Subcontracting and Supply Chain Responsibility">
-          <p>
-            Suppliers remain fully accountable for the conduct of
-            subcontractors and must ensure equivalent ethical standards
-            are applied.
-          </p>
-        </Section>
+          <Section title="11. Supply Chain Responsibility">
+            <p className="text-xs">
+              Prime vendors remain fully accountable for downstream behaviors. Supplier firms must audit, 
+              verify, and guarantee that their respective subcontracted nodes maintain equivalent ethical and operational benchmarks.
+            </p>
+          </Section>
+        </div>
 
+        {/* 12, 13, 14 MONITORING & BREACH STATUSES */}
         <Section title="12. Whistleblowing and Reporting Misconduct">
-          <p>
-            Suppliers are encouraged to report unethical conduct. Reports
-            may be submitted confidentially. Retaliation against
-            whistleblowers is strictly prohibited.
-          </p>
+          <div className="flex gap-4 p-4 rounded-xl border border-zinc-200 bg-white shadow-sm max-w-3xl">
+            <div className="p-2 bg-zinc-100 rounded-lg h-fit text-slate-700 shrink-0">
+              <IconReportMedical size={20} />
+            </div>
+            <p className="text-xs leading-relaxed text-slate-600">
+              Suppliers are expected to report any identified unethical conduct or systemic manipulation attempts. 
+              The portal provides secure channels to transmit reports confidentially. Wintender enforces strict protective bans 
+              against any retaliation targets or whistleblower penalties.
+            </p>
+          </div>
         </Section>
 
-        <Section title="13. Monitoring, Audit, and Verification">
-          <p>
-            Wintender reserves the right to conduct due diligence,
-            compliance assessments, and investigations. Suppliers must
-            cooperate fully.
-          </p>
-        </Section>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200/60">
+          <Section title="13. Monitoring, Audit, and Verification">
+            <p className="text-xs">
+              Wintender retains absolute authority to perform independent due diligence assessments, integrity checks, 
+              and forensic system audits. Registered entities are required to cooperate fully with platform 
+              compliance inspectors.
+            </p>
+          </Section>
 
-        <Section title="14. Breach and Enforcement">
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Bid disqualification</li>
-            <li>Suspension or termination of Portal access</li>
-            <li>Blacklisting or debarment</li>
-            <li>Referral to regulatory or law enforcement authorities</li>
-          </ul>
-        </Section>
+          <Section title="14. Breach and Enforcement Parameters">
+            <p className="text-xs text-slate-500 mb-2 font-medium">Verified system violations prompt progressive disciplinary enforcement:</p>
+            <div className="flex flex-wrap gap-2">
+              <StatusBadge type="critical">Bid Disqualification</StatusBadge>
+              <StatusBadge type="critical">Portal Access Revocation</StatusBadge>
+              <StatusBadge type="critical">Corporate Blacklisting</StatusBadge>
+              <StatusBadge type="warning">Law Enforcement Referral</StatusBadge>
+            </div>
+          </Section>
+        </div>
 
+        {/* 15. CONTINUOUS IMPROVEMENT */}
         <Section title="15. Continuous Improvement">
-          <p>
-            Suppliers are encouraged to strengthen governance,
-            sustainability practices, and internal compliance frameworks.
+          <p className="text-xs flex items-center gap-1.5 text-slate-600">
+            <IconBulb size={14} className="text-emerald-500 shrink-0" />
+            Suppliers are continuously urged to refine corporate governance matrices, optimize sustainability benchmarks, 
+            and implement proactive compliance tracking systems within their organizational units.
           </p>
         </Section>
 
-        <Section title="16. Acceptance and Acknowledgment">
-          <p>
-            By registering on the Portal, the Supplier confirms that it has
-            read, understood, and agrees to comply fully with this Code.
-            Acceptance of this Code is a mandatory precondition for
-            participation in tenders.
-          </p>
-        </Section>
+        {/* 16. ACCEPTANCE BOX */}
+        <section className="bg-slate-900 text-slate-100 p-5 rounded-xl border border-slate-950 flex gap-4 items-start">
+          <div className="p-2 bg-white/10 rounded-lg text-emerald-400 shrink-0 mt-0.5">
+            <IconFingerprint size={20} />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Acceptance and Acknowledgment Execution</h3>
+            <p className="text-slate-400 text-xs leading-relaxed font-normal">
+              By finalizing registration and maintaining active user accounts within the Wintender E-Procurement Portal, 
+              the Supplier officially confirms they have thoroughly read, understood, and consented to achieve total ongoing 
+              compliance with all operational terms and ethical demands set forth in this Code.
+            </p>
+          </div>
+        </section>
+
       </div>
     </div>
   );
 }
 
-/* ------------------------- HELPER COMPONENT ------------------------- */
-function Section({
-  title,
-  children,
-}: {
+/* -------------------- INTERNAL CLEAN DESIGN COMPONENTS -------------------- */
+
+interface SectionProps {
   title: string;
   children: React.ReactNode;
-}) {
+}
+
+function Section({ title, children }: SectionProps) {
   return (
-    <section>
-      <h3 className="text-base text-green-700 font-semibold mb-2">
+    <section className="space-y-2.5">
+      <h3 className="text-md font-bold text-slate-900 tracking-tight border-l-4 border-emerald-500 pl-3">
         {title}
       </h3>
-      <div className="space-y-2">{children}</div>
+      <div className="space-y-3 text-slate-600 font-normal leading-relaxed pl-4">
+        {children}
+      </div>
     </section>
+  );
+}
+
+interface StandardCardProps {
+  icon: React.ReactElement;
+  label: string;
+  desc: string;
+}
+
+function StandardCard({ icon, label, desc }: StandardCardProps) {
+  return (
+    <div className="flex flex-col p-4 bg-white border border-zinc-200 rounded-xl shadow-sm">
+      <div className="text-emerald-600 mb-2 shrink-0">
+        {React.cloneElement(icon, { size: 18, className: "stroke-[2]" })}
+      </div>
+      <h4 className="text-xs font-bold text-slate-900 mb-1 tracking-wide uppercase">{label}</h4>
+      <p className="text-slate-500 text-[11px] leading-relaxed font-normal">{desc}</p>
+    </div>
+  );
+}
+
+function ComplianceBullet({ label, desc }: { label: string; desc: string }) {
+  return (
+    <div className="p-2.5 border border-zinc-200/60 bg-white rounded-xl">
+      <div className="flex items-center gap-1 text-slate-900 font-bold text-xs uppercase tracking-wide">
+        <IconUsers size={12} className="text-emerald-500" />
+        {label}
+      </div>
+      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">{desc}</p>
+    </div>
+  );
+}
+
+function IconLeftBorder({ color, children }: { color: string; children: React.ReactNode }) {
+  return (
+    <div className={`p-1.5 bg-zinc-100 border border-zinc-200 rounded-lg h-fit ${color} shrink-0`}>
+      {children}
+    </div>
+  );
+}
+
+function StatusBadge({ type, children }: { type: "critical" | "warning"; children: React.ReactNode }) {
+  const baseStyle = "px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border";
+  const styles = {
+    critical: "bg-slate-900 text-slate-100 border-slate-950",
+    warning: "bg-zinc-100 text-slate-800 border-zinc-300"
+  };
+
+  return (
+    <span className={`${baseStyle} ${styles[type]}`}>
+      {children}
+    </span>
   );
 }
