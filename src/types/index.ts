@@ -318,7 +318,6 @@ export interface IRequests {
   request: number;
   open: number;
   awarded: number;
-  failed: number;
   executed: number;
   canceled: number;
   applied: number;

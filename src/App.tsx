@@ -8,7 +8,7 @@ import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
 import ForgotPassword from "./pages/auth/forgot-password";
 import ResetPassword from "./pages/auth/reset-password";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/dashboard/index";
 import Payments from "./pages/payments/transactions";
 import Users from "./pages/users";
 import UserDetail from "./pages/users/_username";
@@ -85,8 +85,6 @@ function App() {
                                 <Route path="invoices" element={<InvoicePage />} />
                                 <Route path="company-plans" element={<CompanyPlans />} />
                                 <Route path="subscription-plans" element={<SubscriptionPlans />} />
-
-
 
                                 <Route path="categories" element={<Categories />} />
                                 <Route path="consultation" element={<Consultation />} />

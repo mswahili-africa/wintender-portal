@@ -196,7 +196,7 @@ export const TermsAndConditions = () => {
             <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl flex items-start gap-2.5">
               <IconAlertCircle size={16} className="text-slate-800 shrink-0 mt-0.5" />
               <p className="text-xs text-slate-700">
-                These framework conditions are interpreted under the exclusive laws of the **United Republic of Tanzania**. 
+                These framework conditions are interpreted under the exclusive laws of the <strong>United Republic of Tanzania</strong>. 
                 Unresolved transaction friction must be submitted to friendly mutual settlement tracks or structured arbitration.
               </p>
             </div>
