@@ -1,0 +1,415 @@
+import {
+    IconMessage,
+    IconBrandWhatsapp,
+    IconMail,
+    IconMoneybag,
+    IconBuilding,
+    IconReportMoney,
+    IconFolderOpen,
+    IconFiles,
+} from "@tabler/icons-react";
+import { useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { useUserDataContext } from "@/providers/userDataProvider";
+import { motion } from "framer-motion";
+import bgImage from "@/assets/images/img-dropbox-bg.svg";
+import { IConsultation } from "@/types/forms";
+import Spinner from "@/components/spinners/Spinner";
+import Button from "@/components/button/Button";
+import { createConsultMe } from "@/services/tenders";
+import toast from "react-hot-toast";
+import usePopup from "@/hooks/usePopup";
+import { useMutation } from "@tanstack/react-query";
+import { useBillboards } from "@/hooks/useBillboards";
+import { useSummary } from "@/hooks/useSystemDetails";
+import AdminStats from "./stats/AdminStats";
+import BidderStats from "./stats/BidderStats";
+import { formatMoney } from "@/utils";
+import { Link } from "react-router-dom";
+import { IconListLetters } from "@tabler/icons-react";
+import Tooltip from "@/components/tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
+import StatGroupCard from "./fragments/StatGroupCard";
+import { RatingDisplay } from "../bidders/fragments/ratingDisplay";
+
+export default function Dashboard12() {
+    const { userData } = useUserDataContext();
+    const userRole = userData?.role || "BIDDER";
+    const account = userData?.account || "00000000";
+    const { t } = useTranslation();
+
+    const { showConfirmation } = usePopup();
+    const [error, _] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedBillboard, setSelectedBillboard] = useState<IConsultation | null>(null);
+    const closeModal = () => setShowModal(false);
+
+    const { consultationServices } = useBillboards({ page: 1 });
+    const { summary, isLoading } = useSummary();
+
+    const handleConsultMeClick = () => {
+        if (selectedBillboard)
+            showConfirmation({
+                theme: "success",
+                title: "Request Consultation",
+                message: "Request will be send to our team for processing",
+                onConfirm: () => requestMutation.mutate(selectedBillboard.id),
+                onCancel: () => { }
+            })
+    }
+
+    const requestMutation = useMutation({
+        mutationFn: (id: string) => createConsultMe(id),
+        onSuccess: () => {
+            toast.success("Request send successfully");
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message ?? "");
+        }
+    });
+
+    const SkeletonLoader = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {Array(4).fill(0).map((_, i) => (
+                <div key={i} className="bg-white shadow-md p-4 sm:p-6 rounded-lg">
+                    <Skeleton width={32} height={32} circle />
+                    <h3 className="text-base font-bold mt-4"><Skeleton width={150} /></h3>
+                    <p className="text-gray-600 text-sm"><Skeleton width={100} /></p>
+                </div>
+            ))}
+        </div>
+    );
+
+    const SkeletonBillboardCard = () => (
+        <div className="animate-pulse bg-green-50 shadow-md rounded-xl w-full h-32 sm:h-40 md:h-48 lg:h-56">
+            <div className="flex justify-between">
+                <div className="flex flex-col p-4 sm:p-5 gap-2 w-full">
+                    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                </div>
+            </div>
+        </div>
+    );
+
+
+    const Billboards = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {consultationServices?.map((board) => (
+                <div
+                    key={board.id}
+                    className="bg-green-600 w-full bg-gradient-to-r from-indigo-500 rounded-xl text-white bg-cover cursor-pointer"
+                    style={{
+                        backgroundImage: `url(${bgImage})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "100%"
+                    }}
+                    onClick={() => {
+                        setSelectedBillboard(board);
+                        setShowModal(true);
+                    }}
+                >
+                    <div className="flex justify-between">
+                        <div className="flex flex-col p-4 sm:p-5 gap-1">
+                            <p className="font-light text-sm sm:text-base">
+                                <strong>{board.title}</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+
+    const Modal = ({ isOpen, closeModal }: { isOpen: boolean, closeModal: () => void }) => {
+        const formatMessage = (message: string) => {
+            return message.split("\n").map((line, index) => (
+                <span key={index}>
+                    {line}
+                    <br />
+                </span>
+            ));
+        };
+
+        return (
+            <motion.div
+                className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ${isOpen ? "block" : "hidden"}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+            >
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-[90%] sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl sm:text-2xl font-bold">{selectedBillboard?.title}</h2>
+
+                        <Button
+                            size="sm"
+                            label={t('menu-consult-me')}
+                            theme="primary"
+                            onClick={handleConsultMeClick}
+                        >
+                            {requestMutation.isPending ? (
+                                <div className="flex items-center gap-2">
+                                    <Spinner size="sm" />
+                                    Requesting...
+                                </div>
+                            ) : (
+                                "Request Consultation"
+                            )}
+                        </Button>
+                    </div>
+
+
+                    <div className="text-gray-600 mb-4" dangerouslySetInnerHTML={{ __html: selectedBillboard ? selectedBillboard.message : "" }}></div>
+                    {/* <div className="text-gray-600 mb-4">{selectedBillboard ? formatMessage(selectedBillboard.message) : ""}</div> */}
+                    <div className="flex justify-end">
+                        <button
+                            onClick={closeModal}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </motion.div>
+        );
+    };
+
+    if (isLoading) {
+        return (
+            <div className="p-2 min-h-screen flex flex-col">
+                <div className="flex justify-between">
+                    <div className="flex flex-col p-4 gap-2 w-full sm:w-1/2 mb-5">
+                        <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                    <div className="flex p-4 gap-2 w-full sm:w-1/2 justify-end">
+                        <div className="h-6 bg-gray-300 rounded w-20"></div>
+                        <div className="h-6 bg-gray-300 rounded w-20"></div>
+                    </div>
+                </div>
+                <div className="flex flex-row gap-4 mb-5">
+                    {Array(3).fill(0).map((_, i) => (
+                        <SkeletonBillboardCard key={i} />
+                    ))}
+                </div>
+                <SkeletonLoader />
+            </div>
+        )
+    }
+
+    return (
+        <div className="p-2 min-h-screen relative">
+            {
+                !["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) ? <>
+                    {
+                        userRole && userRole.includes("BIDDER") && (<>
+                            <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
+                            {/* New Rating Component */}
+                            <RatingDisplay rating={{ star: 1, reason: null }} showReason={false} />
+                            <div className="flex flex-col sm:flex-row justify-between mb-6">
+                                <div className="text-gray-800 mb-2 w-fit">{t("dashboard-welcome-message")} </div>
+                                <div className="flex flex-col justify-end text-end gap-1">
+                                    <div className="text-gray-900 font-bold  w-full text-end text-md sm:text-xs">{t("dashboard-account", { account: account })}</div>
+                                    {/* TWO BUTTONS */}
+                                    <div className="flex flex-col sm:flex-row gap-2">
+                                        <Tooltip content={t("dashboard-private-tenders-tooltip")}>
+                                            <Link
+                                                to="/tenders"
+                                                className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700"
+                                            >
+                                                <IconListLetters size={20} />
+                                                {t("dashboard-private-tenders-button")}
+                                            </Link>
+                                        </Tooltip>
+                                        <Tooltip content={t("dashboard-government-tenders-tooltip")}>
+                                            <Link
+                                                to="/government-tenders"
+                                                className="flex flex-row gap-2 px-3 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
+                                            >
+                                                <IconBuilding size={20} />
+                                                {t("dashboard-government-tenders-button")}
+                                            </Link>
+                                        </Tooltip>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                        )
+                    }
+
+                    <h2 className="text-xl font-bold mb-4">{t("dashboard-billboards-title")}</h2>
+                    <Billboards />
+                </> : <>
+                    {/* <h2 className="text-xl font-bold mb-4">Dashboard</h2> */}
+                    <div className="text-3xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
+                    <div className="text-gray-600">{t("dashboard-welcome-message")}</div>
+
+                </>
+            }
+            <Modal isOpen={showModal} closeModal={closeModal} />
+            <h2 className="text-xl font-extralight my-4">{t("dashboard-brief-statistics-title")}</h2>
+
+            {
+                ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
+                    <div className="bg-white p-6 rounded-xl w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                            <Link to="/tenders">
+                                <StatGroupCard
+                                    title={t("dashboard-my-tenders-title")}
+                                    icon={<IconFiles size={20} />}
+                                    items={[{ label: t("dashboard-my-tenders-total-published"), value: summary?.statistics?.tenders?.total ?? 0 },]}
+                                />
+                            </Link>
+                            <Link to="/tender-box">
+                                <StatGroupCard
+                                    title={t("dashboard-my-tender-box")}
+                                    icon={<IconFolderOpen size={20} />}
+                                    items={[{ label: t("dashboard-my-tender-box"), value: summary?.statistics?.applications ?? 0 },]}
+                                />
+                            </Link>
+                            <Link to="/tender-box">
+                                <StatGroupCard
+                                    title={t("dashboard-tender-awarded-title")}
+                                    icon={<IconFolderOpen size={20} />}
+                                    items={[{ label: t("dashboard-tender-awarded"), value: 0 },]}
+                                />
+                            </Link>
+                        </div>
+                    </div>
+                )
+            }
+
+
+            {(userRole.includes("BIDDER")) && (
+                <div className="mt-6">
+                    {isLoading ? <SkeletonLoader /> : <BidderStats summary={summary?.statistics!} />}
+                </div>
+            )}
+
+            {/* JCM pe stats*/}
+            {/* {userRole.includes("PROCUREMENT_ENTITY") && (
+                <div className="mt-6">
+                    {isLoading ? <SkeletonLoader /> : <PEStats summary={summary!} />}
+                </div>
+            )} */}
+
+            {["ADMINISTRATOR", "MANAGER", "ACCOUNTANT", "SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "PUBLISHER"].includes(userRole) && (
+                <div className="mt-6">
+                    {isLoading ? <SkeletonLoader /> : <AdminStats summary={summary?.statistics!} />}
+                </div>
+            )}
+
+            <h2 className="text-xl font-extralight my-4">{t("dashboard-reports-title")}</h2>
+            {
+                !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) &&
+                <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-5">
+                        <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <IconMessage className="w-6 h-6 text-green-600" />
+                                </div>
+                                <h2 className="text-l font-semibold text-gray-800">SMS Balance</h2>
+                            </div>
+
+                            <div className="space-y-2 text-gray-700">
+                                <div className="flex justify-between text-sm">
+                                    <span className="font-medium">NextSMS:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.nextSMS ?? "0"}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="font-medium">Onfon Media:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onfonMedia ?? "0"}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="font-medium">On SMS:</span>
+                                    <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : summary?.statistics?.messageBalance?.onSMS ?? "0"}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {
+                            ["ADMINISTRATOR", "MANAGER","ACCOUNTANT"].includes(userRole) &&
+                            <>
+
+                                <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="bg-green-100 p-3 rounded-full">
+                                            <IconMoneybag className="w-6 h-6 text-green-600" />
+                                        </div>
+                                        <h2 className="text-l font-semibold text-gray-800">{t("dashboard-payments-title")} </h2>
+                                    </div>
+
+                                    <div className="space-y-2 text-gray-700">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">All Time:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.statistics?.payments?.totalAmount ?? 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">This Month:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.statistics?.payments?.thisMonth ?? 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">Wallet:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.statistics?.payments?.walletBalance ?? 0)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white shadow-lg p-6 rounded-xl transition hover:shadow-xl hover:bg-green-50 border border-gray-100 w-full">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="bg-green-100 p-3 rounded-full">
+                                            <IconReportMoney className="w-6 h-6 text-green-600" />
+                                        </div>
+                                        <h2 className="text-l font-semibold text-gray-800">Tender Quotations</h2>
+                                    </div>
+
+                                    <div className="space-y-2 text-gray-700">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">All Time:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.statistics?.quotations?.totalAmount ?? 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="font-medium">This Month:</span>
+                                            <span className="font-semibold">{isLoading ? <Spinner size="sm" /> : formatMoney(summary?.statistics?.quotations?.thisMonth ?? 0)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </>
+
+                        }
+
+                        {/* JCM CONTACTS  */}
+                        {
+                            ["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
+                                <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-3">
+                                    <a
+                                        href="https://wa.me/+255766028558"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex group bg-green-200 hover:bg-green-400 text-green-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconBrandWhatsapp size={20} />
+                                    </a>
+
+                                    <a
+                                        href="mailto:info@wintender.co.tz"
+                                        className="flex items-center bg-blue-200 hover:bg-blue-400 text-blue-800 p-2 rounded-full shadow-md transition-all duration-200"
+                                    >
+                                        <IconMail size={20} />
+                                    </a>
+                                </div>
+                            )
+                        }
+                    </div>
+                </>
+            }
+
+
+            {error && <div className="text-red-500 mt-4">{error}</div>}
+        </div>
+    );
+}

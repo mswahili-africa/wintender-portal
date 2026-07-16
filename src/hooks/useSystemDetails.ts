@@ -54,7 +54,7 @@ export function useSummary() {
         queryKey: ["getSummaryReport"],
         queryFn: () => getSummaryReport(),
 
-        refetchInterval: 3000000, 
+        refetchInterval: 3000000, // 5 minutes
         refetchOnWindowFocus: false,
         staleTime: 5 * 60 * 1000
     });

@@ -36,7 +36,6 @@ export default function BidderStats({ summary }: IProps) {
           { label: t("dashboard-difm-on-progress"), value: summary?.requests?.open ?? 0 },
           { label: t("dashboard-difm-submitted"), value: summary?.requests?.applied ?? 0 },
           { label: t("dashboard-difm-won"), value: summary?.requests?.awarded ?? 0 },
-          { label: t("dashboard-difm-not-won"), value: summary?.requests?.failed ?? 0 },
           { label: t("dashboard-difm-executed"), value: summary?.requests?.executed ?? 0 },
           { label: t("dashboard-difm-canceled"), value: summary?.requests?.canceled ?? 0 },
         ]}
