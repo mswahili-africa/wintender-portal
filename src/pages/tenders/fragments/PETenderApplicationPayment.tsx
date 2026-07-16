@@ -21,7 +21,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
   const [formData, setFormData] = useState<Partial<IPaymentForm>>({
     phoneNumber: user?.userData?.phoneNumber,
     account: user?.userData?.account,
-    amount: 500,
+    amount: 1000,
     description: `Payment for Tender ${tender.tenderNumber}`,
     paymentReason: "APPLICATION",
     controlNumber: "", // can be generated after payment request, or input by user if needed
@@ -66,12 +66,12 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
   }
 
   if (tender.applicationStatus === "NOT_FOUND") {
-    if (walletBalance < 500) {
+    if (walletBalance < 1000) {
       return (
         <div className="flex flex-col items-center justify-center p-10 text-center">
           <IconAlertTriangle size={64} className="text-red-500 mb-4" />
           <p className="text-lg font-semibold text-red-700">
-            Insufficient wallet balance. You need at least {new Intl.NumberFormat("en-TZ", {style: "currency", currency: "TZS", }).format(formData.amount ?? 500)} to start this application.<br/> Please recharge your wallet.
+            Insufficient wallet balance. You need at least {new Intl.NumberFormat("en-TZ", {style: "currency", currency: "TZS", }).format(formData.amount ?? 1000)} to start this application.<br/> Please recharge your wallet.
           </p>
         </div>
       );
@@ -99,7 +99,7 @@ export default function PETenderApplicationPayment({ tender, onClose, onSuccess 
       <div className="p-6">
         <h2 className="text-xl font-semibold mb-4">Payment Details</h2>
         <p className="text-sm text-gray-600 mb-6">
-          <strong>TZS 500</strong> will be deducted from your wallet once you
+          <strong>TZS 1000</strong> will be deducted from your wallet once you
           confirm this payment.
         </p>
         {error && <p className="text-red-600 mt-4">{error}</p>}
