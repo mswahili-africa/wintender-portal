@@ -31,6 +31,7 @@ export default function PrivateTenders() {
     const [selectedTender, setSelectedTender] = useState<ITenders | null>(null);
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [tempKeyword, setTempKeyword] = useState("");
@@ -84,20 +85,9 @@ export default function PrivateTenders() {
 
     useEffect(() => {
         if (subscriptionDays !== undefined && subscriptionDays < 1) {
-            showConfirmation({
-                theme: "danger",
-                title: "Your subscription has expired",
-                message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
-                onConfirm: () => {
-                    // Open payment modal when confirm is clicked
-                    setIsPaymentModalOpen(true);
-                },
-                onCancel: () => {
-                    // Redirect to home page when cancelled
-                    navigate("/");  // Redirect to home page
-                }
-            });
+            setIsSubscriptionModalOpen(true);
         }
+
     }, [subscriptionDays, navigate]);
 
 

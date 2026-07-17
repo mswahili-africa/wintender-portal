@@ -81,7 +81,9 @@ export default function GovernmentTenders() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsSubscriptionModalOpen(true);
+        if (subscriptionDays !== undefined && subscriptionDays < 1) {
+            setIsSubscriptionModalOpen(true);
+        }
 
     }, [subscriptionDays, navigate]);
 
@@ -151,19 +153,7 @@ export default function GovernmentTenders() {
     const handleDoItForMeClick = () => {
         if (openModal.tender) {
             if (subscriptionDays !== undefined && subscriptionDays < 1) {
-                showConfirmation({
-                    theme: "danger",
-                    title: "Your subscription has expired",
-                    message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
-                    onConfirm: () => {
-                        // Open payment modal when confirm is clicked
-                        setIsPaymentModalOpen(true);
-                    },
-                    onCancel: () => {
-                        // Redirect to home page when cancelled
-                        navigate("/");  // Redirect to home page
-                    }
-                });
+                setIsSubscriptionModalOpen(true);
             } else {
                 setIsDoItForMeLoading(true);
                 doItForMeMutation.mutate(openModal.tender.id, {
@@ -200,9 +190,6 @@ export default function GovernmentTenders() {
             />
 
             <RenewSubscriptionModal onSuccess={() => setIsPaymentModalOpen(true)} isOpen={isSubscriptionModalOpen} onClose={() => setIsSubscriptionModalOpen(false)} />
-
-
-
 
             <TenderEdit
                 open={openModal.type === "update"}
