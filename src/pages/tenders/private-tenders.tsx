@@ -23,7 +23,7 @@ import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useTendersPrivate } from "@/hooks/tendersRepository";
 import PricingModal from "../payments/subscription/fragments/PricingModel";
-import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
+import RenewSubscriptionModal from "../payments/subscription/fragments/RenewSubscriptionModal";
 
 export default function PrivateTenders() {
     const [page, setPage] = useState<number>(0);
@@ -31,6 +31,7 @@ export default function PrivateTenders() {
     const [filter] = useState<any>({});
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [isEligible, setIsEligible] = useState(false);
@@ -81,21 +82,8 @@ export default function PrivateTenders() {
     const subscriptionDays = userData?.subscription;
 
     useEffect(() => {
-        if (subscriptionDays !== undefined && subscriptionDays < 1) {
-            showConfirmation({
-                theme: "danger",
-                title: "Your subscription has expired",
-                message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
-                onConfirm: () => {
-                    // Open payment modal when confirm is clicked
-                    setIsPaymentModalOpen(true);
-                },
-                onCancel: () => {
-                    // Redirect to home page when cancelled
-                    navigate("/");  // Redirect to home page
-                }
-            });
-        }
+        setIsSubscriptionModalOpen(true);
+
     }, [subscriptionDays, navigate]);
 
 
@@ -196,8 +184,8 @@ export default function PrivateTenders() {
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
             />
+            <RenewSubscriptionModal onSuccess={() => setIsPaymentModalOpen(true)} isOpen={isSubscriptionModalOpen} onClose={() => setIsSubscriptionModalOpen(false)} />
 
-            {/* <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} /> */}
 
             <TenderEdit
                 open={openModal.type === "update"}

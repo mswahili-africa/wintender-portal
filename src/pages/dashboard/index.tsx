@@ -40,7 +40,6 @@ export default function Dashboard() {
   const { consultationServices } = useBillboards({ page: 1 });
   const { summary, isLoading } = useSummary();
 
-
   const [handleModal, setHandleModal] = useState<{ type: "viewBillboard" | "sendBulk" | "", object: any }>(
     { type: "", object: null }
   );
@@ -50,6 +49,12 @@ export default function Dashboard() {
   };
 
   const stats = summary?.statistics;
+
+  // Save tender region stats to local storage
+  if (stats) {
+    localStorage.removeItem("stats");
+    localStorage.setItem("stats", JSON.stringify(stats));
+  }
 
 
   // loading
@@ -169,7 +174,7 @@ export default function Dashboard() {
   );
 
   // Parse total SMS balance to evaluate low-balance warnings safely
-  const isSmsLow = parseFloat(stats?.messageBalance?.nextSMS || "0") < 500;
+  const isSmsLow = parseFloat(stats?.messageBalance?.nextSMS || "0") < 500 || parseFloat(stats?.messageBalance?.onfonMedia || "0") < 50 || parseFloat(stats?.messageBalance?.onSMS || "0") < 5;
 
   return (
     <div className="pb-6 mx-auto text-slate-800 antialiased selection:bg-emerald-100 space-y-8">
@@ -194,7 +199,7 @@ export default function Dashboard() {
           <div className="text-xl font-[200]">{t("dashboard-welcome", { name: (userData?.companyName) })}</div>
           {
             ["BIDDER"].includes(userRole) &&
-            <RatingDisplay rating={{ star: 1, reason: null }} showReason={false} />
+            <RatingDisplay rating={{ star: userData?.rating ?? 1, reason: null }} showReason={false} />
           }
 
         </div>
@@ -230,19 +235,31 @@ export default function Dashboard() {
         {/* TOP LEVEL GLOBAL ALERTS */}
         {
           !["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) &&
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2">
+            {stats.unreadMessages > 0 && (
+              <Link to="/messages" className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium max-w-xs shadow-sm">
+                <IconAlertTriangle size={22} className="text-amber-600 shrink-0" />
+                <span><strong>Unread Messages: </strong> You have <strong>{stats.unreadMessages}</strong> unread messages.</span>
+              </Link>
+            )}
             {isSmsLow && (
               <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium max-w-xs shadow-sm">
-                <IconAlertTriangle size={16} className="text-amber-600 shrink-0" />
+                <IconAlertTriangle size={22} className="text-amber-600 shrink-0" />
                 <span><strong>SMS Level Alert: </strong> Main SMS credits fall below operational baselines.</span>
               </div>
             )}
-            {stats.requests.canceled > 1000 && (
+            {stats.requests.request > 0 && (
+              <Link to="/do-it-for-me" className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium max-w-xs shadow-sm">
+                <IconAlertTriangle size={22} className="text-amber-600 shrink-0" />
+                <span><strong>New Requests: </strong> You have {stats.requests.request} new DIFM applications requests.</span>
+              </Link>
+            )}
+            {/* {stats.requests.request > 0 && (
               <div className="flex items-center gap-2 px-3 py-2 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-medium max-w-xs shadow-sm">
-                <IconCircleX size={16} className="text-rose-600 shrink-0" />
+                <IconCircleX size={22} className="text-rose-600 shrink-0" />
                 <span><strong>Failed Requests: </strong> {stats.requests.canceled} tender requests timed out or failed processing loops.</span>
               </div>
-            )}
+            )} */}
           </div>
         }
 
@@ -283,7 +300,7 @@ export default function Dashboard() {
               subtitle={`<span style="color: #000000; font-weight: 700">${stats.tenders.open}</span> Open • <span style="color: #000000; font-weight: 700">${stats.tenders.thisMonth}</span> This month • <span style="color: #000000; font-weight: 700">${stats.tenders.categories}</span> Categories`}
             />
             {
-              ["ADMINISTRATOR","MANAGER","ACCOUNTANT"].includes(userRole) &&
+              ["ADMINISTRATOR", "ACCOUNTANT"].includes(userRole) &&
               <MetricCard
                 icon={<IconWallet className="text-amber-600" />}
                 title="Total Financial Payments"
@@ -293,9 +310,9 @@ export default function Dashboard() {
             }
             <MetricCard
               icon={<IconGitPullRequest className="text-indigo-600" />}
-              title="Applications"
+              title="Private Applications"
               value={stats.applications}
-              subtitle={`Active Applications`}
+              subtitle={`Active P.E Applications`}
             />
           </div>
         </>
@@ -387,9 +404,9 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl">
-                    <span className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Total Value Processed</span>
-                    <p className="text-md font-extrabold text-slate-900 mt-0.5">TZS {stats.quotations.totalAmount.toLocaleString()}</p>
+                  <div className="p-3 bg-slate-800 border border-slate-200 rounded-xl">
+                    <span className="text-[11px] text-slate-200 uppercase font-bold tracking-wider">Total Value Processed</span>
+                    <p className="text-md font-extrabold text-white mt-0.5">TZS {stats.quotations.totalAmount.toLocaleString()}</p>
                   </div>
                   <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl">
                     <span className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Processed This Month</span>
@@ -449,7 +466,7 @@ export default function Dashboard() {
 
           {/* SECTION: FINANCIAL PAYMENTS SUMMARY ARCHITECTURE */}
           {
-            ["ADMINISTRATOR", "MANAGER", "ACCOUNTANT"].includes(userRole) &&
+            ["ADMINISTRATOR", "ACCOUNTANT"].includes(userRole) &&
             <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-zinc-100 gap-2">
                 <div>
@@ -466,22 +483,22 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 bg-zinc-50 border border-zinc-200/60 rounded-xl space-y-1">
+                <div className="p-4 bg-slate-800 border border-slate-200/60 rounded-xl space-y-1">
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">All Time Payments</span>
-                  <p className="text-lg font-black text-slate-900">TZS {stats.payments.totalAmount.toLocaleString()}</p>
+                  <p className="text-lg font-black text-white">TZS {stats.payments.totalAmount.toLocaleString()}</p>
                   <span className="text-[10px] text-slate-400 block">Accumulated non-refundable submission fees</span>
                 </div>
 
-                <div className="p-4 bg-zinc-50 border border-zinc-200/60 rounded-xl space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">This Month Payments</span>
-                  <p className="text-lg font-black text-slate-900">TZS {stats.payments.thisMonth.toLocaleString()}</p>
-                  <span className="text-[10px] text-slate-400 block">This month non-refundable submission fees</span>
+                <div className="p-4 bg-green-50 border border-zinc-200/60 rounded-xl space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-green-700 tracking-wider">This Month Payments</span>
+                  <p className="text-lg font-black text-green-700">TZS {stats.payments.thisMonth.toLocaleString()}</p>
+                  <span className="text-[10px] text-green-700 block">This month non-refundable submission fees</span>
                 </div>
 
-                <div className="p-4 bg-zinc-50 border border-zinc-200/60 rounded-xl space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Active Bid Wallet Bonds</span>
-                  <p className="text-lg font-black text-slate-900">TZS {stats.payments.walletBalance.toLocaleString()}</p>
-                  <span className="text-[10px] text-slate-400 block">Held in system escrow pools</span>
+                <div className="p-4 bg-purple-50 border border-zinc-200/60 rounded-xl space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider">Active Bid Wallet Bonds</span>
+                  <p className="text-lg font-black text-purple-600">TZS {stats.payments.walletBalance.toLocaleString()}</p>
+                  <span className="text-[10px] text-purple-600 block">Held in system escrow pools</span>
                 </div>
               </div>
 
@@ -511,7 +528,7 @@ export default function Dashboard() {
               {/* Visual breakdown bars using your existing DemographicBar logic */}
               <div className="space-y-4">
                 <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Tender Document Status Metrics</h4>
-                <div className="space-y-3">
+                <div className="space-y-5">
                   <DemographicBar
                     label="Open for Competitive Bidding"
                     count={stats.tenders.open}
@@ -528,7 +545,7 @@ export default function Dashboard() {
                     label="Closed without Competitive Bidding"
                     count={(stats.tenders.total - stats.tenders.open) - (stats.requests.awarded + stats.requests.executed)}
                     total={stats.tenders.total}
-                    color="bg-zinc-400"
+                    color="bg-red-500"
                   />
                 </div>
               </div>
@@ -537,25 +554,25 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3.5 bg-zinc-50 border border-zinc-200/60 rounded-xl flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Monthly Intake</span>
-                  <span className="text-xl font-black text-green-600 mt-1">+{stats.tenders.thisMonth}</span>
+                  <span className="text-xl font-black text-slate-600 mt-1">+{stats.tenders.thisMonth}</span>
                   <span className="text-[10px] text-slate-400 mt-0.5">New procurement openings</span>
                 </div>
 
-                <div className="p-3.5 bg-zinc-50 border border-zinc-200/60 rounded-xl flex flex-col justify-between">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Expressions of Interest</span>
-                  <span className="text-xl font-black text-purple-600 mt-1">{stats.applications}</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5">Total uploaded proposal tracks</span>
+                <div className="p-3.5 bg-green-700 border border-zinc-200/60 rounded-xl flex flex-col justify-between">
+                  <span className="text-[10px] uppercase font-bold text-slate-200 tracking-wider">P.E Expressions of Interest</span>
+                  <span className="text-xl font-black text-slate-50 mt-1">{stats.applications}</span>
+                  <span className="text-[10px] text-slate-200 mt-0.5">Total uploaded proposal tracks</span>
                 </div>
 
                 <div className="p-3.5 bg-zinc-50 border border-zinc-200/60 rounded-xl flex flex-col justify-between col-span-2">
                   <div className="flex justify-between items-center text-[10px] uppercase font-bold text-slate-400 tracking-wider">
                     <span>Marketplace Competitiveness Ratio</span>
                     <span className="text-slate-700 font-mono text-xs">
-                      {(stats.tenders.total > 0 ? (stats.applications / stats.tenders.total) : 0).toFixed(1)}x
+                      {(stats.tenders.total > 0 ? (stats.applications / stats.tenders.open) * 100 : 0).toFixed(1)}%
                     </span>
                   </div>
                   <div className="w-full bg-zinc-200 h-1.5 rounded-full mt-2 overflow-hidden">
-                    <div className="bg-indigo-600 h-full rounded-full" style={{ width: '1%' }} />
+                    <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${(stats.tenders.total > 0 ? (stats.applications / stats.tenders.open) : 0) * 100}%` }} />
                   </div>
                   <span className="text-[10px] text-slate-400 mt-1.5">Average submitted vendor bids evaluated per open publication package.</span>
                 </div>
@@ -566,9 +583,94 @@ export default function Dashboard() {
         </>
       }
 
+      {/* SECTION: TENDER REGIONAL BREAKDOWN */}
+      {
+        !["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
+          <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm space-y-6">
+
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-zinc-100 gap-2">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                  <IconFileSpreadsheet size={16} className="text-slate-500" />
+                  Tender Regional Breakdown
+                </h3>
+                <p className="text-[11px] text-slate-400 font-normal">Geographic and sector distributions for published procurement packages.</p>
+              </div>
+              <span className="self-start sm:self-auto text-xs font-mono font-bold bg-zinc-100 text-slate-800 px-2.5 py-1 rounded-lg">
+                Total Active Tenders: {stats.tenders.open}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+              {/* Left Side: Demographic Progress Bars */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Market Distribution Percentage</h4>
+                <div className="space-y-5 bg-zinc-50/50 border border-zinc-100 p-4 rounded-xl">
+                  <DemographicBar
+                    label="Private Sector Tenders"
+                    count={stats.tenders.region.private}
+                    total={stats.tenders.open}
+                    color="bg-emerald-500"
+                  />
+                  <DemographicBar
+                    label="Government / Public Tenders"
+                    count={stats.tenders.region.government}
+                    total={stats.tenders.open}
+                    color="bg-blue-500"
+                  />
+                  <DemographicBar
+                    label="International Competitive Bidding"
+                    count={stats.tenders.region.international}
+                    total={stats.tenders.open}
+                    color="bg-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Right Side: Clean Structured Metric Cards */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Volume Demographics</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
+
+                  {/* Private Tenders Card */}
+                  <div className="p-3.5 bg-emerald-50/40 border border-emerald-100/80 border-l-4 border-l-emerald-500 rounded-xl flex lg:flex-row items-baseline lg:items-center justify-between gap-2">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] uppercase font-bold text-emerald-800 tracking-wider block">Private Sector</span>
+                      <span className="text-[10px] text-slate-400 block lg:inline">Commercial marketplace openings</span>
+                    </div>
+                    <span className="text-xl font-black text-emerald-700 font-mono">{stats.tenders.region.private}</span>
+                  </div>
+
+                  {/* Government Tenders Card */}
+                  <div className="p-3.5 bg-blue-50/40 border border-blue-100/80 border-l-4 border-l-blue-500 rounded-xl flex lg:flex-row items-baseline lg:items-center justify-between gap-2">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] uppercase font-bold text-blue-800 tracking-wider block">Government Sector</span>
+                      <span className="text-[10px] text-slate-400 block lg:inline">Public authority procurements</span>
+                    </div>
+                    <span className="text-xl font-black text-blue-700 font-mono">{stats.tenders.region.government}</span>
+                  </div>
+
+                  {/* International Tenders Card */}
+                  <div className="p-3.5 bg-orange-50/40 border border-orange-100/80 border-l-4 border-l-orange-500 rounded-xl flex lg:flex-row items-baseline lg:items-center justify-between gap-2">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] uppercase font-bold text-orange-800 tracking-wider block">International Bids</span>
+                      <span className="text-[10px] text-slate-400 block lg:inline">Cross-border competitive tracks</span>
+                    </div>
+                    <span className="text-xl font-black text-orange-700 font-mono">{stats.tenders.region.international}</span>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )
+      }
+
 
       {/* procurement entity */}
-
       {
         ["PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userRole) && (
           <div className="bg-white px-4 py-3 rounded-xl w-full">
@@ -647,7 +749,7 @@ function MetricCard({ icon, title, value, subtitle }: MetricCardProps) {
       </div>
       <div>
         <div className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">{value}</div>
-        <div className="text-[11px] font-medium text-slate-400 mt-0.5 truncate" dangerouslySetInnerHTML={{__html:subtitle}}></div>
+        <div className="text-[11px] font-medium text-slate-400 mt-0.5 truncate" dangerouslySetInnerHTML={{ __html: subtitle }}></div>
       </div>
     </div>
   );
