@@ -324,11 +324,18 @@ export interface IRequests {
   notAwarded: number;
 }
 
+export interface ITenderReqionSummary {
+  private: number;
+  government: number;
+  international: number;
+}
+
 export interface ITendersSummary {
   total: number;
   categories: number;
   open: number;
   thisMonth: number;
+  region:ITenderReqionSummary;
 }
 
 export interface IProcurementEntities {
@@ -356,6 +363,7 @@ interface IPaymentSummary {
 
 export interface ISummaryReport {
   bidders: IBiddersSummary;
+  unreadMessages: number;
   tenders: ITendersSummary;
   payments: IPaymentSummary;
   quotations: IPaymentSummary;

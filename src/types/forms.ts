@@ -70,7 +70,6 @@ export type UserRole =
 export interface IUserData {
     userId: string;
     email: string;
-    username: string;
     companyName:string;
     name: string;
     phoneNumber: string;
@@ -79,6 +78,7 @@ export interface IUserData {
     subscription: number;
     walletAmount: number;
     account: string;
+    rating:number;
     role: UserRole;
     company: string;
     paymentMode: string;
