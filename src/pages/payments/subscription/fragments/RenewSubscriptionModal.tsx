@@ -117,8 +117,8 @@ export default function RenewSubscriptionModal({ onSuccess, isOpen, onClose }: I
               <p className="text-[10px] text-slate-400 font-medium">Get assistance processing your payment</p>
             </div>
           </div>
-          <a href="tel:0736228228" className="font-mono font-bold text-indigo-600 hover:underline">
-            0736 228 228
+          <a href="tel:0747098558" className="font-mono font-bold text-indigo-600 hover:underline">
+            0747 098 558
           </a>
         </div>
 

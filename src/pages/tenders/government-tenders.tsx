@@ -151,19 +151,7 @@ export default function GovernmentTenders() {
     const handleDoItForMeClick = () => {
         if (openModal.tender) {
             if (subscriptionDays !== undefined && subscriptionDays < 1) {
-                showConfirmation({
-                    theme: "danger",
-                    title: "Your subscription has expired",
-                    message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
-                    onConfirm: () => {
-                        // Open payment modal when confirm is clicked
-                        setIsPaymentModalOpen(true);
-                    },
-                    onCancel: () => {
-                        // Redirect to home page when cancelled
-                        navigate("/");  // Redirect to home page
-                    }
-                });
+                setIsSubscriptionModalOpen(true);
             } else {
                 setIsDoItForMeLoading(true);
                 doItForMeMutation.mutate(openModal.tender.id, {
