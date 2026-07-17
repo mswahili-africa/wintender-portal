@@ -84,7 +84,9 @@ export default function PrivateTenders() {
     const subscriptionDays = userData?.subscription;
 
     useEffect(() => {
-        setIsSubscriptionModalOpen(true);
+        if (subscriptionDays !== undefined && subscriptionDays < 1) {
+            setIsSubscriptionModalOpen(true);
+        }
 
     }, [subscriptionDays, navigate]);
 

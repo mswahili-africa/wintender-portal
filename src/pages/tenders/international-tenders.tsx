@@ -83,7 +83,9 @@ export default function InternationalTenders() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsSubscriptionModalOpen(true);
+        if (subscriptionDays !== undefined && subscriptionDays < 1) {
+            setIsSubscriptionModalOpen(true);
+        }
 
     }, [subscriptionDays, navigate]);
 
@@ -189,7 +191,7 @@ export default function InternationalTenders() {
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
             />
-            
+
             <RenewSubscriptionModal onSuccess={() => setIsPaymentModalOpen(true)} isOpen={isSubscriptionModalOpen} onClose={() => setIsSubscriptionModalOpen(false)} />
             
 

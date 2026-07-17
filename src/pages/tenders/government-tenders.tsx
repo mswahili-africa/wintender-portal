@@ -81,7 +81,9 @@ export default function GovernmentTenders() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsSubscriptionModalOpen(true);
+        if (subscriptionDays !== undefined && subscriptionDays < 1) {
+            setIsSubscriptionModalOpen(true);
+        }
 
     }, [subscriptionDays, navigate]);
 
@@ -188,9 +190,6 @@ export default function GovernmentTenders() {
             />
 
             <RenewSubscriptionModal onSuccess={() => setIsPaymentModalOpen(true)} isOpen={isSubscriptionModalOpen} onClose={() => setIsSubscriptionModalOpen(false)} />
-
-
-
 
             <TenderEdit
                 open={openModal.type === "update"}
