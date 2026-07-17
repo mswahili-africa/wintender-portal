@@ -23,7 +23,7 @@ import { useSearchCategories } from "@/hooks/categoriesRepository";
 import { useSearchEntities } from "@/hooks/entitiesRepository";
 import { useDebounce } from "@/hooks/useDebounce";
 import PricingModal from "../payments/subscription/fragments/PricingModel";
-import SubscriptionPaymentModal from "../payments/subscription/fragments/SubscriptionPaymentModal";
+import RenewSubscriptionModal from "../payments/subscription/fragments/RenewSubscriptionModal";
 
 export default function InternationalTenders() {
     const [page, setPage] = useState<number>(0);
@@ -31,6 +31,7 @@ export default function InternationalTenders() {
     const [filter] = useState<any>({});
     const { showConfirmation } = usePopup();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [entities, setEntities] = useState<any[]>([]);
     const [isEligible, setIsEligible] = useState(false);
@@ -82,21 +83,8 @@ export default function InternationalTenders() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (subscriptionDays !== undefined && subscriptionDays < 1) {
-            showConfirmation({
-                theme: "danger",
-                title: "Your subscription has expired",
-                message: "Hello, Your Monthly Subscription has EXPIRED. Make PAYMENT NOW to Catch Up with more Opportunities. For Assistance Contact us 0736 228228",
-                onConfirm: () => {
-                    // Open payment modal when confirm is clicked
-                    setIsPaymentModalOpen(true);
-                },
-                onCancel: () => {
-                    // Redirect to home page when cancelled
-                    navigate("/");  // Redirect to home page
-                }
-            });
-        }
+        setIsSubscriptionModalOpen(true);
+
     }, [subscriptionDays, navigate]);
 
     const doItForMeMutation = useApiMutation(async (tenderId: string) => requestDoForMe(tenderId));
@@ -201,7 +189,9 @@ export default function InternationalTenders() {
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
             />
-            {/* <SubscriptionPaymentModal open={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} /> */}
+            
+            <RenewSubscriptionModal onSuccess={() => setIsPaymentModalOpen(true)} isOpen={isSubscriptionModalOpen} onClose={() => setIsSubscriptionModalOpen(false)} />
+            
 
             <TenderEdit
                 open={openModal.type === "update"}

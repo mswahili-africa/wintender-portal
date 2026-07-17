@@ -19,9 +19,7 @@ export default function PricingModal({ open, onClose }: { open: boolean; onClose
     : null;
 
   return (
-    // <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex justify-center items-start overflow-y-auto z-10 p-4 sm:p-6 animate-fadeIn">
-    //   <div className="bg-slate-50 rounded-3xl w-full max-w-7xl my-8 md:my-12 shadow-2xl border border-gray-200/60 overflow-hidden relative flex flex-col">
-    <Modal size="xxxl" zIndex={60} isOpen={open} onClose={onClose}>
+    <Modal size="xxxl" zIndex={50} isOpen={open} onClose={onClose}>
 
       {/* Dynamic Close Button Action Trigger */}
       <button
@@ -124,7 +122,5 @@ export default function PricingModal({ open, onClose }: { open: boolean; onClose
 
       </div>
     </Modal>
-    //   </div>
-    // </div>
   );
 }

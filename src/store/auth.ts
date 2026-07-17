@@ -64,6 +64,8 @@ export const authStore = proxy<AuthStore>({
         authStore.user = null;
         localStorage.removeItem(USER_KEY);
 
+        localStorage.clear();
+
         window.location.replace("/login");
     },
 
