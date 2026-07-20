@@ -158,7 +158,7 @@ export default function SubscriptionPaymentModal({ open, onClose, plan }: Subscr
     }).format(finalAmount);
 
     return (
-        <Modal size="xxl" zIndex={60} isOpen={open} onClose={onClose}>
+        <Modal size="xxl" zIndex={50} isOpen={open} onClose={onClose}>
 
             {/* Close Button Trigger */}
             <button
