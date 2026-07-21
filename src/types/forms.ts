@@ -1,3 +1,4 @@
+import { MediaType } from "./enums"
 
 
 export interface ICustomerForm {
@@ -88,7 +89,7 @@ export interface IUserData {
 export interface IMessage {
     phoneNumber: string
     message: string
-    mediaType?: string
+    mediaType?: keyof typeof MediaType | "file"
     media?: string
     messageMode?: string
     name?: string
