@@ -4,20 +4,26 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 // Import your route definitions (assumed to be in the same file or imported separately)
 import { IRoute, getRoutesByRole } from "@/routes";  // Ensure the import path matches your project structure
 import { UserRole } from "@/utils";
-import { IconBook, IconBrandWhatsapp, IconChevronDown, IconMail, IconPdf, IconPhoneCall } from "@tabler/icons-react";
+import { IconBook, IconBrandWhatsapp, IconChartArcs3, IconChevronDown, IconMail, IconPdf, IconPhoneCall } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useState } from "react";
-import CompanyDocumentsModal from "@/pages/system/system-documents/CompanyDocumentsModal";
+import CompanyDocumentsModal from "@/pages/system/system-documents/policies/CompanyDocumentsModal";
+import KpiModal from "@/pages/system/system-documents/kpi/KpiModal";
 
 export default function SidebarLinks() {
     const location = useLocation();
     const { userData, loading } = useUserDataContext();
     const { t } = useTranslation();
     const [openDocuments, setOpenDocuments] = useState<boolean>(false);
+    const [openModal, setOpenModal] = useState<{ type: "view" | "whatsapp" | "kpi" | "documents" | null, object: any }>({ type: null, object: null });
+
+    const handleModalClose = () => {
+        setOpenModal({ type: null, object: null });
+    };
 
     // Add a type guard to ensure the role is valid or fallback to "BIDDER"
     const isValidUserRole = (role: any): role is UserRole => {
-        return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(role);
+        return ["ADMINISTRATOR", "BIDDER", "PUBLISHER", "ACCOUNTANT", "SUPERVISOR", "CUSTOMER_RELATIONSHIP_MANAGER", "MANAGER", "LEGAL", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(role);
     };
 
     const role: UserRole = isValidUserRole(userData?.role) ? userData?.role : "BIDDER";  // Default to BIDDER
@@ -47,7 +53,7 @@ export default function SidebarLinks() {
     return (
         <div className="text-xs md:text-sm text-slate-600 font-medium">
             {routes.map((item) => {
-                const isDropdown = item.type === "dropdown" 
+                const isDropdown = item.type === "dropdown"
 
                 const isStaticGroup = !item.type || item.type === "item";
                 const isOpen = openDropdown === item.path;
@@ -68,7 +74,7 @@ export default function SidebarLinks() {
                                     </div>
 
                                     <div className={`transition-transform ${isOpen ? "rotate-180" : ""}`}>
-                                        <IconChevronDown size={16}/>
+                                        <IconChevronDown size={16} />
                                     </div>
                                 </button>
 
@@ -146,6 +152,8 @@ export default function SidebarLinks() {
                                     <span>{t("auth-user-guide")}</span>
                                 </div>
                             </a>
+
+
                             <div
                                 className="flex items-center pb-3 rounded-md cursor-pointer hover:bg-slate-100"
                                 onClick={() => setOpenDocuments(true)}
@@ -155,6 +163,7 @@ export default function SidebarLinks() {
                                     <span>{t("auth-documents")}</span>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div className="">
@@ -181,10 +190,25 @@ export default function SidebarLinks() {
                             </a>
                         </div>
                     </div>
-                    <CompanyDocumentsModal isOpen={openDocuments} onClose={() => setOpenDocuments(false)} />
+
                 </>
 
             )}
+            {/* open kpi modal */}
+            {!["BIDDER", "PROCUREMENT_ENTITY", "PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(role) && (
+
+                <div
+                    className="flex items-center pb-3 rounded-md cursor-pointer hover:bg-slate-100"
+                    onClick={() => setOpenModal({ type: "kpi", object: null })}
+                >
+                    <div className={`flex items-center px-4 py-3 rounded-md hover:bg-slate-100`}>
+                        <IconChartArcs3 size={24} className="text-green-600 mr-3" stroke={2} />
+                        <span>KPI</span>
+                    </div>
+                </div>
+            )}
+            <CompanyDocumentsModal isOpen={openDocuments} onClose={() => setOpenDocuments(false)} />
+            <KpiModal isOpen={openModal.type === "kpi"} onClose={handleModalClose} />
         </div>
     );
 }

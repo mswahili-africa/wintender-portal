@@ -1,12 +1,5 @@
 import React, { useState } from "react";
 import Modal from "@/components/widgets/Modal";
-import { TermsAndConditions } from "../system-documents/TermsAndConditions";
-import PrivacyPolicy from "../system-documents/PrivacyPolicy";
-import SubscriptionFeeSchedule from "../system-documents/SubscriptionFeeSchedule";
-import SupplierCodeOfConduct from "../system-documents/SupplierCodeOfConduct";
-import RecordsRetentionPolicy from "../system-documents/RecordsRetentionPolicy";
-import DataProcessingAgreement from "../system-documents/DataProcessingAgreement";
-import EnvironmentalSustainabilityPolicy from "./EnvironmentalSustainabilityPolicy";
 
 import { 
   IconScale, 
@@ -15,8 +8,17 @@ import {
   IconCash, 
   IconArchive, 
   IconLeaf, 
-  IconUsers 
+  IconUsers, 
+  IconPaperBag,
+  IconDashboard
 } from "@tabler/icons-react";
+import AdministratorKpi from "./AdministratorKpi";
+import BusinessLeadKpi from "./BusinessLeadKpi";
+import AccountantKpi from "./AccountantKpi";
+import BusinessAdministratorDataOfficerKpi from "./BusinessAdministratorKpi";
+import CustomerAcquisitionRetentionOfficerKpi from "./CustomerAcquisitionRetentionOfficerKpi";
+import BusinessAdministratorProcurementOfficerKpi from "./BusinessAdministrationProcurementOfficerKpi";
+import SupervisorKpi from "./SupervisorKpi";
 
 interface IProps {
   isOpen: boolean;
@@ -28,30 +30,20 @@ const DOCUMENT_CATEGORIES = [
   {
     group: "Legal & Privacy Core",
     items: [
-      { id: "terms", label: "Terms & Conditions", icon: <IconScale size={16} />, component: <TermsAndConditions /> },
-      { id: "privacy", label: "Privacy Policy", icon: <IconShieldCheck size={16} />, component: <PrivacyPolicy /> },
-      { id: "dpa", label: "Data Processing Agreement", icon: <IconFileSpreadsheet size={16} />, component: <DataProcessingAgreement /> },
-    ]
-  },
-  {
-    group: "Operations & Operations",
-    items: [
-      { id: "subscription", label: "Subscription Fee Schedule", icon: <IconCash size={16} />, component: <SubscriptionFeeSchedule /> },
-      { id: "retention", label: "Records Retention Policy", icon: <IconArchive size={16} />, component: <RecordsRetentionPolicy /> },
-    ]
-  },
-  {
-    group: "Corporate Responsibility",
-    items: [
-      { id: "conduct", label: "Supplier Code of Conduct", icon: <IconUsers size={16} />, component: <SupplierCodeOfConduct /> },
-      { id: "sustainability", label: "Environmental Sustainability", icon: <IconLeaf size={16} />, component: <EnvironmentalSustainabilityPolicy /> },
+      { id: "administrator", label: "Administrator KPI", icon: <IconDashboard size={16} />, component: <AdministratorKpi /> },
+      { id: "businessLead", label: "Business Lead KPI", icon: <IconDashboard size={16} />, component: <BusinessLeadKpi /> },
+      { id: "accountantKpi", label: "Accountant KPI", icon: <IconDashboard size={16} />, component: <AccountantKpi /> },
+      { id: "businessAdministratorDataOfficerKpi", label: "Business Administrator Data Officer KPI", icon: <IconDashboard size={16} />, component: <BusinessAdministratorDataOfficerKpi /> },
+      { id: "CustomerAcquisitionRetentionOfficerKpi", label: "Customer Acquisition & Retention Officer KPI", icon: <IconDashboard size={16} />, component: <CustomerAcquisitionRetentionOfficerKpi /> },
+      { id: "BusinessAdministratorProcurementOfficerKpi", label: "Business Administrator Procurement Officer KPI", icon: <IconDashboard size={16} />, component: <BusinessAdministratorProcurementOfficerKpi /> },
+      { id: "SupervisorKpi", label: "Supervisor KPI", icon: <IconDashboard size={16} />, component: <SupervisorKpi /> },
     ]
   }
 ];
 
 export default function CompanyDocumentsModal({ isOpen, onClose }: IProps) {
   // Default to the first item (Terms and Conditions)
-  const [activeTab, setActiveTab] = useState("terms");
+  const [activeTab, setActiveTab] = useState("administrator");
 
   // Flatten helper to instantly pull out the active pane payload
   const currentDocument = DOCUMENT_CATEGORIES.flatMap(cat => cat.items).find(
