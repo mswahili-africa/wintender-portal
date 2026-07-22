@@ -1,4 +1,4 @@
-import { IconCheckbox, IconEdit, IconEye, IconFile, IconFilter, IconRecycle, IconSquareRoundedMinus } from "@tabler/icons-react";
+import { IconAward, IconAwardOff, IconCheckbox, IconChevronDown, IconEdit, IconEye, IconFile, IconFileText, IconFilter, IconFlagCheck, IconLoader, IconRecycle, IconSend, IconSquareRoundedMinus, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Table } from "@/components/widgets/table/Table";
 import toast from "react-hot-toast";
@@ -21,6 +21,7 @@ import { difmApplicationColumnSearchOptions, difmApplicationQueryParams, DIFMSta
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import Select from "react-select";
+import SummaryCard, { ISummaryCardProps } from "@/components/cards/SummaryCard";
 
 
 
@@ -40,6 +41,18 @@ export default function DIFMapplications() {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
+    // subscription date state
+        const [open, setOpen] = useState(false);
+        const [filter, setFilter] = useState<string | undefined>(undefined);
+        const [subscriptionFilter, setSubscriptionFilter] = useState<string | undefined>("");
+    
+        // handle subscription filter select
+        const dateMap: Record<string, number> = {
+            "3days": 3,
+            "1week": 7,
+            "1month": 30,
+        };
+
     // Fetch data using custom hook
     const { applicationList, isLoading, refetch } = useApplicationsList({
         applicationGroup: null,
@@ -54,6 +67,66 @@ export default function DIFMapplications() {
         visibility: "all",
 
     });
+
+    // Configuration mapping array
+    const summaryConfigs: ISummaryCardProps[] = [
+        {
+            label: "Requests",
+            value: applicationList?.summary?.request ?? 0,
+            icon: <IconFileText size={18} />,
+            borderColor: "border-blue-100",
+            iconBgColor: "bg-purple-100",
+            iconTextColor: "text-purple-600",
+        },
+        {
+            label: "On progress",
+            value: applicationList?.summary?.open ?? 0,
+            icon: <IconLoader size={18} />,
+            borderColor: "border-green-100",
+            iconBgColor: "bg-blue-100",
+            iconTextColor: "text-blue-600",
+        },
+        {
+            label: "Applied",
+            value: applicationList?.summary?.applied ?? 0,
+            icon: <IconSend size={18} />,
+            borderColor: "border-green-100",
+            iconBgColor: "bg-green-100",
+            iconTextColor: "text-green-600",
+        },
+        {
+            label: "Won",
+            value: applicationList?.summary?.awarded ?? 0,
+            icon: <IconAward size={18} />,
+            borderColor: "border-emerald-100",
+            iconBgColor: "bg-emerald-100",
+            iconTextColor: "text-emerald-600",
+        },
+        {
+            label: "Not Won",
+            value: applicationList?.summary?.notAwarded ?? 0,
+            icon: <IconAwardOff size={18} />,
+            borderColor: "border-orange-100",
+            iconBgColor: "bg-orange-100",
+            iconTextColor: "text-orange-600",
+        },
+        {
+            label: "Executed", // Corrected spelling from 'Excuted'
+            value: applicationList?.summary?.executed ?? 0,
+            icon: <IconFlagCheck size={18} />,
+            borderColor: "border-emerald-100",
+            iconBgColor: "bg-amber-100",
+            iconTextColor: "text-amber-600",
+        },
+        {
+            label: "Cancelled",
+            value: applicationList?.summary?.canceled ?? 0,
+            icon: <IconX size={18} />,
+            borderColor: "border-red-100",
+            iconBgColor: "bg-red-100",
+            iconTextColor: "text-red-600",
+        },
+    ];
 
     // submit filter
     const handleFilterSubmit = () => {
@@ -238,6 +311,7 @@ export default function DIFMapplications() {
                 <h3 className="font-bold text-lg">{t("difm-tabs-all-applications-header")}</h3>
                 <div className="flex flex-row gap-2 w-full justify-between mb-4">
                     <div className="flex flex-row gap-x-2">
+
                         <Select
                             options={difmApplicationColumnSearchOptions}
                             value={difmApplicationColumnSearchOptions.find((option: any) => option.value === filterQuery?.searchKey)}
@@ -269,6 +343,72 @@ export default function DIFMapplications() {
                                 ))
                             }
                         </select>
+
+                        {/* Date filter */}
+                        <div className="relative w-64">
+
+                            {/* Trigger */}
+                            <button
+                                onClick={() => setOpen(!open)}
+                                className="w-full mt-1 flex items-center justify-between rounded-lg border bg-white px-3 py-2 text-sm shadow-sm hover:border-green-500"
+                            >
+                                <span className="text-gray-700">
+                                    {filter === "3days" && "Last 3 Days"}
+                                    {filter === "1week" && "Last 1 Week"}
+                                    {filter === "1month" && "Last 1 Month"}
+                                    {/* {filter === "custom" && "Custom Date"} */}
+                                    {!filter && "Subscription Filter"}
+                                </span>
+                                <IconChevronDown size={18} />
+                            </button>
+
+                            {/* Dropdown */}
+                            {open && (
+                                <div className="absolute z-50 mt-2 w-full rounded-xl border bg-white shadow-lg p-2 space-y-1">
+                                    <button
+                                        // onClick={() => handleSelect("3days")}
+                                        className="dropdown-item"
+                                    >
+                                        3 Days
+                                    </button>
+
+                                    <button
+                                        // onClick={() => handleSelect("1week")}
+                                        className="dropdown-item"
+                                    >
+                                        1 Week
+                                    </button>
+
+                                    <button
+                                        // onClick={() => handleSelect("1month")}
+                                        className="dropdown-item"
+                                    >
+                                        1 Month
+                                    </button>
+
+                                    {/* <button
+                                                            onClick={() => handleSelect("custom")}
+                                                            className="dropdown-item flex items-center gap-2"
+                                                        >
+                                                            <IconCalendar size={16} />
+                                                            Custom Date
+                                                        </button> */}
+
+                                    {/* Custom Date Input */}
+                                    {/* {filter === "custom" && (
+                                                            <div className="pt-2 border-t">
+                                                                <input
+                                                                    type="datetime-local"
+                                                                    className="input-normal"
+                                                                    value={subscriptionFilter}
+                                                                    onChange={(e) => setSubscriptionFilter(e.target.value)}
+                                                                />
+                                                            </div>
+                                                        )} */}
+                                </div>
+                            )}
+                        </div>
+
                         <Button
                             type="button"
                             label="Filter"
@@ -290,6 +430,27 @@ export default function DIFMapplications() {
                             )
                         }
                     </div>
+                </div>
+            </div>
+
+            <div className="border-b border-zinc-200 text-sm  pb-5">
+
+                <div className="space-y-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 w-full">
+
+                        {summaryConfigs.map((config, index) => (
+                            <SummaryCard
+                                key={index}
+                                label={config.label}
+                                value={config.value}
+                                icon={config.icon}
+                                borderColor={config.borderColor}
+                                iconBgColor={config.iconBgColor}
+                                iconTextColor={config.iconTextColor}
+                            />
+                        ))}
+                    </div>
+
                 </div>
             </div>
 
