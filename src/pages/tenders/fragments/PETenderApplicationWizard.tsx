@@ -54,6 +54,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
     const formData = new FormData();
     formData.append("tenderId", tender.tenderId);
+    formData.append("applicationId", tender.applicationId);
     formData.append("documentType", fieldName.toUpperCase());
     formData.append("requirementStage", stage);
     formData.append("file", file);

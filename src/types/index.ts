@@ -514,6 +514,7 @@ export interface IBidderUploadedDocument {
 export interface ITenderDetails {
   applicationStatus: string;
   tenderId: string;
+  applicationId: string;
   title: string;
   tenderNumber: string;
   region: string;
