@@ -7,10 +7,17 @@ export enum RequirementStage {
 }
 
 export interface RequirementItem {
-  fieldName: string;
+  documentType: string;
   required: boolean;
   percentage: number;
   description?: string;
+  filePath?: string;
+}
+
+export interface IRequirementList {
+  stage: RequirementStage;
+  passMark: number;
+  requiredDocuments: RequirementItem[];
 }
 
 export interface IFiles {
@@ -48,18 +55,18 @@ export interface IApplicationInterface {
 }
 
 
-export interface IRequirement {
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  tenderId: string;
-  stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "FINANCIAL";
-  fieldName: string;
-  description: string;
-  percentage: number;
-  required: boolean;
-}
+// export interface IRequirement {
+//   createdBy: string;
+//   updatedBy: string;
+//   createdAt: number;
+//   updatedAt: number;
+//   tenderId: string;
+//   stage: "PRELIMINARY" | "TECHNICAL" | "COMMERCIAL" | "FINANCIAL";
+//   fieldName: string;
+//   description: string;
+//   percentage: number;
+//   required: boolean;
+// }
 
 export interface ITender {
   selfApply: boolean;
@@ -80,7 +87,7 @@ export interface ITender {
   entityName: string;
   entityLogoFilePath: string;
   applicationStatus: string;
-  requirements: IRequirement[];
+  requirements: IRequirementList[];
 }
 
 export interface IBidder {

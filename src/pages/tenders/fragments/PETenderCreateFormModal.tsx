@@ -15,7 +15,7 @@ import { TextEditor } from "@/components/editor/TextEditor";
 import { useTranslation } from "react-i18next";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { motion } from "framer-motion";
-import { RequirementStage, RequirementItem } from "@/types/tenderWizard";
+import { RequirementStage, RequirementItem, IRequirementList } from "@/types/tenderWizard";
 import Modal from "@/components/widgets/Modal";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchCategories } from "@/hooks/categoriesRepository";
@@ -265,15 +265,11 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         formData.append("consultationFee", data.consultationFee.toString());
 
         // JCM
-        const requirementList: {
-            stage: RequirementStage;
-            passMark: number;
-            requiredDocuments: RequirementItem[];
-        }[] = Object.entries(requirements).map(([stage, items]) => {
+        const requirementList: IRequirementList[] = Object.entries(requirements).map(([stage, items]) => {
             const passMark = passMarks[stage as RequirementStage];
 
             const requiredDocuments = items.map((item) => ({
-                fieldName: item.fieldName,
+                documentType: item.documentType,
                 required: item.required,
                 percentage: item.percentage,
                 description: item.description,
@@ -533,7 +529,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
 
         const stage = steps[currentStep] as RequirementStage;
         const stageOptions = requirementOptions.filter((opt) => opt.stage === stage);
-        const selectedValues = requirements[stage].map((r) => r.fieldName);
+        const selectedValues = requirements[stage].map((r) => r.documentType);
 
         if (currentStep === steps.length - 1) {
             return (
@@ -650,7 +646,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                     const filteredStageOptions = stageOptions.filter(
                         (opt) =>
                             !selectedValues.includes(opt.value) ||
-                            opt.value === req.fieldName
+                            opt.value === req.documentType
                     );
 
                     return (
@@ -669,7 +665,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                                         {idx + 1}
                                     </span>
                                     <h4 className="text-sm font-semibold text-slate-800">
-                                        {filteredStageOptions.find((opt) => opt.value === req.fieldName)?.label || req.fieldName}
+                                        {filteredStageOptions.find((opt) => opt.value === req.documentType)?.label || req.documentType}
                                     </h4>
                                 </div>
 
@@ -691,11 +687,11 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
                                 <div className="lg:col-span-6">
                                     <label className="label">{t("tender-wizard-form-requirement")}</label>
                                     <select
-                                        className={`input-normal w-full ${!req.fieldName ? "border-red-500" : ""
+                                        className={`input-normal w-full ${!req.documentType ? "border-red-500" : ""
                                             }`}
-                                        value={req.fieldName}
+                                        value={req.documentType}
                                         onChange={(e) =>
-                                            updateRequirement(stage, idx, "fieldName", e.target.value)
+                                            updateRequirement(stage, idx, "documentType", e.target.value)
                                         }
                                     >
                                         <option value="">{t("tender-wizard-form-select-requirement")}</option>
