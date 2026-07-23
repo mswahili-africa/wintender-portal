@@ -12,6 +12,8 @@ import Button from "@/components/button/Button";
 import { confirmResetPassword } from "@/services/auth";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
+import { OTPInput } from "@/components/inputs/OTPinput";
+import { set } from "lodash";
 
 interface IResetPassword {
     email: string
@@ -34,8 +36,9 @@ export default function () {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // For repeat password
+    const [otp, setOTP] = useState<string>("");
 
-    const { register, handleSubmit, formState: { errors } } = useForm<IResetPassword>({
+    const { register, handleSubmit,setValue, formState: { errors } } = useForm<IResetPassword>({
         resolver: yupResolver(schema),
         defaultValues: {
             email: "",
@@ -45,7 +48,7 @@ export default function () {
         }
     });
 
-    const { mutate, isLoading } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: (data: IConfirmPasswordResetForm) => confirmResetPassword(data),
         onSuccess: (res) => {
             toast.success("Password reset successful");
@@ -53,7 +56,7 @@ export default function () {
             navigate("/login");
         },
         onError: (error: any) => {
-            toast.error("Failed to send reset request");
+            toast.error(error.response.data.message || "Failed to send reset request");
         }
     });
 
@@ -163,13 +166,29 @@ export default function () {
 
                         <div>
                             <label htmlFor="confirmationCode" className="block mb-2">
-                                Confirmation Code
+                                Confirmation Code (sent to your device)
                             </label>
-                            <input
+
+                            {/* <input
                                 autoComplete="off"
                                 type="text"
                                 className={`${errors.confirmationCode?.message ? 'input-error' : 'input-normal'}`}
-                                {...register("confirmationCode")} />
+                                {...register("confirmationCode")}
+                            /> */}
+
+                            <OTPInput
+                                length={6}
+                                value={otp}
+                                onChange={setOTP}
+                                onComplete={
+                                    (finalOtp: string) => {
+                                        // set confirmationCode
+                                        setValue("confirmationCode", finalOtp);
+                                    }
+                                }
+                            />
+
+                            <p className="text-xs mt-3 text-red-600">{errors.confirmationCode?.message}</p>
                         </div>
 
                         <Button
@@ -177,7 +196,7 @@ export default function () {
                             label="Submit"
                             theme="primary"
                             size="md"
-                            loading={isLoading}
+                            loading={isPending}
                         />
 
                     </form>

@@ -17,7 +17,7 @@ export default function () {
         }
     });
 
-    const { mutate, isLoading } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: (data: { username: string }) => forgotPassword(data),
         onSuccess: () => {
             toast.success("Reset instruction has been sent to your email");
@@ -82,7 +82,7 @@ export default function () {
                             label="Submit"
                             theme="primary"
                             size="md"
-                            loading={isLoading}
+                            loading={isPending}
                         />
                     </form>
                 </div>
