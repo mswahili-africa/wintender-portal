@@ -265,21 +265,33 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         formData.append("consultationFee", data.consultationFee.toString());
 
         // JCM
-        const requirementList = Object.entries(requirements).flatMap(([stage, items]) =>
-            items.map((item) => ({
-                stage,
-                passMark: passMarks[stage as RequirementStage],
+        const requirementList: {
+            stage: RequirementStage;
+            passMark: number;
+            requiredDocuments: RequirementItem[];
+        }[] = Object.entries(requirements).map(([stage, items]) => {
+            const passMark = passMarks[stage as RequirementStage];
+
+            const requiredDocuments = items.map((item) => ({
                 fieldName: item.fieldName,
                 required: item.required,
                 percentage: item.percentage,
-                description: item.description
-            }))
-        );
+                description: item.description,
+            }));
+
+            return {
+                stage: stage as RequirementStage,
+                passMark,
+                requiredDocuments,
+            };
+        });
+
 
 
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
+        // formData.forEach((value, key) => console.log(key, value));
 
         uploadTenderMutation.mutate(formData);
     };

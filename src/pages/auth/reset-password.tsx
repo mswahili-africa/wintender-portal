@@ -169,13 +169,6 @@ export default function () {
                                 Confirmation Code (sent to your device)
                             </label>
 
-                            {/* <input
-                                autoComplete="off"
-                                type="text"
-                                className={`${errors.confirmationCode?.message ? 'input-error' : 'input-normal'}`}
-                                {...register("confirmationCode")}
-                            /> */}
-
                             <OTPInput
                                 length={6}
                                 value={otp}

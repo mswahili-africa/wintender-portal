@@ -2,14 +2,7 @@ import React, { useState } from "react";
 import Modal from "@/components/widgets/Modal";
 
 import { 
-  IconScale, 
-  IconShieldCheck, 
-  IconFileSpreadsheet, 
-  IconCash, 
-  IconArchive, 
-  IconLeaf, 
-  IconUsers, 
-  IconPaperBag,
+  IconScale,
   IconDashboard
 } from "@tabler/icons-react";
 import AdministratorKpi from "./AdministratorKpi";
@@ -28,7 +21,7 @@ interface IProps {
 // 1. Structured Document Groups Hierarchy
 const DOCUMENT_CATEGORIES = [
   {
-    group: "Legal & Privacy Core",
+    group: "Key Performance Indicators (KPI)",
     items: [
       { id: "administrator", label: "Administrator KPI", icon: <IconDashboard size={16} />, component: <AdministratorKpi /> },
       { id: "businessLead", label: "Business Lead KPI", icon: <IconDashboard size={16} />, component: <BusinessLeadKpi /> },
