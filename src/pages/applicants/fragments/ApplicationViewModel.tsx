@@ -1,7 +1,7 @@
 import Button from "@/components/button/Button";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { ITenderApplication, IFile, IStageMarks } from "@/types/tenderWizard";
+import { ITenderApplication, IFile, IStageMarks, RequirementStage } from "@/types/tenderWizard";
 import {
   IconEye,
   IconFile,
@@ -12,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import ApplicationConfirmationModal from "./ApplicationConfirmationModal";
+import documentsList from "@/pages/complience/data/documents.json";
 
 /* ----------------------------- TYPES ----------------------------- */
 interface ModalProps {
@@ -117,8 +118,9 @@ export default function ApplicationViewModal({
   };
 
   // function to check if requied from requirements and return true or false and total marks
-  const checkRequiredAndTotalMarks = (fieldName: string) => {
-    const requirement = application.tender.requirements.find((req) => req.fieldName === fieldName);
+  const checkRequiredAndTotalMarks = (documentType: string) => {
+    // const requirement = application.tender.requirements.find((req) => req.fieldName === fieldName);
+    const requirement = application.tender.requirements.map((item => item.requiredDocuments)).flat().find((req) => req.documentType === documentType);
     return requirement ? { required: requirement.required, totalMarks: requirement.percentage } : { required: false, totalMarks: 0 };
   }
 
@@ -285,7 +287,7 @@ export default function ApplicationViewModal({
               <div className="flex gap-2">
 
                 {
-                  overallMarksToCurrentStage  >= (stageMark?.passMark ?? 0) &&
+                  overallMarksToCurrentStage >= (stageMark?.passMark ?? 0) &&
                   <Button
                     label={
                       userData?.role === "PROCUREMENT_ENTITY_REVIEWER"
@@ -577,7 +579,7 @@ export default function ApplicationViewModal({
                     >
                       <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
                         <div>
-                          {file.documentType} ({file.stage})
+                          {documentsList.find((doc) => doc.value === file.documentType)?.label || file.documentType} ({file.stage})
                         </div>
 
                         {
@@ -614,107 +616,113 @@ export default function ApplicationViewModal({
 
 
             <div className="space-y-4">
-              {application.files.length > 0 ? (
-                application.files.map((file: IFile) => (
-                  <details
-                    key={file.id}
-                    className="border rounded-lg overflow-hidden"
-                  >
-                    <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
-                      <div>
-                        {file.documentType} ({file.stage})
-                      </div>
+              {
+                application.tender.requirements.length > 0 ?
+                  application.tender.requirements.map((requirement) => (
+                    requirement.requiredDocuments.length > 0 &&
+                    requirement.requiredDocuments.map((document) => (
+                      <details
+                        key={document.documentType}
+                        className="border rounded-lg overflow-hidden"
+                      >
+                        <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
+                          <div>
+                            {documentsList.find((doc) => doc.value === document.documentType)?.label || document.documentType} ({requirement.stage})
+                          </div>
 
-                      {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userData?.role || "") &&
-                        (() => {
-                          const { required, totalMarks } = checkRequiredAndTotalMarks(file.documentType);
-                          return (
-                            required &&  userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ?(
-                              <div className="flex flex-row items-center gap-x-1">
-                                <div className="text-green-500 text-xs">REQUIRED</div>
-                                <div className="text-slate-500 text-xs">{totalMarks}%</div>
-                                <input
-                                  type="number"
-                                  min={0}
-                                  max={totalMarks}
-                                  onChange={(e) => {
-                                    const providedValue = Number(e.target.value);
+                          {["PROCUREMENT_ENTITY_REVIEWER", "PROCUREMENT_ENTITY_CHAIRMAN"].includes(userData?.role || "") &&
+                            (() => {
+                              const { required, totalMarks } = checkRequiredAndTotalMarks(document.documentType);
+                              return (
+                                required && userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ? (
+                                  <div className="flex flex-row items-center gap-x-1">
+                                    <div className="text-green-500 text-xs">REQUIRED</div>
+                                    <div className="text-slate-500 text-xs">{totalMarks}%</div>
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      max={totalMarks}
+                                      onChange={(e) => {
+                                        const providedValue = Number(e.target.value);
 
-                                    // Clamp between 0 and totalMarks
-                                    const maxMarks = totalMarks;
-                                    const value = Math.max(0, Math.min(providedValue, maxMarks));
+                                        // Clamp between 0 and totalMarks
+                                        const maxMarks = totalMarks;
+                                        const value = Math.max(0, Math.min(providedValue, maxMarks));
 
-                                    // setDecision({ ...decision, marks: value });
-                                    setDocumentScore((prevScores) => {
-                                      const existingIndex = prevScores.findIndex(
-                                        (doc) => doc.type === file.documentType
-                                      );
+                                        // setDecision({ ...decision, marks: value });
+                                        setDocumentScore((prevScores) => {
+                                          const existingIndex = prevScores.findIndex(
+                                            (doc) => doc.type === document.documentType
+                                          );
 
-                                      if (existingIndex !== -1) {
-                                        const updatedScores = [...prevScores];
-                                        updatedScores[existingIndex] = {
-                                          type: file.documentType,
-                                          score: value,
-                                          maxScore: maxMarks,
-                                        };
-                                        return updatedScores;
-                                      } else {
-                                        // Add new entry
-                                        return [
-                                          ...prevScores,
-                                          { type: file.documentType, score: value, maxScore: maxMarks },
-                                        ];
-                                      }
-                                    });
+                                          if (existingIndex !== -1) {
+                                            const updatedScores = [...prevScores];
+                                            updatedScores[existingIndex] = {
+                                              type: document.documentType,
+                                              score: value,
+                                              maxScore: maxMarks,
+                                            };
+                                            return updatedScores;
+                                          } else {
+                                            // Add new entry
+                                            return [
+                                              ...prevScores,
+                                              { type: document.documentType, score: value, maxScore: maxMarks },
+                                            ];
+                                          }
+                                        });
 
-                                  }}
-                                  onInput={(e) => {
-                                    // Prevent typing beyond top max or below 0
-                                    const input = e.target as HTMLInputElement;
-                                    const maxMarks = totalMarks;
+                                      }}
+                                      onInput={(e) => {
+                                        // Prevent typing beyond top max or below 0
+                                        const input = e.target as HTMLInputElement;
+                                        const maxMarks = totalMarks;
 
-                                    if (Number(input.value) > maxMarks) {
-                                      input.value = String(maxMarks);
-                                    }
+                                        if (Number(input.value) > maxMarks) {
+                                          input.value = String(maxMarks);
+                                        }
 
-                                    if (Number(input.value) < 0) {
-                                      input.value = "0";
-                                    }
-                                  }}
-                                  className="input-normal h-8 w-full"
-                                />
-                              </div>
-                            )
-                              : userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN" &&
-                              (
-                                <div className="text-green-500 text-xs">REVIEWED</div>
+                                        if (Number(input.value) < 0) {
+                                          input.value = "0";
+                                        }
+                                      }}
+                                      className="input-normal h-8 w-full"
+                                    />
+                                  </div>
+                                )
+                                  : userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN" &&
+                                  (
+                                    <div className="text-green-500 text-xs">REVIEWED</div>
+                                  )
                               )
-                          )
-                        })()
-                      }
+                            })()
+                          }
 
-                    </summary>
+                        </summary>
 
-                    {file.filePath ? (
-                      <iframe
-                        src={file.filePath}
-                        className="w-full h-[500px]"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="p-6 text-sm text-slate-500 text-center">
-                        Document not available
-                      </div>
-                    )}
-                  </details>
-                ))
-              ) : (
-                <div className="p-6 text-xs text-slate-500 text-center">
-                  No documents submitted
-                </div>
-              )}
+                        {document.filePath ? (
+                          <iframe
+                            src={document.filePath}
+                            className="w-full h-[500px]"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="p-6 text-sm text-slate-500 text-center">
+                            Document not available
+                          </div>
+                        )}
+                      </details>
+                    ))
+                  ))
+                  : (
+                    <div className="p-6 text-xs text-slate-500 text-center">
+                      No documents submitted
+                    </div>
+                  )
+              }
             </div>
           </div>
+
         </div>
 
       </div>

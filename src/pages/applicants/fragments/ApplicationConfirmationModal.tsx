@@ -71,11 +71,11 @@ export default function ApplicationConfirmationModal({
 
   // check if there is requirement item not present in documentScore type
   const requiredItems = application.tender.requirements
-    .filter((r) => r.stage === application.reviewStage && r.required);
+    .filter((r) => r.stage === application.reviewStage && r.requiredDocuments.find((d) => d.required));
 
 
   const areAllRequiredReviewed = requiredItems.every((r) =>
-    documentScore.some((file) => file.type === r.fieldName)
+    documentScore.some((file) => file.type === r.requiredDocuments.find((d) => d.required)?.documentType)
   );
 
 
