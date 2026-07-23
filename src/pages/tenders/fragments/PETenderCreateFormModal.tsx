@@ -265,7 +265,7 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         formData.append("consultationFee", data.consultationFee.toString());
 
         // JCM
-        const requirementList: IRequirementList[] = Object.entries(requirements).map(([stage, items]) => {
+        const requirementList: IRequirementList[] = Object.entries(requirements).filter(([stage, items]) => stage !=  RequirementStage.CONSENT).map(([stage, items]) => {
             const passMark = passMarks[stage as RequirementStage];
 
             const requiredDocuments = items.map((item) => ({
@@ -287,9 +287,9 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
-        // formData.forEach((value, key) => console.log(key, value));
+        formData.forEach((value, key) => console.log(key, value));
 
-        uploadTenderMutation.mutate(formData);
+        // uploadTenderMutation.mutate(formData);
     };
 
     const renderStepContent = () => {
