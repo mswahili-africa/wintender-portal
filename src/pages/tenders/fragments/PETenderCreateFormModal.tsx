@@ -287,9 +287,9 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
         if (requirementList.length > 0) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
-        formData.forEach((value, key) => console.log(key, value));
+        // formData.forEach((value, key) => console.log(key, value));
 
-        // uploadTenderMutation.mutate(formData);
+        uploadTenderMutation.mutate(formData);
     };
 
     const renderStepContent = () => {

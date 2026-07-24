@@ -33,7 +33,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
   const stages = ["DETAILS",
     ...(tender.applicationFee === 0 ? ["PAYMENT"] : []),
-    "PRELIMINARY", "TECHNICAL", "COMMERCIAL","FINANCIAL","CONSENT"
+    "PRELIMINARY", "TECHNICAL", "COMMERCIAL", "FINANCIAL", "CONSENT"
   ];
 
   useEffect(() => {
@@ -105,38 +105,57 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
   };
 
   const getUploadedPercentage = () => {
-    if (!tender.requirements || tender.requirements.length === 0) return 0;
+    // 1. Guard clause for empty requirements
+    if (!tender.requirements?.length) return 0;
 
-    const total = tender.requirements.reduce((sum, req) => {
-      const key = `${req.stage}-${req.fieldName}`;
-      const uploaded = uploadedDocs[key];
-      return uploaded ? sum + (req.percentage || 0) : sum;
-    }, 0);
+    let totalPercentage = 0;
 
-    return Math.min(100, total); // cap at 100
+    // 2. Loop through each requirement item
+    tender.requirements.forEach(requirementItem => {
+      if (!requirementItem.requiredDocuments) return;
+
+      // 3. Loop through the documents inside this requirement
+      requirementItem.requiredDocuments.forEach(req => {
+        const key = `${requirementItem.stage}-${req.documentType}`;
+        console.log("percentage key",key)
+        const isUploaded = uploadedDocs[key];
+
+        console.log("is key uploaded",isUploaded)
+        
+        // 4. Add percentage if the document exists in uploadedDocs
+        if (isUploaded) {
+          totalPercentage += (req.percentage || 0);
+          console.log("accumilated percentage",totalPercentage)
+        }
+      });
+    });
+
+    // 5. Cap the final total at 100
+    return Math.min(100, totalPercentage);
   };
+
 
   const FileUploadField = ({
     stage,
-    fieldName,
+    documentType,
     required,
     description,
     percentage,
   }: {
     stage: string;
-    fieldName: string;
+    documentType: string;
     required?: boolean;
     description?: string;
     percentage?: number;
   }) => {
-    const fileKey = `${stage}-${fieldName}`;
+    const fileKey = `${stage}-${documentType}`;
     const file = uploadedDocs[fileKey];
     const isUploading = uploading[fileKey];
     const previewURL = previewURLs[fileKey];
 
     return (
       <div className="mb-6 relative">
-        <label className="block font-medium mb-1">{fieldName.replace("_", " ")}</label>
+        <label className="block font-medium mb-1">{documentType.replace("_", " ")}</label>
 
         {description && (
           <p className="text-xs text-slate-500 mb-2">
@@ -186,7 +205,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
             className="hidden"
             onChange={(e) => {
               const selectedFile = e.target.files?.[0];
-              if (selectedFile) handleFileUpload(stage, fieldName, selectedFile);
+              if (selectedFile) handleFileUpload(stage, documentType, selectedFile);
             }}
           />
         </label>
@@ -195,7 +214,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
           <button
             type="button"
             className="absolute top-2 right-2 text-xs text-red-600 underline"
-            onClick={() => handleRemoveFile(stage, fieldName)}
+            onClick={() => handleRemoveFile(stage, documentType)}
           >
             {t("application-wizard-remove")}
           </button>
@@ -229,7 +248,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     const allRequirements = tender.requirements || [];
     const grouped = stages.reduce((acc, stage) => {
       const docs = allRequirements.filter(r => r.stage === stage);
-      if (docs.length > 0) acc[stage] = docs.map(d => d.fieldName);
+      if (docs.length > 0) acc[stage] = docs.map(d => d.requiredDocuments.map(d => d.documentType)).flat();
       return acc;
     }, {} as Record<string, string[]>);
 
@@ -262,8 +281,8 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
           </div>
 
           <div className="text-xs text-red-500 mt-4 italic">
-              {t("application-wizard-instructions")}:
-           
+            {t("application-wizard-instructions")}:
+
             <ul className="mt-2 list-disc pl-5 space-y-1">
               <li><strong>PAYMENT:</strong> PROOF OF PAYMENT</li>
               {Object.entries(grouped).map(([stage, fields]) => (
@@ -276,28 +295,34 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     }
 
     if (step === "PAYMENT") {
-      return <FileUploadField stage="PAYMENT" fieldName="PROOF_OF_PAYMENT" required={true} />;
+      return <FileUploadField stage="PAYMENT" documentType="PROOF_OF_PAYMENT" required={true} />;
     }
 
     if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL", "FINANCIAL"].includes(step)) {
       const stageRequirements = tender.requirements.filter((r) => r.stage === step);
-      return stageRequirements.length === 0 ? (
-        <p>{t("application-wizard-no-requirements")}</p>
-      ) : (
-        <div className="space-y-4">
-          {stageRequirements.map((req) => (
-            <FileUploadField
-              stage={step}
-              fieldName={req.fieldName}
-              required={req.required}
-              description={req.description}
-              percentage={req.percentage}
-            />
 
-          ))}
+      if (stageRequirements.length === 0) {
+        return <p>{t("application-wizard-no-requirements")}</p>;
+      }
+
+      return (
+        <div className="space-y-4">
+          {stageRequirements.map((requirementItem) =>
+            requirementItem.requiredDocuments?.map((doc) => (
+              <FileUploadField
+                key={`${step}-${doc.documentType}`} // Crucial for React lists
+                stage={step}
+                documentType={doc.documentType}
+                required={doc.required}
+                description={doc.description}
+                percentage={doc.percentage}
+              />
+            ))
+          )}
         </div>
       );
     }
+
 
     if (step === "CONSENT") {
       return (
@@ -336,12 +361,25 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
     }
 
     if (["PRELIMINARY", "TECHNICAL", "COMMERCIAL", "FINANCIAL"].includes(step)) {
-      const requiredFields = tender.requirements.filter((r) => r.stage === step && r.required);
-      return requiredFields.every((r) => {
-        const key = `${step}-${r.fieldName}`;
-        return uploadedDocs[key] && !uploading[key];
+
+      // 1. Filter to requirements matching the current stage
+      const stageRequirements = tender.requirements.filter((r) => r.stage === step);
+
+      // 2. Ensure EVERY single required document in this stage is uploaded
+      return stageRequirements.every((requirementItem) => {
+        if (!requirementItem.requiredDocuments) return true; // Skip if no documents array
+
+        return requirementItem.requiredDocuments.every((doc) => {
+          // If the document is not strictly required, skip validation for it
+          if (!doc.required) return true;
+
+          // Check if it is uploaded and not currently uploading
+          const key = `${step}-${doc.documentType}`;
+          return uploadedDocs[key] && !uploading[key];
+        });
       });
     }
+
 
     if (step === "CONSENT") {
       return consentGiven;
@@ -416,7 +454,7 @@ export default function PETenderApplicationWizard({ tender, onClose }: Props) {
 
       <div className="flex justify-between">
         {currentStep > 0 && (
-          <Button theme="warning" size="sm"  label="Back" type="button" onClick={handleBack} />
+          <Button theme="warning" size="sm" label="Back" type="button" onClick={handleBack} />
         )}
         {currentStep < stages.length - 1 ? (
           <Button theme="success" size="sm" label="Next" type="button" onClick={handleNext} disabled={!canProceed()} />

@@ -1,5 +1,6 @@
 import { List } from "lodash";
 import { RatingReason } from "./forms";
+import { IRequirementList } from "./tenderWizard";
 
 export interface IGenericResponse {
   statusCodeValue: number;
@@ -526,7 +527,7 @@ export interface ITenderDetails {
   consultationFee: number;
   applicationFee: number;
   entityName: string;
-  requirements: IRequirement[];
+  requirements: IRequirementList[];
 }
 
 export interface IRequirement {
