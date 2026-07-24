@@ -14,6 +14,7 @@ interface ModalProps {
   application: ITenderApplication;
   documentScore: { type: string, score: number, maxScore: number }[]
   open: boolean;
+  onSuccess?: () => void;
   decision?: { id: string; status: "ACCEPTED" | "REJECTED"; comment?: string; marks?: number } | null;
   setDecision: (decision: { id: string; status: "ACCEPTED" | "REJECTED"; comment?: string; marks?: number }) => void;
   onClose: () => void;
@@ -27,6 +28,7 @@ export default function ApplicationConfirmationModal({
   open,
   documentScore,
   onClose,
+  onSuccess,
   decision,
   setDecision,
   refetch
@@ -49,7 +51,7 @@ export default function ApplicationConfirmationModal({
     }) => reviewApplication(id, status, comment, marks),
     onSuccess: (res: any) => {
       toast.success(res?.message || "Application reviewed");
-      onClose();
+      onSuccess && onSuccess();
       refetch && refetch();
       onClose();
     },
@@ -143,12 +145,12 @@ export default function ApplicationConfirmationModal({
               )
             }
 
-            <div>
+            {/* <div>
               <p className="text-slate-500 text-xs">Submission Date</p>
               <p className="font-medium">
-                {new Date(application?.files[0]?.createdAt).toLocaleDateString()}
+                {new Date(application?.files[0]?.).toLocaleDateString()}
               </p>
-            </div>
+            </div> */}
 
           </div>
         </div>

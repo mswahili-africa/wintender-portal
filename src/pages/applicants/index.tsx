@@ -11,6 +11,18 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import Button from "@/components/button/Button";
 import { ITenders } from "@/types";
 
+
+
+const reviewSteps = [
+    "OPEN",
+    RequirementStage.PRELIMINARY,
+    RequirementStage.TECHNICAL,
+    RequirementStage.COMMERCIAL,
+    RequirementStage.FINANCIAL,
+    "NEGOTIATION",
+    "AWARDED"
+];
+
 export const ApplicantsList = () => {
     const { tenderId } = useParams();
     const location = useLocation();
@@ -26,15 +38,6 @@ export const ApplicantsList = () => {
         setHandleModal({ type: null, object: null });
     }
 
-    const steps = [
-        "OPEN",
-        RequirementStage.PRELIMINARY,
-        RequirementStage.TECHNICAL,
-        RequirementStage.FINANCIAL,
-        RequirementStage.COMMERCIAL,
-        "NEGOTIATION",
-        "AWARDED"
-    ];
 
     // JCM getting tender details
     // Reset state when navigation state changes
@@ -67,7 +70,7 @@ export const ApplicantsList = () => {
 
     const handleFilteringChange = (stage: string, currentIndexStep: number) => {
         if (stage !== "AWARDED") {
-            setReviewStage(steps[currentIndexStep + 1]);
+            setReviewStage(reviewSteps[currentIndexStep + 1]);
             setStatus("SUBMITTED");
             handleCompleteStep(currentIndexStep - 1);
         } else {
@@ -76,8 +79,6 @@ export const ApplicantsList = () => {
             handleCompleteStep(currentIndexStep - 1);
         }
     };
-
-
 
     // JCM Tender Tabs
     const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -97,7 +98,7 @@ export const ApplicantsList = () => {
     // Use fallback 0 to avoid -Infinity/Infinity
     const highestScore = scores.length > 0 ? Math.max(...scores) : 0;
     const lowestScore = scores.length > 0 ? Math.min(...scores) : 0;
-    const passMark = applicantList?.content[0]?.stageMarks.map((stageMark: IStageMarks) => stageMark.passMark)[0];
+    const passMark =  applicantList?.content[0]?.stageMarks.filter((stageMark: IStageMarks) => stageMark.stage === applicantList?.content[0]?.stage ).map((stageMark: IStageMarks) => stageMark.passMark)[0];
 
     const renderStepContent = () => {
 
@@ -199,13 +200,13 @@ export const ApplicantsList = () => {
                     <div className="bg-white border rounded-lg p-4">
                         <p className="text-xs text-slate-500">Current Stage</p>
                         <p className="text-sm text-green-600 font-semibold">
-                            {steps[currentStep]}
+                            {reviewSteps[currentStep]}
                         </p>
                     </div>
                     <div className="bg-white border rounded-lg p-4">
                         <p className="text-xs text-slate-500">Pass Mark</p>
                         <p className="text-lg text-green-600 font-semibold">
-                            {passMark ?? 0}%
+                            {passMark ?? 0}% ↑
                         </p>
                     </div>
 
@@ -219,7 +220,7 @@ export const ApplicantsList = () => {
                     <div className="bg-white border rounded-lg p-4">
                         <p className="text-xs text-slate-500">Completion</p>
                         <p className="text-xl font-semibold">
-                            {Math.round((currentStep / (steps.length - 1)) * 100)}%
+                            {Math.round((currentStep / (reviewSteps.length - 1)) * 100)}%
                         </p>
                     </div>
 
@@ -230,7 +231,7 @@ export const ApplicantsList = () => {
 
                 <div className="flex items-center gap-2 overflow-x-auto">
 
-                    {steps.map((step, index) => {
+                    {reviewSteps.map((step, index) => {
 
                         const isActive = currentStep === index
                         const completed = index < currentStep
@@ -293,7 +294,7 @@ export const ApplicantsList = () => {
                     />
                 )}
 
-                {currentStep < steps.length - 1 && (
+                {currentStep < reviewSteps.length - 1 && (
                     <Button
                         icon={<IconChevronRight size={18} />}
                         iconPosition="right"

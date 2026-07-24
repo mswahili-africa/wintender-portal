@@ -6,6 +6,7 @@ import {
   IconEye,
   IconFile,
   IconFileDownload,
+  IconRecycle,
   IconTrash,
   IconUpload,
   IconX,
@@ -13,6 +14,7 @@ import {
 import { useRef, useState } from "react";
 import ApplicationConfirmationModal from "./ApplicationConfirmationModal";
 import documentsList from "@/pages/complience/data/documents.json";
+import { IconCheck } from "@tabler/icons-react";
 
 /* ----------------------------- TYPES ----------------------------- */
 interface ModalProps {
@@ -76,6 +78,7 @@ export default function ApplicationViewModal({
   const {
     applicationDetails,
     isLoading,
+    refetch: refetchApplicationDetails,
     isError,
   } = useTenderApplicationDetails({ id: applicant?.id });
 
@@ -100,8 +103,16 @@ export default function ApplicationViewModal({
               <IconX />
             </button>
           </div>
-          <div className="flex items-center text-xl mt-28 justify-center">
+          <div className="flex flex-col items-center text-xl gap-y-5 mt-28 justify-center">
             Failed to load application
+          <Button
+            type="button"
+            label="Retry"
+            icon={<IconRecycle/>}
+            size="sm"
+            theme="primary"
+            onClick={() => refetchApplicationDetails()}
+          />
           </div>
         </div>
       </div>
@@ -289,10 +300,11 @@ export default function ApplicationViewModal({
                 {
                   overallMarksToCurrentStage >= (stageMark?.passMark ?? 0) &&
                   <Button
+                    icon={<IconCheck/>}
                     label={
                       userData?.role === "PROCUREMENT_ENTITY_REVIEWER"
-                        ? "Accept"
-                        : "Confirm"
+                        ? "ACCEPT"
+                        : "CONFIRM"
                     }
                     size="sm"
                     theme="primary"
@@ -300,7 +312,8 @@ export default function ApplicationViewModal({
                   />
                 }
                 <Button
-                  label="Reject"
+                  icon={<IconX/>}
+                  label="REJECT"
                   size="sm"
                   theme="danger"
                   onClick={() => openConfirm("REJECTED")}
@@ -566,25 +579,30 @@ export default function ApplicationViewModal({
           {
             (application.reviewStage === "NEGOTIATION" || application.reviewStage === "AWARDED") &&
             <div className="md:col-span-2 my-3">
-              <h3 className={`text-sm ${application.reviewStage === "AWARDED" ? "text-green-700" : "text-blue-700"} font-semibold underline mb-3`}>
-                {application.reviewStage} NOTICE
-              </h3>
+              {
+                userData?.role !== "BIDDER" &&
+                <h3 className={`text-sm ${application.reviewStage === "AWARDED" ? "text-green-700" : "text-blue-700"} font-semibold underline mb-3`}>
+                  {application.reviewStage} NOTICE
+                </h3>
+              }
 
               <div className="space-y-4">
                 {application.files.length < 0 ? (
                   application.files.map((file: IFile) => (
                     <details
-                      key={file.id}
+                      key={file.stage}
                       className="border rounded-lg overflow-hidden"
                     >
                       <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
                         <div>
-                          {documentsList.find((doc) => doc.value === file.documentType)?.label || file.documentType} ({file.stage})
+                          {/* {documentsList.find((doc) => doc.value === file.documentType)?.label || file.documentType} ({file.stage}) */}
+                          {file.stage}
                         </div>
 
+                        {/* changing the section with  */}
                         {
-                          (() => {
-                            const { required, totalMarks } = checkRequiredAndTotalMarks(file.documentType);
+                          file.documents.map((doc) => {
+                            const { required, totalMarks } = checkRequiredAndTotalMarks(doc.documentType);
                             return (
                               required &&
                               <div className="flex flex-row items-center gap-x-1">
@@ -593,7 +611,7 @@ export default function ApplicationViewModal({
                                 </span>
                               </div>
                             )
-                          })()}
+                          })}
 
                       </summary>
                     </details>
@@ -617,10 +635,10 @@ export default function ApplicationViewModal({
 
             <div className="space-y-4">
               {
-                application.tender.requirements.length > 0 ?
-                  application.tender.requirements.map((requirement) => (
-                    requirement.requiredDocuments.length > 0 &&
-                    requirement.requiredDocuments.map((document) => (
+                application.files.length > 0 ?
+                  application.files.map((requirement) => (
+                    requirement.documents.length > 0 &&
+                    requirement.documents.map((document) => (
                       <details
                         key={document.documentType}
                         className="border rounded-lg overflow-hidden"
@@ -634,60 +652,68 @@ export default function ApplicationViewModal({
                             (() => {
                               const { required, totalMarks } = checkRequiredAndTotalMarks(document.documentType);
                               return (
-                                required && userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ? (
+                                (required || totalMarks > 0) && userData?.role === "PROCUREMENT_ENTITY_REVIEWER" ? (
                                   <div className="flex flex-row items-center gap-x-1">
-                                    <div className="text-green-500 text-xs">REQUIRED</div>
-                                    <div className="text-slate-500 text-xs">{totalMarks}%</div>
-                                    <input
-                                      type="number"
-                                      min={0}
-                                      max={totalMarks}
-                                      onChange={(e) => {
-                                        const providedValue = Number(e.target.value);
+                                    {
+                                      required &&
+                                      <div className="text-green-500 text-xs">REQUIRED</div>
+                                    }
+                                    {
+                                      totalMarks > 0 &&
+                                      <>
+                                        <div className="text-slate-500 text-xs">{totalMarks}%</div>
+                                        <input
+                                          type="number"
+                                          min={0}
+                                          max={totalMarks}
+                                          onChange={(e) => {
+                                            const providedValue = Number(e.target.value);
 
-                                        // Clamp between 0 and totalMarks
-                                        const maxMarks = totalMarks;
-                                        const value = Math.max(0, Math.min(providedValue, maxMarks));
+                                            // Clamp between 0 and totalMarks
+                                            const maxMarks = totalMarks;
+                                            const value = Math.max(0, Math.min(providedValue, maxMarks));
 
-                                        // setDecision({ ...decision, marks: value });
-                                        setDocumentScore((prevScores) => {
-                                          const existingIndex = prevScores.findIndex(
-                                            (doc) => doc.type === document.documentType
-                                          );
+                                            // setDecision({ ...decision, marks: value });
+                                            setDocumentScore((prevScores) => {
+                                              const existingIndex = prevScores.findIndex(
+                                                (doc) => doc.type === document.documentType
+                                              );
 
-                                          if (existingIndex !== -1) {
-                                            const updatedScores = [...prevScores];
-                                            updatedScores[existingIndex] = {
-                                              type: document.documentType,
-                                              score: value,
-                                              maxScore: maxMarks,
-                                            };
-                                            return updatedScores;
-                                          } else {
-                                            // Add new entry
-                                            return [
-                                              ...prevScores,
-                                              { type: document.documentType, score: value, maxScore: maxMarks },
-                                            ];
-                                          }
-                                        });
+                                              if (existingIndex !== -1) {
+                                                const updatedScores = [...prevScores];
+                                                updatedScores[existingIndex] = {
+                                                  type: document.documentType,
+                                                  score: value,
+                                                  maxScore: maxMarks,
+                                                };
+                                                return updatedScores;
+                                              } else {
+                                                // Add new entry
+                                                return [
+                                                  ...prevScores,
+                                                  { type: document.documentType, score: value, maxScore: maxMarks },
+                                                ];
+                                              }
+                                            });
 
-                                      }}
-                                      onInput={(e) => {
-                                        // Prevent typing beyond top max or below 0
-                                        const input = e.target as HTMLInputElement;
-                                        const maxMarks = totalMarks;
+                                          }}
+                                          onInput={(e) => {
+                                            // Prevent typing beyond top max or below 0
+                                            const input = e.target as HTMLInputElement;
+                                            const maxMarks = totalMarks;
 
-                                        if (Number(input.value) > maxMarks) {
-                                          input.value = String(maxMarks);
-                                        }
+                                            if (Number(input.value) > maxMarks) {
+                                              input.value = String(maxMarks);
+                                            }
 
-                                        if (Number(input.value) < 0) {
-                                          input.value = "0";
-                                        }
-                                      }}
-                                      className="input-normal h-8 w-full"
-                                    />
+                                            if (Number(input.value) < 0) {
+                                              input.value = "0";
+                                            }
+                                          }}
+                                          className="input-normal h-8 w-full"
+                                        />
+                                      </>
+                                    }
                                   </div>
                                 )
                                   : userData?.role === "PROCUREMENT_ENTITY_CHAIRMAN" &&
@@ -730,7 +756,14 @@ export default function ApplicationViewModal({
       {/* CONFIRM MODAL */}
       <ApplicationConfirmationModal
         open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
+        onSuccess={
+          () => {
+            setConfirmOpen(false)
+            onClose()
+          }
+        }
+        onClose={()=>setConfirmOpen(false)}
+        refetch={refetch}
         documentScore={documentScore}
         application={application}
         decision={decision}

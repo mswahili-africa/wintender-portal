@@ -99,15 +99,16 @@ export interface IBidder {
 }
 
 export interface IFile {
-  createdBy: string;
-  updatedBy: string;
-  createdAt: number;
-  updatedAt: number;
-  id: string;
-  applicationId: string;
   stage: string;
+  documents: IFileItem[];
+}
+
+export interface IFileItem{
   documentType: string;
   filePath: string;
+  originalFileName:string;
+  uploadedBy:string;
+  uploadedAt:number
 }
 
 export interface IStageMarks {
