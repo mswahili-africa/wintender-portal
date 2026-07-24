@@ -1,13 +1,18 @@
 import Button from "@/components/button/Button";
 import useTenderApplicationDetails from "@/hooks/useTenderApplicationDetails";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { ITenderApplication, IFile, IStageMarks, RequirementStage } from "@/types/tenderWizard";
+import { ITenderApplication, IFile, IStageMarks } from "@/types/tenderWizard";
 import {
+  IconArrowRight,
   IconEye,
   IconFile,
   IconFileDownload,
+  IconFileText,
+  IconHeartHandshake,
   IconRecycle,
+  IconSparkles,
   IconTrash,
+  IconTrophy,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
@@ -15,6 +20,11 @@ import { useRef, useState } from "react";
 import ApplicationConfirmationModal from "./ApplicationConfirmationModal";
 import documentsList from "@/pages/complience/data/documents.json";
 import { IconCheck } from "@tabler/icons-react";
+import MediaDropzone from "@/components/inputs/MediaDropzone";
+import toast from "react-hot-toast";
+import { uploadApplicationDocument } from "@/services/tenders";
+import { useMutation } from "@tanstack/react-query";
+import Loader from "@/components/spinners/Loader";
 
 /* ----------------------------- TYPES ----------------------------- */
 interface ModalProps {
@@ -61,17 +71,17 @@ export default function ApplicationViewModal({
   const [negotiationFile, setNegotiationFile] = useState<File | null>(null)
   const [awardFile, setAwardFile] = useState<File | null>(null)
 
-  const negotiationRef = useRef<HTMLInputElement>(null)
-  const awardRef = useRef<HTMLInputElement>(null)
+  const handleNegotiationUpload = (file: File) => {
+    file && setNegotiationFile(file)
 
-  const handleNegotiationUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) setNegotiationFile(file)
+    uploadDocument("NEGOTIATION", file!)
+
   }
 
-  const handleAwardUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+  const handleAwardUpload = (file: File) => {
     if (file) setAwardFile(file)
+
+    uploadDocument("AWARD", file!)
   }
 
   /* ----------------------------- DATA FETCH ----------------------------- */
@@ -81,6 +91,33 @@ export default function ApplicationViewModal({
     refetch: refetchApplicationDetails,
     isError,
   } = useTenderApplicationDetails({ id: applicant?.id });
+
+
+  // Negotiation and awarded files upload
+
+  const uploadConfirmationDocumentMutation = useMutation({
+    mutationFn: (data: FormData) => uploadApplicationDocument(data),
+    onSuccess: () => {
+      toast.success("File uploaded successfully");
+      refetchApplicationDetails();
+    },
+    onError: (error) => {
+      console.error("Upload failed", error);
+      toast.error("Failed to upload file");
+    },
+  });
+  const uploadDocument = async (stage: string, file: File, documentType?: string) => {
+
+    const formData = new FormData();
+    formData.append("tenderId", applicationDetails?.tender?.tenderId!);
+    formData.append("applicationId", applicant.id);
+    formData.append("documentType", documentType || "ANY_RELEVANT_DOCUMENTS");
+    formData.append("requirementStage", stage);
+    formData.append("file", file);
+
+    uploadConfirmationDocumentMutation.mutate(formData);
+  };
+
 
   /* ----------------------------- SAFETY ----------------------------- */
   if (isLoading) return <SkeletonLoader />;
@@ -105,14 +142,14 @@ export default function ApplicationViewModal({
           </div>
           <div className="flex flex-col items-center text-xl gap-y-5 mt-28 justify-center">
             Failed to load application
-          <Button
-            type="button"
-            label="Retry"
-            icon={<IconRecycle/>}
-            size="sm"
-            theme="primary"
-            onClick={() => refetchApplicationDetails()}
-          />
+            <Button
+              type="button"
+              label="Retry"
+              icon={<IconRecycle />}
+              size="sm"
+              theme="primary"
+              onClick={() => refetchApplicationDetails()}
+            />
           </div>
         </div>
       </div>
@@ -300,7 +337,7 @@ export default function ApplicationViewModal({
                 {
                   overallMarksToCurrentStage >= (stageMark?.passMark ?? 0) &&
                   <Button
-                    icon={<IconCheck/>}
+                    icon={<IconCheck />}
                     label={
                       userData?.role === "PROCUREMENT_ENTITY_REVIEWER"
                         ? "ACCEPT"
@@ -312,7 +349,7 @@ export default function ApplicationViewModal({
                   />
                 }
                 <Button
-                  icon={<IconX/>}
+                  icon={<IconX />}
                   label="REJECT"
                   size="sm"
                   theme="danger"
@@ -383,28 +420,28 @@ export default function ApplicationViewModal({
                     </span>
                   </div>
 
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    ref={negotiationRef}
-                    onChange={handleNegotiationUpload}
-                    className="hidden"
-                  />
-
                   {!negotiationFile ? (
-                    <button
-                      onClick={() => negotiationRef.current?.click()}
-                      className="w-full border-2 border-dashed border-slate-300 rounded-lg py-6 flex flex-col items-center gap-2 hover:bg-slate-50"
-                    >
-                      <IconUpload size={20} />
-                      <span className="text-sm">Upload negotiation document</span>
-                      <span className="text-xs text-slate-400">PDF only</span>
-                    </button>
+                    <MediaDropzone
+                      mediaType={"DOCUMENT"}
+                      onFileSelect={(file: File | null, previewUrl: string) => {
+                        handleNegotiationUpload(file!);
+                      }}
+                      selectedFile={negotiationFile}
+                    />
                   ) : (
                     <div className="flex items-center justify-between border rounded-lg p-3 bg-slate-50">
                       <div className="flex items-center gap-2 text-sm">
                         <IconFile size={18} />
-                        {negotiationFile.name}
+                        <div className="flex flex-col">
+                          {negotiationFile.name}
+                          {
+                            uploadConfirmationDocumentMutation.isPending &&
+                            <div className="text-xs text-blue-500 mt-1 italic flex items-center gap-1">
+                              <span className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin inline-block"></span>
+                              Uploading...
+                            </div>
+                          }
+                        </div>
                       </div>
 
                       <div className="flex gap-2">
@@ -460,28 +497,26 @@ export default function ApplicationViewModal({
                     </span>
                   </div>
 
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    ref={awardRef}
-                    onChange={handleAwardUpload}
-                    className="hidden"
-                  />
-
                   {!awardFile ? (
-                    <button
-                      onClick={() => awardRef.current?.click()}
-                      className="w-full border-2 border-dashed border-slate-300 rounded-lg py-6 flex flex-col items-center gap-2 hover:bg-slate-50"
-                    >
-                      <IconUpload size={20} />
-                      <span className="text-sm">Upload award document</span>
-                      <span className="text-xs text-slate-400">PDF only</span>
-                    </button>
+                    <MediaDropzone
+                      mediaType={"DOCUMENT"}
+                      onFileSelect={(file: File | null, previewUrl: string) => {
+                        handleNegotiationUpload(file!);
+                      }}
+                      selectedFile={awardFile}
+                    />
                   ) : (
                     <div className="flex items-center justify-between border rounded-lg p-3 bg-slate-50">
                       <div className="flex items-center gap-2 text-sm">
                         <IconFile size={18} />
                         {awardFile.name}
+                        {
+                          uploadConfirmationDocumentMutation.isPending &&
+                          <div className="text-xs text-blue-500 mt-1 italic flex items-center gap-1">
+                            <span className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin inline-block"></span>
+                            Uploading...
+                          </div>
+                        }
                       </div>
 
                       <div className="flex gap-2">
@@ -576,54 +611,140 @@ export default function ApplicationViewModal({
 
 
           {/* NEGOTIATION && AWARDED DOCUMENTS */}
-          {
-            (application.reviewStage === "NEGOTIATION" || application.reviewStage === "AWARDED") &&
-            <div className="md:col-span-2 my-3">
-              {
-                userData?.role !== "BIDDER" &&
-                <h3 className={`text-sm ${application.reviewStage === "AWARDED" ? "text-green-700" : "text-blue-700"} font-semibold underline mb-3`}>
-                  {application.reviewStage} NOTICE
-                </h3>
-              }
+          {(application.reviewStage === "NEGOTIATION" || application.reviewStage === "AWARDED") && userData?.role === "BIDDER" && (
+            <div className="md:col-span-2 my-4">
 
-              <div className="space-y-4">
-                {application.files.length < 0 ? (
-                  application.files.map((file: IFile) => (
-                    <details
-                      key={file.stage}
-                      className="border rounded-lg overflow-hidden"
-                    >
-                      <summary className="cursor-pointer flex justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100 text-sm font-medium">
-                        <div>
-                          {/* {documentsList.find((doc) => doc.value === file.documentType)?.label || file.documentType} ({file.stage}) */}
-                          {file.stage}
-                        </div>
+              {/* Main Container */}
+              <div className={`rounded-2xl border p-5 sm:p-6 transition-all shadow-sm ${application.reviewStage === "AWARDED"
+                  ? "bg-emerald-50/40 border-emerald-300/80"
+                  : "bg-blue-50/40 border-blue-200/80"
+                }`}>
 
-                        {/* changing the section with  */}
-                        {
-                          file.documents.map((doc) => {
-                            const { required, totalMarks } = checkRequiredAndTotalMarks(doc.documentType);
-                            return (
-                              required &&
-                              <div className="flex flex-row items-center gap-x-1">
-                                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                                  {totalMarks}%
+                {/* 1. Header Banner & Status */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200/60">
+                  <div className="flex items-center gap-3.5">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${application.reviewStage === "AWARDED"
+                        ? "bg-emerald-600 text-white"
+                        : "bg-blue-600 text-white"
+                      }`}>
+                      {application.reviewStage === "AWARDED" ? (
+                        <IconTrophy size={24} />
+                      ) : (
+                        <IconHeartHandshake size={24} />
+                      )}
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${application.reviewStage === "AWARDED"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-blue-100 text-blue-800"
+                          }`}>
+                          {application.reviewStage === "AWARDED" ? "Tender Awarded" : "In Negotiation"}
+                        </span>
+                        {application.reviewStage === "AWARDED" && (
+                          <span className="flex items-center gap-1 text-xs font-bold text-amber-600">
+                            <IconSparkles size={14} /> Official
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
+                        {application.reviewStage === "AWARDED"
+                          ? "Congratulations! Your Bid Has Been Awarded"
+                          : "Your Application Has Reached Negotiation"}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Milestone Indicator */}
+                  <div className="flex items-center gap-2 self-start sm:self-auto bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold text-slate-700">Notice Ready</span>
+                  </div>
+                </div>
+
+                {/* 2. File & Score Cards */}
+                <div className="mt-5 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Official Documents 
+                  </h4>
+
+                  {application.files.length > 0 ? (
+                    application.files
+                      .filter((file) => ["NEGOTIATION", "AWARDED"].includes(file.stage) && file.stage)
+                      .map((file: IFile) => (
+                        <div
+                          key={file.stage}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all"
+                        >
+                          {/* File Details */}
+                          <div className="flex items-center gap-3">
+                            <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700 shrink-0">
+                              <IconFileText size={20} />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-bold text-slate-900">
+                                  {file.stage} Notice Document
+                                </p>
+                                <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                                  <IconCheck size={12} /> Verified
                                 </span>
                               </div>
-                            )
-                          })}
+                              <p className="text-xs text-slate-500 mt-0.5">
+                                Issued for stage: <span className="font-semibold text-slate-700">{file.stage}</span>
+                              </p>
+                            </div>
+                          </div>
 
-                      </summary>
-                    </details>
-                  ))
-                ) : (
-                  <p className="text-xs text-slate-500 text-center">
-                    No document available yet.
-                  </p>
-                )}
+                          {/* Score & Action Button */}
+                          <div className="flex items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                            {/* Evaluation Score Badge */}
+                            {file.documents.map((doc, idx) => {
+                              const { required, totalMarks } = checkRequiredAndTotalMarks(doc.documentType);
+                              return (
+                                required && (
+                                  <div key={idx} className="flex flex-col items-end">
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Evaluation Score</span>
+                                    <span className="text-sm font-black text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-100">
+                                      {totalMarks}%
+                                    </span>
+                                  </div>
+                                )
+                              );
+                            })}
+
+                            {/* Primary Action Button */}
+                            {file.documents[0]?.filePath ? (
+                              <a
+                                href={file.documents[0].filePath}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-2xs hover:shadow-sm"
+                              >
+                                <IconFileDownload size={16} />
+                                <span>Download Document</span>
+                              </a>
+                            ) : (
+                              <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-3 py-1.5 rounded-lg">
+                                Pending Download
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    /* Simplified Clear Empty State */
+                    <div className="flex items-center justify-between p-4 bg-white/80 rounded-xl border border-dashed border-slate-300 text-xs text-slate-500">
+                      <span>Official documentation is currently being prepared for this stage.</span>
+                      <IconArrowRight size={16} className="text-slate-400" />
+                    </div>
+                  )}
+                </div>
+
               </div>
             </div>
-          }
+          )}
 
 
           {/* DOCUMENTS */}
@@ -762,7 +883,7 @@ export default function ApplicationViewModal({
             onClose()
           }
         }
-        onClose={()=>setConfirmOpen(false)}
+        onClose={() => setConfirmOpen(false)}
         refetch={refetch}
         documentScore={documentScore}
         application={application}

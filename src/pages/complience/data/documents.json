@@ -18,6 +18,7 @@
   { "stage":"PRELIMINARY", "label": "CONTRACTOR REGISTRATION BOARD", "value": "CONTRACTOR_REGISTRATION_BOARD" },
   { "stage":"PRELIMINARY", "label": "BRELA ANNUAL RETURNS", "value": "BRELA_ANNUAL_RETURNS" },
   { "stage":"PRELIMINARY", "label": "PROOF OF TENDER DOCUMENT PURCHASE", "value": "PROOF_OF_TENDER_DOCUMENT_PURCHASE" },
+  { "stage":"PRELIMINARY", "label": "ANY RELEVANT DOCUMENTS", "value": "ANY_RELEVANT_DOCUMENTS" },
   { "stage":"TECHNICAL", "label": "CATALOG", "value": "CATALOG" },
   { "stage":"TECHNICAL", "label": "COMPANY PROFILE", "value": "COMPANY_PROFILE" },
   { "stage":"TECHNICAL", "label": "BANK REFERENCE LETTER", "value": "BANK_REFERENCE_LETTER" },
@@ -33,11 +34,15 @@
   { "stage":"TECHNICAL", "label": "INDEMNITY COVER", "value": "INDEMNITY_COVER" },
   { "stage":"TECHNICAL", "label": "MANUFACTURER AUTHORIZATION", "value": "MANUFACTURER_AUTHORIZATION" },
   { "stage":"TECHNICAL", "label": "PROFESSIONAL BOARD CERTIFICATE", "value": "PROFESSIONAL_BOARD_CERTIFICATE" },
+  { "stage":"TECHNICAL", "label": "ANY RELEVANT DOCUMENTS", "value": "ANY_RELEVANT_DOCUMENTS" },
   { "stage":"COMMERCIAL", "label": "BANK STATEMENT", "value": "BANK_STATEMENT" },
   { "stage":"COMMERCIAL", "label": "BID GUARANTEE", "value": "BID_GUARANTEE" },
   { "stage":"COMMERCIAL", "label": "SOURCE OF FUNDS", "value": "SOURCE_OF_FUNDS" },
   { "stage":"COMMERCIAL", "label": "AUDITED FINANCIAL STATEMENT", "value": "AUDITED_FINANCIAL_STATEMENT" },
+  { "stage":"COMMERCIAL", "label": "ANY RELEVANT DOCUMENTS", "value": "ANY_RELEVANT_DOCUMENTS" },
   { "stage":"FINANCIAL", "label": "PRICE SCHEDULE", "value": "PRICE_SCHEDULE" },
   { "stage":"FINANCIAL", "label": "FINANCIAL STATEMENT", "value": "FINANCIAL_PROPOSAL" },
-  { "stage":"CONSENT", "label": "OSHA", "value": "OSHA" }
+  { "stage":"FINANCIAL", "label": "ANY RELEVANT DOCUMENTS", "value": "ANY_RELEVANT_DOCUMENTS" },
+  { "stage":"CONSENT", "label": "OSHA", "value": "OSHA" },
+  { "stage":"CONSENT", "label": "ANY RELEVANT DOCUMENTS", "value": "ANY_RELEVANT_DOCUMENTS" }
 ]
