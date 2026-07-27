@@ -12,6 +12,7 @@ import BusinessAdministratorDataOfficerKpi from "./BusinessAdministratorKpi";
 import CustomerAcquisitionRetentionOfficerKpi from "./CustomerAcquisitionRetentionOfficerKpi";
 import BusinessAdministratorProcurementOfficerKpi from "./BusinessAdministrationProcurementOfficerKpi";
 import SupervisorKpi from "./SupervisorKpi";
+import { useUserDataContext } from "@/providers/userDataProvider";
 
 interface IProps {
   isOpen: boolean;
@@ -23,13 +24,13 @@ const DOCUMENT_CATEGORIES = [
   {
     group: "Key Performance Indicators (KPI)",
     items: [
-      { id: "administrator", label: "Administrator KPI", icon: <IconDashboard size={16} />, component: <AdministratorKpi /> },
-      { id: "businessLead", label: "Business Lead KPI", icon: <IconDashboard size={16} />, component: <BusinessLeadKpi /> },
-      { id: "accountantKpi", label: "Accountant KPI", icon: <IconDashboard size={16} />, component: <AccountantKpi /> },
-      { id: "businessAdministratorDataOfficerKpi", label: "Business Administrator Data Officer KPI", icon: <IconDashboard size={16} />, component: <BusinessAdministratorDataOfficerKpi /> },
-      { id: "CustomerAcquisitionRetentionOfficerKpi", label: "Customer Acquisition & Retention Officer KPI", icon: <IconDashboard size={16} />, component: <CustomerAcquisitionRetentionOfficerKpi /> },
-      { id: "BusinessAdministratorProcurementOfficerKpi", label: "Business Administrator Procurement Officer KPI", icon: <IconDashboard size={16} />, component: <BusinessAdministratorProcurementOfficerKpi /> },
-      { id: "SupervisorKpi", label: "Supervisor KPI", icon: <IconDashboard size={16} />, component: <SupervisorKpi /> },
+      { id: "administrator", label: "Administrator KPI", icon: <IconDashboard size={16} />,role:"ADMINISTRATOR", component: <AdministratorKpi /> },
+      { id: "businessLead", label: "Business Lead KPI", icon: <IconDashboard size={16} />,role:"MANAGER", component: <BusinessLeadKpi /> },
+      { id: "accountantKpi", label: "Accountant KPI", icon: <IconDashboard size={16} />,role:"ACCOUNTANT", component: <AccountantKpi /> },
+      { id: "businessAdministratorDataOfficerKpi", label: "BA - Data Officer KPI", icon: <IconDashboard size={16} />,role:"PUBLISHER", component: <BusinessAdministratorDataOfficerKpi /> },
+      { id: "CustomerAcquisitionRetentionOfficerKpi", label: "Customer Acquisition & Retention Officer KPI", icon: <IconDashboard size={16} />,role:"SUPERVISOR", component: <CustomerAcquisitionRetentionOfficerKpi /> },
+      { id: "BusinessAdministratorProcurementOfficerKpi", label: "BA - Procurement Officer KPI", icon: <IconDashboard size={16} />,role:"PUBLISHER", component: <BusinessAdministratorProcurementOfficerKpi /> },
+      { id: "SupervisorKpi", label: "Supervisor KPI", icon: <IconDashboard size={16} />,role:"SUPERVISOR", component: <SupervisorKpi /> },
     ]
   }
 ];
@@ -37,6 +38,14 @@ const DOCUMENT_CATEGORIES = [
 export default function CompanyDocumentsModal({ isOpen, onClose }: IProps) {
   // Default to the first item (Terms and Conditions)
   const [activeTab, setActiveTab] = useState("administrator");
+  const {userData} = useUserDataContext();
+  const userRole = userData?.role;
+
+  // Use effect to check currenty role and set default active tab
+  React.useEffect(() => {
+    const defaultActiveTab = DOCUMENT_CATEGORIES.flatMap(cat => cat.items).find(item => item.role === userRole)?.id || "administrator";
+    setActiveTab(defaultActiveTab);
+  }, [userRole]);
 
   // Flatten helper to instantly pull out the active pane payload
   const currentDocument = DOCUMENT_CATEGORIES.flatMap(cat => cat.items).find(
@@ -61,7 +70,7 @@ export default function CompanyDocumentsModal({ isOpen, onClose }: IProps) {
                 {cat.group}
               </h4>
               <div className="space-y-0.5">
-                {cat.items.map((doc) => {
+                {cat.items.filter(item => ["ADMINISTRATOR","MANAGER"].includes(userRole!) ? true : item.role === userRole ).map((doc) => {
                   const isActive = activeTab === doc.id;
                   return (
                     <button
