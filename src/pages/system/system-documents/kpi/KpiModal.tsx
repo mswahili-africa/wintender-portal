@@ -25,11 +25,11 @@ const DOCUMENT_CATEGORIES = [
     group: "Key Performance Indicators (KPI)",
     items: [
       { id: "administrator", label: "Administrator KPI", icon: <IconDashboard size={16} />,role:"ADMINISTRATOR", component: <AdministratorKpi /> },
-      { id: "businessLead", label: "Business Lead KPI", icon: <IconDashboard size={16} />,role:"MANAGER", component: <BusinessLeadKpi /> },
+      { id: "businessLead", label: "Business Lead KPI", icon: <IconDashboard size={16} />,role:"BUSINESS_LEAD", component: <BusinessLeadKpi /> },
       { id: "accountantKpi", label: "Accountant KPI", icon: <IconDashboard size={16} />,role:"ACCOUNTANT", component: <AccountantKpi /> },
-      { id: "businessAdministratorDataOfficerKpi", label: "BA - Data Officer KPI", icon: <IconDashboard size={16} />,role:"PUBLISHER", component: <BusinessAdministratorDataOfficerKpi /> },
-      { id: "CustomerAcquisitionRetentionOfficerKpi", label: "Customer Acquisition & Retention Officer KPI", icon: <IconDashboard size={16} />,role:"SUPERVISOR", component: <CustomerAcquisitionRetentionOfficerKpi /> },
-      { id: "BusinessAdministratorProcurementOfficerKpi", label: "BA - Procurement Officer KPI", icon: <IconDashboard size={16} />,role:"PUBLISHER", component: <BusinessAdministratorProcurementOfficerKpi /> },
+      { id: "businessAdministratorDataOfficerKpi", label: "BA - Data Officer KPI", icon: <IconDashboard size={16} />,role:"BUSINESS_ADMINISTRATOR_DATA_OFFICER", component: <BusinessAdministratorDataOfficerKpi /> },
+      { id: "CustomerAcquisitionRetentionOfficerKpi", label: "Customer Acquisition & Retention Officer KPI", icon: <IconDashboard size={16} />,role:"CUSTOMER_ACQUISITION_RETENTION_OFFICER", component: <CustomerAcquisitionRetentionOfficerKpi /> },
+      { id: "BusinessAdministratorProcurementOfficerKpi", label: "BA - Procurement Officer KPI", icon: <IconDashboard size={16} />,role:"BUSINESS_ADMINISTRATOR_PROCUREMENT_OFFICER", component: <BusinessAdministratorProcurementOfficerKpi /> },
       { id: "SupervisorKpi", label: "Supervisor KPI", icon: <IconDashboard size={16} />,role:"SUPERVISOR", component: <SupervisorKpi /> },
     ]
   }
