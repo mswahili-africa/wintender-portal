@@ -28,32 +28,33 @@ const columns: IColumn[] = [
                             marginRight: '8px', // Space between logo and name
                         }}
                     />
-                    <div className="flex flex-col">
-                        {
-                            row?.selfApply &&
-                            <div className="text-xs flex flex-row items-center gap-x-2">
-                                <div className="text-gray-500 flex flex-row items-center"><IconMessage className="w-4 me-1" /> <div className="flex items-center flex-row h-full"> {row.clarificationCount || 0}</div> </div>
-                                <div className="h-2 w-2 rounded-full bg-green-600"></div>
-                            </div>
-                        }
-                    </div>
+
                 </div>
             </div>
         ),
     },
-     {
-    name: "Tender",
-    label: "Tender",
-    sortable: false,
-    plainObject: true,
-    element: (row?: any) => (
-      <div className="flex flex-col">
-        <span className="text-xs text-gray-500"><strong>{row?.entityName?.toUpperCase()}</strong></span>
-        <span className="text-xs text-black-500"><strong>{row?.categoryName?.toUpperCase()}</strong></span>
-        <span className="text-md text-black-500">{row?.title}</span>
-      </div>
-    ),
-  },
+    {
+        name: "Tender",
+        label: "Tender",
+        sortable: false,
+        plainObject: true,
+        element: (row?: any) => (
+            <div className="flex flex-col">
+                <span className="text-xs text-gray-500"><strong>{row?.entityName?.toUpperCase()}</strong></span>
+                <span className="text-xs text-black-500"><strong>{row?.categoryName?.toUpperCase()}</strong></span>
+                <span className="text-md text-black-500">{row?.title}</span>
+                <div className="flex flex-col mt-2">
+                    {
+                        row?.selfApply &&
+                        <div className="text-xs flex flex-row items-center gap-x-2">
+                            <div className="text-gray-500 flex flex-row items-center"><IconMessage className="w-4 me-1" /> <div className="flex items-center flex-row h-full"> {row.clarificationCount || 0}</div> </div>
+                            <div className="h-2 w-2 rounded-full bg-green-600"></div>
+                        </div>
+                    }
+                </div>
+            </div>
+        ),
+    },
     {
         name: "status",
         label: "Deadline",

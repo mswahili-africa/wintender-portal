@@ -1,4 +1,4 @@
-import { IconArrowUpRight, IconCalendar, IconCheck, IconChecklist, IconClock, IconFilter, IconFilterOff, IconReceipt, IconRecycle, IconReportAnalytics, IconSearch, IconSquareRoundedMinus, IconTrendingUp } from "@tabler/icons-react";
+import { IconArrowUpRight, IconCalendar, IconCheck, IconChecklist, IconFilter, IconReceipt, IconRecycle, IconSearch, IconSquareRoundedMinus, IconTrendingUp, IconWallet } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -9,7 +9,7 @@ import { approvePayment, rejectPayment } from "@/services/payments";
 import usePopup from "@/hooks/usePopup";
 import PaymentsForm from "./fragments/paymentsForm";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { IPayment } from "@/types";
+import { IlistResponse, IPayment, ISummaryReport } from "@/types";
 import { update } from "lodash";
 import { getAllPayments } from "@/hooks/usePayments";
 import { ExportXLSX } from "@/components/widgets/Excel";
@@ -30,6 +30,7 @@ export default function () {
   const { t } = useTranslation();
 
   const [selectedPayment, setSelectedPayment] = useState<IPayment | null>(null);
+
 
   const { payments, isLoading, refetch } = getAllPayments({
     page: page,
@@ -123,7 +124,7 @@ export default function () {
       {
         ['ADMINISTRATOR', 'MANAGER', 'ACCOUNTANT'].includes(userRole) &&
         <div className="my-10">
-          <TransactionsSummary />
+          <TransactionsSummary payments={payments!}/>
         </div>
       }
 
@@ -170,7 +171,7 @@ export default function () {
               placeholder="Search"
               // value={filterQuery?.searchValue || ""}
               className="input-normal w-[200px] lg:w-[300px]"
-            // onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
+              // onChange={(e) => setFilterQuery({ ...filterQuery, searchValue: e.target.value })} // Update search query
               onChange={(e) => setSearch(e.target.value)}
               value={search}
             />
@@ -285,21 +286,35 @@ export default function () {
 }
 
 
-function TransactionsSummary() {
+function TransactionsSummary({payments}: {payments: IlistResponse<IPayment> | undefined}) {
+
+
+  // Graceful stats parsing safely contained
+  let statistics: ISummaryReport | null = null;
+  try {
+    const statsString = localStorage.getItem("stats");
+    if (statsString) {
+      statistics = JSON.parse(statsString);
+    }
+  } catch (error) {
+    console.error("Failed to parse billing stats", error);
+  }
+
   const [selectedMonth, setSelectedMonth] = useState('2026-07');
 
   // Example data payload (Replace with dynamic props/API data)
   const stats = {
-    monthlyVolume: 128450.00,
-    monthlyVolumeChange: +14.2, // % vs last month
-    monthlyCount: 1420,
+    monthlyVolume: statistics?.payments?.thisMonth ?? 0,
+    monthlyVolumeChange: +0, // % vs last month
+    monthlyCount: 0,
 
-    overallVolume: 1845200.50,
-    overallVolumeChange: +22.8, // % vs last year
-    overallCount: 18940,
+    overallVolume: statistics?.payments?.totalAmount ?? 0,
+    overallVolumeChange: +0, // % vs last year
+    overallCount: payments?.totalElements ?? 0,
 
-    successfulRate: 98.4,
-    avgTransactionValue: 90.45,
+    walletBalance: statistics?.payments?.walletBalance ?? 0,
+    avgTransactionValue: 0,
+
   };
 
   const formatCurrency = (val: number) =>
@@ -414,7 +429,7 @@ function TransactionsSummary() {
 
             <div className="mt-3">
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 font-mono">
-                {stats.successfulRate}%
+                {stats.monthlyVolumeChange}%
               </h3>
             </div>
           </div>
@@ -424,7 +439,7 @@ function TransactionsSummary() {
             <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                style={{ width: `${stats.successfulRate}%` }}
+                style={{ width: `${stats.walletBalance}%` }}
               />
             </div>
           </div>
@@ -435,22 +450,22 @@ function TransactionsSummary() {
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Avg. Ticket Size
+                Wallet Balance
               </span>
               <span className="p-2 bg-amber-50 text-amber-600 rounded-xl border border-amber-100">
-                <IconClock size={18} />
+                <IconWallet size={18} />
               </span>
             </div>
 
             <div className="mt-3">
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 font-mono">
-                {formatCurrency(stats.avgTransactionValue)}
+                {formatCurrency(stats.walletBalance)}
               </h3>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>Per successful transaction</span>
+            <span>Total wallet balance of all wallets</span>
           </div>
         </div>
 

@@ -174,7 +174,10 @@ export default function Dashboard() {
   );
 
   // Parse total SMS balance to evaluate low-balance warnings safely
-  const isSmsLow = parseFloat(stats?.messageBalance?.nextSMS || "0") < 500 || parseFloat(stats?.messageBalance?.onfonMedia || "0") < 50 || parseFloat(stats?.messageBalance?.onSMS || "0") < 5;
+  const onFonMediaBalance = parseFloat(stats.messageBalance.onfonMedia || "0");
+  const onSMSBalance = parseFloat(stats.messageBalance.onSMS || "0");
+  const nextSMSBalance = parseFloat(stats.messageBalance.nextSMS || "0");
+  const isSmsLow = nextSMSBalance < 100 ||onFonMediaBalance < 100 || onSMSBalance < 100;
 
   return (
     <div className="pb-6 mx-auto text-slate-800 antialiased selection:bg-emerald-100 space-y-8">
@@ -438,17 +441,19 @@ export default function Dashboard() {
               <div className="divide-y divide-zinc-100 text-xs">
                 <div className="flex justify-between items-center py-2.5">
                   <span className="font-semibold text-slate-700">Onfon Media</span>
-                  <span className="font-mono font-bold text-slate-900">{stats.messageBalance.onfonMedia}</span>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded ${onFonMediaBalance < 100 ? "bg-amber-100 text-amber-900 font-extrabold" : "bg-green-100 text-slate-900"}`}>
+                    {stats.messageBalance.onfonMedia}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-2.5">
                   <span className="font-semibold text-slate-700">NextSMS</span>
-                  <span className={`font-mono font-bold px-2 py-0.5 rounded ${isSmsLow ? "bg-amber-100 text-amber-900 font-extrabold" : "bg-green-100 text-slate-900"}`}>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded ${nextSMSBalance < 100 ? "bg-amber-100 text-amber-900 font-extrabold" : "bg-green-100 text-slate-900"}`}>
                     {stats.messageBalance.nextSMS}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-2.5">
                   <span className="font-semibold text-slate-700">OnSMS</span>
-                  <span className={`font-mono font-bold px-2 py-0.5 rounded ${isSmsLow ? "bg-amber-100 text-amber-900 font-extrabold" : "bg-zinc-100 text-slate-900"}`}>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded ${onSMSBalance < 100 ? "bg-amber-100 text-amber-900 font-extrabold" : "bg-zinc-100 text-slate-900"}`}>
                     {stats.messageBalance.onSMS}
                   </span>
                 </div>
