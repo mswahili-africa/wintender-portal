@@ -282,14 +282,15 @@ export default function PETenderCreateFormModal({ onSuccess }: IProps) {
             };
         });
 
+        // check if there is any required document in requirementList
+        const hasRequiredDocuments = requirementList.some((requirement) => requirement.requiredDocuments.some((doc) => doc.documentType));
 
-
-        if (requirementList.length > 0) {
+        if (requirementList.length > 0 && hasRequiredDocuments) {
             formData.append("requirements", JSON.stringify(requirementList));
         }
-        // formData.forEach((value, key) => console.log(key, value));
+        formData.forEach((value, key) => console.log(key, value));
 
-        uploadTenderMutation.mutate(formData);
+        // uploadTenderMutation.mutate(formData);
     };
 
     const renderStepContent = () => {
