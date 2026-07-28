@@ -35,6 +35,13 @@ export enum PaymentSource {
     POS = "POS"
 }
 
+export enum PaymentStatus {
+    PENDING = "PENDING",
+    SUCCESS = "SUCCESS",
+    APPROVED = "APPROVED",
+    FAILURE = "FAILURE"
+}
+
 export const difmApplicationColumnSearchOptions: any[] = [
     { value: "title", label: "Tender" },
     { value: "bidderCompanyName", label: "Bidder" },
