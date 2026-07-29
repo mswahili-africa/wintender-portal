@@ -1,4 +1,4 @@
-import { IconArrowUpRight, IconCalendar, IconCheck, IconChecklist, IconFilter, IconReceipt, IconRecycle, IconSearch, IconSquareRoundedMinus, IconTrendingUp, IconWallet } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowDownLeft, IconArrowUpRight, IconCalendar, IconCheck, IconChecklist, IconCircleCheck, IconFilter, IconReceipt, IconRecycle, IconSearch, IconSquareRoundedMinus, IconTrendingDown, IconTrendingUp, IconWallet } from "@tabler/icons-react";
 import { Fragment, useState } from "react";
 import Pagination from "@/components/widgets/table/Pagination";
 import { SortDirection, Table } from "@/components/widgets/table/Table";
@@ -9,7 +9,7 @@ import { approvePayment, rejectPayment } from "@/services/payments";
 import usePopup from "@/hooks/usePopup";
 import PaymentsForm from "./fragments/paymentsForm";
 import { useUserDataContext } from "@/providers/userDataProvider";
-import { IlistResponse, IPayment, ISummaryReport } from "@/types";
+import { IlistResponse, IPayment, IPaymentSummary, ISummaryReport } from "@/types";
 import { update } from "lodash";
 import { getAllPayments } from "@/hooks/usePayments";
 import { ExportXLSX } from "@/components/widgets/Excel";
@@ -124,7 +124,7 @@ export default function () {
       {
         ['ADMINISTRATOR', 'MANAGER', 'ACCOUNTANT'].includes(userRole) &&
         <div className="my-10">
-          <TransactionsSummary payments={payments!}/>
+          <PaymentSummarySection summary={payments?.summary as unknown as IPaymentSummary} />
         </div>
       }
 
@@ -286,83 +286,55 @@ export default function () {
 }
 
 
-function TransactionsSummary({payments}: {payments: IlistResponse<IPayment> | undefined}) {
+interface IProps {
+  summary: IPaymentSummary;
+  currency?: string;
+}
 
-
-  // Graceful stats parsing safely contained
-  let statistics: ISummaryReport | null = null;
-  try {
-    const statsString = localStorage.getItem("stats");
-    if (statsString) {
-      statistics = JSON.parse(statsString);
-    }
-  } catch (error) {
-    console.error("Failed to parse billing stats", error);
-  }
-
-  const [selectedMonth, setSelectedMonth] = useState('2026-07');
-
-  // Example data payload (Replace with dynamic props/API data)
-  const stats = {
-    monthlyVolume: statistics?.payments?.thisMonth ?? 0,
-    monthlyVolumeChange: +0, // % vs last month
-    monthlyCount: 0,
-
-    overallVolume: statistics?.payments?.totalAmount ?? 0,
-    overallVolumeChange: +0, // % vs last year
-    overallCount: payments?.totalElements ?? 0,
-
-    walletBalance: statistics?.payments?.walletBalance ?? 0,
-    avgTransactionValue: 0,
-
-  };
-
+export function PaymentSummarySection({ summary, currency = "TZS" }: IProps) {
+  if(!summary) return null
   const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'TZS' }).format(val);
+    new Intl.NumberFormat('en-TZ', { style: 'currency', currency, maximumFractionDigits: 0 }).format(val);
+
+  const isIncrease = summary?.monthlyChangeDirection === "INCREASE";
 
   return (
     <div className="w-full space-y-4">
 
-      {/* 1. Header & Filter Bar */}
+      {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
         <div>
           <h2 className="text-base font-bold text-slate-900 tracking-tight">
-            Transaction Overview
+            Financial & Payment Summary
           </h2>
           <p className="text-xs text-slate-500 font-medium">
-            Summary performance metrics and total processed volume
+            Real-time wallet balance, volume trends, and transaction health metrics
           </p>
         </div>
 
-        {/* Month Selector Filter */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <div className="relative">
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="appearance-none bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-xs font-bold text-slate-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-            >
-              <option value="2026-07">July 2026</option>
-              <option value="2026-06">June 2026</option>
-              <option value="2026-05">May 2026</option>
-            </select>
-            <IconCalendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        {/* Current Balance Quick Pill */}
+        <div className="flex items-center gap-2.5 px-3.5 py-2 bg-slate-900 text-white rounded-xl shadow-2xs self-start sm:self-auto">
+          <IconWallet size={18} className="text-emerald-400 shrink-0" />
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Wallet Balance</span>
+            <span className="text-sm font-black font-mono leading-tight text-emerald-400">
+              {formatCurrency(summary.walletBalance)}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 2. Main Summary Grid */}
+      {/* 2. Top-Level Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-        {/* CARD 1: Monthly Volume (Primary Focus) */}
+        {/* CARD 1: Current Month Payments (Hero Focus) */}
         <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-2xl p-5 text-white shadow-md border border-slate-800 flex flex-col justify-between">
-          {/* Background Decorative Glow */}
           <div className="absolute top-0 right-0 -mt-6 -mr-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none" />
 
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Monthly Volume
+                This Month's Payments
               </span>
               <span className="p-2 bg-white/10 rounded-xl text-emerald-400 backdrop-blur-xs">
                 <IconReceipt size={18} />
@@ -371,105 +343,148 @@ function TransactionsSummary({payments}: {payments: IlistResponse<IPayment> | un
 
             <div className="mt-3">
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white font-mono">
-                {formatCurrency(stats.monthlyVolume)}
+                {formatCurrency(summary.currentMonthPayments)}
               </h3>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1 font-bold text-emerald-400">
-              <IconTrendingUp size={16} />
-              <span>+{stats.monthlyVolumeChange}%</span>
-              <span className="text-slate-400 font-normal">vs last month</span>
+            <div className={`flex items-center gap-1 font-bold ${isIncrease ? "text-emerald-400" : "text-rose-400"}`}>
+              {isIncrease ? <IconTrendingUp size={16} /> : <IconTrendingDown size={16} />}
+              <span>{summary.monthlyPercentageChange}%</span>
+              <span className="text-slate-400 font-normal">vs prev month</span>
             </div>
-            <span className="text-slate-400 font-medium">{stats.monthlyCount.toLocaleString()} txns</span>
+            <span className="text-slate-400 font-mono text-[11px]">{formatCurrency(summary.previousMonthPayments)}</span>
           </div>
         </div>
 
-        {/* CARD 2: Overall Total Volume */}
+        {/* CARD 2: Total Successful Payments Volume */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Overall Volume
+                Total Successful Volume
               </span>
-              <span className="p-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
-                <IconArrowUpRight size={18} />
+              <span className="p-2 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100">
+                <IconCircleCheck size={18} />
               </span>
             </div>
 
             <div className="mt-3">
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 font-mono">
-                {formatCurrency(stats.overallVolume)}
+                {formatCurrency(summary.totalSuccessfulPayments)}
               </h3>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1 font-bold text-emerald-600">
-              <IconTrendingUp size={16} />
-              <span>+{stats.overallVolumeChange}%</span>
-              <span className="text-slate-400 font-normal">all-time</span>
-            </div>
-            <span className="text-slate-500 font-semibold">{stats.overallCount.toLocaleString()} total</span>
+            <span className="text-slate-500 font-medium">Successful volume collected</span>
+            <span className="font-mono font-bold text-slate-800">{summary.successfulTransactions.toLocaleString()} txns</span>
           </div>
         </div>
 
-        {/* CARD 3: Success Rate */}
+        {/* CARD 3: Success Rate & Transaction Health */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Success Rate
               </span>
-              <span className="p-2 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100">
+              <span className="p-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
                 <IconCheck size={18} />
               </span>
             </div>
 
-            <div className="mt-3">
+            <div className="mt-3 flex items-baseline justify-between">
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 font-mono">
-                {stats.monthlyVolumeChange}%
+                {summary.successRate}%
               </h3>
+              <span className="text-xs font-semibold text-slate-500">
+                {summary.totalTransactions.toLocaleString()} Total Txns
+              </span>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            {/* Visual Mini Progress Bar */}
+          <div className="mt-4 pt-3 border-t border-slate-100 space-y-1.5">
+            {/* Visual Progress Bar */}
             <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                style={{ width: `${stats.walletBalance}%` }}
+                style={{ width: `${summary.successRate}%` }}
               />
+            </div>
+            <div className="flex justify-between text-[11px] font-medium text-slate-400">
+              <span className="text-emerald-600 font-semibold">{summary.successfulTransactions} Passed</span>
+              <span className="text-rose-500 font-semibold">{summary.nonSuccessfulTransactions} Failed</span>
             </div>
           </div>
         </div>
 
-        {/* CARD 4: Avg Transaction Size */}
+        {/* CARD 4: Total Wallet Out (Cash Out / Expenses) */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Wallet Balance
+                Total Wallet Out
               </span>
-              <span className="p-2 bg-amber-50 text-amber-600 rounded-xl border border-amber-100">
-                <IconWallet size={18} />
+              <span className="p-2 bg-rose-50 text-rose-600 rounded-xl border border-rose-100">
+                <IconArrowUpRight size={18} />
               </span>
             </div>
 
             <div className="mt-3">
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 font-mono">
-                {formatCurrency(stats.walletBalance)}
+                {formatCurrency(summary.totalWalletOut)}
               </h3>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>Total wallet balance of all wallets</span>
+            <span>Total Payouts & Transfers</span>
           </div>
         </div>
 
       </div>
+
+      {/* 3. Bottom Breakdown Strip: Inflows vs Outflows */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        {/* Wallet Inflow Card */}
+        <div className="flex items-center justify-between p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-emerald-100 text-emerald-700 shrink-0">
+              <IconArrowDownLeft size={20} />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+                Total Wallet In (Inflow)
+              </p>
+              <p className="text-lg font-black font-mono text-emerald-950 mt-0.5">
+                {formatCurrency(summary.totalWalletIn)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Failed / Non-Successful Breakdown Card */}
+        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-amber-100 text-amber-800 shrink-0">
+              <IconAlertCircle size={20} />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                Non-Successful Attempts
+              </p>
+              <p className="text-lg font-black font-mono text-slate-900 mt-0.5">
+                {summary.nonSuccessfulTransactions.toLocaleString()} <span className="text-xs font-sans font-medium text-slate-500">transactions</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   );
 }

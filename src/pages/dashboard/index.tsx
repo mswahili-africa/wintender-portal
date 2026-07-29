@@ -174,9 +174,9 @@ export default function Dashboard() {
   );
 
   // Parse total SMS balance to evaluate low-balance warnings safely
-  const onFonMediaBalance = parseFloat(stats.messageBalance.onfonMedia || "0");
-  const onSMSBalance = parseFloat(stats.messageBalance.onSMS || "0");
-  const nextSMSBalance = parseFloat(stats.messageBalance.nextSMS || "0");
+  const onFonMediaBalance = parseFloat(stats?.messageBalance?.onfonMedia || "0");
+  const onSMSBalance = parseFloat(stats?.messageBalance?.onSMS || "0");
+  const nextSMSBalance = parseFloat(stats?.messageBalance?.nextSMS || "0");
   const isSmsLow = nextSMSBalance < 100 ||onFonMediaBalance < 100 || onSMSBalance < 100;
 
   return (

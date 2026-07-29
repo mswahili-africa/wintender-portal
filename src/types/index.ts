@@ -356,7 +356,7 @@ interface IBiddersSummary {
   active: number;
 }
 
-interface IPaymentSummary {
+interface IStatPaymentSummary {
   totalAmount: number;
   walletBalance: number;
   thisMonth: number;
@@ -366,8 +366,8 @@ export interface ISummaryReport {
   bidders: IBiddersSummary;
   unreadMessages: number;
   tenders: ITendersSummary;
-  payments: IPaymentSummary;
-  quotations: IPaymentSummary;
+  payments: IStatPaymentSummary;
+  quotations: IStatPaymentSummary;
   procurementEntities: IProcurementEntities;
   requests: IRequests;
   messageBalance: IMessageBalance;
@@ -615,5 +615,21 @@ export interface ISubscriptionBenefit {
   code: string;
   name: string;
   description: string;
+}
+
+
+export interface IPaymentSummary {
+  currentMonthPayments: number;
+  previousMonthPayments: number;
+  monthlyPercentageChange: number;
+  monthlyChangeDirection: "INCREASE" | "DECREASE";
+  totalSuccessfulPayments: number;
+  totalTransactions: number;
+  successfulTransactions: number;
+  nonSuccessfulTransactions: number;
+  successRate: number;
+  totalWalletIn: number;
+  totalWalletOut: number;
+  walletBalance: number;
 }
 
