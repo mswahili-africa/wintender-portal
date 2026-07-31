@@ -95,10 +95,11 @@ const BidderProfileModal: React.FC<IProps> = ({ user, onClose, zIndex = 10 }) =>
     // JCM category
     const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
     const contact: IContacts = {
-        name: user?.companyName || "",
+        name: user?.name || "",
         phoneNumber: user?.companyPrimaryNumber || "",
         status: "",
         updatedAt: user?.updatedAt || 0,
+        companyName: user?.companyName || "",
     }
 
     if (!contact) return null;
