@@ -19,7 +19,7 @@ const columns: IColumn[] = [
           {/* Subtext: Company Name */}
           <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 mt-0.5">
             <IconBuilding size={13} className="text-slate-400 shrink-0" />
-            <span className="truncate max-w-[200px]">{row.companyName || "No Company"}</span>
+            <span className="truncate max-w-[300px]">{row.companyName || "No Company"}</span>
           </div>
         </div>
       );
