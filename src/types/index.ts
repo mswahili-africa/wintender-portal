@@ -563,6 +563,7 @@ export interface IContacts {
   name: string;
   phoneNumber: string;
   status: string;
+  companyName: string;
   updatedAt: number;
 }
 
