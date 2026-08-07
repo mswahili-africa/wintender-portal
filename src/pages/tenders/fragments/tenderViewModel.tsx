@@ -4,7 +4,7 @@ import { useUserDataContext } from "@/providers/userDataProvider";
 import { Suspense, useState } from "react";
 import DIFMAssignModel from "./difmAssignModel";
 import PETenderApplicationWizardModal from "./PETenderApplicationWizardModal";
-import { IconAlertCircle, IconX } from "@tabler/icons-react";
+import { IconAlertCircle, IconBuildingStore, IconCalendarEvent, IconCategory, IconClock, IconCreditCardPay, IconExternalLink, IconFileDescription, IconFileText, IconGitPullRequest, IconInfoCircle, IconMapPin, IconMessageCircle, IconShieldCheck, IconUserDown, IconUsers, IconX } from "@tabler/icons-react";
 import { ITenders } from "@/types";
 import Chip from "@/components/chip/Chip";
 import { Countdown } from "@/components/countdown/Countdown";
@@ -57,206 +57,575 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
     const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
 
 
+
     return (
         <>
+            <Dialog
+                open={isOpen}
+                onClose={onClose}
+                className="relative z-20"
+            >
+                {/* Backdrop */}
+                <div
+                    className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm"
+                    aria-hidden="true"
+                />
 
-            <Dialog open={isOpen} onClose={onClose} className="relative z-20">
-                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+                <div className="fixed inset-0 flex items-center justify-center p-3 sm:p-5">
+                    <div className="w-full max-w-6xl max-h-[95vh] overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5">
 
+                        {/* =====================================================
+                        HEADER
+                    ====================================================== */}
+                        <div className="relative border-b border-slate-200 bg-white">
 
-                <div className="fixed inset-0 flex items-center justify-center p-4">
+                            {/* Accent */}
+                            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500" />
 
-                    <div className="bg-green-100 rounded-xl shadow-lg max-w-5xl w-full p-4">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">{tender?.tenderNumber}</h2>
-                            <div className="flex space-x-4">
-                                {
-                                    tender?.region === "GOVERNMENT" && remainingTime > 0 &&
-                                    <Tooltip content={t("tender-view-modal-go-nest-tooltip")} placement="top">
-                                        < Button
-                                            label={t("tender-view-modal-go-nest-button")}
-                                            size="sm"
-                                            theme="primary"
-                                            variant="outline"
-                                            onClick={() => window.open("https://nest.go.tz/")}
-                                        />
-                                    </Tooltip>
-                                }
-                                {/* Conditionally render button or spinner */}
-                                {!["PROCUREMENT_ENTITY", "BIDDER"].includes(userRole) && remainingTime > 0 && (
-                                    <div className="flex space-x-4">
-                                        <Tooltip content={t("tender-view-modal-assign-bidder-tooltip")}>
-                                            <Button
-                                                label={t("tender-view-modal-assign-bidder-button")}
-                                                size="sm"
-                                                theme="secondary"
-                                                onClick={() => setAssignBidderModalOpen(true)}
-                                            />
-                                        </Tooltip>
+                            <div className="px-5 sm:px-7 pt-6 pb-5">
+
+                                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
+
+                                    {/* Tender identity */}
+                                    <div className="min-w-0">
+
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-green-50 text-green-600">
+                                                <IconFileDescription size={18} />
+                                            </div>
+
+                                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                                Tender
+                                            </span>
+
+                                            <span className="text-xs font-semibold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
+                                                {tender?.tenderNumber}
+                                            </span>
+                                        </div>
+
+                                        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
+                                            {tender?.title}
+                                        </h2>
+
+                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm text-slate-500">
+
+                                            <div className="flex items-center gap-1.5">
+                                                <IconBuildingStore size={16} />
+                                                <span>{tender?.entityName}</span>
+                                            </div>
+
+                                            {tender?.categoryName && (
+                                                <div className="flex items-center gap-1.5">
+                                                    <IconCategory size={16} />
+                                                    <span>{tender.categoryName}</span>
+                                                </div>
+                                            )}
+
+                                            {tender?.region && (
+                                                <div className="flex items-center gap-1.5">
+                                                    <IconMapPin size={16} />
+                                                    <span>{tender.region}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                )}
-                                {userRole === "BIDDER" && remainingTime > 0 && (
-                                    isLoading ? (
-                                        <Spinner size="sm" />
-                                    ) : (
-                                        <div className="flex space-x-4">
-                                            {tender?.selfApply && (
-                                                <Tooltip content={t("tender-view-modal-apply-tooltip")}>
+
+                                    {/* Header actions */}
+                                    <div className="flex items-center gap-2 shrink-0">
+
+                                        {/* Government source */}
+                                        {tender?.region === "GOVERNMENT" &&
+                                            remainingTime > 0 && (
+                                                <Tooltip
+                                                    content={t("tender-view-modal-go-nest-tooltip")}
+                                                    placement="top"
+                                                >
                                                     <Button
-                                                        label={t("tender-view-modal-apply-button")}
+                                                        label="Go NEST"
                                                         size="sm"
-                                                        theme="primary"
-                                                        onClick={handleTenderApplyModal}
+                                                        icon={<IconExternalLink size={16} />}
+                                                        theme="info"
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            window.open(
+                                                                "https://nest.go.tz/"
+                                                            )
+                                                        }
                                                     />
                                                 </Tooltip>
                                             )}
 
-
-                                            <Tooltip content={t("tender-view-modal-difm-tooltip")}>
-                                                <Button
-                                                    label={t("tender-view-modal-difm-button")}
-                                                    size="sm"
-                                                    theme="primary"
-                                                    onClick={onDoItForMeClick}
-                                                />
-                                            </Tooltip>
-                                        </div>
-                                    )
-                                )}
-                                <button onClick={onClose} className="text-red-500 text-xl font-bold">
-                                    <IconX size={26} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* {tender?.selfApply ||  ["ADMINISTRATOR","MANAGER","PUBLISHER","ACCOUNTANT","SUPERVISOR"].includes(userRole) && ( */}
-                        {new Date(tender?.closeDate!) > new Date() && (
-                            <div className="flex w-full justify-center mb-4">
-                                <div className="flex flex-row w-full border-2 border-gray-400 rounded">
-
-                                    <button type="button" onClick={() => setActiveTab("DETAILS")} className={` uppercase w-full p-2 text-sm ${activeTab === "DETAILS" ? "bg-green-600 text-white" : "text-gray-500"} `}>Details</button>
-
-                                    {tender?.selfApply && (
-                                        <button type="button" onClick={() => setActiveTab("CLARIFICATION")} className={`flex items-center justify-center flex-row gap-x-2 uppercase w-full p-2 text-sm ${activeTab === "CLARIFICATION" ? "bg-green-600 text-white" : "text-gray-500"} `}>Clarifications <div className="text-white bg-red-600 rounded-full p-1 w-5 h-5 flex items-center justify-center">{tender?.clarificationCount ?? 0}</div></button>
-                                    )}
-                                    {["ADMINISTRATOR", "MANAGER", "PUBLISHER", "ACCOUNTANT", "SUPERVISOR","CUSTOMER_RELATIONSHIP_MANAGER"].includes(userRole) && (
-                                        <button type="button" onClick={() => setActiveTab("ELIGIBLE")} className={` uppercase w-full p-2 text-sm ${activeTab === "ELIGIBLE" ? "bg-green-600 text-white" : "text-gray-500 bg-transparent"} `}>Eligible Bidders</button>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                        <div className="mt-4 overflow-y-auto" style={{ minHeight: '40vh', maxHeight: '70vh' }}>
-                            {
-                                activeTab === "DETAILS" && (
-                                    <div className="px-2 overflow-y-auto">
-                                        {/* Tender Header */}
-                                        <div className="flex items-center justify-between mb-4">
-                                            <h3 className="text-xl font-bold text-gray-800">{tender?.title}</h3>
-
-                                        </div>
-
-                                        {/* Tender Details */}
-                                        <div className="space-y-2">
-                                            <div className="flex flex-col sm:flex-row w-full justify-between">
-                                                <div className="flex items-center">
-                                                    <strong className="w-24 sm:w-32 text-gray-600">{t("tender-view-modal-close-date")}:</strong>
-                                                    <p className="flex-1">{new Date(tender?.closeDate!).toLocaleString()}</p>
-                                                </div>
-                                                <div className="flex flex-col px-4 gap-x-2 items-center">
-                                                    <p className="flex-1 text-xs">{t("tender-view-modal-remaining-time")}:</p>
-                                                    <Countdown expirationTime={tender?.closeDate!} />
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <strong className="w-32 text-gray-600">{t("tender-view-modal-tender-name")}:</strong>
-                                                <p className="flex-1">{tender?.entityName}</p>
-                                            </div>
-                                            <div className="flex flex-col sm:flex-row items-start sm:items-center">
-                                                <strong className="w-32 text-gray-600">{t("tender-view-modal-category")}:</strong>
-                                                <p className="flex-1">{tender?.categoryName}</p>
-                                            </div>
-                                            <div className="flex">
-                                                {/* <strong className="w-32 text-gray-600">Summary:</strong> */}
-                                                <p className="flex-1 my-3 text-justify" dangerouslySetInnerHTML={{ __html: tender?.summary! }}></p>
-                                            </div>
-
-                                            <div className="flex items-center">
-                                                <strong className="w-32 text-gray-600">{t("tender-view-modal-status")}:</strong>
-                                                <Chip
-                                                    label={
-                                                        (() => {
-                                                            if (remainingDays < 0) {
-                                                                return 'CLOSED';
-                                                            } else {
-                                                                return tender?.status!;
-                                                            }
-                                                        })()
-                                                    }
-                                                    size="sm"
-                                                    avatar={(() => {
-                                                        if (remainingDays < 0) {
-                                                            return <IconAlertCircle />;
+                                        {/* Assign bidder */}
+                                        {!["PROCUREMENT_ENTITY", "BIDDER"].includes(userRole) &&
+                                            remainingTime > 0 && (
+                                                <Tooltip
+                                                    content={t(
+                                                        "tender-view-modal-assign-bidder-tooltip"
+                                                    )}
+                                                >
+                                                    <Button
+                                                        label={t(
+                                                            "tender-view-modal-assign-bidder-button"
+                                                        )}
+                                                        size="sm"
+                                                        icon={<IconUserDown size={16}/>}
+                                                        theme="secondary"
+                                                        onClick={() =>
+                                                            setAssignBidderModalOpen(true)
                                                         }
-                                                    })()
-                                                    }
-                                                    theme={
-                                                        (() => {
-                                                            if (remainingDays < 0) {
-                                                                return 'danger';
-                                                            } else {
-                                                                return 'success';
+                                                    />
+                                                </Tooltip>
+                                            )}
+
+                                        {/* Bidder actions */}
+                                        {userRole === "BIDDER" &&
+                                            remainingTime > 0 &&
+                                            (isLoading ? (
+                                                <Spinner size="sm" />
+                                            ) : (
+                                                <div className="flex items-center gap-2">
+
+                                                    {tender?.selfApply && (
+                                                        <Tooltip
+                                                            content={t(
+                                                                "tender-view-modal-apply-tooltip"
+                                                            )}
+                                                        >
+                                                            <Button
+                                                                label={t(
+                                                                    "tender-view-modal-apply-button"
+                                                                )}
+                                                                size="sm"
+                                                                icon={<IconCreditCardPay size={16}/>}
+                                                                theme="primary"
+                                                                onClick={
+                                                                    handleTenderApplyModal
+                                                                }
+                                                            />
+                                                        </Tooltip>
+                                                    )}
+
+                                                    <Tooltip
+                                                        content={t(
+                                                            "tender-view-modal-difm-tooltip"
+                                                        )}
+                                                    >
+                                                        <Button
+                                                            label={t(
+                                                                "tender-view-modal-difm-button"
+                                                            )}
+                                                            size="sm"
+                                                            icon={<IconGitPullRequest size={16}/>}
+                                                            theme="primary"
+                                                            onClick={
+                                                                onDoItForMeClick
                                                             }
-                                                        })()
-                                                    }
-                                                />
-                                            </div>
+                                                        />
+                                                    </Tooltip>
+                                                </div>
+                                            ))}
 
-                                            {(userRole === "MANAGER" || userRole === "ADMINISTRATOR") && (
-                                                <><div className="flex items-center">
-                                                    <strong className="w-50 text-gray-600">{t("tender-view-modal-consultation-fee")}:</strong>
-                                                    <p className="flex-1">
-                                                        TZS {new Intl.NumberFormat().format(tender?.consultationFee!)}
-                                                    </p>
-                                                </div></>
+                                        <button
+                                            onClick={onClose}
+                                            className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                                            aria-label="Close"
+                                        >
+                                            <IconX size={21} />
+                                        </button>
+                                    </div>
+                                </div>
 
+                                {/* =================================================
+                                STATUS / DEADLINE BAR
+                            ================================================== */}
+                                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                                    {/* Status */}
+                                    <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                        <div
+                                            className={`flex h-9 w-9 items-center justify-center rounded-lg ${remainingDays < 0
+                                                ? "bg-red-100 text-red-600"
+                                                : "bg-green-100 text-green-600"
+                                                }`}
+                                        >
+                                            {remainingDays < 0 ? (
+                                                <IconAlertCircle size={19} />
+                                            ) : (
+                                                <IconShieldCheck size={19} />
                                             )}
                                         </div>
 
-                                        <hr></hr>
+                                        <div>
+                                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                                                Status
+                                            </p>
 
-                                        {/* PDF Viewer */}
-                                        <div className="mt-4" style={{ overflowY: 'auto' }}>
-                                            <iframe
-                                                src={userData?.role === "BIDDER" ? `${tender?.filePath}#toolbar=0&navpanes=0&scrollbar=0` : `${tender?.filePath}`}
-                                                width="100%"
-                                                height={"500px"}
-                                                title="Tender Document"
-                                            ></iframe>
+                                            <Chip
+                                                label={
+                                                    remainingDays < 0
+                                                        ? "CLOSED"
+                                                        : tender?.status!
+                                                }
+                                                size="sm"
+                                                theme={
+                                                    remainingDays < 0
+                                                        ? "danger"
+                                                        : "success"
+                                                }
+                                            />
                                         </div>
                                     </div>
-                                )
-                            }
-                            {
-                                activeTab === "CLARIFICATION" && <Clarifications tender={tender!} />
-                            }
-                            {
-                                activeTab === "ELIGIBLE" && <EligibleBidders tender={tender!} />
-                            }
+
+                                    {/* Closing date */}
+                                    <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                                            <IconCalendarEvent size={19} />
+                                        </div>
+
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                                                Closing date
+                                            </p>
+
+                                            <p className="text-sm font-semibold text-slate-700 truncate">
+                                                {new Date(
+                                                    tender?.closeDate!
+                                                ).toLocaleString()}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Countdown */}
+                                    <div
+                                        className={`flex items-center gap-3 rounded-xl border px-4 py-3 ${remainingDays < 0
+                                            ? "border-red-100 bg-red-50"
+                                            : "border-amber-100 bg-amber-50"
+                                            }`}
+                                    >
+                                        <div
+                                            className={`flex h-9 w-9 items-center justify-center rounded-lg ${remainingDays < 0
+                                                ? "bg-red-100 text-red-600"
+                                                : "bg-amber-100 text-amber-600"
+                                                }`}
+                                        >
+                                            <IconClock size={19} />
+                                        </div>
+
+                                        <div>
+                                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                                                Time remaining
+                                            </p>
+
+                                            <div className="text-sm font-bold text-slate-800">
+                                                <Countdown
+                                                    expirationTime={
+                                                        tender?.closeDate!
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* =====================================================
+                            TABS
+                        ====================================================== */}
+                            {new Date(tender?.closeDate!) > new Date() && (
+                                <div className="px-5 sm:px-7">
+                                    <div className="flex items-center gap-1 overflow-x-auto">
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setActiveTab("DETAILS")
+                                            }
+                                            className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-semibold transition ${activeTab === "DETAILS"
+                                                ? "text-green-700"
+                                                : "text-slate-500 hover:text-slate-800"
+                                                }`}
+                                        >
+                                            <IconInfoCircle size={17} />
+                                            Details
+
+                                            {activeTab === "DETAILS" && (
+                                                <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-green-600" />
+                                            )}
+                                        </button>
+
+                                        {tender?.selfApply && (
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setActiveTab("CLARIFICATION")
+                                                }
+                                                className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-semibold transition ${activeTab === "CLARIFICATION"
+                                                    ? "text-green-700"
+                                                    : "text-slate-500 hover:text-slate-800"
+                                                    }`}
+                                            >
+                                                <IconMessageCircle size={17} />
+                                                Clarifications
+
+                                                <span className="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-red-100 text-red-600 text-[10px] font-bold">
+                                                    {tender?.clarificationCount ??
+                                                        0}
+                                                </span>
+
+                                                {activeTab === "CLARIFICATION" && (
+                                                    <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-green-600" />
+                                                )}
+                                            </button>
+                                        )}
+
+                                        {[
+                                            "ADMINISTRATOR",
+                                            "MANAGER",
+                                            "PUBLISHER",
+                                            "ACCOUNTANT",
+                                            "SUPERVISOR",
+                                            "CUSTOMER_RELATIONSHIP_MANAGER",
+                                        ].includes(userRole) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setActiveTab("ELIGIBLE")
+                                                    }
+                                                    className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-semibold transition ${activeTab === "ELIGIBLE"
+                                                        ? "text-green-700"
+                                                        : "text-slate-500 hover:text-slate-800"
+                                                        }`}
+                                                >
+                                                    <IconUsers size={17} />
+                                                    Eligible Bidders
+
+                                                    {activeTab === "ELIGIBLE" && (
+                                                        <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-green-600" />
+                                                    )}
+                                                </button>
+                                            )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        {/* Modal Footer */}
 
-                        <div className="flex justify-end space-x-2 mt-6">
-                            <Button label="Close" size="sm" theme="danger" onClick={onClose} />
+                        {/* =========================================================
+                        CONTENT
+                    ========================================================== */}
+                        <div
+                            className="overflow-y-auto bg-slate-50/70"
+                            style={{
+                                minHeight: "40vh",
+                                maxHeight: "62vh",
+                            }}
+                        >
+
+                            {/* =====================================================
+                            DETAILS
+                        ====================================================== */}
+                            {activeTab === "DETAILS" && (
+                                <div className="p-5 sm:p-7 space-y-5">
+
+                                    {/* Summary card */}
+                                    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+                                        <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 text-green-600">
+                                                <IconInfoCircle size={18} />
+                                            </div>
+
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-800">
+                                                    Tender overview
+                                                </h3>
+
+                                                <p className="text-xs text-slate-400">
+                                                    Key information about this opportunity
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-5">
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                                                <div className="rounded-xl bg-slate-50 p-4">
+                                                    <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+                                                        Tender number
+                                                    </p>
+
+                                                    <p className="mt-1 text-sm font-bold text-slate-800">
+                                                        {tender?.tenderNumber}
+                                                    </p>
+                                                </div>
+
+                                                <div className="rounded-xl bg-slate-50 p-4">
+                                                    <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+                                                        Procuring entity
+                                                    </p>
+
+                                                    <p className="mt-1 text-sm font-bold text-slate-800">
+                                                        {tender?.entityName}
+                                                    </p>
+                                                </div>
+
+                                                <div className="rounded-xl bg-slate-50 p-4">
+                                                    <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+                                                        Category
+                                                    </p>
+
+                                                    <p className="mt-1 text-sm font-bold text-slate-800">
+                                                        {tender?.categoryName}
+                                                    </p>
+                                                </div>
+
+                                                <div className="rounded-xl bg-slate-50 p-4">
+                                                    <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+                                                        Closing date
+                                                    </p>
+
+                                                    <p className="mt-1 text-sm font-bold text-slate-800">
+                                                        {new Date(
+                                                            tender?.closeDate!
+                                                        ).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Summary */}
+                                            <div className="mt-5">
+                                                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                                    Description
+                                                </p>
+
+                                                <div
+                                                    className="prose prose-sm max-w-none text-slate-600 leading-relaxed"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            tender?.summary!,
+                                                    }}
+                                                />
+                                            </div>
+
+                                            {/* Restricted fee */}
+                                            {(userRole === "MANAGER" ||
+                                                userRole ===
+                                                "ADMINISTRATOR") && (
+                                                    <div className="mt-5 flex items-center justify-between rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3">
+                                                        <div>
+                                                            <p className="text-xs font-semibold text-emerald-700">
+                                                                Consultation fee
+                                                            </p>
+
+                                                            <p className="text-xs text-emerald-600">
+                                                                Internal management information
+                                                            </p>
+                                                        </div>
+
+                                                        <p className="text-lg font-bold text-emerald-700">
+                                                            TZS{" "}
+                                                            {new Intl.NumberFormat().format(
+                                                                tender?.consultationFee!
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                        </div>
+                                    </div>
+
+                                    {/* =================================================
+                                    DOCUMENT
+                                ================================================== */}
+                                    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 px-5 py-4">
+
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600">
+                                                    <IconFileText size={18} />
+                                                </div>
+
+                                                <div>
+                                                    <h3 className="text-sm font-bold text-slate-800">
+                                                        Tender document
+                                                    </h3>
+
+                                                    <p className="text-xs text-slate-400">
+                                                        Official tender documentation
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <span className="inline-flex w-fit items-center rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                                                PDF Document
+                                            </span>
+                                        </div>
+
+                                        <div className="bg-slate-100 p-2 sm:p-3">
+                                            <iframe
+                                                src={
+                                                    userData?.role === "BIDDER"
+                                                        ? `${tender?.filePath}#toolbar=0&navpanes=0&scrollbar=0`
+                                                        : `${tender?.filePath}`
+                                                }
+                                                width="100%"
+                                                height="500px"
+                                                title="Tender Document"
+                                                className="rounded-xl border border-slate-200 bg-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* =====================================================
+                            CLARIFICATIONS
+                        ====================================================== */}
+                            {activeTab === "CLARIFICATION" && (
+                                <div className="p-5 sm:p-7">
+                                    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                                        <Clarifications tender={tender!} />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* =====================================================
+                            ELIGIBLE BIDDERS
+                        ====================================================== */}
+                            {activeTab === "ELIGIBLE" && (
+                                <div className="p-5 sm:p-7">
+                                    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                                        <EligibleBidders tender={tender!} />
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
+                        {/* =========================================================
+                        FOOTER
+                    ========================================================== */}
+                        <div className="flex items-center justify-between border-t border-slate-200 bg-white px-5 sm:px-7 py-4">
 
+                            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+                                <IconShieldCheck size={16} className="text-green-500" />
+                                <span>
+                                    Information provided through Wintender
+                                </span>
+                            </div>
 
+                            <Button
+                                label="Close"
+                                size="sm"
+                                theme="secondary"
+                                onClick={onClose}
+                            />
+                        </div>
                     </div>
                 </div>
 
-
-                {/* MOdALS */}
-                {/* Assign Bidder Modal */}
+                {/* =============================================================
+                ASSIGN BIDDER MODAL
+            ============================================================== */}
                 {assignBidderModalOpen && (
                     <DIFMAssignModel
                         isOpen={assignBidderModalOpen}
@@ -266,22 +635,24 @@ const TenderViewModal = ({ onClose, tender, isLoading, onDoItForMeClick, isOpen 
                     />
                 )}
 
+                {/* =============================================================
+                TENDER APPLICATION MODAL
+            ============================================================== */}
                 {isTenderApplyModalOpen && (
                     <Suspense fallback={<div>Loading...</div>}>
                         <PETenderApplicationWizardModal
                             isOpen={isTenderApplyModalOpen}
-                            onClose={() => setIsTenderApplyModalOpen(false)}
+                            onClose={() =>
+                                setIsTenderApplyModalOpen(false)
+                            }
                             tenderId={tender?.id!}
                             onSuccess={handleSuccess}
                         />
                     </Suspense>
                 )}
             </Dialog>
-
-
-
         </>
     );
-};
 
+}
 export default TenderViewModal;
